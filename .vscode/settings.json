@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    "**/desktop.ini": true
+  },
+  "editor.tabSize": 2,
+  "editor.allowVariableFontsInAccessibilityMode": true,
+  "editor.defaultFormatter": "ms-dotnettools.csdevkit",
+  "editor.fontFamily": "Cascadia Code"
+}
