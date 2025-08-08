@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Parser.V2.Framework.DataFormat">
+    <Position X="6.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEACAAAAAAAAAAAAAAQAACAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>V2.Framework\DataFormat.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Parser.V2.Framework.DataStorage">
+    <Position X="4.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEEAAAAAQAAAAAAAAAgAAAAAAAAAAAAQAAAAAQAA=</HashCode>
+      <FileName>V2.Framework\DataStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Parser.V2.Framework.FormatLibrary">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAIAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>V2.Framework\FormatLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Parser.V2.Framework.TextParser">
+    <Position X="15" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAABAAAAAAAAgAAgEABAQ=</HashCode>
+      <FileName>V2.Framework\TextParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Parser.V2.Framework.Parser">
+    <Position X="12.5" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAEAAAQAQCAAAgABAAAQBAAABAAAAgAAgAABAQ=</HashCode>
+      <FileName>V2.Framework\Parser.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="Parser.V2.Framework.DataFormatType">
+    <Position X="10.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACCABAAAAAAAAAAACAAAABA=</HashCode>
+      <FileName>V2.Framework\DataFormatType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

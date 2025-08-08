@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="Parser.Spec">
+    <Position X="2.75" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAQAACAAAAABBAAAAAAAQQAAAAgAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Spec.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Parser.Operation">
+    <Position X="9.25" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAIAMAAAACgAAAAAAAAAAAAAAAAAAAABAAAAABAAAAA=</HashCode>
+      <FileName>Operation.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Orientation="Left" Position="0.1" />
+  </Class>
+  <Class Name="Common.Regex.MatchDataDictionary">
+    <Position X="8" Y="5.75" Width="2.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Common.Regex.GroupData">
+    <Position X="5.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Common.Regex.CaptureData">
+    <Position X="3.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Parser.OperationCluster">
+    <Position X="12" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>OperationCluster.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Parser.IOperation">
+    <Position X="5.75" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAMAAAACgAAAAAAAAAAAAAAAAAAAABAAAAABAAAAA=</HashCode>
+      <FileName>IOperation.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Parser.IResult&lt;T&gt;">
+    <Position X="1" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IResult.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

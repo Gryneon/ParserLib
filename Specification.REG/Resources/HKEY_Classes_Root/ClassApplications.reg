@@ -1,0 +1,694 @@
+﻿
+[HKEY_CLASSES_ROOT\Applications]
+
+[HKEY_CLASSES_ROOT\Applications\accwiz.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\Acrobat.exe]
+
+[HKEY_CLASSES_ROOT\Applications\Acrobat.exe\CurVer]
+@="Acrobat.Document.DC"
+
+[HKEY_CLASSES_ROOT\Applications\Acrobat.exe\shell]
+
+[HKEY_CLASSES_ROOT\Applications\Acrobat.exe\shell\Open]
+
+[HKEY_CLASSES_ROOT\Applications\Acrobat.exe\shell\Open\command]
+@="\"C:\\Program Files\\Adobe\\Acrobat DC\\Acrobat\\Acrobat.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Applications\ARTGALRY.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\awdvstub.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\cag.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\CChat.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\cdfview.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\cmd.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\CMMGR32.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\cryptext.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\datainst.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\depends.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\drwatson.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\dsquery.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\excel.exe]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-206"
+
+[HKEY_CLASSES_ROOT\Applications\explorer.exe]
+"LongProcessLifetime"=""
+"NoOpenWith"=""
+"TaskbarGroupIcon"=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,\
+  00,6f,00,74,00,25,00,5c,00,53,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,\
+  5c,00,69,00,6d,00,61,00,67,00,65,00,72,00,65,00,73,00,2e,00,64,00,6c,00,6c,\
+  00,2c,00,2d,00,34,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\faxcover.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\finder.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\fontview.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\fpidcwiz.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\graflink.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\grpconv.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\helpctr.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\hh.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\HYPERTRM.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\inetcpl.cpl]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\ISIGNUP.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\isoburn.exe]
+@="Windows Disc Image Burner"
+"FriendlyAppName"="@%SystemRoot%\\System32\\isoburn.exe,-352"
+
+[HKEY_CLASSES_ROOT\Applications\kodakprv.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\licensemanagershellext.exe]
+"FriendlyAppName"=hex(2):40,00,43,00,3a,00,5c,00,57,00,69,00,6e,00,64,00,6f,00,\
+  77,00,73,00,5c,00,53,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,6c,\
+  00,69,00,63,00,65,00,6e,00,73,00,65,00,6d,00,61,00,6e,00,61,00,67,00,65,00,\
+  72,00,73,00,68,00,65,00,6c,00,6c,00,65,00,78,00,74,00,2e,00,65,00,78,00,65,\
+  00,2c,00,2d,00,31,00,30,00,31,00,00,00
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\licensemanagershellext.exe\DefaultIcon]
+@=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,25,\
+  00,5c,00,53,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,6c,00,69,00,\
+  63,00,65,00,6e,00,73,00,65,00,6d,00,61,00,6e,00,61,00,67,00,65,00,72,00,73,\
+  00,68,00,65,00,6c,00,6c,00,65,00,78,00,74,00,2e,00,65,00,78,00,65,00,2c,00,\
+  2d,00,31,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\licensemanagershellext.exe\SupportedTypes]
+@=".ms-windows-store-license"
+
+[HKEY_CLASSES_ROOT\Applications\lync.exe]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-429"
+
+[HKEY_CLASSES_ROOT\Applications\mediainfo.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\MMC.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\mnyimprt.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\mpc-hc64.exe]
+@="Media Player Classic (x64)"
+
+[HKEY_CLASSES_ROOT\Applications\mpc-hc64.exe\DefaultIcon]
+@="C:\\Program Files (x86)\\K-Lite Codec Pack\\MPC-HC64\\mpc-hc64.exe"
+
+[HKEY_CLASSES_ROOT\Applications\mpc-hc64.exe\shell]
+
+[HKEY_CLASSES_ROOT\Applications\mpc-hc64.exe\shell\Open]
+
+[HKEY_CLASSES_ROOT\Applications\mpc-hc64.exe\shell\Open\Command]
+@="\"C:\\Program Files (x86)\\K-Lite Codec Pack\\MPC-HC64\\mpc-hc64.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Applications\mpc-hc64.exe\SupportedTypes]
+".264"=""
+".265"=""
+".3g2"=""
+".3ga"=""
+".3gp2"=""
+".3gp"=""
+".3gpp"=""
+".aac"=""
+".ac3"=""
+".aif"=""
+".aifc"=""
+".aiff"=""
+".alac"=""
+".als"=""
+".amr"=""
+".amv"=""
+".aob"=""
+".ape"=""
+".asf"=""
+".asx"=""
+".au"=""
+".avi"=""
+".avif"=""
+".avs"=""
+".bdmv"=""
+".bik"=""
+".caf"=""
+".cda"=""
+".cue"=""
+".d2v"=""
+".dat"=""
+".dav"=""
+".divx"=""
+".dff"=""
+".drc"=""
+".dsa"=""
+".dsf"=""
+".dsm"=""
+".dss"=""
+".dsv"=""
+".dts"=""
+".dtshd"=""
+".dtsma"=""
+".dv"=""
+".evo"=""
+".f4v"=""
+".flac"=""
+".fli"=""
+".flic"=""
+".flc"=""
+".flv"=""
+".h264"=""
+".h265"=""
+".hdmov"=""
+".ifo"=""
+".ivf"=""
+".k3g"=""
+".m1a"=""
+".m1v"=""
+".m2a"=""
+".m2p"=""
+".m2t"=""
+".m2ts"=""
+".m2v"=""
+".m3u"=""
+".m3u8"=""
+".m4a"=""
+".m4v"=""
+".mid"=""
+".midi"=""
+".mk3d"=""
+".mka"=""
+".mkv"=""
+".mlp"=""
+".mod"=""
+".mov"=""
+".mp1"=""
+".mp2"=""
+".mp2v"=""
+".mp3"=""
+".mp4"=""
+".mp4v"=""
+".mpa"=""
+".mpc"=""
+".mpcpl"=""
+".mpe"=""
+".mpeg"=""
+".mpg"=""
+".mpl"=""
+".mpls"=""
+".mpp"=""
+".mpv2"=""
+".mpv4"=""
+".mqv"=""
+".mts"=""
+".mtv"=""
+".mxf"=""
+".oga"=""
+".ogg"=""
+".ogm"=""
+".ogv"=""
+".opus"=""
+".pls"=""
+".ps"=""
+".pva"=""
+".ra"=""
+".ram"=""
+".rar"=""
+".rec"=""
+".rm"=""
+".rmvb"=""
+".shn"=""
+".smi"=""
+".smil"=""
+".smk"=""
+".snd"=""
+".spx"=""
+".ssif"=""
+".tak"=""
+".thd"=""
+".tp"=""
+".tps"=""
+".trp"=""
+".ts"=""
+".tta"=""
+".video"=""
+".vob"=""
+".wav"=""
+".webm"=""
+".webp"=""
+".wma"=""
+".wmv"=""
+".wtv"=""
+".wv"=""
+".y4m"=""
+
+[HKEY_CLASSES_ROOT\Applications\mplayer.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\msaccess.exe]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-207"
+
+[HKEY_CLASSES_ROOT\Applications\msconf.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\mshta.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\msiexec.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\msimn.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\MSInfo32.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\mspub.exe]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-208"
+
+[HKEY_CLASSES_ROOT\Applications\msrating.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\netshell.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\notepad++.exe]
+
+[HKEY_CLASSES_ROOT\Applications\notepad++.exe\shell]
+
+[HKEY_CLASSES_ROOT\Applications\notepad++.exe\shell\open]
+
+[HKEY_CLASSES_ROOT\Applications\notepad++.exe\shell\open\command]
+@="\"C:\\Program Files\\Notepad++\\notepad++.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Applications\notepad.exe]
+
+[HKEY_CLASSES_ROOT\Applications\notepad.exe\shell]
+
+[HKEY_CLASSES_ROOT\Applications\notepad.exe\shell\edit]
+
+[HKEY_CLASSES_ROOT\Applications\notepad.exe\shell\edit\command]
+@=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,25,\
+  00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,4e,00,4f,00,\
+  54,00,45,00,50,00,41,00,44,00,2e,00,45,00,58,00,45,00,20,00,25,00,31,00,00,\
+  00
+
+[HKEY_CLASSES_ROOT\Applications\notepad.exe\shell\open]
+
+[HKEY_CLASSES_ROOT\Applications\notepad.exe\shell\open\command]
+@=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,25,\
+  00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,4e,00,4f,00,\
+  54,00,45,00,50,00,41,00,44,00,2e,00,45,00,58,00,45,00,20,00,25,00,31,00,00,\
+  00
+
+[HKEY_CLASSES_ROOT\Applications\NTVDM.exe]
+"UseExecutableForTaskbarGroupIcon"=""
+
+[HKEY_CLASSES_ROOT\Applications\oledb32.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\onenote.exe]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-201"
+
+[HKEY_CLASSES_ROOT\Applications\OpenWith.exe]
+"ImmersiveBroker"=""
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\ORGCHART.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\OSA.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\Outlook.EXE]
+"NoOpenWith"=""
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-202"
+
+[HKEY_CLASSES_ROOT\Applications\perfmon.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\photoviewer.dll]
+
+[HKEY_CLASSES_ROOT\Applications\photoviewer.dll\shell]
+
+[HKEY_CLASSES_ROOT\Applications\photoviewer.dll\shell\print]
+"NeverDefault"=""
+
+[HKEY_CLASSES_ROOT\Applications\photoviewer.dll\shell\print\command]
+@=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,25,\
+  00,5c,00,53,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,72,00,75,00,\
+  6e,00,64,00,6c,00,6c,00,33,00,32,00,2e,00,65,00,78,00,65,00,20,00,22,00,25,\
+  00,50,00,72,00,6f,00,67,00,72,00,61,00,6d,00,46,00,69,00,6c,00,65,00,73,00,\
+  25,00,5c,00,57,00,69,00,6e,00,64,00,6f,00,77,00,73,00,20,00,50,00,68,00,6f,\
+  00,74,00,6f,00,20,00,56,00,69,00,65,00,77,00,65,00,72,00,5c,00,50,00,68,00,\
+  6f,00,74,00,6f,00,56,00,69,00,65,00,77,00,65,00,72,00,2e,00,64,00,6c,00,6c,\
+  00,22,00,2c,00,20,00,49,00,6d,00,61,00,67,00,65,00,56,00,69,00,65,00,77,00,\
+  5f,00,46,00,75,00,6c,00,6c,00,73,00,63,00,72,00,65,00,65,00,6e,00,20,00,25,\
+  00,31,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\photoviewer.dll\shell\print\DropTarget]
+"Clsid"="{60fd46de-f830-4894-a628-6fa81bc0190d}"
+
+[HKEY_CLASSES_ROOT\Applications\powerpnt.exe]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-204"
+
+[HKEY_CLASSES_ROOT\Applications\protocolhandler.exe]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-203"
+
+[HKEY_CLASSES_ROOT\Applications\provtool.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\provtool.exe\shell]
+
+[HKEY_CLASSES_ROOT\Applications\provtool.exe\shell\open]
+
+[HKEY_CLASSES_ROOT\Applications\provtool.exe\shell\open\command]
+@=hex(2):22,00,25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,\
+  00,25,00,5c,00,53,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,70,00,\
+  72,00,6f,00,76,00,74,00,6f,00,6f,00,6c,00,2e,00,65,00,78,00,65,00,22,00,20,\
+  00,22,00,25,00,31,00,22,00,20,00,2f,00,73,00,6f,00,75,00,72,00,63,00,65,00,\
+  20,00,53,00,68,00,65,00,6c,00,6c,00,4f,00,70,00,65,00,6e,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\provtool.exe\SupportedTypes]
+".ppkg"=""
+
+[HKEY_CLASSES_ROOT\Applications\rasphone.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\regedit.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\runtimebroker.exe]
+"LongProcessLifetime"=""
+
+[HKEY_CLASSES_ROOT\Applications\sdclt.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\shdocvw.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\shell32.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\shscrap.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\snapview.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\SystemReset.exe]
+"ImmersiveBroker"=""
+
+[HKEY_CLASSES_ROOT\Applications\taskmgr.exe]
+"DisableTabbingByDefault"=hex(0):
+
+[HKEY_CLASSES_ROOT\Applications\themes.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\Ttxmpc97.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\url.dll]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\VSLauncher.exe]
+
+[HKEY_CLASSES_ROOT\Applications\VSLauncher.exe\Shell]
+
+[HKEY_CLASSES_ROOT\Applications\VSLauncher.exe\Shell\Open]
+
+[HKEY_CLASSES_ROOT\Applications\VSLauncher.exe\Shell\Open\Command]
+@="\"C:\\Program Files (x86)\\Common Files\\Microsoft Shared\\MSEnv\\VSLauncher.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\Applications\wab.exe]
+"FriendlyAppName"=hex(2):40,00,25,00,43,00,6f,00,6d,00,6d,00,6f,00,6e,00,50,00,\
+  72,00,6f,00,67,00,72,00,61,00,6d,00,46,00,69,00,6c,00,65,00,73,00,25,00,5c,\
+  00,53,00,79,00,73,00,74,00,65,00,6d,00,5c,00,77,00,61,00,62,00,33,00,32,00,\
+  72,00,65,00,73,00,2e,00,64,00,6c,00,6c,00,2c,00,2d,00,34,00,34,00,30,00,38,\
+  00,00,00
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\WB32.EXE]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\winhlp32.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\WINWORD.EXE]
+"FriendlyAppName"="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-205"
+
+[HKEY_CLASSES_ROOT\Applications\WINWORD.EXE\shell]
+
+[HKEY_CLASSES_ROOT\Applications\WINWORD.EXE\shell\edit]
+@="@C:\\Program Files\\Microsoft Office\\root\\VFS\\ProgramFilesCommonX64\\Microsoft Shared\\Office16\\oregres.dll,-1"
+
+[HKEY_CLASSES_ROOT\Applications\WINWORD.EXE\shell\edit\command]
+@="\"C:\\Program Files\\Microsoft Office\\root\\Office16\\Winword.exe\" /n \"%1\""
+
+[HKEY_CLASSES_ROOT\Applications\WINWORD.EXE\SupportedTypes]
+".docx"=""
+".docm"=""
+".dotx"=""
+".dotm"=""
+".doc"=""
+".dot"=""
+".htm"=""
+".html"=""
+".mht"=""
+".mhtml"=""
+".xml"=""
+".rtf"=""
+".odt"=""
+".wpd"=""
+".wps"=""
+".txt"=""
+".wri"=""
+
+[HKEY_CLASSES_ROOT\Applications\WINWORD.EXE\TaskbarExceptionsIcons]
+
+[HKEY_CLASSES_ROOT\Applications\WINWORD.EXE\TaskbarExceptionsIcons\WordMail]
+"IconPath"="explorer.exe,16"
+"NewExeName"="OUTLOOK.EXE"
+
+[HKEY_CLASSES_ROOT\Applications\wltmime.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\wmpdmc.exe]
+"NoStartPage"="\"\""
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe]
+@="Windows Media Player"
+"FriendlyAppName"="@wmploc.dll,-102"
+"OpenWithExclude"="QT:MOV"
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe\DefaultIcon]
+@=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,25,\
+  00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,77,00,6d,00,\
+  70,00,6c,00,6f,00,63,00,2e,00,64,00,6c,00,6c,00,2c,00,2d,00,37,00,33,00,30,\
+  00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe\shell]
+@="Play"
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe\shell\open]
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe\shell\open\command]
+@=hex(2):22,00,25,00,50,00,72,00,6f,00,67,00,72,00,61,00,6d,00,46,00,69,00,6c,\
+  00,65,00,73,00,28,00,78,00,38,00,36,00,29,00,25,00,5c,00,57,00,69,00,6e,00,\
+  64,00,6f,00,77,00,73,00,20,00,4d,00,65,00,64,00,69,00,61,00,20,00,50,00,6c,\
+  00,61,00,79,00,65,00,72,00,5c,00,77,00,6d,00,70,00,6c,00,61,00,79,00,65,00,\
+  72,00,2e,00,65,00,78,00,65,00,22,00,20,00,2f,00,4f,00,70,00,65,00,6e,00,20,\
+  00,22,00,25,00,4c,00,22,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe\shell\play]
+@="&Play"
+"MUIVerb"=hex(2):40,00,25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,\
+  6f,00,74,00,25,00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,\
+  00,75,00,6e,00,72,00,65,00,67,00,6d,00,70,00,32,00,2e,00,65,00,78,00,65,00,\
+  2c,00,2d,00,39,00,39,00,39,00,31,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe\shell\play\command]
+@=hex(2):22,00,25,00,50,00,72,00,6f,00,67,00,72,00,61,00,6d,00,46,00,69,00,6c,\
+  00,65,00,73,00,28,00,78,00,38,00,36,00,29,00,25,00,5c,00,57,00,69,00,6e,00,\
+  64,00,6f,00,77,00,73,00,20,00,4d,00,65,00,64,00,69,00,61,00,20,00,50,00,6c,\
+  00,61,00,79,00,65,00,72,00,5c,00,77,00,6d,00,70,00,6c,00,61,00,79,00,65,00,\
+  72,00,2e,00,65,00,78,00,65,00,22,00,20,00,2f,00,50,00,6c,00,61,00,79,00,20,\
+  00,22,00,25,00,4c,00,22,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\wmplayer.exe\SupportedTypes]
+".3g2"=""
+".3gp"=""
+".3gp2"=""
+".3gpp"=""
+".aac"=""
+".adt"=""
+".adts"=""
+".aif"=""
+".aifc"=""
+".aiff"=""
+".asf"=""
+".asx"=""
+".au"=""
+".avi"=""
+".cda"=""
+".dvr-ms"=""
+".flac"=""
+".m1v"=""
+".m2t"=""
+".m2ts"=""
+".m2v"=""
+".m3u"=""
+".m4a"=""
+".m4v"=""
+".mid"=""
+".midi"=""
+".mk3d"=""
+".mka"=""
+".mkv"=""
+".mod"=""
+".mov"=""
+".mp2"=""
+".mp2v"=""
+".mp3"=""
+".mp4"=""
+".mp4v"=""
+".mpa"=""
+".mpe"=""
+".mpeg"=""
+".mpg"=""
+".mpv2"=""
+".mts"=""
+".rmi"=""
+".snd"=""
+".ts"=""
+".tts"=""
+".wav"=""
+".wax"=""
+".wm"=""
+".wma"=""
+".wmd"=""
+".wms"=""
+".wmv"=""
+".wmx"=""
+".wmz"=""
+".wpl"=""
+".wtv"=""
+".wvx"=""
+".264"=""
+".amv"=""
+".bdmv"=""
+".dav"=""
+".divx"=""
+".dv"=""
+".evo"=""
+".f4v"=""
+".fli"=""
+".flc"=""
+".flv"=""
+".h264"=""
+".hdmov"=""
+".ivf"=""
+".k3g"=""
+".mpls"=""
+".mpv4"=""
+".mqv"=""
+".mxf"=""
+".ogm"=""
+".ogv"=""
+".pmp"=""
+".rec"=""
+".rm"=""
+".rmvb"=""
+".tp"=""
+".tps"=""
+".trp"=""
+".video"=""
+".vob"=""
+".webm"=""
+".3ga"=""
+".ac3"=""
+".alac"=""
+".amr"=""
+".aob"=""
+".ape"=""
+".caf"=""
+".dts"=""
+".m4b"=""
+".mlp"=""
+".mpc"=""
+".mpl"=""
+".oga"=""
+".ogg"=""
+".opus"=""
+".ra"=""
+".spx"=""
+".tak"=""
+".tta"=""
+".wv"=""
+
+[HKEY_CLASSES_ROOT\Applications\wordpad.exe]
+"FriendlyAppName"="@shell32.dll,-22069"
+
+[HKEY_CLASSES_ROOT\Applications\wordpad.exe\shell]
+
+[HKEY_CLASSES_ROOT\Applications\wordpad.exe\shell\open]
+
+[HKEY_CLASSES_ROOT\Applications\wordpad.exe\shell\open\command]
+@=hex(2):22,00,25,00,50,00,72,00,6f,00,67,00,72,00,61,00,6d,00,46,00,69,00,6c,\
+  00,65,00,73,00,25,00,5c,00,57,00,69,00,6e,00,64,00,6f,00,77,00,73,00,20,00,\
+  4e,00,54,00,5c,00,41,00,63,00,63,00,65,00,73,00,73,00,6f,00,72,00,69,00,65,\
+  00,73,00,5c,00,57,00,4f,00,52,00,44,00,50,00,41,00,44,00,2e,00,45,00,58,00,\
+  45,00,22,00,20,00,22,00,25,00,31,00,22,00,00,00
+
+[HKEY_CLASSES_ROOT\Applications\wpnpinst.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\WScript.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\wusa.exe]
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\Applications\zipfldr.dll]
+"NoOpenWith"=""

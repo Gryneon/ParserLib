@@ -1,0 +1,14 @@
+﻿(?#flag cr)         (?<error_no_cr>\r)|
+(?#xml comment)     (?<comment_all><!--((?<comment_inner>((?<error_badcomment>--)|.)*?))-->)|
+(?#full element)    (?<element_all>
+(?#element opens)   (?<elem_st><\s*(?<element_fin>\/)?\s*(?<head_item>\?)?)
+(?#element name)    (?<element_name>\s*[a-zA-Z_][\w:]*)
+(?#attribute loop)  (?<attr_grp>\s+(?<attr_name>[\w:]+)\s*(?<eq>\=)\s*(?<attr_value>""(?<attr_innervalue>.*?)""))*
+(?#end element)     (?<elem_end>\s*\k<head_item>?\s*(?<element_single>\/)?>)
+(?#element opens)   )|
+(?#last end angle)  (?<=>)
+(?#ignore if ws)    (?<ws_no_content>\s+)
+(?#next start angle)(?=<)|
+(?#text content)    (?<content>([^<&]|
+(?#entity objects)  (?<entity>\&([lg]t|a(mp|pos)|quot)\;)
+(?#end)             )*)

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Definition>
+  <Spec>
+    <Operations>
+      <Operation type="TokenizeBasic">
+        <Regex>
+          <Rx regex=""/>
+        </Regex>
+      </Operation>
+      <Operation type="SplitByLines"/>
+      <Operation type="ReplaceByRegex">
+        <Replace>
+          <Node lf="" rw=""/>
+        </Replace>
+      </Operation>
+    </Operations>
+  </Spec>
+</Definition>

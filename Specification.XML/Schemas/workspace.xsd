@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<xs:schema
+  attributeFormDefault="qualified"
+  elementFormDefault="qualified"
+  xml:lang="en-us"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:npp="notepadplus/workspace"
+  targetNamespace="notepadplus/workspace"
+  >
+
+  <xs:complexType name ="FileType">
+    <xs:attribute name="name" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="FolderType">
+    <xs:sequence>
+      <xs:element name="Folder" type="npp:FolderType" maxOccurs="unbounded" />
+      <xs:element name="File" type="npp:FileType" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:element name="NotepadPlus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Project" type="npp:FolderType" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
