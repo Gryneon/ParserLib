@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Specification.REG</name>
+    </assembly>
+    <members>
+        <member name="T:Specification.REG.Definition">
+            <summary>
+            Defines the Registry spec.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Definition.Spec">
+            <summary>
+            Defines the Registry spec.
+            </summary>
+        </member>
+        <member name="T:Specification.REG.EntryNameEqual">
+            <summary>
+            An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Specification.REG.RegProperty"/> is the same as another.
+            </summary>
+        </member>
+        <member name="M:Specification.REG.EntryNameEqual.#ctor">
+            <summary>
+            An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Specification.REG.RegProperty"/> is the same as another.
+            </summary>
+        </member>
+        <member name="M:Specification.REG.EntryNameEqual.Equals(Specification.REG.RegProperty,Specification.REG.RegProperty)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.REG.EntryNameEqual.GetHashCode(Specification.REG.RegProperty)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Specification.REG.Header">
+            <summary>
+            Represents the text header of a registry file.
+            </summary>
+            <param name="text">The text if not using the default text.</param>
+        </member>
+        <member name="M:Specification.REG.Header.#ctor(System.String)">
+            <summary>
+            Represents the text header of a registry file.
+            </summary>
+            <param name="text">The text if not using the default text.</param>
+        </member>
+        <member name="F:Specification.REG.Header.Default">
+            <summary>
+            The default header string value.
+            </summary>
+        </member>
+        <member name="F:Specification.REG.Header.DefaultRx">
+            <summary>
+            Matches the default header string value.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Header.Text">
+            <summary>
+            The actual header string value.
+            </summary>
+        </member>
+        <member name="M:Specification.REG.Header.ToString">
+            <summary>
+            Gets the header string value.
+            </summary>
+            <returns>The header string value.</returns>
+        </member>
+        <member name="T:Specification.REG.RegProperty">
+            <summary>
+            A registry key, type, and value, with an option to delete the entry.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.Blank">
+            <summary>
+            A blank property.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.Key">
+            <summary>
+            The key name.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.Value">
+            <summary>
+            The value.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.Type">
+            <summary>
+            The type of property.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.Size">
+            <summary>
+            The size of the hex chunks.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.IsDeleteEntry">
+            <summary>
+            Property storing the delete key bit.
+            </summary>
+            <value>
+            <see langword="true"/> if this is a key deletion instead of an addition.
+            </value>
+        </member>
+        <member name="P:Specification.REG.RegProperty.Parent">
+            <summary>
+            The parent key.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.IsDefault">
+            <summary>
+            <see langword="true"/> if this key is null or default initial value;
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegProperty.ParseData">
+            <summary>
+            The <see cref="T:Common.Regex.MatchDataDictionary"/> used to create this object.
+            </summary>
+        </member>
+        <member name="M:Specification.REG.RegProperty.Generate(Common.Regex.MatchDataDictionary)">
+            <inheritdoc/>
+            <exception cref="T:System.InvalidOperationException"/>
+        </member>
+        <member name="M:Specification.REG.RegProperty.Equals(Common.IProperty{System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.REG.RegProperty.CompareTo(Common.IProperty{System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.REG.RegProperty.SetParseData(Common.Regex.MatchDataDictionary)">
+            <summary>
+            Sets the parse data field.
+            </summary>
+            <param name="data">The data to place in the field.</param>
+        </member>
+        <member name="T:Specification.REG.RegSection">
+            <summary>
+            A registry key.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegSection.IsDeleteKey">
+            <summary>
+            Signifies that this key is to be deleted, not added.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegSection.Path">
+            <summary>
+            The path of the key.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegSection.Children">
+            <summary>
+            The properties within this key.
+            </summary>
+        </member>
+        <member name="M:Specification.REG.RegSection.#ctor(System.String,System.Boolean)">
+            <summary>
+            Creates a key from the path and whether or not its a delete key.
+            </summary>
+        </member>
+        <member name="M:Specification.REG.RegSection.#ctor(System.String,System.String)">
+            <summary>
+            Creates a key from the parent path and a name.
+            </summary>
+            <param name="parentPath">The parent path.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="P:Specification.REG.RegSection.Blank">
+            <summary>
+            An empty section.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.RegSection.Count">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.REG.RegSection.Add(Specification.REG.RegProperty)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="M:Specification.REG.RegSection.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>The <see cref="T:Specification.REG.RegProperty"/>s.</returns>
+        </member>
+        <member name="M:Specification.REG.RegSection.Clear">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="M:Specification.REG.RegSection.Contains(Specification.REG.RegProperty)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="M:Specification.REG.RegSection.CopyTo(Specification.REG.RegProperty[],System.Int32)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="M:Specification.REG.RegSection.Remove(Specification.REG.RegProperty)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+    </members>
+</doc>

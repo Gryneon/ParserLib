@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Specification.MapInfo</name>
+    </assembly>
+    <members>
+        <member name="P:Specification.MapInfo.Definition._reader">
+            <summary>
+            https://regex101.com/r/hgS1Zq/5
+            </summary>
+        </member>
+        <member name="F:Specification.MapInfo.Definition.Spec">
+            <summary>
+            https://regex101.com/r/iWWPub/1
+            </summary>
+        </member>
+    </members>
+</doc>

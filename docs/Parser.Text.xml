@@ -1,0 +1,653 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Parser.Text</name>
+    </assembly>
+    <members>
+        <member name="T:Parser.Text.Ops.ConsolidateOutputOperation`1">
+            <summary>
+            Makes a WorkItem Collection into a Collection of it's output objects.
+            </summary>
+            <typeparam name="TCommon">The base type that must be satisfied.</typeparam>
+        </member>
+        <member name="M:Parser.Text.Ops.ConsolidateOutputOperation`1.#ctor">
+            <summary>
+            Makes a WorkItem Collection into a Collection of it's output objects.
+            </summary>
+            <typeparam name="TCommon">The base type that must be satisfied.</typeparam>
+        </member>
+        <member name="T:Parser.Text.Ops.GenerateOperation`1">
+            <summary>
+            <H1>Text Parser Operation</H1>
+            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchDataDictionary"/>.</para>
+            </summary>
+            <typeparam name="TOut">The end result of generation.</typeparam>
+            <param name="output_key_name">The key to store the output objects in.</param>
+            <param name="func">The generation function.</param>
+            <param name="predicate">The condition that the generation function requires.</param>
+        </member>
+        <member name="M:Parser.Text.Ops.GenerateOperation`1.#ctor(System.String,System.Func{Common.Regex.MatchDataDictionary,`0},System.Predicate{Common.Regex.IMatchItem})">
+            <summary>
+            <H1>Text Parser Operation</H1>
+            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchDataDictionary"/>.</para>
+            </summary>
+            <typeparam name="TOut">The end result of generation.</typeparam>
+            <param name="output_key_name">The key to store the output objects in.</param>
+            <param name="func">The generation function.</param>
+            <param name="predicate">The condition that the generation function requires.</param>
+        </member>
+        <member name="M:Parser.Text.Ops.GenerateOperation`1.DoOperation(Parser.Text.TextParser)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Parser.Text.Ops.GenerateOperation`1.Invoke(Common.Regex.IWorkItem)">
+            <summary>
+            Checks if the predicate is true, then invokes the function on the <see cref="T:Common.Regex.IWorkItem"/>, and reassigns the result to the output field.
+            </summary>
+            <param name="wi">The <see cref="T:Common.Regex.IWorkItem"/> to perform the operation on.</param>
+        </member>
+        <member name="M:Parser.Text.Ops.SplitByLinesOperation.Execute">
+            <inheritdoc/>>
+        </member>
+        <member name="T:Parser.Text.Output.OutputValueContent">
+            <summary>
+            Stores an output value for generating objects.
+            This one stores the content in a group and stores it in a field.
+            </summary>
+            <param name="varName">The field name.</param>
+            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchDataDictionary"/>.</param>
+        </member>
+        <member name="M:Parser.Text.Output.OutputValueContent.#ctor(System.String,System.String)">
+            <summary>
+            Stores an output value for generating objects.
+            This one stores the content in a group and stores it in a field.
+            </summary>
+            <param name="varName">The field name.</param>
+            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchDataDictionary"/>.</param>
+        </member>
+        <member name="T:Parser.Text.Output.OutputValueStaticFunctions">
+            <summary>
+            Static functions useful when defining output values in a specification.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.RX.LineEnd">
+            <remarks>
+            Pattern:<br/>
+            <code>(?:\\r\\n?|\\n)</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match with 2 alternative expressions, atomically.<br/>
+                ○ Match a sequence of expressions.<br/>
+                    ○ Match an empty string.<br/>
+                    ○ Match '\n' atomically, optionally.<br/>
+                ○ Match '\n'.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="P:Parser.Text.RX.GroupName">
+            <remarks>
+            Pattern:<br/>
+            <code>(?:(?&lt;=\\(\\?\\&lt;)(?&lt;groupname&gt;\\w+?)(?=\\&gt;\\)))</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Zero-width positive lookbehind.<br/>
+                ○ Match the string "(?&lt;" right-to-left.<br/>
+            ○ "groupname" capture group.<br/>
+                ○ Match a word character atomically at least once.<br/>
+            ○ Zero-width positive lookahead.<br/>
+                ○ Match the string "&gt;)".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="P:Parser.Text.RX.XlRangeSplitter">
+            <remarks>
+            Pattern:<br/>
+            <code>\\s*,(?![^{}]*\\})\\s*</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match a whitespace character atomically any number of times.<br/>
+            ○ Match ','.<br/>
+            ○ Zero-width negative lookahead.<br/>
+                ○ Match a character in the set [^{}] atomically any number of times.<br/>
+                ○ Match '}'.<br/>
+            ○ Match a whitespace character atomically any number of times.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="P:Parser.Text.TextSpec.IsTextFile">
+            <summary>
+            Determines whether to use a byte parser or a text one.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.TextSpec.TokenLookup">
+            <summary>
+            Get => Returns the backing field or an empty Dictionary.
+            Set => Individually adds each item from the value supplied.
+            
+            Setting Null clears the list.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.TextSpec.CaseInsensitive">
+            <summary>
+            Case insensitive match.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.TextSpec.IgnorePatternWhitespace">
+            <summary>
+            Ignores whitepace that is not explicitly defined or escaped.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.TextSpec.NonBacktracking">
+            <summary>
+            Expression will not backtrack.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.TextSpec.#ctor">
+            <summary>
+            Defines a new <see cref="T:Parser.Text.TextSpec"/>.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.TextSpec.Load">
+            <summary>
+            Loads this <see cref="T:Parser.Text.TextSpec"/> to <see cref="T:Parser.Text.Tokens.TokenOptions"/>.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.TextSpec.IsIgnoreGroup(System.String)">
+            <summary>
+            Checks to see if a group is able to be ignored by future operations.
+            </summary>
+            <param name="groupName">The group name to check.</param>
+            <returns>Returns <see langword="true"/> if the <see cref="T:Parser.Text.TextSpec"/> TokenLookup contains that group and the group contains the <see cref="T:Parser.Text.Tokens.TokenType"/> T_Ignore.</returns>
+        </member>
+        <member name="T:Parser.Text.Tokens.IToken">
+            <summary>
+            Base interface for tokens.
+            Reference this and not <see cref="T:Parser.Text.Tokens.Token"/> unless defining a class.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.IToken.Type">
+            <summary>
+            Type of token.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.IToken.Children">
+            <summary>
+            If the token is made of multiple tokens, this will be utilized.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.IToken.Content">
+            <summary>
+            The content of this token, or all of its children.
+            </summary>
+        </member>
+        <member name="T:Parser.Text.Tokens.Token">
+            <summary>
+            Base abstract for tokens.<br/>
+            Reference this and not <see cref="T:Parser.Text.Tokens.IToken"/> when defining a class.<br/>
+            Reference <see cref="T:Parser.Text.Tokens.IToken"/> when creating a field or property, or returning a value from a method.
+            </summary>
+            <remarks>
+            A basic token object used by the <see cref="T:Parser.Text.TextParser"/>.<br/>
+            </remarks>
+            <seealso cref="T:Parser.Text.Tokens.IToken"/>
+        </member>
+        <member name="P:Parser.Text.Tokens.Token.Content">
+            <summary>
+            The content of this token.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.Token.Position">
+            <summary>
+            The position of the token in the original string.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.Token.Length">
+            <summary>
+            The length of the token.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.Tokens.Token.#ctor(System.String,Parser.Text.Tokens.TokenType)">
+            <summary>
+            Creates a <see cref="T:Parser.Text.Tokens.Token"/> from a string and optionally a type.
+            </summary>
+            <param name="type">The type of token this is.</param>
+            <param name="content"><see cref="T:System.String"/> content to initialize this token with.</param>
+        </member>
+        <member name="T:Parser.Text.Tokens.TokenOptions">
+            <summary>
+            Stores the regular expression options for the currently running specification.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.Lookup">
+            <summary>
+            Token type lookup.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.All">
+            <summary>
+            The bits all condensed into a single flag set.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.IgnoreCase">
+            <summary>
+            <see langword="true"/> if we do not care about case.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.Multiline">
+            <summary>
+            '$' and '^' match end of line instead of end of string.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.NonBacktracking">
+            <summary>
+            No backtracking in regular expressions.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.ExplicitCapture">
+            <summary>
+            Only named groups are captured.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.IgnorePatternWhitespace">
+            <summary>
+            Ignore spaces and newlines in the pattern string.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.Singleline">
+            <summary>
+            Equilivent to dot matches newline.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.Tokens.TokenOptions.LoadRegexSpec(System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Loads the regular expression flags.
+            </summary>
+            <param name="options">The options to set.</param>
+        </member>
+        <member name="M:Parser.Text.Tokens.TokenOptions.LoadTokenSpec(System.Collections.Generic.Dictionary{System.String,Parser.Text.Tokens.TokenType})">
+            <summary>
+            Loads the token type lookup.
+            </summary>
+            <param name="lookup">The token types to reference.</param>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenOptions.SC">
+            <summary>
+            The <see cref="T:System.StringComparison"/> to use based on the above flags.
+            </summary>
+        </member>
+        <member name="T:Parser.Text.Tokens.TokenTemplate">
+            <summary>
+            Represents a sequence to consolidate tokens and generate a more useful object.
+            </summary>
+            <remarks>
+            Creates a new token template.
+            </remarks>
+            <param name="type"></param>
+            <param name="nodes"></param>
+        </member>
+        <member name="M:Parser.Text.Tokens.TokenTemplate.#ctor(Parser.Text.Tokens.TokenType,System.Collections.Generic.IEnumerable{Parser.Text.Tokens.TokenTemplateNode})">
+            <summary>
+            Represents a sequence to consolidate tokens and generate a more useful object.
+            </summary>
+            <remarks>
+            Creates a new token template.
+            </remarks>
+            <param name="type"></param>
+            <param name="nodes"></param>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenTemplate.Count">
+            <inheritdoc/>
+        </member>
+        <member name="T:Parser.Text.Tokens.TokenTemplateNode">
+            <summary>
+            Represents a single token's match requirements within a <see cref="T:Parser.Text.Tokens.TokenTemplate"/>.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenTemplateNode.Type">
+            <summary>
+            The accepted types this template will accept.<br/>
+            To accept all types, use <c>T_NoType</c>.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenTemplateNode.Match">
+            <summary>
+            The accepted content strings this template will accept. Matches must be exact and the case sensitivity is determined by the loaded Spec.<br/>
+            To accept all types, use <see langword="null"/> or an empty array in the constructor.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.TokenTemplateNode.NewPropName">
+            <summary>
+            The name in the newly created parent token that this token's content will be stored under.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.Tokens.TokenTemplateNode.IsMatch(Parser.Text.Tokens.IToken,System.Nullable{Parser.Text.Tokens.TokenTemplateMatch}@)">
+            <summary>
+            Analyzes a token and determines if it meets the requirements defined by this node.
+            </summary>
+            <param name="token">The token to analyze.</param>
+            <param name="match">The match results.</param>
+            <returns>
+            <see langword="true"/> if the token satisfies the template requirements, otherwise <see langword="false"/>.<br/>
+            This function does not check token flags, those are handled in the operation mechanics.
+            </returns>
+        </member>
+        <member name="T:Parser.Text.Tokens.TokenType">
+            <summary>
+            Tokenizer tokens.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Final">
+            <summary>
+            Token cannot be reduced.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_OneOrMany">
+            <summary>
+            Optionally repeat this token.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Required">
+            <summary>
+            A required token, whenExtIs normally optional.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Optional">
+            <summary>
+            An optional token, whenExtIs typically required.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Unparsed">
+            <summary>
+            Unparsed content.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Ignore">
+            <summary>
+            Ignore this content.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_All">
+            <summary>
+            The entire document.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_NoType">
+            <summary>
+            No type specified.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Symbol">
+            <summary>
+            Operators and Symbols
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Fin">
+            <summary>
+            The end of the block or script.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_SStart">
+            <summary>
+            The start of a statement.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_SEnd">
+            <summary>
+            The end of a statement.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_LBracket">
+            <summary>
+            The left bracket character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_RBracket">
+            <summary>
+            The right bracket character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_LBrace">
+            <summary>
+            The left brace character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_RBrace">
+            <summary>
+            The right brace character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_LParen">
+            <summary>
+            The left parenthesis character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_RParen">
+            <summary>
+            The right parenthesis character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Equals">
+            <summary>
+            The equals character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_SemiColon">
+            <summary>
+            The semicolon character.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_WS">
+            <summary>
+            Horizontal whitespace.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_NL">
+            <summary>
+            New line character(s).
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Name">
+            <summary>
+            A name, with no quotes, and no whitespace.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Keyword">
+            <summary>
+            A keyword in the language.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Int">
+            <summary>
+            A non-decimal numeric value.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Dec">
+            <summary>
+            A decimal numeric value.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Bool">
+            <summary>
+            A boolean constant.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Char">
+            <summary>
+            A char value.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_SinQt">
+            <summary>
+            A single quoted string value.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_String">
+            <summary>
+            A string value.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_DblQt">
+            <summary>
+            A double quoted string value.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Operator">
+            <summary>
+            An object class or data type.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Object">
+            <summary>
+            An object.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Array">
+            <summary>
+            An array.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Heading">
+            <summary>
+            A heading describing a section.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_RemHeading">
+            <summary>
+            A heading that is to be removed.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Property">
+            <summary>
+            A property or stored data.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_Declaration">
+            <summary>
+            A variable declaration.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_ParamList">
+            <summary>
+            A parameter list.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenType.T_LnComment">
+            <summary>
+            A comment that extends to the next newline character.
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.LineEnd_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the LineEnd method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.LineEnd_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineEnd_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.LineEnd_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineEnd_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.LineEnd_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineEnd_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineEnd_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.LineEnd_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GroupName_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the GroupName method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.GroupName_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GroupName_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GroupName_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GroupName_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GroupName_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GroupName_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GroupName_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GroupName_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.XlRangeSplitter_2">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the XlRangeSplitter method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.XlRangeSplitter_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.IndexOfAnyWordChar(System.ReadOnlySpan{System.Char})">
+            <summary>Finds the next index of any character that matches a word character.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.IsWordChar(System.Char)">
+            <summary>Determines whether the character is part of the [\w] set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_asciiExceptWordChars">
+            <summary>Supports searching for characters in or not in "\0\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^`{|}~\u007f".</summary>
+        </member>
+    </members>
+</doc>

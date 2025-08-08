@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Specification.ZScript</name>
+    </assembly>
+    <members>
+        <member name="F:Specification.ZScript.PrevDefinition._com_Ln">
+            <summary>
+            Whitespace Definitions
+            </summary>
+        </member>
+        <member name="F:Specification.ZScript.PrevDefinition._com_Blk">
+            <summary>
+            Whitespace Definitions
+            </summary>
+        </member>
+        <member name="F:Specification.ZScript.PrevDefinition._ws_True">
+            <summary>
+            Whitespace Definitions
+            </summary>
+        </member>
+        <member name="F:Specification.ZScript.PrevDefinition._ws">
+            <summary>
+            Whitespace Definitions
+            </summary>
+        </member>
+        <member name="F:Specification.ZScript.PrevDefinition._s">
+            <summary>
+            Whitespace Definitions
+            </summary>
+        </member>
+        <member name="F:Specification.ZScript.PrevDefinition._b">
+            <summary>
+            Whitespace Definitions
+            </summary>
+        </member>
+        <member name="P:Specification.ZScript.PrevDefinition.Reader">
+            <summary>
+            https://regex101.com/r/En5C8c/7
+            </summary>
+        </member>
+    </members>
+</doc>

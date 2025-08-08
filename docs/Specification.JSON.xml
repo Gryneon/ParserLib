@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Specification.JSON</name>
+    </assembly>
+    <members>
+        <member name="T:Specification.JSON.Definition">
+            <summary>
+            Defines a JSON Specification.
+            </summary>
+        </member>
+        <member name="P:Specification.JSON.Definition._reader">
+            <summary>
+            https://regex101.com/r/hgS1Zq/5
+            </summary>
+        </member>
+        <member name="F:Specification.JSON.Definition.Spec">
+            <summary>
+            The JSON Spec.
+            </summary>
+        </member>
+        <member name="T:Specification.JSON.IJSONNode">
+            <summary>
+            Basic interface for JSON parts.
+            </summary>
+        </member>
+        <member name="P:Specification.JSON.IJSONNode.Value">
+            <summary>
+            The value stored in this node.
+            </summary>
+        </member>
+        <member name="M:Specification.JSON.IJSONNode.ToString">
+            <summary>
+            Gets the JSON of this node.
+            </summary>
+            <returns>The JSON as a string.</returns>
+        </member>
+        <member name="T:Specification.JSON.JSONValue">
+            <summary>
+            A JSON value.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Specification.JSON.JSONValue.#ctor(System.Object)">
+            <summary>
+            A JSON value.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="P:Specification.JSON.JSONValue.Value">
+            <inheritdoc/>
+        </member>
+        <member name="T:Specification.JSON.JSONProperty">
+            <summary>
+            A JSON keyed property.
+            </summary>
+            <param name="key">The key name.</param>
+            <param name="value">The value stored.</param>
+        </member>
+        <member name="M:Specification.JSON.JSONProperty.#ctor(System.String,System.Object)">
+            <summary>
+            A JSON keyed property.
+            </summary>
+            <param name="key">The key name.</param>
+            <param name="value">The value stored.</param>
+        </member>
+        <member name="P:Specification.JSON.JSONProperty.Key">
+            <summary>
+            Gets the property key name.
+            </summary>
+        </member>
+        <member name="P:Specification.JSON.JSONProperty.Value">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

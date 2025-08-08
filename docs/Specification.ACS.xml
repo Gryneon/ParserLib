@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Specification.ACS</name>
+    </assembly>
+    <members>
+        <member name="T:Specification.ACS.Definition">
+            <summary>
+            ACS Specification Definition
+            </summary>
+        </member>
+        <member name="F:Specification.ACS.Definition._kW">
+            <summary>
+            https://regex101.com/r/NoIMcf/1
+            </summary>
+        </member>
+        <member name="P:Specification.ACS.Definition.Spec">
+            <summary>
+            Defined Specification
+            </summary>
+        </member>
+    </members>
+</doc>

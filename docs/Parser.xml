@@ -1,0 +1,732 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Parser</name>
+    </assembly>
+    <members>
+        <member name="T:Parser.DefinitionStaticFunctions">
+            <summary>
+            This is a static class for <see cref="T:Parser.Spec"/> definitions.
+            </summary>
+        </member>
+        <member name="T:Parser.IInferenceNode">
+            <summary>
+            A node specifiing a property of the files that use the parent format.
+            </summary>
+        </member>
+        <member name="P:Parser.IInferenceNode.Type">
+            <summary>
+            The type of node.
+            </summary>
+        </member>
+        <member name="M:Parser.IInferenceNode.CheckFile(System.String)">
+            <summary>
+            Check if the file at the specified location matches this node.
+            </summary>
+            <param name="filepath">The path to the file to check.</param>
+            <returns><see langword="true"/> if the file matches the node, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Parser.InferenceNode.CheckFile(System.String)">
+            <inheritdoc/>
+            <exception cref="T:Parser.InvalidFileInferenceException"/>
+        </member>
+        <member name="T:Parser.InferenceNodeOr">
+            <summary>
+            Logically ORs the nodes this node contains.
+            </summary>
+            <param name="nodes">The nodes this node contains.</param>
+        </member>
+        <member name="M:Parser.InferenceNodeOr.#ctor(System.Collections.Generic.IEnumerable{Parser.IInferenceNode})">
+            <summary>
+            Logically ORs the nodes this node contains.
+            </summary>
+            <param name="nodes">The nodes this node contains.</param>
+        </member>
+        <member name="M:Parser.InferenceNodeOr.CheckFile(System.String)">
+            <summary>
+            Check if the file at the specified location matches this node.
+            </summary>
+            <param name="filepath">The path to the file to check.</param>
+            <returns><see langword="true"/> if the file matches the node, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Parser.Library.CheckFile(System.String)">
+            <summary>
+            Provides the <see cref="T:Parser.Spec"/> for the provided file path.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.IOperation.ContinueOnFail">
+            <summary>
+            Specifies that the operation should not stop the parser upon failure.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.IOperation.SkipOperation">
+            <summary>
+            Specifies that the operation should be skipped.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.IOperation.EndOperation">
+            <summary>
+            Specifies that the operation is the last one.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.IOperation.End">
+            <summary>
+            The last operation.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.Operation.ContinueOnFail">
+            <summary>
+            Processing should continue even if a failure is reported.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.Operation.SkipOperation">
+            <summary>
+             Do not execute this operation, proceed to next.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.Operation.EndOperation">
+            <summary>
+            This operation ends the processing of further operations.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.Operation.StartOperation">
+            <summary>
+            This operation is the first operation to be performed.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.Operation.DebugOperation">
+            <summary>
+            This operation is only performed if <see cref="P:Common.Debug.Verbose"/> is <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="M:Parser.Ops.Operation.DoOperation">
+            <summary>
+            Performs an operation that does not affect the data.
+            </summary>
+            <returns>
+            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
+            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
+            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
+            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
+            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
+            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
+            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
+            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
+            </returns>
+        </member>
+        <member name="M:Parser.Ops.Operation.DoOperation(System.Object)">
+            <summary>
+            Performs an operation that uses, but does not affect the data.
+            </summary>
+            <returns>
+            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
+            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
+            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
+            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
+            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
+            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
+            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
+            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
+            </returns>
+        </member>
+        <member name="M:Parser.Ops.Operation.DoOperation(System.Object,System.Object@)">
+            <summary>
+            Performs an operation that takes an object and outputs a different (or the same) object.
+            </summary>
+            <param name="input">The input.</param>
+            <param name="output">The result.</param>
+            <returns>
+            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
+            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
+            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
+            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
+            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
+            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
+            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
+            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
+            </returns>
+        </member>
+        <member name="M:Parser.Ops.Operation.DoOperation(System.Object@)">
+            <summary>
+            Performs an operation that uses and may alter or reassign the data.
+            </summary>
+            <returns>
+            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
+            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
+            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
+            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
+            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
+            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
+            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
+            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
+            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
+            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
+            </returns>
+        </member>
+        <member name="T:Parser.Spec">
+            <summary>
+            A class containing the operations, requirements, and instructions for reading a file.
+            </summary>
+        </member>
+        <member name="P:Parser.Spec.Name">
+            <summary>
+            Name of the Spec.
+            </summary>
+        </member>
+        <member name="P:Parser.Spec.Operations">
+            <summary>
+            A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Ops.Operation"/> objects that are executed in order to produce objects.
+            </summary>
+        </member>
+        <member name="P:Parser.Spec.FileInferences">
+            <summary>
+            A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.InferenceNode"/> objects that specify what files use this specification.
+            </summary>
+        </member>
+        <member name="M:Parser.Spec.GetEnumerator">
+            <inheritdoc/>>
+        </member>
+        <member name="P:Parser.V2.Framework.ByteDataFormat.Type">
+            <inheritdoc/>
+        </member>
+        <member name="T:Parser.V2.Framework.DataFormat">
+            <summary>
+            Describes a data syntax or format.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.DataFormat.#ctor(System.String)">
+            <summary>
+            Describes a data syntax or format.
+            </summary>
+        </member>
+        <member name="T:Parser.V2.Framework.DataFormatType">
+            <summary>
+            The type of format this a <see cref="T:Parser.V2.Framework.IDataFormat"/> is.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.DataFormatType.Unknown">
+            <summary>
+            Unknown format.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.DataFormatType.Text">
+            <summary>
+            Text format.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.DataFormatType.Byte">
+            <summary>
+            Byte format.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.DataFormatType.XML">
+            <summary>
+            XML format.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.DataFormatType.JSON">
+            <summary>
+            JSON format.
+            </summary>
+        </member>
+        <member name="T:Parser.V2.Framework.ErrorCode">
+            <summary>
+            A list of error codes.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ErrorCode.CannotDetermineCode">
+            <summary>
+            This means that any comparison for equality will always fail, as this could be anything. Please define a code.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ErrorCode.None">
+            <summary>
+            No error.
+            </summary>
+        </member>
+        <member name="T:Parser.V2.Framework.ErrorState">
+            <summary>
+            An error state saved in the parser.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ErrorState.Active">
+            <summary>
+            <see langword="true"/> if the error is active, <see langword="false"/> if it is not.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ErrorState.Message">
+            <summary>
+            A descriptive message on what had occured.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ErrorState.Sender">
+            <summary>
+            The class and method that threw the error.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ErrorState.ErrorCode">
+            <summary>
+            The error code.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.ErrorState.#ctor">
+            <summary>
+            Creates an empty <see cref="T:Parser.V2.Framework.ErrorState"/> that is not active.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.ErrorState.#ctor(System.String,System.String,Parser.V2.Framework.ErrorCode)">
+            <summary>
+            Creaates an active <see cref="T:Parser.V2.Framework.ErrorState"/> that has the sender and message stored.
+            </summary>
+            <param name="sender">The method or caller within a class, struct, or object. Should be in the format 'class.method'</param>
+            <param name="message">The error message.</param>
+            <param name="ecode">The error code.</param>
+        </member>
+        <member name="M:Parser.V2.Framework.ErrorState.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Parser.V2.Framework.ErrorState.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Parser.V2.Framework.ErrorState.Equals(Parser.V2.Framework.ErrorState)">
+            <inheritdoc/>
+        </member>
+        <member name="P:Parser.V2.Framework.FormatHintInt.Value">
+            <summary>
+            The value of the hint struct.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.FormatHintInt.ValueInt">
+            <summary>
+            The integer value of this hint struct.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.FormatHintInt.Type">
+            <summary>
+            The type of the hint struct.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.FormatHintStr.Value">
+            <summary>
+            The value of the hint struct.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.FormatHintStr.ValueStr">
+            <summary>
+            The integer value of this hint struct.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.FormatHintStr.Type">
+            <summary>
+            The type of the hint struct.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Operation.DoSimpleOperation(Parser.V2.Framework.DataStorage,System.String,System.String)">
+            <summary>
+            Must be defined in operation to use, otherwise it returns an error.
+            </summary>
+            <param name="data">The data passed to the operation.</param>
+            <param name="input">The key to load data from, or null to use CurrentData.</param>
+            <param name="output">The key to write the data to, or null if it does not need to be written.</param>
+            <returns>The <see cref="T:Parser.V2.Framework.OpStatus"/> result. Returns OpStatus.FailBadOpDefinition is it was not defined.</returns>
+        </member>
+        <member name="P:Parser.V2.Framework.Parser.Status">
+            <summary>
+            The parser state, set up as bit flags.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.Parser.Error">
+            <summary>
+            The parsers error state.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.Parser.Data">
+            <summary>
+            The data storage object that the working data is stored in.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.Parser.CurrentFile">
+            <summary>
+            The current file path.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.Framework.Parser.CurrentFormat">
+            <summary>
+            The current format to decode the file with.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.AssignFile(System.String)">
+            <summary>
+            Assigns a new file to the parser.
+            </summary>
+            <param name="filename">Path to file.</param>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.AssignFormat(System.String)">
+            <summary>
+            Assigns a new format to the parser.
+            </summary>
+            <param name="format_name">Name of the format.</param>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.AssignFormat(Parser.V2.Framework.IDataFormat)">
+            <summary>
+            Assigns a new format to the parser.
+            </summary>
+            <param name="format">The format to assign.</param>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.Parse">
+            <summary>
+            Initiates the parsing process.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.LoadFile">
+            <summary>
+            Retrieves the data storage object.
+            </summary>
+            <returns>A <see cref="T:Parser.V2.Framework.DataStorage"/> object containing the processed data.</returns>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.DetermineFormat">
+            <summary>
+            Determines the format that the file should use.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.CheckFormat">
+            <summary>
+            Checks to make sure the file follows the rules of the format.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.InitialParse">
+            <summary>
+            Performs a basic structural check, ensures the data makes sense.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.ValidationParse">
+            <summary>
+            Validates the parsed document.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.GenerateOutput">
+            <summary>
+            Creates the output objects.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.ValidateOutput">
+            <summary>
+            Validates the output against the format.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.Framework.Parser.MarkSuccess">
+            <summary>
+            Marks the parse operation as completed successfully.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_None">
+            <summary>
+            Initial State
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_HasFile">
+            <summary>
+            Filepath provided.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_HasFormat">
+            <summary>
+            Format provided, or determined.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileLoaded">
+            <summary>
+            File loaded to memory.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileMatchesFormat">
+            <summary>
+            File in memory abides by rules in format.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileInitalParseDone">
+            <summary>
+            Initial parse completed.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileValidationParseDone">
+            <summary>
+            Final parse completed.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_ParseOutputGenerated">
+            <summary>
+            Operation output generated.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_ParseOutputValidated">
+            <summary>
+            Output was validated.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PF_OperationSuccess">
+            <summary>
+            Operation was successful and output generated.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PFR_NewFormat">
+            <summary>
+            Remove theses bits if the format changes.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PFR_RemFormat">
+            <summary>
+            Remove theses bits if the format is removed.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PFR_NewFile">
+            <summary>
+            Remove these bits if the file changes.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.ParserFlags.PFR_RestartCycle">
+            <summary>
+            Remove these bits when you restart the cycle.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Final">
+            <summary>
+            Token cannot be reduced.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_OneOrMany">
+            <summary>
+            Optionally repeat this token.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Required">
+            <summary>
+            A required token, whenExtIs normally optional.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Optional">
+            <summary>
+            An optional token, whenExtIs typically required.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Unparsed">
+            <summary>
+            Unparsed content.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Ignore">
+            <summary>
+            Ignore this content.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_All">
+            <summary>
+            The entire document.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_NoType">
+            <summary>
+            No type specified.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Symbol">
+            <summary>
+            Operators and Symbols
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Fin">
+            <summary>
+            The end of the block or script.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_SStart">
+            <summary>
+            The start of a statement.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_SEnd">
+            <summary>
+            The end of a statement.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_LBracket">
+            <summary>
+            The left bracket character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_RBracket">
+            <summary>
+            The right bracket character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_LBrace">
+            <summary>
+            The left brace character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_RBrace">
+            <summary>
+            The right brace character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_LParen">
+            <summary>
+            The left parenthesis character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_RParen">
+            <summary>
+            The right parenthesis character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Equals">
+            <summary>
+            The equals character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_SemiColon">
+            <summary>
+            The semicolon character.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_WS">
+            <summary>
+            Horizontal whitespace.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_NL">
+            <summary>
+            New line character(s).
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Name">
+            <summary>
+            A name, with no quotes, and no whitespace.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Keyword">
+            <summary>
+            A keyword in the language.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Int">
+            <summary>
+            A non-decimal numeric value.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Dec">
+            <summary>
+            A decimal numeric value.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Bool">
+            <summary>
+            A boolean constant.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Char">
+            <summary>
+            A char value.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_SinQt">
+            <summary>
+            A single quoted string value.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_String">
+            <summary>
+            A string value.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_DblQt">
+            <summary>
+            A double quoted string value.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Operator">
+            <summary>
+            An object class or data type.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Heading">
+            <summary>
+            A heading describing a section.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_RemHeading">
+            <summary>
+            A heading that is to be removed.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Property">
+            <summary>
+            A property or stored data.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_Declaration">
+            <summary>
+            A variable declaration.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_ParamList">
+            <summary>
+            A parameter list.
+            </summary>
+        </member>
+        <member name="F:Parser.V2.Framework.TokenType.T_LnComment">
+            <summary>
+            A comment that extends to the next newline character.
+            </summary>
+        </member>
+        <member name="T:Parser.V2.StringLikeObject">
+            <summary>
+            An object that can be a collection of strings, a string, or anything similar to a string.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.StringLikeObject.IsEmpty">
+            <summary>
+            Empty object.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.StringLikeObject.IsSingle">
+            <summary>
+            Contains 1 object.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.StringLikeObject.IsCollection">
+            <summary>
+            Contains more than 1 object.
+            </summary>
+        </member>
+        <member name="P:Parser.V2.StringLikeObject.Value">
+            <summary>
+            gets or sets any object into this property.
+            </summary>
+        </member>
+        <member name="M:Parser.V2.StringLikeObject.Equals(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Parser.V2.StringLikeObject.CompareTo(System.String)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,604 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Common</name>
+    </assembly>
+    <members>
+        <member name="T:Common.Chars">
+            <summary>
+            Static class of common character combinations.
+            </summary> 
+        </member>
+        <member name="F:Common.Chars.BEEP">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.VT">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.TAB">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.CR">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.LF">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.FF">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.ESC">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.BSPC">
+            <summary>
+            C# Supported Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.NUL">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.SOH">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.STX">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.ETX">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.EOT">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.ENQ">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.ACK">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.SI">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.ETB">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.CAN">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.SUB">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.FS">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.GS">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.RS">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.US">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.DEL">
+            <summary>
+            Unicode Control Codes
+            </summary>
+        </member>
+        <member name="F:Common.Chars.CRLF">
+            <summary>
+            Standard line ending.
+            </summary>
+        </member>
+        <member name="T:Common.Debug">
+            <summary>
+            Static class containing debugging logs.
+            </summary>
+        </member>
+        <member name="P:Common.Debug.Verbose">
+            <summary>
+            Set to <see langword="true"/> to output debugging information to the output stream.
+            </summary>
+        </member>
+        <member name="M:Common.Debug.SetStream(System.IO.TextWriter)">
+            <summary>
+            Sets the output stream.
+            </summary>
+            <param name="stream">The stream to output to.</param>
+        </member>
+        <member name="M:Common.Debug.Log(System.String)">
+            <summary>
+            Logs a message to the output stream.
+            </summary>
+            <param name="msg">The message to log.</param>
+        </member>
+        <member name="M:Common.Excel.Range.ColumnRx(System.String)">
+            <summary>
+            <c>[inside]</c>
+            </summary>
+            <param name="inside">Regex inside braces.</param>
+            <returns>A string Regex of a column structure.</returns>
+        </member>
+        <member name="F:Common.Excel.Range.InnerCol">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.NoRangeOp">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableRx">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.CommaSep">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableRef">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableCol">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableCell">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.ExcelRef">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="M:Common.Excel.RangeNode.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Excel.RangeNode.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Excel.RangeNode.CompareTo(Common.Excel.RangeNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Excel.RangeNode.Equals(Common.Excel.RangeNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Extensions.CharExtensions.IsLower(System.Char)">
+            <summary>
+            Checks if this character is lowercase a thru z.
+            </summary>
+            <param name="c">The character to check.</param>
+            <returns>true is the character is between ascii 'a' and 'z', false otherwise.</returns>
+        </member>
+        <member name="M:Common.Extensions.CharExtensions.ToUpper(System.Char)">
+            <summary>
+            Gets the uppercase variant of this character, or the character, if there isn't one.
+            </summary>
+            <param name="c">The character to make uppercase.</param>
+            <returns>The uppercase variant, or the character itself.</returns>
+        </member>
+        <member name="M:Common.Extensions.EnumExtensions.ToInt(System.IConvertible)">
+            <summary>
+            Gets a numeric integer from any enumeration.
+            </summary>
+            <param name="e">The enumeration to convert.</param>
+            <returns>The enumeration value.</returns>
+        </member>
+        <member name="M:Common.Extensions.EnumExtensions.RemoveBit``1(System.IConvertible,System.IConvertible)">
+            <summary>
+            Removes all of the provided bits from an enum.
+            </summary>
+            <typeparam name="T">The type of enum to return.</typeparam>
+            <param name="i">The field to deflag.</param>
+            <param name="bit">The flags to remove.</param>
+            <returns>An enum of the given type with the given flags removed.</returns>
+        </member>
+        <member name="M:Common.Extensions.EnumExtensions.HasAnyFlag(System.IConvertible,System.IConvertible)">
+            <summary>
+            Checks if the enum contains any of the provided bits.
+            </summary>
+            <param name="e">The enum to check.</param>
+            <param name="check">The bits to check for.</param>
+            <returns><see langword="true"/> if the enum contains any of the bits provided, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="T:Common.Extensions.NumberStylesExtensions">
+            <summary>
+            Extensions for <see cref="T:System.Globalization.NumberStyles"/> objects.
+            </summary>
+        </member>
+        <member name="M:Common.Extensions.NumberStylesExtensions.IsBinary(System.Globalization.NumberStyles)">
+            <summary>
+            Determines if a <see cref="T:System.Globalization.NumberStyles"/> object contains the binary flag.
+            </summary>
+            <param name="styles"></param>
+            <returns><see langword="true"/> if <paramref name="styles"/> contains <see cref="F:System.Globalization.NumberStyles.AllowBinarySpecifier"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.AsCollection(System.Object)">
+            <summary>
+            Returns the object as a collection.
+            </summary>
+            <param name="o">The object to convert.</param>
+            <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.AsCollection``1(System.Object)">
+            <summary>
+            Returns the object as a collection.
+            </summary>
+            <typeparam name="T">The type of collection expected.</typeparam>
+            <param name="o">The object to convert.</param>
+            <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
+        </member>
+        <member name="T:Common.Extensions.StreamReaderExtensions">
+            <summary>
+            Extensions for <see cref="T:System.IO.StreamReader"/> objects.
+            </summary>
+        </member>
+        <member name="M:Common.Extensions.StreamReaderExtensions.Reset(System.IO.StreamReader)">
+            <summary>
+            Resets the <see cref="T:System.IO.StreamReader"/> to the beginning of the stream.
+            </summary>
+            <param name="reader">The <see cref="T:System.IO.StreamReader"/> to return to the beginning.</param>
+        </member>
+        <member name="T:Common.Extensions.ReplaceNodeKVPConverter">
+            <summary>
+            Converter between a <see cref="T:Common.ReplaceNode"/>s and a <see cref="T:System.Collections.Generic.KeyValuePair"/>.
+            </summary>
+        </member>
+        <member name="M:Common.Extensions.ReplaceNodeKVPConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+            Allows conversion from a tuple to a <see cref="T:System.Collections.Generic.KeyValuePair"/>.
+            </summary>
+            <param name="context"></param>
+            <param name="sourceType">The type to convert from.</param>
+            <returns><see langword="true"/> if it can be converted, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Common.Extensions.ReplaceNodeKVPConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+            <summary>
+            Converts a value to a given type.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="culture">The culture info.</param>
+            <param name="value">The value to convert.</param>
+            <param name="destinationType">The type to convert to.</param>
+            <returns>The converted object.</returns>
+            <exception cref="T:System.NotSupportedException">Conversion failed.</exception>
+        </member>
+        <member name="T:Common.IHasChildren`1">
+            <summary>
+            An interface that indicates that an object contains children.
+            </summary>
+            <typeparam name="TChild">The type of child that this object contains.</typeparam>
+        </member>
+        <member name="P:Common.IHasChildren`1.Count">
+            <summary>
+            The number of children in this object.
+            </summary>
+        </member>
+        <member name="M:Common.IHasChildren`1.Add(`0)">
+            <summary>
+            Adds a child.
+            </summary>
+            <param name="child">The child to add.</param>
+        </member>
+        <member name="M:Common.IHasChildren`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds multiple children.
+            </summary>
+            <param name="children">The children to add.</param>
+        </member>
+        <member name="T:Common.ITextSerializer">
+            <summary>
+            An interface specifying that this object can be represented by a <see langword="string"/>.
+            </summary>
+        </member>
+        <member name="M:Common.ITextSerializer.Serialize">
+            <summary>
+            Creates a lossless representation of the calling object.
+            </summary>
+            <returns>A <see langword="string"/> representation of the calling object.</returns>
+        </member>
+        <member name="M:Common.ITextSerializer.ToString">
+            <summary>
+            Creates a lossless representation of the calling object.
+            </summary>
+            <returns>A <see langword="string"/> representation of the calling object.</returns>
+        </member>
+        <member name="T:Common.ITextSerializer`1">
+            <summary>
+            An interface specifying that this object can be represented by a <see langword="string"/>.
+            </summary>
+            <typeparam name="TSelf">The object type that inherits this interface.</typeparam>
+        </member>
+        <member name="M:Common.ITextSerializer`1.Common#ICustomSerializer{TSelf,System#String}#Serialize">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.ITextSerializer`1.Common#ITextSerializer#Serialize">
+            <summary>
+            Creates a lossless representation of the calling object (<typeparamref name="TSelf"/>).
+            </summary>
+            <returns>A <see langword="string"/> representation of the calling object (<typeparamref name="TSelf"/>).</returns>
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.ITextSerializer`1.Serialize(`0)">
+            <summary>
+            Creates a lossless representation of the calling object (<typeparamref name="TSelf"/>).
+            </summary>
+            <returns>A <see langword="string"/> representation of the calling object (<typeparamref name="TSelf"/>).</returns>
+            <param name="item">The object (<typeparamref name="TSelf"/>) to serialize.</param>
+        </member>
+        <member name="M:Common.ITextSerializer`1.ToString">
+            <summary>
+            Creates a lossless representation of the calling object (<typeparamref name="TSelf"/>).
+            </summary>
+            <returns>A <see langword="string"/> representation of the calling object (<typeparamref name="TSelf"/>).</returns>
+        </member>
+        <member name="T:Common.Names">
+            <summary>
+            Common enums 
+            </summary>
+        </member>
+        <member name="F:Common.Names.SE">
+            <summary>
+            String empty reference
+            </summary>
+        </member>
+        <member name="F:Common.Names.EmptyString">
+            <summary>
+            Const empty string for compile time availability
+            </summary>
+        </member>
+        <member name="T:Common.NullEnum">
+            <summary>
+            A placeholder for making a generic <see cref="T:System.Enum"/> object.
+            </summary>
+        </member>
+        <member name="F:Common.NullEnum.Null">
+            <summary>
+            No value.
+            </summary>
+        </member>
+        <member name="T:Common.Regex.CaptureData">
+            <summary>
+            Data for one capture.
+            </summary>
+        </member>
+        <member name="T:Common.Regex.EmptyGroupException">
+            <summary>
+            Exception thrown when a match group is empty but is required to contain characters.
+            </summary>
+            <param name="group">The name of the empty group.</param>
+        </member>
+        <member name="M:Common.Regex.EmptyGroupException.#ctor(System.String)">
+            <summary>
+            Exception thrown when a match group is empty but is required to contain characters.
+            </summary>
+            <param name="group">The name of the empty group.</param>
+        </member>
+        <member name="T:Common.Regex.GroupData">
+            <summary>
+            Represents a group in a match.
+            </summary>
+        </member>
+        <member name="T:Common.Regex.IGeneratable`2">
+            <summary>
+            Represents a type that can be generated from an input object.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.IGeneratable`2.Generate(`0)">
+            <summary>
+            Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
+            </summary>
+            <param name="input">The object to generate from.</param>
+            <returns>The generated <typeparamref name="TOut"/>.</returns>
+        </member>
+        <member name="T:Common.Regex.IObjectStorage">
+            <summary>
+            Represents an object that can store and retrieve output data.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.IObjectStorage.HasObject">
+            <summary>
+            The object is storing an extra object.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.IObjectStorage.MeetsCondition(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="arg"></param>
+            <returns><see langword="true"/> if the condition is met, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="T:Common.Regex.IObjectStorage`1">
+            <summary>
+            A strongly-typed version of <see cref="T:Common.Regex.IObjectStorage"/>.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.RegexExtensions.GetEnumerator(System.Text.RegularExpressions.MatchCollection)">
+            <summary>
+            Exposes the <see cref="T:System.Collections.Generic.IEnumerator`1"/> for <paramref name="mc"/>.
+            </summary>
+            <param name="mc">The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> to enumerate.</param>
+            <returns>The <see cref="T:System.Collections.Generic.IEnumerator`1"/>.</returns>
+        </member>
+        <member name="T:Common.Regex.RxS">
+            <summary>
+            A box that contains a string representing a regular expression.
+            </summary>
+            <seealso cref="T:System.String" />
+        </member>
+        <member name="P:Common.Regex.RxS.Content">
+            <summary>
+            Gets the string value of this regular expression.
+            </summary>
+            <value>
+            The content of this regular expression.
+            </value>
+        </member>
+        <member name="P:Common.Regex.RxS.Length">
+            <summary>
+            Gets the length of the content.
+            </summary>
+            <value>
+            The length of the content.
+            </value>
+        </member>
+        <member name="M:Common.Regex.RxS.ToString">
+            <summary>
+            Retrieves the regular expression stored.
+            </summary>
+            <returns>The regular expression as a string.</returns>
+        </member>
+        <member name="M:Common.Regex.RxS.Equals(System.String)">
+            <summary>
+            Compares the regular expressions for equality.
+            </summary>
+            <param name="other">The string to compare to.</param>
+            <returns><see langword="true"/> if the two regular expressions are based on the same pattern string, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Common.Regex.RxS.op_RightShift(Common.Regex.RxS,System.String)">
+            <summary>
+            Negative lookahead shorthand.
+            </summary>
+            <param name="rx1">Lefthand regular expression.</param>
+            <param name="rx2">Righthand regular expression.</param>
+            <returns>A regular expression that is a joining of the 2 expressions.</returns>
+        </member>
+        <member name="M:Common.Regex.RxS.op_LeftShift(Common.Regex.RxS,System.String)">
+            <summary>
+            Negative lookbehind shorthand.
+            </summary>
+            <param name="rx1">Lefthand regular expression.</param>
+            <param name="rx2">Righthand regular expression.</param>
+            <returns>A regular expression that is a joining of the 2 expressions.</returns>
+        </member>
+        <member name="M:Common.Regex.RxS.op_GreaterThanOrEqual(Common.Regex.RxS,System.String)">
+            <summary>
+            Positive lookahead shorthand.
+            </summary>
+            <param name="rx1">Lefthand regular expression.</param>
+            <param name="rx2">Righthand regular expression.</param>
+            <returns>A regular expression that is a joining of the 2 expressions.</returns>
+        </member>
+        <member name="M:Common.Regex.RxS.op_LessThanOrEqual(Common.Regex.RxS,System.String)">
+            <summary>
+            Positive lookbehind shorthand.
+            </summary>
+            <param name="rx1">Lefthand regular expression.</param>
+            <param name="rx2">Righthand regular expression.</param>
+            <returns>A regular expression that is a joining of the 2 expressions.</returns>
+        </member>
+        <member name="P:Common.Regex.RxS.Orr">
+            <summary>
+            Append a pipe operator.
+            </summary>
+        </member>
+    </members>
+</doc>

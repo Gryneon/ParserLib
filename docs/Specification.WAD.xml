@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Specification.WAD</name>
+    </assembly>
+    <members>
+        <member name="T:Specification.WAD.Definition">
+            <summary>
+            A static class containing the WAD, WAD2, and PAK specificiations.
+            </summary>
+        </member>
+    </members>
+</doc>

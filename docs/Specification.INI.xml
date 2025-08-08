@@ -1,0 +1,309 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Specification.INI</name>
+    </assembly>
+    <members>
+        <member name="T:Specification.INI.Definition">
+            <summary>
+            Defines the INI spec.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Definition.Regex">
+            <summary>
+            The INI regex pieces.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Definition.Spec">
+            <summary>
+            The INI Specification.
+            </summary>
+        </member>
+        <member name="T:Specification.INI.Document">
+            <summary>
+            A document, which is a collection of sections.
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Document.#ctor">
+            <summary>
+            Creates an empty <see cref="T:Specification.INI.Document"/>.
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Document.#ctor(System.Collections.Generic.IEnumerable{Specification.INI.Section})">
+            <summary>
+            Creates a <see cref="T:Specification.INI.Document"/> with the provided <see cref="T:Specification.INI.Section"/> objects in it.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Document.Name">
+            <summary>
+            The name of the document.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Document.Sections">
+            <summary>
+            A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Specification.INI.Section"/>s stored in this <see cref="T:Specification.INI.Document"/>.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Document.Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:Specification.INI.Document.Item(System.Int32)">
+            <summary>
+            Gets the (nth) Section.
+            </summary>
+            <param name="index">The index.</param>
+            <returns>The Section at that index.</returns>
+        </member>
+        <member name="P:Specification.INI.Document.Item(System.String)">
+            <summary>
+            Gets the section named 'name'.
+            </summary>
+            <param name="name">The name to identtiry it,</param>
+            <returns>The section starting with that name.</returns>
+        </member>
+        <member name="M:Specification.INI.Document.Contains(System.String)">
+            <summary>
+            Checks if the document contains a section with the provided name.
+            </summary>
+            <param name="name">The name to check for.</param>
+            <returns><see langword="true"/> if the document contains a section with the given name, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Specification.INI.Document.Add(Specification.INI.Section)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Document.Ensure(Specification.INI.Section)">
+            <summary>
+            Adds a section, if it does not exist.
+            </summary>
+            <param name="section">The section to add.</param>
+        </member>
+        <member name="M:Specification.INI.Document.Update(Specification.INI.Document)">
+            <summary>
+            Merges 2 Sections, Favoring the parameter 'other'.
+            </summary>
+            <param name="other">The other document.</param>
+        </member>
+        <member name="M:Specification.INI.Document.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Document.Serialize">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Document.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Document.Clear">
+            <summary>
+            Clears and removes all sections.
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Document.Contains(Specification.INI.Section)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Document.CopyTo(Specification.INI.Section[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Document.Remove(Specification.INI.Section)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Specification.INI.Property">
+            <summary>
+            A key and value pair in an INI file.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Property.Key">
+            <summary>
+            The key name.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Property.Value">
+            <summary>
+            The value assigned to the key.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Property.ParseData">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.#ctor">
+            <summary>
+            Creates an empty <see cref="T:Specification.INI.Property"/>.
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Property.#ctor(System.String,System.String)">
+            <summary>
+            Creates a property from a key and value
+            </summary>
+            <param name="key">The key of the new property.</param>
+            <param name="value">The value of the new property.</param>
+        </member>
+        <member name="M:Specification.INI.Property.Generate(Common.Regex.MatchDataDictionary)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.Equals(Common.IProperty{System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.CompareTo(Common.IProperty{System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.Serialize">
+            <summary>
+            Gets the <see langword="string"/> representation of the object for serialization.
+            </summary>
+            <returns>The <see langword="string"/> representation of the object.</returns>
+        </member>
+        <member name="M:Specification.INI.Property.Equals(Specification.INI.Property)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.SetParseData(Common.Regex.MatchDataDictionary)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Property.op_Equality(Specification.INI.Property,Specification.INI.Property)">
+            <summary>
+            TODO: Doc
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Property.op_Inequality(Specification.INI.Property,Specification.INI.Property)">
+            <summary>
+            TODO: Doc
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Property.op_LessThan(Specification.INI.Property,Specification.INI.Property)">
+            <summary>
+            TODO: Doc
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Property.op_LessThanOrEqual(Specification.INI.Property,Specification.INI.Property)">
+            <summary>
+            TODO: Doc
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Property.op_GreaterThan(Specification.INI.Property,Specification.INI.Property)">
+            <summary>
+            TODO: Doc
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Property.op_GreaterThanOrEqual(Specification.INI.Property,Specification.INI.Property)">
+            <summary>
+            TODO: Doc
+            </summary>
+        </member>
+        <member name="T:Specification.INI.PropertyCollection">
+            <summary>
+            A collection of properties.
+            </summary>
+        </member>
+        <member name="M:Specification.INI.PropertyCollection.GetKeyForItem(Specification.INI.Property)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Specification.INI.Section">
+            <summary>
+            Represents a section heading in an INI formatted file.
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Section.#ctor">
+            <summary>
+            Creates an empty Section.
+            </summary>
+        </member>
+        <member name="M:Specification.INI.Section.#ctor(System.String)">
+            <summary>
+            Creates a <see cref="T:Specification.INI.Section"/> with the provided name.
+            </summary>
+            <param name="name">The name of the section.</param>
+        </member>
+        <member name="M:Specification.INI.Section.op_Explicit(System.String)~Specification.INI.Section">
+            <summary>
+            Creates a section from a string.
+            </summary>
+            <param name="name">The name of the section.</param>
+        </member>
+        <member name="P:Specification.INI.Section.Name">
+            <summary>
+            The name of the section.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Section.Properties">
+            <summary>
+            The properties within the section.
+            </summary>
+        </member>
+        <member name="P:Specification.INI.Section.Item(System.String)">
+            <summary>
+            Gets the value of a property from a given key.
+            </summary>
+            <param name="key">The key of the property.</param>
+            <returns>The value of the property.</returns>
+        </member>
+        <member name="P:Specification.INI.Section.Count">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Generate(Common.Regex.MatchDataDictionary)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Set(System.String,System.String)">
+            <summary>
+            Sets the given property to the given value.
+            </summary>
+            <param name="key">The key name.</param>
+            <param name="value">The value to set it to.</param>
+        </member>
+        <member name="M:Specification.INI.Section.Set(Specification.INI.Property)">
+            <summary>
+            Sets the property and value given, or adds the property and value if it does not exist.
+            </summary>
+            <param name="prop">The property to add or apply.</param>
+        </member>
+        <member name="M:Specification.INI.Section.SetRange(System.Collections.Generic.IEnumerable{Specification.INI.Property})">
+            <summary>
+            Gives the setrange rkne an
+            </summary>
+            <param name="children"></param>
+        </member>
+        <member name="M:Specification.INI.Section.Add(Specification.INI.Property)">
+            <summary>
+            Adds the property, or sets the value of the property if it already exists.
+            </summary>
+            <param name="child">The property to add.</param>
+        </member>
+        <member name="M:Specification.INI.Section.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.Property})">
+            <summary>
+            Adds multiple properties, or sets the values for any that already exist.
+            </summary>
+            <param name="children">The properties to add.</param>
+        </member>
+        <member name="M:Specification.INI.Section.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Contains(Specification.INI.Property)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.CopyTo(Specification.INI.Property[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Remove(Specification.INI.Property)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Remove(System.String)">
+            <summary>
+            Removes the property with the provided name.
+            </summary>
+            <param name="name">The name of the property to remove.</param>
+            <returns><see langword="true"/> if the property was removed, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Specification.INI.Section.Serialize">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Clone">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>
