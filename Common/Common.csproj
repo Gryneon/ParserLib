@@ -10,7 +10,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
-    <NeutralLanguage>en-US</NeutralLanguage>
+    <NeutralLanguage>en-VI</NeutralLanguage>
     <NoWarn>1701;1702;CS1591;1591</NoWarn>
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
@@ -20,9 +20,10 @@
     <PackageId></PackageId>
     <Title>Common Library</Title>
     <Company></Company>
-    <FileVersion>$(VersionPrefix).0</FileVersion>
-    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
     <Authors>John Taylor</Authors>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

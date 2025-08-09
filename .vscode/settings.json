@@ -5,5 +5,8 @@
   "editor.tabSize": 2,
   "editor.allowVariableFontsInAccessibilityMode": true,
   "editor.defaultFormatter": "ms-dotnettools.csdevkit",
-  "editor.fontFamily": "Cascadia Code"
+  "editor.fontFamily": "Cascadia Code",
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  }
 }
