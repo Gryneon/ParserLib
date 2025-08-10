@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{28
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "TokenTemplates", "TokenTemplates\TokenTemplates.sqlproj", "{E36F81E6-28EB-4AE4-8D23-1D3FE3DC87D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
