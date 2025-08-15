@@ -1,4 +1,4 @@
-* text eol=lf
+* text=auto
 
 # Declare files that should have LF line endings on checkout.
 *.cs eol=lf
