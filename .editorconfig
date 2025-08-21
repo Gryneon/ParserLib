@@ -97,6 +97,8 @@ dotnet_diagnostic.CA1309.severity = suggestion
 dotnet_diagnostic.CA1200.severity = suggestion
 
 [*.{cs,vb}]
+charset = utf-8
+trim_trailing_whitespace = true
 dotnet_code_quality_unused_parameters = non_public:suggestion
 dotnet_hide_advanced_members = false
 dotnet_member_insertion_location = with_other_members_of_the_same_kind

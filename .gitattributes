@@ -1,1 +1,13 @@
-* text=lf
+#Handmade
+
+* text=auto
+
+*.cs text=lf eol=lf encoding=utf-8
+*.ini text=lf eol=lf encoding=utf-8
+*.acs text=lf eol=lf encoding=utf-8
+*.zs text=lf eol=lf encoding=utf-8
+
+*.reg text=lf eol=lf encoding=utf-16LE
+
+*.dll binary
+*.exe binary
