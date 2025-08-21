@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{0D1342D2-4EE7-B4AF-4CE7-6B19466AFDD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.Byte", "Parser.Byte\Parser.Byte.csproj", "{470D7BFD-3FB1-96D5-58F8-3A7E2BB7FEBB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.Text", "Parser.Text\Parser.Text.csproj", "{E3623655-2B65-8186-61F1-6EBBD7F5F601}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specification.ACS", "Specification.ACS\Specification.ACS.csproj", "{86ABBCAE-DF85-9788-DDC4-E4B0F5C4D749}"
@@ -33,9 +31,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{284B0C48-6525-F3F5-CD5D-7841BD44174A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		LICENSE = LICENSE
+		ParserLib.code-workspace = ParserLib.code-workspace
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "TokenTemplates", "TokenTemplates\TokenTemplates.sqlproj", "{E36F81E6-28EB-4AE4-8D23-1D3FE3DC87D1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.Binary", "Parser.Binary\Parser.Binary.csproj", "{02770FA7-A94A-6542-54C9-8EEB5F75108D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{BEF58E74-9439-23AC-3AC1-4B31F9DE9CAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,10 +56,6 @@ Global
 		{0D1342D2-4EE7-B4AF-4CE7-6B19466AFDD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D1342D2-4EE7-B4AF-4CE7-6B19466AFDD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D1342D2-4EE7-B4AF-4CE7-6B19466AFDD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{470D7BFD-3FB1-96D5-58F8-3A7E2BB7FEBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{470D7BFD-3FB1-96D5-58F8-3A7E2BB7FEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{470D7BFD-3FB1-96D5-58F8-3A7E2BB7FEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{470D7BFD-3FB1-96D5-58F8-3A7E2BB7FEBB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3623655-2B65-8186-61F1-6EBBD7F5F601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3623655-2B65-8186-61F1-6EBBD7F5F601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3623655-2B65-8186-61F1-6EBBD7F5F601}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -99,6 +100,14 @@ Global
 		{DF347502-BFEB-E61A-7FED-11DB5B8C1A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF347502-BFEB-E61A-7FED-11DB5B8C1A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF347502-BFEB-E61A-7FED-11DB5B8C1A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02770FA7-A94A-6542-54C9-8EEB5F75108D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02770FA7-A94A-6542-54C9-8EEB5F75108D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02770FA7-A94A-6542-54C9-8EEB5F75108D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02770FA7-A94A-6542-54C9-8EEB5F75108D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF58E74-9439-23AC-3AC1-4B31F9DE9CAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF58E74-9439-23AC-3AC1-4B31F9DE9CAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF58E74-9439-23AC-3AC1-4B31F9DE9CAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF58E74-9439-23AC-3AC1-4B31F9DE9CAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

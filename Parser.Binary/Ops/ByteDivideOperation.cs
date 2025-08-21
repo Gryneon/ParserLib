@@ -1,15 +1,14 @@
-﻿#pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable IDE0060 // Remove unused parameter
 
 using static Parser.OpStatus;
 
-namespace Parser.Byte.Ops;
+namespace Parser.Binary.Ops;
 
-public class ByteDivideOperation (string varname, string dividend_varname, int divisor) : ByteOperation
+public class ByteDivideOperation (int divisor, string input_key, string output_key) : ByteOperation(input_key, output_key)
 {
-  public string Dividend_VarName { get; } = dividend_varname;
   public override OpStatus DoOperation (ByteParser parser)
   {
-    int? dividend = parser.Load<int>(Dividend_VarName);
+    int? dividend = parser.Load<int>(_input_key);
 
     if (dividend is null)
       return FailNoSuchVarName;
@@ -19,7 +18,7 @@ public class ByteDivideOperation (string varname, string dividend_varname, int d
 
     int quotient = dividend.Value / divisor;
 
-    parser.ByteObjects[varname] = quotient;
+    parser.ByteObjects[_output_key] = quotient;
 
     Log("ByteDivideOperation", $"{dividend} / {divisor} = {quotient}");
     return Pass;
