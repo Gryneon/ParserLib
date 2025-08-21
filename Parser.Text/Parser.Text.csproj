@@ -5,7 +5,7 @@
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <Deterministic>true</Deterministic>
-    <DocumentationFile>..\..\Documentation\$(AssemblyName).xml</DocumentationFile>
+     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>disable</ImplicitUsings>

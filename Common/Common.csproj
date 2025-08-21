@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DocumentationFile>..\..\Documentation\$(AssemblyName).xml</DocumentationFile>
+     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<commands>
+  <cmd id="R">
+    <property id="type">modeswitch</property>
+  </cmd>
+  <cmd id="P" esc="true">
+    <property id="type">modeswitch</property>
+  </cmd>
+  <cmd id="H">
+    <property id="type">line</property>
+    <property id="modereq">C;P</property>
+  </cmd>
+  <cmd id="B">
+    <property id="type">line</property>
+    <property id="modereq">C;P</property>
+  </cmd>
+  <cmd id="L">
+    <property id="type">line</property>
+    <property id="modereq">C;P</property>
+  </cmd>
+</commands>
