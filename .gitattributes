@@ -13,4 +13,4 @@
 *.bat text eol=crlf
 *.*proj text eol=crlf
 
-*.reg text eol=lf working-tree-encoding=utf-16LE
+*.reg text eol=crlf working-tree-encoding=utf-16LE

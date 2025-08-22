@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -16,15 +16,15 @@ using ArgIterator = Common.ArgIterator;
 
 namespace TestConsole;
 
-internal class Program
+internal sealed class Program
 {
   #region Fields
   internal static string _testpath1 = Paths.ipl_label;
   internal static string _testpath2 = Paths.ini_vncdefault;
-  internal static string? userInput;
+  internal static string? UserInput;
   #endregion
   #region Basic Methods
-  internal static void userLine () => userInput = Console.ReadLine();
+  internal static void userLine () => UserInput = Console.ReadLine();
   internal static string userLineReturn () => Console.ReadLine() ?? SE;
   #endregion
 
@@ -70,7 +70,7 @@ internal class Program
 
     userLine();
 
-    switch (userInput?.ToLowerInvariant())
+    switch (UserInput?.ToLowerInvariant())
     {
       case "parse" or "open":
         goto OpenFile;
@@ -134,19 +134,19 @@ internal class Program
 
   GetSpec:
     Debug.Log("Program.Load", $"Input a new spec or press enter to use chosen ({userSpec.Name})");
-    userInput = userLineReturn();
+    UserInput = userLineReturn();
 
-    if (userInput.IsEmpty())
+    if (UserInput.IsEmpty())
       goto ParseFile;
 
-    else if (Library.Lookup(userInput) is null)
+    else if (Library.Lookup(UserInput) is null)
     {
-      Debug.Log("Program.Load", $"Invalid Spec {userInput}");
+      Debug.Log("Program.Load", $"Invalid Spec {UserInput}");
       goto GetSpec;
     }
     else
     {
-      userSpec = Library.Lookup(userInput)!;
+      userSpec = Library.Lookup(UserInput)!;
     }
   ParseFile:
     if (userSpec is TextSpec textSpec)

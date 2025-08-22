@@ -3,7 +3,7 @@ using OS = Parser.OpStatus;
 namespace Parser.Text.Ops;
 
 /// <summary>
-/// <H1>Text Parser Operation</H1>
+/// Text Parser Operation
 /// <para>Performs a conditional conversion on an object, which can be a <see cref="MatchData"/>.</para>
 /// </summary>
 /// <typeparam name="TOut">The end result of generation.</typeparam>
@@ -43,7 +43,7 @@ public class GenerateOperation<TOut> (Func<MatchData, TOut> func, Predicate<IMat
       if (output is null)
         return;
 
-      _parser.Work.Save(_output_key, output);
+      AssignResult<TOut>(DictionaryMode.MakeList);
     }
   }
 }

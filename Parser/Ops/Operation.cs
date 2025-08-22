@@ -109,7 +109,10 @@ public class Operation : IOperation
     _input_keys = [.. input_keys];
 
     if (_input_keys.Count == 0)
+    {
       IgnoreAllLoads = true;
+      _input_key = SE;
+    }
     else
       _input_key = _input_keys[0];
 

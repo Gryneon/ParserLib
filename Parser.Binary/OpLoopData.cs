@@ -7,8 +7,8 @@ public class OpLoopData (IEnumerable<IOperation> operations, bool makecollection
   public Collection<IOperation> Operations { get; init; } = [.. operations];
 
   public ByteDataDictionary ByteObjects { get; } = [];
-  public int BytePos { get; set; } = 0;
-  public int OpIndex { get; set; } = 0;
+  public int BytePos { get; set; }
+  public int OpIndex { get; set; }
   public IOperation Current => Operations[OpIndex];
   public OpStatus Status { get; set; } = OpStatus.AtStart;
   public int LoopsLeft { get; set; } = loops - 1;

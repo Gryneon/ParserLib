@@ -8,7 +8,7 @@ public interface IOperation
   /// <summary>
   /// The current status of the operation.
   /// </summary>
-  OpStatus Status { get; protected set; }
+  OpStatus Status { get; }
   /// <summary>
   /// Specifies that the operation should not stop the parser upon failure.
   /// </summary>

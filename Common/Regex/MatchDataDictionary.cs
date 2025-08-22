@@ -12,11 +12,11 @@ public class MatchData : GroupData,
 
   public Dictionary<string, object> Metadata { get; init; } = [];
 
-  public int Type { get; protected set; } = 0;
+  public int Type { get; protected set; }
   public override int Count => Groups.Count;
   public bool IsEmpty => Count == 0;
 
-  bool ICollection<GroupData>.IsReadOnly { get; } = false;
+  bool ICollection<GroupData>.IsReadOnly { get; }
 
   public bool MeetsCondition (string group) => HasGroup(group);
 
@@ -29,7 +29,7 @@ public class MatchData : GroupData,
   public bool DoesNotHaveGroup (string groupName) => !HasGroup(groupName);
   public bool HasGroups (IEnumerable<string> groupNames) => groupNames.All(Groups.ContainsKey);
   public bool HasAnyGroup (IEnumerable<string> groupNames) => groupNames.Any(Groups.ContainsKey);
-  public bool HasGroupStartingWith (string namePart) => Groups.Keys.Any(item => item.StartsWith(namePart));
+  public bool HasGroupStartingWith (string namePart) => Groups.Keys.Any(item => item.StartsWith(namePart, SCOIC));
   public new IEnumerator<GroupData> GetEnumerator () => Groups.Values.GetEnumerator();
 
   public GroupData this[string groupName] => Groups.TryGetValue(groupName, out GroupData? value) ? value : Null;
