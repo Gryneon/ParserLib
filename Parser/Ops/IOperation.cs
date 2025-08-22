@@ -6,6 +6,10 @@ namespace Parser.Ops;
 public interface IOperation
 {
   /// <summary>
+  /// The current status of the operation.
+  /// </summary>
+  OpStatus Status { get; protected set; }
+  /// <summary>
   /// Specifies that the operation should not stop the parser upon failure.
   /// </summary>
   bool ContinueOnFail { get; init; }

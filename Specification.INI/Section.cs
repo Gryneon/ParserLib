@@ -41,6 +41,7 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   }
   /// <inheritdoc/>
   public int Count => Properties.Count;
+  /// <inheritdoc/>
   bool ICollection<PropertyObj>.IsReadOnly => false;
   /// <inheritdoc/>
   public static Section Generate (MatchData input)

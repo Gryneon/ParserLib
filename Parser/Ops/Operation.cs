@@ -14,9 +14,7 @@ public class Operation : IOperation
   [DoesNotReturn]
   protected static void ThrowBadParserError (object parser) => throw new ArgumentException($"Parser was not a ByteParser. Got a {parser.GetType()}.");
   #endregion
-
-  public OpStatus Status { get; protected set; } = OpStatus.Skipped;
-  public bool IgnoreAllLoads { get; private set; }
+  public static Operation End => new() { EndOperation = true };
   protected Collection<object>? _multiple_input_values;
   protected object? _workToReturn;
   [NotNull] protected dynamic? _parser = null;
@@ -30,7 +28,8 @@ public class Operation : IOperation
   protected string _input_key;
   protected string _output_key;
 
-  public static Operation End => new() { EndOperation = true };
+  public bool IgnoreAllLoads { get; private set; }
+  public OpStatus Status { get; protected set; } = OpStatus.Skipped;
 
   #region Operation Flags
   /// <inheritdoc/>
@@ -108,7 +107,12 @@ public class Operation : IOperation
   protected Operation (IEnumerable<string> input_keys, string output_key)
   {
     _input_keys = [.. input_keys];
-    _input_key = _input_keys[0];
+
+    if (_input_keys.Count == 0)
+      IgnoreAllLoads = true;
+    else
+      _input_key = _input_keys[0];
+
     _output_key = output_key;
   }
   /// <summary>

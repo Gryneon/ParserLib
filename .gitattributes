@@ -2,12 +2,18 @@
 
 * text=auto
 
-*.cs text=lf eol=lf encoding=utf-8
-*.ini text=lf eol=lf encoding=utf-8
-*.acs text=lf eol=lf encoding=utf-8
-*.zs text=lf eol=lf encoding=utf-8
+*.cs text eol=lf working-tree-encoding=utf-8
+*.ini text eol=lf working-tree-encoding=utf-8
+*.vnc text eol=lf working-tree-encoding=utf-8
+*.acs text eol=lf working-tree-encoding=utf-8
+*.zs text eol=lf working-tree-encoding=utf-8
+*.ipl text eol=lf working-tree-encoding=utf-8
 
-*.reg text=lf eol=lf encoding=utf-16LE
+*.txt text eol=crlf working-tree-encoding=utf-8
+*.bat text eol=crlf working-tree-encoding=utf-8
+*.*proj text eol=crlf working-tree-encoding=utf-8
+
+*.reg text eol=lf working-tree-encoding=utf-16LE
 
 *.dll binary
 *.exe binary
