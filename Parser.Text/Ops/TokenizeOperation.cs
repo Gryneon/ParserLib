@@ -36,7 +36,7 @@ public class TokenizeOperation : TextOperation
             Where(item => mdd.HasGroup(item.Name)).
             Select(item => item.Type).First();
         IToken? token = new Token(mdd, type);
-        _ = _parser.Work.Save(_output_key, token, DictionaryMode.MakeList);
+        _ = _parser.Work.Save<IToken>(_output_key, token, DictionaryMode.MakeList);
       }
     }
     else

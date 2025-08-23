@@ -53,6 +53,21 @@ public static class Definition
         new(T_RBracket),
       ]
     },
+    new() {
+      Type = T_Param,
+      Template = [
+        new([T_String, T_Int, T_Name, T_Dec, T_Bool], null, "parameter"),
+        new(T_Comma | T_Optional)
+      ]
+    },
+    new() {
+      Type = T_Property,
+      Template = [
+        new(T_Name, null, "key"),
+        new(T_Equals),
+        new([T_String, T_Int, T_Dec, T_Bool, T_Name], null, "value"),
+      ]
+    },
 
   ];
 

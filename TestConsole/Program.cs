@@ -19,7 +19,7 @@ namespace TestConsole;
 internal sealed class Program
 {
   #region Constants
-  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\Parser.Text\Samples\";
+  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser.Text\Samples\";
   #endregion
   #region Fields
   internal static string TestPath1 = Paths.ipl_label;

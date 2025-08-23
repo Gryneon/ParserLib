@@ -42,10 +42,12 @@ public abstract class TextOperation : Operation
   }
   protected bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
-    if (_parser.Work.TryLoad(_input_key, out casted))
-    {
-      return true;
-    }
+    if (_workToReturn.IsCollection())
+
+      if (_parser.Work.TryLoad(_input_key, out casted))
+      {
+        return true;
+      }
 
     Status = OpStatus.FailBadInputType;
     casted = default;
@@ -129,7 +131,7 @@ public abstract class TextOperation : Operation
   /// Assigns the parser to <c><see cref="_parser"/></c> and defines <c><see cref="_function"/></c>.
   /// </summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
-  [MemberNotNull(nameof(_parser))]
+  [MemberNotNull(nameof(_parser), nameof(_function))]
   protected virtual void Initialize (TextParser parser)
   {
     _function ??= DoOperation;
