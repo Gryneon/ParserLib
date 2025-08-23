@@ -134,6 +134,16 @@
             Standard line ending.
             </summary>
         </member>
+        <member name="F:Common.Chars.LFs">
+            <summary>
+            Line feed only.
+            </summary>
+        </member>
+        <member name="F:Common.Chars.CRs">
+            <summary>
+            Carriage return only.
+            </summary>
+        </member>
         <member name="T:Common.Debug">
             <summary>
             Static class containing debugging logs.
@@ -347,6 +357,11 @@
             </summary>
             <param name="reader">The <see cref="T:System.IO.StreamReader"/> to return to the beginning.</param>
         </member>
+        <member name="T:Common.Extensions.StringExtensions">
+            <summary>
+            Extensions for string objects.
+            </summary>
+        </member>
         <member name="T:Common.Extensions.ReplaceNodeKVPConverter">
             <summary>
             Converter between a <see cref="T:Common.ReplaceNode"/>s and a <see cref="T:System.Collections.Generic.KeyValuePair"/>.
@@ -370,6 +385,12 @@
             <param name="destinationType">The type to convert to.</param>
             <returns>The converted object.</returns>
             <exception cref="T:System.NotSupportedException">Conversion failed.</exception>
+        </member>
+        <member name="T:Common.ICanHoldMyself`1">
+            <summary>
+            Represents an object that can hold a collection of itself.
+            </summary>
+            <typeparam name="T">This type.</typeparam>
         </member>
         <member name="T:Common.IHasChildren`1">
             <summary>
@@ -455,20 +476,28 @@
             Const empty string for compile time availability
             </summary>
         </member>
-        <member name="T:Common.NullEnum">
-            <summary>
-            A placeholder for making a generic <see cref="T:System.Enum"/> object.
-            </summary>
-        </member>
-        <member name="F:Common.NullEnum.Null">
-            <summary>
-            No value.
-            </summary>
-        </member>
         <member name="T:Common.Regex.CaptureData">
             <summary>
             Data for one capture.
             </summary>
+        </member>
+        <member name="P:Common.Regex.CaptureData.Pos">
+            <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.CaptureData.Len">
+            <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.CaptureData.NextPos">
+            <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.CaptureData.EndPos">
+            <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.CaptureData.Content">
+            <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.CaptureData.Name">
+            <inheritdoc/>
         </member>
         <member name="T:Common.Regex.EmptyGroupException">
             <summary>
@@ -498,6 +527,41 @@
             </summary>
             <param name="input">The object to generate from.</param>
             <returns>The generated <typeparamref name="TOut"/>.</returns>
+        </member>
+        <member name="T:Common.Regex.IMatchItem">
+            <summary>
+            An item that matches a regex pattern.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.IMatchItem.Pos">
+            <summary>
+            The position of the match.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.IMatchItem.Len">
+            <summary>
+            The length of the match.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.IMatchItem.NextPos">
+            <summary>
+            The next position after the match.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.IMatchItem.EndPos">
+            <summary>
+            The last position of the match.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.IMatchItem.Content">
+            <summary>
+            The content of the match item, which is the matched string.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.IMatchItem.Name">
+            <summary>
+            The name of the match item, which is typically used for named capturing groups in regex.
+            </summary>
         </member>
         <member name="T:Common.Regex.IObjectStorage">
             <summary>

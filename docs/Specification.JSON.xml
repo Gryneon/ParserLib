@@ -9,7 +9,7 @@
             Defines a JSON Specification.
             </summary>
         </member>
-        <member name="P:Specification.JSON.Definition._reader">
+        <member name="P:Specification.JSON.Definition.Reader">
             <summary>
             https://regex101.com/r/hgS1Zq/5
             </summary>

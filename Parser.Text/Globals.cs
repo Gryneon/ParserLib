@@ -10,6 +10,7 @@ global using Common.Extensions;
 global using Common.Regex;
 
 global using Parser.Ops;
+global using Parser.Text.Tokens;
 
 global using static Common.Names;
 global using static Parser.Text.Tokens.TokenType;

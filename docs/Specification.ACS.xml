@@ -9,7 +9,7 @@
             ACS Specification Definition
             </summary>
         </member>
-        <member name="F:Specification.ACS.Definition._kW">
+        <member name="F:Specification.ACS.Definition.KW">
             <summary>
             https://regex101.com/r/NoIMcf/1
             </summary>

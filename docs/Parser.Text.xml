@@ -4,49 +4,107 @@
         <name>Parser.Text</name>
     </assembly>
     <members>
-        <member name="T:Parser.Text.Ops.ConsolidateOutputOperation`1">
-            <summary>
-            Makes a WorkItem Collection into a Collection of it's output objects.
-            </summary>
-            <typeparam name="TCommon">The base type that must be satisfied.</typeparam>
+        <member name="M:Parser.Text.Ops.ConsolidateOperation`1.Execute">
+            <inheritdoc/>
         </member>
-        <member name="M:Parser.Text.Ops.ConsolidateOutputOperation`1.#ctor">
+        <member name="T:Parser.Text.Ops.DebugToStringOperation">
             <summary>
-            Makes a WorkItem Collection into a Collection of it's output objects.
+            An operation that logs the contents of the provided key.
             </summary>
-            <typeparam name="TCommon">The base type that must be satisfied.</typeparam>
+        </member>
+        <member name="M:Parser.Text.Ops.DebugToStringOperation.#ctor(System.String)">
+            <summary>
+            Constructs an operation that logs the contents of the provided key.
+            </summary>
+            <param name="input_key">The key to output the contents of.</param>
+        </member>
+        <member name="M:Parser.Text.Ops.DebugToStringOperation.Execute">
+            <inheritdoc/>
+            <remarks>This is a debugging operation and does not store data.</remarks>
+        </member>
+        <member name="M:Parser.Text.Ops.DebugWaitForInputOperation.#ctor(System.Nullable{System.ConsoleKey})">
+            <summary>
+            Constructs an operation that waits for a specific key press or the enter key.
+            </summary>
+            <param name="key">The key to wait for.</param>
+        </member>
+        <member name="T:Parser.Text.Ops.GenerateFromObjectOperation`1">
+            <summary>
+            Takes an input as a collection of <see cref="T:Common.Regex.MatchData"/> objects,
+            and generates a <see cref="T:System.Collections.Generic.Dictionary`2"/> of items from it,
+            provided that the specified group (or groups) are present.
+            </summary>
+            <typeparam name="TOutput">The type of object to create.</typeparam>
+            <param name="input_key">The key to get the input from.</param>
+            <param name="output_key">The key to write the output to.</param>
+            <param name="group_name">The group name to check for.</param>
+            <remarks><code>
+            Inputs: IDictionary&lt;int, MatchDataDictionary>, IEnumerable&lt;MatchDataDictionary>
+            Output: Dictionary&lt;int, TOutput>
+            </code></remarks>
+        </member>
+        <member name="M:Parser.Text.Ops.GenerateFromObjectOperation`1.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Takes an input as a collection of <see cref="T:Common.Regex.MatchData"/> objects,
+            and generates a <see cref="T:System.Collections.Generic.Dictionary`2"/> of items from it,
+            provided that the specified group (or groups) are present.
+            </summary>
+            <typeparam name="TOutput">The type of object to create.</typeparam>
+            <param name="input_key">The key to get the input from.</param>
+            <param name="output_key">The key to write the output to.</param>
+            <param name="group_name">The group name to check for.</param>
+            <remarks><code>
+            Inputs: IDictionary&lt;int, MatchDataDictionary>, IEnumerable&lt;MatchDataDictionary>
+            Output: Dictionary&lt;int, TOutput>
+            </code></remarks>
+        </member>
+        <member name="M:Parser.Text.Ops.GenerateFromObjectOperation`1.Execute">
+            <inheritdoc/>
         </member>
         <member name="T:Parser.Text.Ops.GenerateOperation`1">
             <summary>
-            <H1>Text Parser Operation</H1>
-            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchDataDictionary"/>.</para>
+            Text Parser Operation
+            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchData"/>.</para>
             </summary>
             <typeparam name="TOut">The end result of generation.</typeparam>
-            <param name="output_key_name">The key to store the output objects in.</param>
+            <param name="output_key">The key to store the output objects in.</param>
             <param name="func">The generation function.</param>
             <param name="predicate">The condition that the generation function requires.</param>
+            <param name="input_key">The key to pull data from.</param>
         </member>
-        <member name="M:Parser.Text.Ops.GenerateOperation`1.#ctor(System.String,System.Func{Common.Regex.MatchDataDictionary,`0},System.Predicate{Common.Regex.IMatchItem})">
+        <member name="M:Parser.Text.Ops.GenerateOperation`1.#ctor(System.Func{Common.Regex.MatchData,`0},System.Predicate{Common.Regex.IMatchItem},System.String,System.String)">
             <summary>
-            <H1>Text Parser Operation</H1>
-            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchDataDictionary"/>.</para>
+            Text Parser Operation
+            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchData"/>.</para>
             </summary>
             <typeparam name="TOut">The end result of generation.</typeparam>
-            <param name="output_key_name">The key to store the output objects in.</param>
+            <param name="output_key">The key to store the output objects in.</param>
             <param name="func">The generation function.</param>
             <param name="predicate">The condition that the generation function requires.</param>
+            <param name="input_key">The key to pull data from.</param>
         </member>
         <member name="M:Parser.Text.Ops.GenerateOperation`1.DoOperation(Parser.Text.TextParser)">
             <inheritdoc/>
         </member>
-        <member name="M:Parser.Text.Ops.GenerateOperation`1.Invoke(Common.Regex.IWorkItem)">
-            <summary>
-            Checks if the predicate is true, then invokes the function on the <see cref="T:Common.Regex.IWorkItem"/>, and reassigns the result to the output field.
-            </summary>
-            <param name="wi">The <see cref="T:Common.Regex.IWorkItem"/> to perform the operation on.</param>
-        </member>
         <member name="M:Parser.Text.Ops.SplitByLinesOperation.Execute">
             <inheritdoc/>>
+        </member>
+        <member name="F:Parser.Text.Ops.TextOperation._parser">
+            <summary>
+            The parser reference, initialized in <see cref="M:Parser.Text.Ops.TextOperation.Initialize(Parser.Text.TextParser)"/>
+            </summary>
+        </member>
+        <member name="M:Parser.Text.Ops.TextOperation.Execute">
+            <summary>
+            Performs the operation and stores the value in <c><see cref="F:Parser.Ops.Operation._workToReturn"/></c>,
+            and the <see cref="T:Parser.OpStatus"/> in <c><see cref="P:Parser.Ops.Operation.Status"/></c>
+            </summary>
+        </member>
+        <member name="M:Parser.Text.Ops.TextOperation.Initialize(Parser.Text.TextParser)">
+            <summary>
+            Assigns the parser to <c><see cref="F:Parser.Text.Ops.TextOperation._parser"/></c> and defines <c><see cref="F:Parser.Text.Ops.TextOperation._function"/></c>.
+            </summary>
+            <param name="parser">The parser reference to pass to the operation.</param>
         </member>
         <member name="T:Parser.Text.Output.OutputValueContent">
             <summary>
@@ -54,7 +112,7 @@
             This one stores the content in a group and stores it in a field.
             </summary>
             <param name="varName">The field name.</param>
-            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchDataDictionary"/>.</param>
+            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchData"/>.</param>
         </member>
         <member name="M:Parser.Text.Output.OutputValueContent.#ctor(System.String,System.String)">
             <summary>
@@ -62,7 +120,7 @@
             This one stores the content in a group and stores it in a field.
             </summary>
             <param name="varName">The field name.</param>
-            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchDataDictionary"/>.</param>
+            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchData"/>.</param>
         </member>
         <member name="T:Parser.Text.Output.OutputValueStaticFunctions">
             <summary>
@@ -113,6 +171,34 @@
             </code>
             </remarks>
         </member>
+        <member name="F:Parser.Text.TextDataDictionary.Properties">
+            <summary>
+            Common keys
+            <list type="bullet">
+            <item><c>initial:</c> The original file text as a <see langword="string"/>.</item>
+            <item><c>text:</c> The working text as a <see langword="string"/></item>
+            <item><c>matches:</c> The <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Common.Regex.MatchData"/> objects that <see cref="T:Parser.Text.Ops.DictionaryOperation"/> creates.</item>
+            <item><c>tokens:</c> The <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Text.Tokens.IToken"/> objects that <see cref="T:Parser.Text.Ops.TokenizeOperation"/> creates.</item>
+            <item><c>results:</c> The end result.</item>
+            </list>
+            </summary>
+            <remarks>Any string may be used as a key.</remarks>
+        </member>
+        <member name="P:Parser.Text.TextDataDictionary.Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:Parser.Text.TextSpec.TextByLines">
+            <summary>
+            Splits a string into a <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see langword="string"/> objects.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.TextSpec.SetFlag(System.Text.RegularExpressions.RegexOptions,System.Nullable{System.Boolean})">
+            <summary>
+            Sets the specified options bit to the given value;
+            </summary>
+            <param name="opt">The bit to set.</param>
+            <param name="value">The value to set it as.</param>
+        </member>
         <member name="P:Parser.Text.TextSpec.IsTextFile">
             <summary>
             Determines whether to use a byte parser or a text one.
@@ -156,7 +242,7 @@
             Checks to see if a group is able to be ignored by future operations.
             </summary>
             <param name="groupName">The group name to check.</param>
-            <returns>Returns <see langword="true"/> if the <see cref="T:Parser.Text.TextSpec"/> TokenLookup contains that group and the group contains the <see cref="T:Parser.Text.Tokens.TokenType"/> T_Ignore.</returns>
+            <returns><see langword="true"/> if the <see cref="T:Parser.Text.TextSpec"/> TokenLookup contains that group and the group contains the <see cref="T:Parser.Text.Tokens.TokenType"/> T_Ignore.</returns>
         </member>
         <member name="T:Parser.Text.Tokens.IToken">
             <summary>

@@ -106,89 +106,89 @@
         <member name="M:Specification.INI.Document.Remove(Specification.INI.Section)">
             <inheritdoc/>
         </member>
-        <member name="T:Specification.INI.Property">
+        <member name="T:Specification.INI.PropertyObj">
             <summary>
             A key and value pair in an INI file.
             </summary>
         </member>
-        <member name="P:Specification.INI.Property.Key">
+        <member name="P:Specification.INI.PropertyObj.Key">
             <summary>
             The key name.
             </summary>
         </member>
-        <member name="P:Specification.INI.Property.Value">
+        <member name="P:Specification.INI.PropertyObj.Value">
             <summary>
             The value assigned to the key.
             </summary>
         </member>
-        <member name="P:Specification.INI.Property.ParseData">
+        <member name="P:Specification.INI.PropertyObj.ParseData">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.#ctor">
+        <member name="M:Specification.INI.PropertyObj.#ctor">
             <summary>
-            Creates an empty <see cref="T:Specification.INI.Property"/>.
+            Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.
             </summary>
         </member>
-        <member name="M:Specification.INI.Property.#ctor(System.String,System.String)">
+        <member name="M:Specification.INI.PropertyObj.#ctor(System.String,System.String)">
             <summary>
             Creates a property from a key and value
             </summary>
             <param name="key">The key of the new property.</param>
             <param name="value">The value of the new property.</param>
         </member>
-        <member name="M:Specification.INI.Property.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.INI.PropertyObj.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.Equals(Common.IProperty{System.String})">
+        <member name="M:Specification.INI.PropertyObj.Equals(Common.IProperty{System.String})">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.CompareTo(Common.IProperty{System.String})">
+        <member name="M:Specification.INI.PropertyObj.CompareTo(Common.IProperty{System.String})">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.Equals(System.Object)">
+        <member name="M:Specification.INI.PropertyObj.Equals(System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.GetHashCode">
+        <member name="M:Specification.INI.PropertyObj.GetHashCode">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.Serialize">
+        <member name="M:Specification.INI.PropertyObj.Serialize">
             <summary>
             Gets the <see langword="string"/> representation of the object for serialization.
             </summary>
             <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
-        <member name="M:Specification.INI.Property.Equals(Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyObj.Equals(Specification.INI.PropertyObj)">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.SetParseData(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.INI.PropertyObj.SetParseData(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Property.op_Equality(Specification.INI.Property,Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyObj.op_Equality(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
             <summary>
             TODO: Doc
             </summary>
         </member>
-        <member name="M:Specification.INI.Property.op_Inequality(Specification.INI.Property,Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyObj.op_Inequality(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
             <summary>
             TODO: Doc
             </summary>
         </member>
-        <member name="M:Specification.INI.Property.op_LessThan(Specification.INI.Property,Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyObj.op_LessThan(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
             <summary>
             TODO: Doc
             </summary>
         </member>
-        <member name="M:Specification.INI.Property.op_LessThanOrEqual(Specification.INI.Property,Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyObj.op_LessThanOrEqual(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
             <summary>
             TODO: Doc
             </summary>
         </member>
-        <member name="M:Specification.INI.Property.op_GreaterThan(Specification.INI.Property,Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyObj.op_GreaterThan(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
             <summary>
             TODO: Doc
             </summary>
         </member>
-        <member name="M:Specification.INI.Property.op_GreaterThanOrEqual(Specification.INI.Property,Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyObj.op_GreaterThanOrEqual(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
             <summary>
             TODO: Doc
             </summary>
@@ -198,7 +198,7 @@
             A collection of properties.
             </summary>
         </member>
-        <member name="M:Specification.INI.PropertyCollection.GetKeyForItem(Specification.INI.Property)">
+        <member name="M:Specification.INI.PropertyCollection.GetKeyForItem(Specification.INI.PropertyObj)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.INI.Section">
@@ -243,7 +243,10 @@
         <member name="P:Specification.INI.Section.Count">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Section.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="P:Specification.INI.Section.System#Collections#Generic#ICollection{Specification#INI#PropertyObj}#IsReadOnly">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
         <member name="M:Specification.INI.Section.Set(System.String,System.String)">
@@ -253,25 +256,25 @@
             <param name="key">The key name.</param>
             <param name="value">The value to set it to.</param>
         </member>
-        <member name="M:Specification.INI.Section.Set(Specification.INI.Property)">
+        <member name="M:Specification.INI.Section.Set(Specification.INI.PropertyObj)">
             <summary>
             Sets the property and value given, or adds the property and value if it does not exist.
             </summary>
             <param name="prop">The property to add or apply.</param>
         </member>
-        <member name="M:Specification.INI.Section.SetRange(System.Collections.Generic.IEnumerable{Specification.INI.Property})">
+        <member name="M:Specification.INI.Section.SetRange(System.Collections.Generic.IEnumerable{Specification.INI.PropertyObj})">
             <summary>
             Gives the setrange rkne an
             </summary>
             <param name="children"></param>
         </member>
-        <member name="M:Specification.INI.Section.Add(Specification.INI.Property)">
+        <member name="M:Specification.INI.Section.Add(Specification.INI.PropertyObj)">
             <summary>
             Adds the property, or sets the value of the property if it already exists.
             </summary>
             <param name="child">The property to add.</param>
         </member>
-        <member name="M:Specification.INI.Section.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.Property})">
+        <member name="M:Specification.INI.Section.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.PropertyObj})">
             <summary>
             Adds multiple properties, or sets the values for any that already exist.
             </summary>
@@ -283,13 +286,13 @@
         <member name="M:Specification.INI.Section.Clear">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Section.Contains(Specification.INI.Property)">
+        <member name="M:Specification.INI.Section.Contains(Specification.INI.PropertyObj)">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Section.CopyTo(Specification.INI.Property[],System.Int32)">
+        <member name="M:Specification.INI.Section.CopyTo(Specification.INI.PropertyObj[],System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Section.Remove(Specification.INI.Property)">
+        <member name="M:Specification.INI.Section.Remove(Specification.INI.PropertyObj)">
             <inheritdoc/>
         </member>
         <member name="M:Specification.INI.Section.Remove(System.String)">

@@ -46,32 +46,32 @@
             A tag name.
             </summary>
         </member>
-        <member name="T:Specification.XML.XMLAttribute">
+        <member name="T:Specification.XML.XMLProperty">
             <summary>
             Represents an XML attribute.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLAttribute.#ctor">
+        <member name="M:Specification.XML.XMLProperty.#ctor">
             <summary>
             Represents an XML attribute.
             </summary>
         </member>
-        <member name="P:Specification.XML.XMLAttribute.Key">
+        <member name="P:Specification.XML.XMLProperty.Key">
             <summary>
             The attribute name.
             </summary>
         </member>
-        <member name="P:Specification.XML.XMLAttribute.Value">
+        <member name="P:Specification.XML.XMLProperty.Value">
             <summary>
             The attribute value.
             </summary>
         </member>
-        <member name="P:Specification.XML.XMLAttribute.LKey">
+        <member name="P:Specification.XML.XMLProperty.LKey">
             <summary>
             The attribute name formatted as lowercase invariant.
             </summary>
         </member>
-        <member name="P:Specification.XML.XMLAttribute.Specification#XML#IXMLObject#Tag">
+        <member name="P:Specification.XML.XMLProperty.Specification#XML#IXMLObject#Tag">
             <summary>
             The attribute name.
             </summary>
@@ -94,7 +94,7 @@
         <member name="P:Specification.XML.XMLContent.Specification#XML#IXMLObject#Tag">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.XML.XMLContent.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.XML.XMLContent.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementClose">
@@ -107,7 +107,7 @@
             Represents a closing XML element.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementClose.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.XML.XMLElementClose.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementOpen">
@@ -120,7 +120,7 @@
             Represents an opening XML tag.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementOpen.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.XML.XMLElementOpen.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementSingle">
@@ -133,7 +133,7 @@
             Represents a single self closing XML tag.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementSingle.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.XML.XMLElementSingle.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLHeader">
@@ -146,7 +146,7 @@
             Represents an XML header.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLHeader.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.XML.XMLHeader.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLNode">
@@ -175,9 +175,9 @@
             The attributes for this XML object.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Common.Regex.MatchData)">
             <summary>
-            Assigns attributes nased on a <see cref="T:Common.Regex.MatchDataDictionary"/>.
+            Assigns attributes nased on a <see cref="T:Common.Regex.MatchData"/>.
             </summary>
             <param name="mdd"></param>
         </member>
@@ -187,6 +187,11 @@
             </summary>
         </member>
         <member name="T:Specification.XML.XMLStackOperation">
+            <summary>
+            Operation to stack the nodes inside each other.
+            </summary>
+        </member>
+        <member name="M:Specification.XML.XMLStackOperation.#ctor(System.String,System.String)">
             <summary>
             Operation to stack the nodes inside each other.
             </summary>

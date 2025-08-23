@@ -1,6 +1,8 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading.Tasks;
 
 using Common;
 using Common.Extensions;
@@ -12,38 +14,37 @@ using Specification.IPL;
 
 using static Common.Names;
 
-using ArgIterator = Common.ArgIterator;
-
 namespace TestConsole;
 
 internal sealed class Program
 {
+  #region Constants
+  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\Parser.Text\Samples\";
+  #endregion
   #region Fields
-  internal static string _testpath1 = Paths.ipl_label;
-  internal static string _testpath2 = Paths.ini_vncdefault;
+  internal static string TestPath1 = Paths.ipl_label;
+  internal static string TestPath2 = Paths.ini_vncdefault;
   internal static string? UserInput;
+  internal static TextParser Parser = new(TextSpec.TextByLines);
+  internal static OpStatus Status = OpStatus.AtStart;
   #endregion
   #region Basic Methods
-  internal static void userLine () => UserInput = Console.ReadLine();
-  internal static string userLineReturn () => Console.ReadLine() ?? SE;
+  [MemberNotNull(nameof(UserInput))]
+  internal static void UserLine () => UserInput = Console.ReadLine()?.ToLowerInvariant() ?? SE;
+  internal static string UserLineReturn () => Console.ReadLine() ?? SE;
   #endregion
 
-  [STAThread]
-  internal static void Main (string[] args)
+  [MTAThread]
+  internal static Task<int> Main (string[] args)
   {
-    TextParser parser;
-    OpStatus status;
-
     Debug.Verbose = true;
-    ArgIterator argIterator = new(args);
-    Collection<string> files = (argIterator.Files.Count == 0) ? [_testpath1] : argIterator.Files;
     Debug.Log("Program.Main", "Program Start");
 
-    foreach (string path in files)
+    foreach (string path in args)
     {
       Debug.Log("Program.Main", "Loading File : " + path);
 
-      string content = File.ReadAllText(_testpath1);
+      string content = File.ReadAllText(TestPath1);
 
       if (Library.Lookup("ipl") is not TextSpec spec)
       {
@@ -51,12 +52,12 @@ internal sealed class Program
         break;
       }
 
-      parser = new(spec);
-      status = parser.Parse(content);
+      Parser = new(spec);
+      Status = Parser.Parse(content);
 
-      Debug.Log("Program.Main", "OpStatus is " + status);
-      Debug.Log("Program.Main", "Result is " + parser.Result);
-      Collection<CommandData> objects = parser.Result as Collection<CommandData> ?? [];
+      Debug.Log("Program.Main", "OpStatus is " + Status);
+      Debug.Log("Program.Main", "Result is " + Parser.Result);
+      Collection<CommandData> objects = Parser.Result as Collection<CommandData> ?? [];
       Debug.Log("Program.Main", "Result count = " + objects.Count);
       foreach (object item in objects)
       {
@@ -68,47 +69,51 @@ internal sealed class Program
 
     Debug.Log("Program.Main", "Input a command.");
 
-    userLine();
+    UserLine();
 
-    switch (UserInput?.ToLowerInvariant())
-    {
-      case "parse" or "open":
-        goto OpenFile;
-      case "testjson" or "test json":
-        goto TestJSON;
-      case "testmapinfo" or "test mapinfo":
-        goto TestMapInfo;
-      case "exit" or "quit":
-        goto Exit;
-      case null:
-        Debug.Log("Program.Main", "Null given.");
-        goto UserLoop;
-      default:
-        Debug.Log("Program.Main", "Bad command given.");
-        goto UserLoop;
-    }
+    bool doOpen = UserInput.Like(["parse", "open"]);
+    bool doTest = UserInput.StartsWith("test", SCOIC);
+    bool doExit = UserInput.Like(["exit", "quit"]);
+    bool doRawTest = UserInput.StartsWithAny(["C:", "\\", "/"]);
+
+    if (doOpen)
+      goto OpenFile;
+    else if (doTest)
+      goto Test;
+    else if (doExit)
+      goto Exit;
+    else if (doRawTest)
+      _ = TestTextParser(UserInput, Library.CheckFile(UserInput) as TextSpec ?? TextSpec.TextByLines);
+
+    Debug.Log("Program.Main", "Bad command given.");
+    goto UserLoop;
 
   OpenFile:
     Load();
     goto UserLoop;
 
-  TestJSON:
-    string pathjson = @"C:\Users\johntay4\source\repos\Projects\Parser.Text\Samples\launchSettings.json";
-    parser = new(Specification.JSON.Definition.Spec);
-    status = parser.Parse(File.ReadAllText(pathjson));
-    Debug.Log("Program.Main", $"TestJSON proc resulted in {status}.");
-    goto UserLoop;
+  Test:
+    _ = UserInput[4..].Trim() switch
+    {
+      "mapinfo" => TestTextParser(SamplePath + "mapinfo.lmp", Specification.MapInfo.Definition.Spec),
+      "json" => TestTextParser(SamplePath + "launchSettings.json", Specification.JSON.Definition.Spec),
+      "xml" => TestTextParser(SamplePath + "ipl.xml", Specification.XML.Definition.Spec),
+      _ => null
+    };
 
-  TestMapInfo:
-    string pathmapinfo = @"C:\Users\johntay4\source\repos\Projects\Parser.Text\Samples\mapinfo.lmp";
-    parser = new(Specification.MapInfo.Definition.Spec);
-    status = parser.Parse(File.ReadAllText(pathmapinfo));
-    Debug.Log("Program.Main", $"TestMapInfo proc resulted in {status}.");
     goto UserLoop;
-
   Exit:
     Debug.Log("Program.Main", "Press any key to exit.");
     _ = Console.ReadKey();
+    return Task.FromResult(0);
+  }
+
+  internal static Task<string> TestTextParser (string path, TextSpec spec)
+  {
+    Parser = new(spec);
+    Status = Parser.Parse(File.ReadAllText(path));
+    Debug.Log("Program.TestTextParser", $"The {spec.Name} test resulted in {Status}.");
+    return Task.FromResult(SE);
   }
 
   internal static void Load ()
@@ -120,7 +125,7 @@ internal sealed class Program
   GetFile:
 
     Debug.Log("Program.Load", "Path to file:");
-    userPath = userLineReturn();
+    userPath = UserLineReturn();
 
     if (userPath.IsAny(["back", "quit", "exit"]))
       return;
@@ -134,7 +139,7 @@ internal sealed class Program
 
   GetSpec:
     Debug.Log("Program.Load", $"Input a new spec or press enter to use chosen ({userSpec.Name})");
-    UserInput = userLineReturn();
+    UserInput = UserLineReturn();
 
     if (UserInput.IsEmpty())
       goto ParseFile;

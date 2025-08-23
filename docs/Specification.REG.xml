@@ -113,10 +113,10 @@
         </member>
         <member name="P:Specification.REG.RegProperty.ParseData">
             <summary>
-            The <see cref="T:Common.Regex.MatchDataDictionary"/> used to create this object.
+            The <see cref="T:Common.Regex.MatchData"/> used to create this object.
             </summary>
         </member>
-        <member name="M:Specification.REG.RegProperty.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.REG.RegProperty.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
             <exception cref="T:System.InvalidOperationException"/>
         </member>
@@ -126,7 +126,7 @@
         <member name="M:Specification.REG.RegProperty.CompareTo(Common.IProperty{System.String})">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.REG.RegProperty.SetParseData(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.REG.RegProperty.SetParseData(Common.Regex.MatchData)">
             <summary>
             Sets the parse data field.
             </summary>

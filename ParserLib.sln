@@ -39,6 +39,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.Binary", "Parser.Binary\Parser.Binary.csproj", "{02770FA7-A94A-6542-54C9-8EEB5F75108D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{BEF58E74-9439-23AC-3AC1-4B31F9DE9CAB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{86ABBCAE-DF85-9788-DDC4-E4B0F5C4D749} = {86ABBCAE-DF85-9788-DDC4-E4B0F5C4D749}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

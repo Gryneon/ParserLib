@@ -26,6 +26,9 @@
             <param name="filepath">The path to the file to check.</param>
             <returns><see langword="true"/> if the file matches the node, <see langword="false"/> otherwise.</returns>
         </member>
+        <member name="P:Parser.InferenceNode.Content">
+            <inheritdoc/>
+        </member>
         <member name="M:Parser.InferenceNode.CheckFile(System.String)">
             <inheritdoc/>
             <exception cref="T:Parser.InvalidFileInferenceException"/>
@@ -49,9 +52,193 @@
             <param name="filepath">The path to the file to check.</param>
             <returns><see langword="true"/> if the file matches the node, <see langword="false"/> otherwise.</returns>
         </member>
+        <member name="T:Parser.InvalidParseTypeException">
+            <summary>
+            Represents an exception that is thrown when an invalid parse type is passed to a generate operation.
+            </summary>
+        </member>
         <member name="M:Parser.Library.CheckFile(System.String)">
             <summary>
             Provides the <see cref="T:Parser.Spec"/> for the provided file path.
+            </summary>
+        </member>
+        <member name="T:Parser.OperationSequenceType">
+            <summary>
+            The type of operation sequence
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.Error">
+            <summary>
+            Error state.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.NoType">
+            <summary>
+            No type assigned.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.TextManipulation">
+            <summary>
+            Text manipulation, formatting, and splitting.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.TokenManipulation">
+            <summary>
+            Token manipulation, reduction, and combining.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.ObjectManipulation">
+            <summary>
+            Adjusting or restructuring generated objects.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.Validation">
+            <summary>
+            Validating results.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.MakeTokens">
+            <summary>
+            Operation the makes tokens.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.MakeObjects">
+            <summary>
+            Operation the makes objects.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.MakeDictionary">
+            <summary>
+            Operation the makes the dictionary collection.
+            </summary>
+        </member>
+        <member name="F:Parser.OperationSequenceType.AssignResult">
+            <summary>
+            Operation the assigns the result field.
+            </summary>
+        </member>
+        <member name="T:Parser.OpStatus">
+            <summary>
+            The operation result status.
+            <para>Used to determine the result of an operation in the parser.</para>
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.Any">
+            <summary>
+            Not returned by any operation, but used to indicate that any operation code is accepted when checking status.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.Error">
+            <summary>
+            Should never be returned by any operation, but is used to indicate that an error has occurred.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.AtStart">
+            <summary>
+            The initial status of an operation, used to indicate that the operation has not yet started.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.Pass">
+            <summary>
+            Indicates that the operation has completed successfully.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.Skipped">
+            <summary>
+            Represents a state where an operation or process was skipped.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailOverride">
+            <summary>
+            Represents a state where an operation failed, but the parser should continue processing other operations.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.StartInnerLoop">
+            <summary>
+            Represents the state of starting an inner loop in the process.
+            </summary>
+            <remarks>This value is typically used to indicate that the process has entered the inner loop
+            phase.</remarks>
+        </member>
+        <member name="F:Parser.OpStatus.Fail">
+            <summary>
+            A generic failure status that indicates an operation has failed.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailBadInputNull">
+            <summary>
+            Represents a failure condition where the input is null.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailBadOpDefinition">
+            <summary>
+            Represents a failure condition where the operation definition is invalid or malformed.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailBadOpResult">
+            <summary>
+            Represents a failure condition where the operation result is not valid or does not meet the expected criteria.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailBadOpImpossible">
+            <summary>
+            Represents a failure condition where the operation is impossible to perform due to the current state or context.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailInference">
+            <summary>
+            Represents a failure condition where the inference process has failed, such as when the parser cannot determine what type of specification to use.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailBufferOverflow">
+            <summary>
+            Represents a failure condition where the operation has exceeded the buffer size or capacity, leading to an overflow error.
+            </summary>
+            <remarks>This is specific to parsers that handle data in buffers, such as byte parsers.</remarks>
+        </member>
+        <member name="F:Parser.OpStatus.FailNoSpec">
+            <summary>
+            Represents a failure condition where the operation cannot proceed because no specification was provided or found.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailNoSuchVarName">
+            <summary>
+            Represents a failure condition where the operation cannot proceed because a required variable name was not found or is missing.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailBadInputType">
+            <summary>
+            Represents a failure condition where the input data type is not compatible with the expected type for the operation.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.FailNullOpResult">
+            <summary>
+            Represents a failure condition where the operation result is null, which is not acceptable for the operation's requirements.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.PastFail">
+            <summary>
+            Represents a failure condition where the operation has failed due to a past failure that was not handled or resolved.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.EndCommand">
+            <summary>
+            Indicates that the operation sequence has been completed successfully, and no further operations are needed.
+            </summary>
+        </member>
+        <member name="F:Parser.OpStatus.NoData">
+            <summary>
+            Indicates that the operation has completed successfully, but there is no data to return or process.
+            </summary>
+        </member>
+        <member name="T:Parser.Ops.IOperation">
+            <summary>
+            The interface for all operations in the parser.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.IOperation.Status">
+            <summary>
+            The current status of the operation.
             </summary>
         </member>
         <member name="P:Parser.Ops.IOperation.ContinueOnFail">
@@ -69,104 +256,54 @@
             Specifies that the operation is the last one.
             </summary>
         </member>
-        <member name="P:Parser.Ops.IOperation.End">
+        <member name="P:Parser.Ops.IOperation.StartOperation">
             <summary>
-            The last operation.
+            Specifies that this is the first operation to be executed in the parser.
+            </summary>
+        </member>
+        <member name="P:Parser.Ops.IOperation.DebugOperation">
+            <summary>
+            This option is used for debugging purposes, allowing the operation to output debug information, or allowing user input.
+            </summary>
+        </member>
+        <member name="M:Parser.Ops.IOperation.DoOperation(System.Object@)">
+            <summary>
+            Calls the operation with the provided data.
+            </summary>
+            <param name="data">The data to be operated on.</param>
+            <returns>An <see cref="T:Parser.OpStatus"/> that represents the result status.</returns>
+        </member>
+        <member name="F:Parser.Ops.Operation._input_keys">
+            <summary>
+            A collection of all of the input keys. This will only contain one key if only one key is provided.
+            </summary>
+        </member>
+        <member name="F:Parser.Ops.Operation._input_key">
+            <summary>
+            The input key provided, or the first input key if multiple are provided.
             </summary>
         </member>
         <member name="P:Parser.Ops.Operation.ContinueOnFail">
-            <summary>
-            Processing should continue even if a failure is reported.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Parser.Ops.Operation.SkipOperation">
-            <summary>
-             Do not execute this operation, proceed to next.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Parser.Ops.Operation.EndOperation">
-            <summary>
-            This operation ends the processing of further operations.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Parser.Ops.Operation.StartOperation">
-            <summary>
-            This operation is the first operation to be performed.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Parser.Ops.Operation.DebugOperation">
-            <summary>
-            This operation is only performed if <see cref="P:Common.Debug.Verbose"/> is <see langword="true"/>.
-            </summary>
-        </member>
-        <member name="M:Parser.Ops.Operation.DoOperation">
-            <summary>
-            Performs an operation that does not affect the data.
-            </summary>
-            <returns>
-            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
-            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
-            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
-            <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
-            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
-            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
-            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
-            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
-            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
-            </returns>
-        </member>
-        <member name="M:Parser.Ops.Operation.DoOperation(System.Object)">
-            <summary>
-            Performs an operation that uses, but does not affect the data.
-            </summary>
-            <returns>
-            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
-            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
-            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
-            <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
-            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
-            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
-            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
-            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
-            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
-            </returns>
-        </member>
-        <member name="M:Parser.Ops.Operation.DoOperation(System.Object,System.Object@)">
-            <summary>
-            Performs an operation that takes an object and outputs a different (or the same) object.
-            </summary>
-            <param name="input">The input.</param>
-            <param name="output">The result.</param>
-            <returns>
-            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
-            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
-            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
-            <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
-            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
-            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
-            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
-            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
-            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
-            </returns>
+            <inheritdoc/>
         </member>
         <member name="M:Parser.Ops.Operation.DoOperation(System.Object@)">
             <summary>
             Performs an operation that uses and may alter or reassign the data.
             </summary>
             <returns>
-            <see cref="F:Parser.OpStatus.Error"/> : The operation did encountered a fatal error.<br/>
+            <see cref="F:Parser.OpStatus.Error"/> : The operation encountered a fatal error.<br/>
             <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
             <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
             <see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
@@ -180,6 +317,27 @@
             <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
             <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
             </returns>
+            <exception cref="T:Parser.UnknownOperationException"/>
+        </member>
+        <member name="M:Parser.Ops.Operation.CheckInputNull">
+            <summary>
+            Checks the parsers current working data, and sets the Status to <see cref="F:Parser.OpStatus.FailBadInputNull"/> if it is null.
+            </summary>
+        </member>
+        <member name="M:Parser.Ops.Operation.#ctor(System.String,System.String)">
+            <summary>
+            Single input key.
+            </summary>
+        </member>
+        <member name="M:Parser.Ops.Operation.#ctor(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Multiple input keys.
+            </summary>
+        </member>
+        <member name="M:Parser.Ops.Operation.#ctor">
+            <summary>
+            Private constructor for the static <see cref="P:Parser.Ops.Operation.End"/> object.
+            </summary>
         </member>
         <member name="T:Parser.Spec">
             <summary>
@@ -193,16 +351,13 @@
         </member>
         <member name="P:Parser.Spec.Operations">
             <summary>
-            A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Ops.Operation"/> objects that are executed in order to produce objects.
+            A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Ops.Operation"/> objects that are executed in order to produce the result.
             </summary>
         </member>
         <member name="P:Parser.Spec.FileInferences">
             <summary>
             A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.InferenceNode"/> objects that specify what files use this specification.
             </summary>
-        </member>
-        <member name="M:Parser.Spec.GetEnumerator">
-            <inheritdoc/>>
         </member>
         <member name="P:Parser.V2.Framework.ByteDataFormat.Type">
             <inheritdoc/>
@@ -353,7 +508,7 @@
             The parser state, set up as bit flags.
             </summary>
         </member>
-        <member name="P:Parser.V2.Framework.Parser.Error">
+        <member name="P:Parser.V2.Framework.Parser.ErrorStatus">
             <summary>
             The parsers error state.
             </summary>
@@ -437,72 +592,72 @@
             Marks the parse operation as completed successfully.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_None">
+        <member name="F:Parser.V2.Framework.ParserState.PF_None">
             <summary>
             Initial State
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_HasFile">
+        <member name="F:Parser.V2.Framework.ParserState.PF_HasFile">
             <summary>
             Filepath provided.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_HasFormat">
+        <member name="F:Parser.V2.Framework.ParserState.PF_HasFormat">
             <summary>
             Format provided, or determined.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileLoaded">
+        <member name="F:Parser.V2.Framework.ParserState.PF_FileLoaded">
             <summary>
             File loaded to memory.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileMatchesFormat">
+        <member name="F:Parser.V2.Framework.ParserState.PF_FileMatchesFormat">
             <summary>
             File in memory abides by rules in format.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileInitalParseDone">
+        <member name="F:Parser.V2.Framework.ParserState.PF_FileInitalParseDone">
             <summary>
             Initial parse completed.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_FileValidationParseDone">
+        <member name="F:Parser.V2.Framework.ParserState.PF_FileValidationParseDone">
             <summary>
             Final parse completed.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_ParseOutputGenerated">
+        <member name="F:Parser.V2.Framework.ParserState.PF_ParseOutputGenerated">
             <summary>
             Operation output generated.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_ParseOutputValidated">
+        <member name="F:Parser.V2.Framework.ParserState.PF_ParseOutputValidated">
             <summary>
             Output was validated.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PF_OperationSuccess">
+        <member name="F:Parser.V2.Framework.ParserState.PF_OperationSuccess">
             <summary>
             Operation was successful and output generated.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PFR_NewFormat">
+        <member name="F:Parser.V2.Framework.ParserState.PFR_NewFormat">
             <summary>
             Remove theses bits if the format changes.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PFR_RemFormat">
+        <member name="F:Parser.V2.Framework.ParserState.PFR_RemFormat">
             <summary>
             Remove theses bits if the format is removed.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PFR_NewFile">
+        <member name="F:Parser.V2.Framework.ParserState.PFR_NewFile">
             <summary>
             Remove these bits if the file changes.
             </summary>
         </member>
-        <member name="F:Parser.V2.Framework.ParserFlags.PFR_RestartCycle">
+        <member name="F:Parser.V2.Framework.ParserState.PFR_RestartCycle">
             <summary>
             Remove these bits when you restart the cycle.
             </summary>

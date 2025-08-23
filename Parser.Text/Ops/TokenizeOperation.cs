@@ -1,5 +1,3 @@
-using Parser.Text.Tokens;
-
 namespace Parser.Text.Ops;
 
 public class TokenizeOperation : TextOperation

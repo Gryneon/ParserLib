@@ -9,9 +9,9 @@
             Extensions for this Spec.
             </summary>
         </member>
-        <member name="M:Specification.IPL.IPLExtensions.ToCommandData(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.IPL.IPLExtensions.ToCommandData(Common.Regex.MatchData)">
             <summary>
-            Converts this <see cref="T:Common.Regex.MatchDataDictionary"/> into a <see cref="T:Specification.IPL.CommandData"/> object.
+            Converts this <see cref="T:Common.Regex.MatchData"/> into a <see cref="T:Specification.IPL.CommandData"/> object.
             </summary>
             <param name="mdd">The match data to use.</param>
             <returns>A <see cref="T:Specification.IPL.CommandData"/> object.</returns>
@@ -99,11 +99,11 @@
             Creates an empty object. IsNull would equal <see langword="true"/>.
             </summary>
         </member>
-        <member name="M:Specification.IPL.CommandData.#ctor(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.IPL.CommandData.#ctor(Common.Regex.MatchData)">
             <summary>
-            Creates an object from a <see cref="T:Common.Regex.MatchDataDictionary"/>. IsNull would equal <see langword="false"/>.
+            Creates an object from a <see cref="T:Common.Regex.MatchData"/>. IsNull would equal <see langword="false"/>.
             </summary>
-            <param name="mdd">The <see cref="T:Common.Regex.MatchDataDictionary"/> to create an object from.</param>
+            <param name="mdd">The <see cref="T:Common.Regex.MatchData"/> to create an object from.</param>
         </member>
         <member name="M:Specification.IPL.CommandData.#ctor(System.String)">
             <summary>
@@ -178,10 +178,10 @@
         <member name="M:Specification.IPL.CommandData.Serialize">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.IPL.CommandData.Generate(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.IPL.CommandData.Generate(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.IPL.CommandData.SetParseData(Common.Regex.MatchDataDictionary)">
+        <member name="M:Specification.IPL.CommandData.SetParseData(Common.Regex.MatchData)">
             <inheritdoc/>
         </member>
         <member name="M:Specification.IPL.CommandData.op_Equality(Specification.IPL.CommandData,Specification.IPL.CommandData)">
@@ -289,7 +289,12 @@
             An operation that fills out the mode, format, and field numbers.
             </summary>
         </member>
-        <member name="M:Specification.IPL.IPLCommandOperation.DoOperation(System.Object@)">
+        <member name="M:Specification.IPL.IPLCommandOperation.#ctor(System.String,System.String)">
+            <summary>
+            An operation that fills out the mode, format, and field numbers.
+            </summary>
+        </member>
+        <member name="M:Specification.IPL.IPLCommandOperation.Execute">
             <inheritdoc/>
         </member>
         <member name="T:Specification.IPL.IPLCommandTemplate">

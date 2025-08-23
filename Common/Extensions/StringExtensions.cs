@@ -4,6 +4,9 @@ using SysRegex = System.Text.RegularExpressions.Regex;
 
 namespace Common.Extensions;
 
+/// <summary>
+/// Extensions for string objects.
+/// </summary>
 public static class StringExtensions
 {
   public static bool Is (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCO) ?? false);

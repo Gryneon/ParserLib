@@ -3,15 +3,14 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
+    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
-    <NeutralLanguage>en-VI</NeutralLanguage>
-    <NoWarn>1701;1702;CS1591;1591</NoWarn>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>
