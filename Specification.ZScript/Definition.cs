@@ -2,7 +2,7 @@ using Parser.Ops;
 using Parser.Text.Ops;
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Text.Tokens.TokenType;
+using static Parser.Text.Tokens.TokenFlags;
 
 namespace Specification.ZScript;
 
@@ -74,27 +74,27 @@ public class PrevDefinition
   {
     FileInferences = [],
     CaseInsensitive = true,
-    TokenLookup = new() {
-      ("lncomment", T_LnComment | T_Ignore),
-      ("blkcomment", T_BlkComment | T_Ignore),
-      ("ws", T_WS | T_Ignore),
-      ("name", T_Name),
-      ("parent", T_Class),
-      ("classname", T_Class),
-      ("open", T_BlockStart),
-      ("close", T_BlockEnd),
-      ("propdef", T_Block),
-      ("statdef", T_Block),
-      ("extend", T_Modifier),
-      ("native", T_Modifier),
-      ("colon", T_Operator),
-      ("semicolon", T_SemiColon),
-      ("entireclass", T_Block),
-    },
+    TokenLookup = [
+      Mt("lncomment") | TF_Ignore,
+      Mt("blkcomment") | TF_Ignore,
+      Mt("ws") | TF_Ignore,
+      "name",
+      "parent",
+      "classname",
+      "open",
+      "close",
+      "propdef",
+      "statdef",
+      "extend",
+      "native",
+      "colon",
+      "semicolon",
+      "entireclass",
+    ],
     Name = "zscript",
     Operations = [
       new DictionaryOperation(Reader),
       Operation.End
-      ]
+    ]
   };
 }

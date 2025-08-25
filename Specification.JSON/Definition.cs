@@ -5,6 +5,7 @@ using System.Linq;
 
 using Common.Regex;
 
+using Parser;
 using Parser.Text.Ops;
 using Parser.Text.Tokens;
 
@@ -34,55 +35,55 @@ public static class Definition
     Nm("bool", "true|false"),
     //Nm("null", "null")
   ];
-  private static readonly Dictionary<string, TT> TokenInfo = [
-    ("int",T_Int).ToKVP(),
-    ("ws", T_WS|T_Ignore).ToKVP(),
-    ("string", T_String).ToKVP(),
-    ("bool", T_Bool).ToKVP(),
-    ("colon", T_Colon).ToKVP(),
-    ("comma", T_Comma).ToKVP(),
-    ("arr_start", T_LBrace).ToKVP(),
-    ("arr_end", T_RBrace).ToKVP(),
-    ("obj_start", T_LBracket).ToKVP(),
-    ("obj_end", T_RBracket).ToKVP(),
+  private static readonly Collection<TokenType> TokenInfo = [
+    "int",
+    Mt("ws") | TF_Ignore,
+    "string",
+    "bool",
+    "colon",
+    "comma",
+    "arr_start",
+    "arr_end",
+    "obj_start",
+    "obj_end",
   ];
   private static Collection<TokenTemplate> TokenTemplates { get; } =
   [
     new()
     {
-      Type = T_Property,
+      Type = "Property",
       Template =
       [
-        new(T_String, null, "key"),
-        new(T_Colon),
-        new([T_Int, T_Dec, T_String, T_Bool, T_Object, T_Array], null, "value"),
-        new(T_Comma|T_Optional)
+        new("string", null, "key"),
+        new("colon"),
+        new(["int", "decimal", "string", "bool", "object", "array"], null, "value"),
+        new(Mt("Comma") | TF_Optional)
       ]
     },
     new()
     {
-      Type = T_Array,
+      Type = "Array",
       Template = [
-        new(T_LBrace),
-        new(T_ArrayItem | T_OneOrMany),
-        new(T_RBrace),
+        new("lbrace"),
+        new(Mt("arrayitem") | TF_OneOrMany),
+        new("rbrace"),
         ]
     },
     new()
     {
-      Type = T_ArrayItem,
+      Type = "arrayitem",
       Template = [
-        new([T_Int, T_Dec, T_String, T_Bool, T_Object, T_Array]),
-        new(T_Comma|T_Optional)
+        new(["int", "decimal", "string", "bool", "object", "array"]),
+        new(Mt("comma") | TF_Optional)
         ]
     },
     new()
     {
-      Type = T_Object,
+      Type = "object",
       Template = [
-        new(T_LBracket),
-        new(T_Property | T_OneOrMany),
-        new(T_RBracket),
+        new("lbracket"),
+        new(Mt("property") | TF_OneOrMany),
+        new("rbracket"),
         ]
     },
   ];
@@ -102,6 +103,8 @@ public static class Definition
         new DebugWaitForInputOperation(),
         new TokenTemplateOperation("tokens", "tokens_templated", TokenTemplates),
         new DebugToStringOperation("tokens_templated"),
+        new DebugWaitForInputOperation(),
+        new CopyOperation("tokens_templated", "result")
       ],
     TokenLookup = TokenInfo
   };

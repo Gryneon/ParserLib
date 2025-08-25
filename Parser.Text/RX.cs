@@ -19,20 +19,22 @@ public static partial class RX
   public static partial Regex XlRangeSplitter { get; }
   #endregion
 
-  // Common Group Types
-  public static Dictionary<string, TokenType> CommonIgnores { get; } = new() {
-    ("blkcomment", T_BlkComment | T_Ignore),
-    ("lncomment", T_LnComment | T_Ignore),
-    ("ws", T_WS | T_Ignore)
-  };
+  private static TokenType Mk (string s) => new(s);
 
-  public static Dictionary<string, TokenType> ValueTypes { get; } = new() {
-    ("int", T_Int),
-    ("dec", T_Dec),
-    ("str", T_String),
-    ("bool", T_Bool),
-    ("char", T_Char),
-  };
+  // Common Group Types
+  public static Collection<TokenType> CommonIgnores { get; } = [
+    Mk("blkcomment") | TF_Ignore,
+    Mk("lncomment") | TF_Ignore,
+    Mk("ws") | TF_Ignore
+  ];
+
+  public static Collection<TokenType> ValueTypes { get; } = [
+    "int",
+    "dec",
+    "str",
+    "bool",
+    "char",
+  ];
 
   // Named Groups
   public static RxS G_CLnComment => field = Nm("lncomment", CLnComment);

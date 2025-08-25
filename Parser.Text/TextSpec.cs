@@ -40,7 +40,7 @@ public class TextSpec : Spec
   /// 
   /// Setting Null clears the list.
   /// </summary>
-  public Dictionary<string, TokenType> TokenLookup
+  public Collection<TokenType> TokenLookup
   {
     get => field ?? [];
     set
@@ -48,7 +48,7 @@ public class TextSpec : Spec
       field ??= [];
 
       if (value is not null)
-        field.Add(value);
+        field.AddRange(value);
     }
   } = [];
   #region Regex Properties
@@ -87,7 +87,7 @@ public class TextSpec : Spec
   public void Load ()
   {
     TokenOptions.LoadRegexSpec(_options);
-    TokenOptions.LoadTokenSpec([.. TokenLookup.Select(item => new KeyValuePair<string, TokenType>(item.Key, item.Value))]);
+    TokenOptions.LoadTokenSpec([.. TokenLookup]);
   }
 
   /// <summary>
@@ -95,9 +95,6 @@ public class TextSpec : Spec
   /// </summary>
   /// <param name="groupName">The group name to check.</param>
   /// <returns><see langword="true"/> if the <see cref="TextSpec"/> TokenLookup contains that group and the group contains the <see cref="TokenType"/> T_Ignore.</returns>
-  public bool IsIgnoreGroup (string groupName)
-  {
-    string glow = groupName.ToLowerInvariant();
-    return TokenLookup.TryGetValue(glow, out TokenType t) && t.HasFlag(T_Ignore);
-  }
+  public bool IsIgnoreGroup (string groupName) =>
+    TokenLookup.Contains(groupName.ToLowerInvariant());
 }

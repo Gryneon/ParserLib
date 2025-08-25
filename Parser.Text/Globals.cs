@@ -13,6 +13,6 @@ global using Parser.Ops;
 global using Parser.Text.Tokens;
 
 global using static Common.Names;
-global using static Parser.Text.Tokens.TokenType;
+global using static Parser.Text.Tokens.TokenFlags;
 
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;

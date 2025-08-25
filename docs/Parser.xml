@@ -359,6 +359,11 @@
             A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.InferenceNode"/> objects that specify what files use this specification.
             </summary>
         </member>
+        <member name="T:Parser.TokenType">
+            <summary>
+            Tokenizer tokens.
+            </summary>
+        </member>
         <member name="P:Parser.V2.Framework.ByteDataFormat.Type">
             <inheritdoc/>
         </member>

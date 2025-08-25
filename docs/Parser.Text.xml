@@ -39,7 +39,7 @@
             <param name="output_key">The key to write the output to.</param>
             <param name="group_name">The group name to check for.</param>
             <remarks><code>
-            Inputs: IDictionary&lt;int, MatchDataDictionary>, IEnumerable&lt;MatchDataDictionary>
+            Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
             Output: Dictionary&lt;int, TOutput>
             </code></remarks>
         </member>
@@ -54,7 +54,7 @@
             <param name="output_key">The key to write the output to.</param>
             <param name="group_name">The group name to check for.</param>
             <remarks><code>
-            Inputs: IDictionary&lt;int, MatchDataDictionary>, IEnumerable&lt;MatchDataDictionary>
+            Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
             Output: Dictionary&lt;int, TOutput>
             </code></remarks>
         </member>
@@ -242,17 +242,12 @@
             Checks to see if a group is able to be ignored by future operations.
             </summary>
             <param name="groupName">The group name to check.</param>
-            <returns><see langword="true"/> if the <see cref="T:Parser.Text.TextSpec"/> TokenLookup contains that group and the group contains the <see cref="T:Parser.Text.Tokens.TokenType"/> T_Ignore.</returns>
+            <returns><see langword="true"/> if the <see cref="T:Parser.Text.TextSpec"/> TokenLookup contains that group and the group contains the <see cref="T:Parser.TokenType"/> T_Ignore.</returns>
         </member>
         <member name="T:Parser.Text.Tokens.IToken">
             <summary>
             Base interface for tokens.
             Reference this and not <see cref="T:Parser.Text.Tokens.Token"/> unless defining a class.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.IToken.Type">
-            <summary>
-            Type of token.
             </summary>
         </member>
         <member name="P:Parser.Text.Tokens.IToken.Children">
@@ -263,6 +258,11 @@
         <member name="P:Parser.Text.Tokens.IToken.Content">
             <summary>
             The content of this token, or all of its children.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.IToken.Type">
+            <summary>
+            Type of token.
             </summary>
         </member>
         <member name="T:Parser.Text.Tokens.Token">
@@ -291,7 +291,7 @@
             The length of the token.
             </summary>
         </member>
-        <member name="M:Parser.Text.Tokens.Token.#ctor(System.String,Parser.Text.Tokens.TokenType)">
+        <member name="M:Parser.Text.Tokens.Token.#ctor(System.String,System.Nullable{Parser.TokenType})">
             <summary>
             Creates a <see cref="T:Parser.Text.Tokens.Token"/> from a string and optionally a type.
             </summary>
@@ -349,7 +349,7 @@
             </summary>
             <param name="options">The options to set.</param>
         </member>
-        <member name="M:Parser.Text.Tokens.TokenOptions.LoadTokenSpec(System.Collections.Generic.Dictionary{System.String,Parser.Text.Tokens.TokenType})">
+        <member name="M:Parser.Text.Tokens.TokenOptions.LoadTokenSpec(System.Collections.ObjectModel.Collection{Parser.TokenType})">
             <summary>
             Loads the token type lookup.
             </summary>
@@ -370,7 +370,7 @@
             <param name="type"></param>
             <param name="nodes"></param>
         </member>
-        <member name="M:Parser.Text.Tokens.TokenTemplate.#ctor(Parser.Text.Tokens.TokenType,System.Collections.Generic.IEnumerable{Parser.Text.Tokens.TokenTemplateNode})">
+        <member name="M:Parser.Text.Tokens.TokenTemplate.#ctor(Parser.TokenType,System.Collections.Generic.IEnumerable{Parser.Text.Tokens.TokenTemplateNode})">
             <summary>
             Represents a sequence to consolidate tokens and generate a more useful object.
             </summary>
@@ -415,211 +415,6 @@
             <see langword="true"/> if the token satisfies the template requirements, otherwise <see langword="false"/>.<br/>
             This function does not check token flags, those are handled in the operation mechanics.
             </returns>
-        </member>
-        <member name="T:Parser.Text.Tokens.TokenType">
-            <summary>
-            Tokenizer tokens.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Final">
-            <summary>
-            Token cannot be reduced.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_OneOrMany">
-            <summary>
-            Optionally repeat this token.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Required">
-            <summary>
-            A required token, whenExtIs normally optional.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Optional">
-            <summary>
-            An optional token, whenExtIs typically required.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Unparsed">
-            <summary>
-            Unparsed content.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Ignore">
-            <summary>
-            Ignore this content.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_All">
-            <summary>
-            The entire document.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_NoType">
-            <summary>
-            No type specified.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Symbol">
-            <summary>
-            Operators and Symbols
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Fin">
-            <summary>
-            The end of the block or script.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_SStart">
-            <summary>
-            The start of a statement.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_SEnd">
-            <summary>
-            The end of a statement.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_LBracket">
-            <summary>
-            The left bracket character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_RBracket">
-            <summary>
-            The right bracket character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_LBrace">
-            <summary>
-            The left brace character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_RBrace">
-            <summary>
-            The right brace character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_LParen">
-            <summary>
-            The left parenthesis character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_RParen">
-            <summary>
-            The right parenthesis character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Equals">
-            <summary>
-            The equals character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_SemiColon">
-            <summary>
-            The semicolon character.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_WS">
-            <summary>
-            Horizontal whitespace.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_NL">
-            <summary>
-            New line character(s).
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Name">
-            <summary>
-            A name, with no quotes, and no whitespace.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Keyword">
-            <summary>
-            A keyword in the language.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Int">
-            <summary>
-            A non-decimal numeric value.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Dec">
-            <summary>
-            A decimal numeric value.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Bool">
-            <summary>
-            A boolean constant.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Char">
-            <summary>
-            A char value.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_SinQt">
-            <summary>
-            A single quoted string value.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_String">
-            <summary>
-            A string value.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_DblQt">
-            <summary>
-            A double quoted string value.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Operator">
-            <summary>
-            An object class or data type.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Object">
-            <summary>
-            An object.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Array">
-            <summary>
-            An array.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Heading">
-            <summary>
-            A heading describing a section.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_RemHeading">
-            <summary>
-            A heading that is to be removed.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Property">
-            <summary>
-            A property or stored data.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_Declaration">
-            <summary>
-            A variable declaration.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_ParamList">
-            <summary>
-            A parameter list.
-            </summary>
-        </member>
-        <member name="F:Parser.Text.Tokens.TokenType.T_LnComment">
-            <summary>
-            A comment that extends to the next newline character.
-            </summary>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.LineEnd_0">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the LineEnd method.</summary>

@@ -154,6 +154,16 @@
             Set to <see langword="true"/> to output debugging information to the output stream.
             </summary>
         </member>
+        <member name="P:Common.Debug.LineStart">
+            <summary>
+            Set to the line you must go to when making logs.
+            </summary>
+        </member>
+        <member name="P:Common.Debug.LineCount">
+            <summary>
+            This increments when a log is written. Set to 0 to reset to top.
+            </summary>
+        </member>
         <member name="M:Common.Debug.SetStream(System.IO.TextWriter)">
             <summary>
             Sets the output stream.
@@ -164,6 +174,21 @@
             <summary>
             Logs a message to the output stream.
             </summary>
+            <param name="msg">The message to log.</param>
+        </member>
+        <member name="M:Common.Debug.Log(System.String,System.String)">
+            <summary>
+            Logs a message to the output stream.
+            </summary>
+            <param name="src">The orignating class.</param>
+            <param name="msg">The message to log.</param>
+        </member>
+        <member name="M:Common.Debug.LogFrom(System.String,System.String,System.String)">
+            <summary>
+            Logs a message to the output stream.
+            </summary>
+            <param name="src">The orignating class.</param>
+            <param name="target">The originating method.</param>
             <param name="msg">The message to log.</param>
         </member>
         <member name="M:Common.Excel.Range.ColumnRx(System.String)">
@@ -663,6 +688,47 @@
             <summary>
             Append a pipe operator.
             </summary>
+        </member>
+        <member name="T:Common.ReplaceNode">
+            <summary>
+            A node that defines a string replacement operation.
+            </summary>
+        </member>
+        <member name="M:Common.ReplaceNode.From(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:Common.ReplaceNode"/> from the specified parameters.
+            </summary>
+            <param name="lf">The string to look for.</param>
+            <param name="rw">The string to replace with</param>
+            <returns>A new <see cref="T:Common.ReplaceNode"/> object.</returns>
+        </member>
+        <member name="P:Common.ReplaceNode.LookFor">
+            <summary>
+            The regular expression to look for.
+            </summary>
+        </member>
+        <member name="P:Common.ReplaceNode.ReplaceWith">
+            <summary>
+            The string to replace matches with. If <see langword="null"/>, matches will be removed.
+            </summary>
+        </member>
+        <member name="M:Common.ReplaceNode.#ctor">
+            <summary>
+            An empty node.
+            </summary>
+        </member>
+        <member name="M:Common.ReplaceNode.Equals(Common.ReplaceNode)">
+            <summary>
+            Checks if the 2 nodes are equal to each other.
+            </summary>
+            <param name="other">The other <see cref="T:Common.ReplaceNode"/>.</param>
+            <returns><see langword="true"/> if the <see cref="T:Common.ReplaceNode"/> objects are equal to each other, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.ReplaceNode.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.ReplaceNode.GetHashCode">
+            <inheritdoc/>
         </member>
     </members>
 </doc>

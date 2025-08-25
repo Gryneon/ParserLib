@@ -20,6 +20,7 @@ internal sealed class Program
 {
   #region Constants
   internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser.Text\Samples\";
+  internal const int LogLine = 10;
   #endregion
   #region Fields
   internal static string TestPath1 = Paths.ipl_label;
@@ -37,6 +38,37 @@ internal sealed class Program
   [MTAThread]
   internal static Task<int> Main (string[] args)
   {
+    string[] items = ["Load", "Test", "Raw Test", "Exit"];
+    int index = 0;
+
+    void draw ()
+    {
+      Console.SetCursorPosition(0, 0);
+      Console.WriteLine("Select a function");
+      Console.WriteLine(); // spacing
+
+      for (int i = 0; i < items.Length; i++)
+      {
+        Console.Write(new string(' ', Console.WindowWidth));
+        Console.SetCursorPosition(0, Console.CursorTop);
+
+        if (i == index)
+        {
+          Console.BackgroundColor = ConsoleColor.Gray;
+          Console.ForegroundColor = ConsoleColor.Black;
+          Console.WriteLine($"> {items[i]}");
+          Console.ResetColor();
+        }
+        else
+        {
+          Console.WriteLine($"  {items[i]}");
+        }
+      }
+    }
+
+    Console.Clear();
+    draw();
+
     Debug.Verbose = true;
     Debug.Log("Program.Main", "Program Start");
 

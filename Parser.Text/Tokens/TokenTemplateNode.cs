@@ -28,23 +28,23 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
     NewPropName = newProp;
   }
   [SetsRequiredMembers]
-  public TokenTemplateNode (TokenType[] types, string[]? matches = null, string? newProp = null)
+  public TokenTemplateNode (TokenType[]? types, string[]? matches = null, string? newProp = null)
   {
-    Type = [.. types];
+    Type = types is null ? [] : [.. types];
     Match = matches is null ? [] : [.. matches];
     NewPropName = newProp;
   }
   [SetsRequiredMembers]
   public TokenTemplateNode (string[] matches)
   {
-    Type = [TokenType.T_NoType];
+    Type = [SE];
     Match = [.. matches];
     NewPropName = null;
   }
   [SetsRequiredMembers]
   public TokenTemplateNode (string match)
   {
-    Type = [TokenType.T_NoType];
+    Type = [TokenType.Any];
     Match = [match];
     NewPropName = null;
   }
@@ -65,14 +65,12 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
     if (token is null)
       return false;
 
-    TokenType exactType = TokenType.T_NoType;
-
+    string exactType = SE;
     bool passType = Type.IsEmpty();
+
     foreach (TokenType type in Type)
     {
-      TokenType template_type = type.Mask();
-
-      if (template_type is TokenType.T_NoType || template_type == token.Type)
+      if (type == SE || type == token.Type)
       {
         passType = true;
         exactType = type;
@@ -112,11 +110,10 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
 
   public bool Equals (IToken? other) => IsMatch(other, out _);
 
-  public override string ToString () => $"{Type[0]}{(Match[0].IsEmpty() ? SE : " : " + Match[0])}";
+  public override string ToString () => $"{Type[0]}{(Match is null ? SE : " : " + Match[0])}";
 
-  public static implicit operator TokenTemplateNode ((TokenType t, string c, string n) tuple) => new(tuple.t, [tuple.c], tuple.n);
-  public static implicit operator TokenTemplateNode ((TokenType t, string c) tuple) => new(tuple.t, [tuple.c]);
-  public static implicit operator TokenTemplateNode (TokenType t) => new(t);
-  public static implicit operator TokenTemplateNode (string s) => new(s);
-  public static implicit operator TokenTemplateNode (string[] list) => new(list);
+  public static implicit operator TokenTemplateNode ((TokenType Type, string Match, string Name) tuple) => new(tuple.Type, [tuple.Match], tuple.Name);
+  public static implicit operator TokenTemplateNode ((TokenType Type, string c) tuple) => new(tuple.Type, [tuple.c]);
+  public static implicit operator TokenTemplateNode (TokenType type) => new(type);
+  public static implicit operator TokenTemplateNode (TokenType[] list) => new(list);
 }

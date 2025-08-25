@@ -42,12 +42,10 @@ public abstract class TextOperation : Operation
   }
   protected bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
-    if (_workToReturn.IsCollection())
-
-      if (_parser.Work.TryLoad(_input_key, out casted))
-      {
-        return true;
-      }
+    if (_parser.Work.TryLoad(_input_key, out casted))
+    {
+      return true;
+    }
 
     Status = OpStatus.FailBadInputType;
     casted = default;
@@ -179,4 +177,9 @@ public abstract class TextOperation : Operation
     if (_workToReturn is null) return;
     _ = _parser.Work.Save(_output_key, _workToReturn, mode);
   }
+}
+
+public class CopyOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
+{
+  protected override void Execute () => Status = OpStatus.Pass;
 }

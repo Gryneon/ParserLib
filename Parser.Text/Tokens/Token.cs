@@ -27,29 +27,29 @@ public class Token : IToken, ICloneable
   #endregion
   public bool HasProperties => Properties.Count > 0;
 
-  public bool IsIgnored => Type.HasFlag(T_Ignore);
-  public bool IsUnparsed => Type.HasFlag(T_Unparsed);
+  public bool IsIgnored { get; protected init; }
+  public bool IsUnparsed { get; protected init; }
+  public bool IsFinal => (Type.Flags & TokenFlags.TF_Final) != 0;
+  public bool IsOptional { get; protected init; }
 
   public Collection<Token> Children { get; } = [];
 
   #region Properties - Origin
   public TokenTemplate? Template { get; init; }
   #endregion
-
-  public TokenType Type { get; }
+  public TokenType Type { get; init; }
 
   public Dictionary<string, string> Properties { get; init; } = [];
-  public Dictionary<string, object> Data { get; init; } = [];
   public string DebugOutput => $"Token: {Type} - {Content}";
   /// <summary>
   /// Creates a <see cref="Token"/> from a string and optionally a type.
   /// </summary>
   /// <param name="type">The type of token this is.</param>
   /// <param name="content"><see cref="string"/> content to initialize this token with.</param>
-  public Token (string content, TokenType type = T_NoType)
+  public Token (string content, TokenType? type = null)
   {
     Content = content;
-    Type = type;
+    Type = type ?? TokenType.Any;
   }
 
   public Token (IToken token)
@@ -61,10 +61,10 @@ public class Token : IToken, ICloneable
     Children = [.. token.Children];
   }
 
-  public Token (MatchData mdd, TokenType type = T_NoType)
+  public Token (MatchData mdd, TokenType? type = null)
   {
     Content = mdd.Content;
-    Type = type;
+    Type = type ?? TokenType.Any;
     Position = mdd.Pos;
     Properties = [.. from item in mdd.Groups
       let key = item.Key
@@ -75,9 +75,9 @@ public class Token : IToken, ICloneable
     Children = [.. from item in mdd.Groups
       select new Token(item.Value)];
   }
-  public Token (GroupData gd, TokenType type = T_NoType)
+  public Token (GroupData gd, TokenType? type = null)
   {
-    Type = type;
+    Type = type ?? TokenType.Any;
     Content = gd.Content;
     Position = gd.Pos;
     Properties = [.. from item in gd.Captures
@@ -88,9 +88,9 @@ public class Token : IToken, ICloneable
     Children = [.. from item in gd.Captures
       select new Token(item)];
   }
-  public Token (CaptureData cd, TokenType type = T_NoType)
+  public Token (CaptureData cd, TokenType? type = null)
   {
-    Type = type;
+    Type = type ?? TokenType.Any;
     Content = cd.Content;
     Position = cd.Pos;
     Children = [];
@@ -103,11 +103,11 @@ public class Token : IToken, ICloneable
     Properties = [.. token.Properties];
     Children = [.. token.Children];
   }
-  public Token (string content, int pos, TokenType type = T_NoType)
+  public Token (string content, int pos, TokenType? type = null)
   {
     Position = pos;
     Content = content;
-    Type = type;
+    Type = type ?? TokenType.Any;
   }
   public Token (TokenTemplate template, IEnumerable<TokenTemplateMatch> matches)
   {

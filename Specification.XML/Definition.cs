@@ -1,11 +1,11 @@
 #pragma warning disable RE0001 // Invalid regex pattern
 
+using Parser;
 using Parser.Ops;
 using Parser.Text.Ops;
-using Parser.Text.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Text.Tokens.TokenType;
+using static Parser.Text.Tokens.TokenFlags;
 
 namespace Specification.XML;
 
@@ -35,13 +35,13 @@ public class Definition
   /// <summary>
   /// The token type definitions.
   /// </summary>
-  protected static Collection<TokenDef> TokenTypes => [
-    new(T_WS | T_Ignore, "ws"),
-    new(T_TagClose, "endtag"),
-    new(T_TagSingle, "noinsidetag"),
-    new(T_TagOpen, "tag"),
-    new(T_Content, "content"),
-    new(T_Header, "header")
+  protected static Collection<TokenType> TokenTypes => [
+    Mt("ws") | TF_Ignore,
+    "endtag",
+    "noinsidetag",
+    "tag",
+    "content",
+    "header"
   ];
 
   /// <summary>
@@ -77,15 +77,15 @@ public class Definition
       Operation.End,
     ],
     TokenLookup = {
-      ("ws", T_WS | T_Ignore),
-      ("endtag", T_TagClose),
-      ("noinsidetag", T_TagSingle),
-      ("tag", T_TagOpen),
-      ("content", T_Content),
-      ("header", T_Header),
-      ("attrname", T_Key),
-      ("attrval", T_Value),
-      ("comment", T_BlkComment | T_Ignore)
+      Mt("ws") | TF_Ignore,
+      "endtag",
+      "noinsidetag",
+      "tag",
+      "content",
+      "header",
+      "attrname",
+      "attrval",
+      Mt("comment") | TF_Ignore
     }
   };
 }

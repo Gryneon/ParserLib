@@ -80,7 +80,7 @@ public sealed class TextParser (TextSpec spec)
       OpIndex++;
     }
 
-    Result = Work["result"];
+    Result = Work["results"];
     logResult(EndCommand, "Result has been assigned. Operation complete.");
     return LastStatus;
   }
