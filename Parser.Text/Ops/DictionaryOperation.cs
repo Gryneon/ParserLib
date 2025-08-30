@@ -1,8 +1,9 @@
 namespace Parser.Text.Ops;
 
-public class DictionaryOperation (RxSList list, string input_key = "text", string output_key = "matches") : TextOperation(input_key, output_key)
+public class DictionaryOperation (RxSList list, bool fullMatchText = false, string input_key = "text", string output_key = "matches", RxS? full_match_fail = null) : TextOperation(input_key, output_key)
 {
   protected Regex OpRegex => new(list.Combined, TokenOptions.All);
+  protected Regex OpRegexFail => full_match_fail is null ? OpRegex : new(full_match_fail, TokenOptions.All);
 
   protected override void Execute ()
   {
@@ -22,8 +23,23 @@ public class DictionaryOperation (RxSList list, string input_key = "text", strin
     else if (input is IEnumerable<string> list)
     {
       Collection<MatchData> result = [];
-      foreach (string line in list)
-        result.AddRange(OpRegex.Matches(line).ToMDDCollection());
+      foreach (string part in list)
+      {
+        Collection<MatchData> mdds = OpRegex.Matches(part).ToMDDCollection();
+        if (fullMatchText && mdds.Count > 1)
+        {
+          Match m = OpRegexFail.Match(part);
+          if (m.Success)
+            result.Add(new MatchData(m));
+        }
+        else
+          result.AddRange(mdds);
+      }
+      if (result.Count != list.Count() && fullMatchText)
+      {
+        Debug.Log("DictionaryOperation", "Execute()", $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
+      }
+
       Status = OpStatus.Pass;
       _workToReturn = result;
     }

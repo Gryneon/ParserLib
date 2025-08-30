@@ -1,0 +1,11 @@
+script - 'script' (#int|#str) #scripttype-'{'-(#statement?+)-'}'-
+script - 'script' (#int|#str) '('-((#param+)|'void')-'{'-(#statement?+)-'}'-
+function - 'function' #name '('-((#param+)|'void')-'{'-(#statement?+)-'}'-
+param - #type #name-('='(#int|#str|#bool|))?-
+var_decl -  #type #name-(','-#name-)+';'-
+zs_defaults - 'defaults'-'{'-(#prop|#flag|#combo)?+-'}'-
+zs_class - 'class' #name-':'-#name-'{'-(#zs_defaults|#zs_states)-'}'
+
+
+https://regex101.com/r/NQKjEC/3
+^(?'ref_name'\w+)\s*\-\s*(?'line''(?'literal'.+?)'|(?'ws_req'\ )|(?'opt_ws_or_comment'\-)|\#(?'ref'\w+)|(?'gp_start'\()|(?'gp_end'\))|(?'opt'\?)|(?'more'\+)|(?'or'\|))*$\s*

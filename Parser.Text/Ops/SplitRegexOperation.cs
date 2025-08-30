@@ -4,27 +4,30 @@ public class SplitRegexOperation (RxSList splits, string input_key = "text", str
 {
   protected Regex OpRegex => new(splits.Combined, TokenOptions.All);
 
-  public override OpStatus DoOperation (TextParser parser)
+  protected override void Execute ()
   {
-    Initialize(parser);
-    CheckInputNull();
+    bool isNotEmpty (string s) => s.IsNotEmpty();
+    IEnumerable<string> split (string s) => OpRegex.Split(s);
 
-    if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
-
-    Collection<string> result = [];
-
-    if (_workToReturn is string s)
-      result = [.. OpRegex.Split(s)];
-    else if (_workToReturn is IEnumerable<string> list)
-      result = list.Select(item => OpRegex.Split(item)).Condense();
+    if (CheckInput(out string? s))
+    {
+      _workToReturn =
+        split(s).
+        Where(isNotEmpty).
+        ToCollection();
+    }
+    else if (CheckInput(out IEnumerable<string>? list))
+    {
+      _workToReturn =
+        list.
+        Select(split).
+        Condense().
+        Where(isNotEmpty).
+        ToCollection();
+    }
     else
-      return OpStatus.FailBadInputType;
-
-    result.TrimEmpty();
-    _workToReturn = result;
-
-    AssignResult<Collection<string>>();
-
-    return AdjustedStatus;
+    {
+      Status = OpStatus.FailBadInputType;
+    }
   }
 }

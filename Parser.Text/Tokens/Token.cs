@@ -9,7 +9,7 @@ namespace Parser.Text.Tokens;
 /// A basic token object used by the <see cref="TextParser"/>.<br/>
 /// </remarks>
 /// <seealso cref="IToken"/>
-public class Token : IToken, ICloneable
+public class Token : IToken, ICloneable, IHasChildren<IToken>
 {
   #region Properties - Content
   /// <summary>
@@ -41,6 +41,9 @@ public class Token : IToken, ICloneable
 
   public Dictionary<string, string> Properties { get; init; } = [];
   public string DebugOutput => $"Token: {Type} - {Content}";
+
+  public int Count => Children.Count;
+
   /// <summary>
   /// Creates a <see cref="Token"/> from a string and optionally a type.
   /// </summary>
@@ -138,4 +141,5 @@ public class Token : IToken, ICloneable
   public object Clone () => new Token(this);
   public static Token Generate (MatchData mdd) => new(mdd);
   public bool Equals (TokenTemplateNode other) => other.IsMatch(this, out _);
+  public void Add (IToken child) => Children.Add((Token) child);
 }

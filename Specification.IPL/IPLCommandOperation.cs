@@ -28,6 +28,7 @@ public class IPLCommandOperation (string input_key, string output_key) : TextOpe
 
     foreach (CommandData item in items)
     {
+      Debug.Log("IPLCommandOperation", $"Processing command: {item.FullCommandText}");
       bool isPrintCommand () =>
         item.Type is ICT.Simple && (item.CmdLetter is "<ETB>" || item.CmdLetter.StartsWith(Chars.ETB));
       bool isResetFieldCommand () =>

@@ -179,7 +179,7 @@
             <item><c>text:</c> The working text as a <see langword="string"/></item>
             <item><c>matches:</c> The <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Common.Regex.MatchData"/> objects that <see cref="T:Parser.Text.Ops.DictionaryOperation"/> creates.</item>
             <item><c>tokens:</c> The <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Text.Tokens.IToken"/> objects that <see cref="T:Parser.Text.Ops.TokenizeOperation"/> creates.</item>
-            <item><c>results:</c> The end result.</item>
+            <item><c>result:</c> The end result.</item>
             </list>
             </summary>
             <remarks>Any string may be used as a key.</remarks>

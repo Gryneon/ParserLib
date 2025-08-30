@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<xs:schema
+  attributeFormDefault="unqualified"
+  elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:cmd="Commands/Reference"
+  targetNamespace="Commands/Reference"
+  xml:lang="en-us">
+  <xs:simpleType  name="propertyname">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="setmode"/>
+      <xs:enumeration value="modereq"/>
+      <xs:enumeration value="minargs"/>
+      <xs:enumeration value="maxargs"/>
+      <xs:enumeration value="type"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name ="property">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="name" type="cmd:propertyname" use="required" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name ="command">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" name="property" type="cmd:property"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="escaped" type="xs:boolean" use="optional" />
+    <xs:attribute name="shifted" type="xs:boolean" use="optional" />
+  </xs:complexType>
+  <xs:complexType name ="linecommand">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" name="property" type="cmd:property"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="escaped" type="xs:boolean" use="optional" />
+    <xs:attribute name="shifted" type="xs:boolean" use="optional" />
+    <xs:attribute name="hascontent" type="xs:boolean" use="required"/>
+  </xs:complexType>
+  <xs:element name="commands">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="linecmd" type="cmd:linecommand"/>
+        <xs:element maxOccurs="unbounded" name="cmd" type="cmd:command"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

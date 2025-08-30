@@ -85,6 +85,11 @@ public abstract class TextOperation : Operation
   }
   protected override void CheckInputNull ()
   {
+    if (_input_key == SE || IgnoreAllLoads)
+    {
+      Debug.Log("TextOperation.CheckInputNull", $"No key checked.");
+      Status = OpStatus.Skipped;
+    }
     if (!_parser.Work.ContainsKey(_input_key))
     {
       Debug.Log("TextOperation.CheckInputNull", $"Key {_input_key} does not exist.");

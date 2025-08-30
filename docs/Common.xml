@@ -306,6 +306,11 @@
         <member name="M:Common.Excel.RangeNode.Equals(Common.Excel.RangeNode)">
             <inheritdoc/>
         </member>
+        <member name="T:Common.Extensions.CharExtensions">
+            <summary>
+            Extension methods for the <see cref="T:System.Char"/> type.
+            </summary>
+        </member>
         <member name="M:Common.Extensions.CharExtensions.IsLower(System.Char)">
             <summary>
             Checks if this character is lowercase a thru z.
@@ -319,6 +324,11 @@
             </summary>
             <param name="c">The character to make uppercase.</param>
             <returns>The uppercase variant, or the character itself.</returns>
+        </member>
+        <member name="T:Common.Extensions.CollectionExtensions">
+            <summary>
+            Extension methods for collections.
+            </summary>
         </member>
         <member name="M:Common.Extensions.EnumExtensions.ToInt(System.IConvertible)">
             <summary>
@@ -501,6 +511,18 @@
             Const empty string for compile time availability
             </summary>
         </member>
+        <member name="T:Common.Regex.AbsentGroupException">
+            <summary>
+            The exception thrown when a regex group is not found.
+            </summary>
+            <param name="group">The named regex group to look for.</param>
+        </member>
+        <member name="M:Common.Regex.AbsentGroupException.#ctor(System.String)">
+            <summary>
+            The exception thrown when a regex group is not found.
+            </summary>
+            <param name="group">The named regex group to look for.</param>
+        </member>
         <member name="T:Common.Regex.CaptureData">
             <summary>
             Data for one capture.
@@ -523,6 +545,16 @@
         </member>
         <member name="P:Common.Regex.CaptureData.Name">
             <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.CommonRegex.WS_Req">
+            <summary>
+            Required Whitespace (including new lines)
+            </summary>
+        </member>
+        <member name="P:Common.Regex.CommonRegex.WS">
+            <summary>
+            Optional Whitespace (including new lines)
+            </summary>
         </member>
         <member name="T:Common.Regex.EmptyGroupException">
             <summary>

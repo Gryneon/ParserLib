@@ -96,7 +96,7 @@ public static class Definition
     CaseInsensitive = true,
     FileInferences = [IfN(ExtIs, "json")],
     Operations = [
-        new DictionaryOperation(Reader, "initial", "matches"),
+        new DictionaryOperation(Reader, false, "initial", "matches"),
         new DebugToStringOperation("matches"),
         new TokenizeOperation(),
         new DebugToStringOperation("tokens"),

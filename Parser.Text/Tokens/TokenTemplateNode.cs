@@ -5,6 +5,7 @@ namespace Parser.Text.Tokens;
 /// </summary>
 public readonly struct TokenTemplateNode : IEquatable<IToken>
 {
+  internal static string Area = "TokenTemplateNode.IsMatch";
   /// <summary>
   /// The accepted types this template will accept.<br/>
   /// To accept all types, use <c>T_NoType</c>.
@@ -78,7 +79,7 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
       }
     }
 
-    Debug.Log("TokenTemplateNode.IsMatch", passType ? $"Type {Type} Passed." : $"Type {Type} Failed ({token})");
+    Debug.Log(Area, passType ? $"Type {Type} Passed." : $"Type {Type} Failed ({token})");
 
     bool passContent = Match.IsEmpty();
     foreach (string content in Match)
@@ -92,7 +93,7 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
       }
     }
 
-    Debug.Log("TokenTemplateNode.IsMatch", passContent ? $"Content {Match.TextJoin(" or ")} Passed." : $"Content {Match.TextJoin(" or ")} Failed ({token})");
+    Debug.Log(Area, passContent ? $"Content {Match.TextJoin(" or ")} Passed." : $"Content {Match.TextJoin(" or ")} Failed ({token})");
 
     if (passContent && passType)
     {
@@ -116,4 +117,5 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
   public static implicit operator TokenTemplateNode ((TokenType Type, string c) tuple) => new(tuple.Type, [tuple.c]);
   public static implicit operator TokenTemplateNode (TokenType type) => new(type);
   public static implicit operator TokenTemplateNode (TokenType[] list) => new(list);
+  public static implicit operator TokenTemplateNode (string match) => new(match);
 }

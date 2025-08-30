@@ -11,39 +11,42 @@ namespace Parser.Text.Ops;
 /// <param name="func">The generation function.</param>
 /// <param name="predicate">The condition that the generation function requires.</param>
 /// <param name="input_key">The key to pull data from.</param>
-public class GenerateOperation<TOut> (Func<MatchData, TOut> func, Predicate<IMatchItem> predicate, string input_key, string output_key) : TextOperation(input_key, output_key)
+public class GenerateOperation<TOut> (Func<MatchData, TOut> func, Func<IMatchItem, bool> predicate, string input_key, string output_key) : TextOperation(input_key, output_key)
 {
+  protected Dictionary<int, TOut> _results = [];
   /// <inheritdoc/>
-  public override OS DoOperation (TextParser parser)
+  protected override void Execute ()
   {
-    CheckOperationFlags();
-    if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
-    Initialize(parser);
-    CheckInputNull();
-    if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
-
     if (CheckInput(out IEnumerable<MatchData>? mdds))
     {
-      foreach (MatchData mdd in mdds)
-        Invoke(mdd);
+      Collection<MatchData> mddList = mdds.ToCollection();
+      for (int i = 0; i < mddList.Count; i++)
+      {
+        MatchData mdd = mddList[i];
+
+        if (predicate(mdd))
+        {
+          TOut? result = func(mdd);
+          _results.Add(i, result);
+        }
+      }
+      _workToReturn = _results;
+      Status = OS.Pass;
     }
     else if (CheckInput(out MatchData? mdd))
-      Invoke(mdd);
-    else
-      return OS.FailBadInputType;
-    return OS.Pass;
-  }
-
-  protected virtual void Invoke (MatchData mdd)
-  {
-    if (predicate(mdd))
     {
-      TOut output = func(mdd);
-
-      if (output is null)
-        return;
-
-      AssignResult<TOut>(DictionaryMode.MakeList);
+      if (predicate(mdd))
+      {
+        TOut? result = func(mdd);
+        _workToReturn = result;
+        Status = OS.Pass;
+      }
+      else
+      {
+        Status = OS.Skipped;
+      }
     }
+    else
+      Status = OS.FailBadInputType;
   }
 }

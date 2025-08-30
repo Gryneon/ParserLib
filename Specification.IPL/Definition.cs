@@ -41,7 +41,7 @@ public class Definition
     Letter = Nm("letter", @"[A-Za-z]"),
     TextD3 = Nm("d3", Nm("letter", "d") + Nm("value", "3")),
     LetterF = Nm("letter", "F"),
-    TextPart = Nm("text", ".*?"),
+    TextPart = Nm("text", ".*"),
     CharPart = Nm("char", @"[a-zA-Z]|<[A-Z]{2,3}>");
 
   /// <summary>
@@ -55,7 +55,7 @@ public class Definition
     Field = Nm("field", Escape + LetterF + Gp(Value + "|" + Rx(@"""[^""]"""))),
     Text = TextD3 + "," + TextPart,
     Default = EscapeOpt + ShiftOpt + Letter + Gp(Value + $"(?:,{Value})*").Opt,
-    FieldText = Nm("fieldtext", @".*");
+    FieldText = Nm("fieldtext", @".+");
   public static RxSList Regex => [Qty, Adv, Simple, Text, Field, Default, FieldText];
   public static Regex OpRegex => new(Regex, TokenOptions.All);
 
@@ -64,9 +64,9 @@ public class Definition
     Name = "ipl",
     Operations = [
       new SplitRegexOperation(Splits, "initial", "splits"),
-      new DictionaryOperation(Regex, "splits", "matches"),
+      new DictionaryOperation(Regex, true, "splits", "matches"),
       new GenerateOperation<CommandData>(CommandData.Generate, item => true, "matches", "commands"),
-      new IPLCommandOperation("commands", "results"),
+      new IPLCommandOperation("commands", "result"),
     ],
     FileInferences = [
       IfN(ExtIs, "ipl"),

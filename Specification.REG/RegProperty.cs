@@ -99,4 +99,6 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, Reg
   /// </summary>
   /// <param name="data">The data to place in the field.</param>
   public void SetParseData (MatchData data) => ParseData = data;
+  public void AssignValue (string value) => Value = value;
+  public void AssignValue (object value) => Value = value?.ToString() ?? SE;
 }

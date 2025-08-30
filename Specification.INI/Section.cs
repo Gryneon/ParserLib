@@ -24,7 +24,7 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <summary>
   /// The name of the section.
   /// </summary>
-  public required string Name { get; set; }
+  public string Name { get; set; } = SE;
   /// <summary>
   /// The properties within the section.
   /// </summary>
@@ -37,10 +37,10 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   public string this[string key]
   {
     get => Properties[key].Value;
-    set => Set(key, value);
+    set => Set<PropertyObj>(key, value);
   }
   /// <inheritdoc/>
-  public int Count => Properties.Count;
+  public virtual int Count => Properties.Count;
   /// <inheritdoc/>
   bool ICollection<PropertyObj>.IsReadOnly => false;
   /// <inheritdoc/>
@@ -57,10 +57,10 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// </summary>
   /// <param name="key">The key name.</param>
   /// <param name="value">The value to set it to.</param>
-  public void Set (string key, string value)
+  public void Set<T> (string key, string value) where T : IProperty<string>, new()
   {
     if (!Properties.Contains(key))
-      Properties.Add(new(key, value));
+      Properties.Add(new T() { Key = key, Value = value });
     else
       Properties[key].Value = value;
   }
@@ -97,7 +97,7 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <param name="children">The properties to add.</param>
   public void AddRange (IEnumerable<PropertyObj> children) => SetRange(children);
   /// <inheritdoc/>
-  public IEnumerator<PropertyObj> GetEnumerator () => Properties.GetEnumerator();
+  public IEnumerator<PropertyObj> GetEnumerator () => (IEnumerator<PropertyObj>) Properties.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   /// <inheritdoc/>
   public void Clear () => Properties.Clear();
@@ -114,15 +114,15 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <returns><see langword="true"/> if the property was removed, <see langword="false"/> otherwise.</returns>
   public bool Remove (string name) => Properties.Remove(name);
   /// <inheritdoc/>
-  public string Serialize () => $"[{Name}]";
+  public virtual string Serialize () => $"[{Name}]";
   /// <inheritdoc/>
-  public object Clone ()
+  public virtual object Clone ()
   {
     Section result = new(Name);
 
-    foreach (PropertyObj item in Properties)
+    foreach (IProperty<string> item in Properties)
     {
-      result.Properties.Add(new(item.Key, item.Value));
+      result.Properties.Add(new PropertyObj(item.Key, item.Value));
     }
     return result;
   }

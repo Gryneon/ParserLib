@@ -107,7 +107,7 @@ public static class Definition
       IfN(ExtIs, "mapinfo"),
       IfN(FName |Is, "mapinfo")],
     Operations = [
-        new DictionaryOperation(Reader, "initial"),
+        new DictionaryOperation(Reader, false, "initial"),
         new TokenizeOperation(),
         new TokenTemplateOperation("tokens", "tokens_templated", Templates)
       ],

@@ -6,7 +6,7 @@ namespace Parser.Text.Tokens;
 /// Base interface for tokens.
 /// Reference this and not <see cref="Token"/> unless defining a class.
 /// </summary>
-public interface IToken : IEquatable<TokenTemplateNode>, IGeneratable<MatchData, Token>
+public interface IToken : IEquatable<TokenTemplateNode>, IGeneratable<MatchData, Token>, IHasChildren<IToken>
 {
   Dictionary<string, string> Properties { get; init; }
   /// <summary>

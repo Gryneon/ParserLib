@@ -4,7 +4,7 @@ using static Parser.OpStatus;
 
 namespace Parser.Binary.Ops;
 
-public class ByteReadOperation (string output_key, int size, ByteReadMode mode = ByteReadMode.Value) : ByteOperation(EmptyString, output_key)
+public class ByteReadOperation (string output_key, int size = -1, ByteReadMode mode = ByteReadMode.Value) : ByteOperation(EmptyString, output_key)
 {
   public string VarName { get; } = output_key;
   public int Size { get; } = size;
@@ -19,6 +19,8 @@ public class ByteReadOperation (string output_key, int size, ByteReadMode mode =
       8 when Mode is ByteReadMode.Value => BParser.ReadLong(),
       > 0 when Mode is ByteReadMode.Text => BParser.ReadString(Size),
       > 0 when Mode is ByteReadMode.Binary => BParser.ReadNext(Size).ToArray(),
+      -1 when Mode is ByteReadMode.Text => BParser.ReadString(BParser.ByteRemain),
+      -1 when Mode is ByteReadMode.Binary => BParser.ReadNext(BParser.ByteRemain).ToArray(),
       _ => null
     };
 

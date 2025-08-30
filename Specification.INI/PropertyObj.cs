@@ -8,18 +8,15 @@ public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<strin
   /// <summary>
   /// The key name.
   /// </summary>
-  public required string Key { get; set; }
+  public string Key { get; set; } = SE;
   /// <summary>
   /// The value assigned to the key.
   /// </summary>
   public string Value { get; set; } = SE;
-  /// <inheritdoc/>
-  public MatchData ParseData { get; set; }
-
   /// <summary>
   /// Creates an empty <see cref="PropertyObj"/>.
   /// </summary>
-  protected internal PropertyObj () => ParseData = [];
+  public PropertyObj () { }
 
   /// <summary>
   /// Creates a property from a key and value
@@ -31,7 +28,6 @@ public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<strin
   {
     Key = key;
     Value = value;
-    ParseData = [];
   }
   /// <inheritdoc/>
   public static PropertyObj Generate (MatchData input)
@@ -66,8 +62,6 @@ public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<strin
   public string Serialize () => $"  {Key}={Value}";
   /// <inheritdoc/>
   public bool Equals (PropertyObj? other) => throw new NotImplementedException();
-  /// <inheritdoc/>
-  public void SetParseData (MatchData data) => ParseData = data;
   /// <summary>
   /// TODO: Doc
   /// </summary>

@@ -30,9 +30,17 @@ public static class Debug
   private static void DoLog (string msg)
   {
 #if DEBUG
-    Console.SetCursorPosition(0, LineStart + LineCount);
-    if (Verbose) Console.WriteLine(msg);
-    LineCount++;
+    try
+    {
+      if (Console.CursorTop < LineStart + LineCount)
+        Console.SetCursorPosition(0, LineStart + LineCount);
+      if (Verbose) Console.WriteLine(msg);
+      LineCount++;
+    }
+    catch (Exception)
+    {
+
+    }
 #endif
   }
   /// <summary>
@@ -48,7 +56,7 @@ public static class Debug
   /// <param name="msg">The message to log.</param>
   public static void Log (string src, string msg) =>
     DoLog($"{src} : {msg}");
-
+  public static void Log (string src, string proc, string msg) => DoLog($"{src}.{proc} : {msg}");
   public static void LogException (Exception e) =>
     LogFrom(e?.Source, e?.TargetSite?.Name, e?.Message);
   /// <summary>
@@ -59,4 +67,5 @@ public static class Debug
   /// <param name="msg">The message to log.</param>
   private static void LogFrom (string? src, string? target, string? msg) =>
     DoLog($"{src}.{target} : {msg}");
+
 }

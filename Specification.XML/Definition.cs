@@ -20,7 +20,7 @@ public class Definition
   /// Old: https://regex101.com/r/jcPotD/4
   /// </summary>
   public static RxSList Regex => [
-    Nm("tag", $@"<\s*(?<endtag>\/)?\s*(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+{Attribute})*\s*(?<noinsidetag>\/)?\s*>"),
+    Nm("tagname", $@"<\s*(?<endtag>\/)?\s*(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+{Attribute})*\s*(?<noinsidetag>\/)?\s*>"),
     Nm("header", Rx(@"<\?(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+") + Attribute + Rx(@")*\s*\?>")),
     Nm("ws", @"(?<=>)\s+(?=<)"),
     Nm("comment", @"<!--(-(?!-)|[^-])*?-->"),
@@ -39,7 +39,7 @@ public class Definition
     Mt("ws") | TF_Ignore,
     "endtag",
     "noinsidetag",
-    "tag",
+    "tagname",
     "content",
     "header"
   ];
@@ -70,7 +70,7 @@ public class Definition
     CaseInsensitive = false,
     ExplicitCapture = true,
     Operations = [
-      new DictionaryOperation(Regex, "initial"),
+      new DictionaryOperation(Regex, false, "initial"),
       new TokenizeOperation(TokenTypes, "matches"),
       .. GenerationOps,
       new XMLStackOperation("objects", "xml"),
@@ -80,7 +80,7 @@ public class Definition
       Mt("ws") | TF_Ignore,
       "endtag",
       "noinsidetag",
-      "tag",
+      "tagname",
       "content",
       "header",
       "attrname",

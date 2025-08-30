@@ -1,9 +1,11 @@
+using Common;
+
 namespace Specification.XML;
 
 /// <summary>
 /// Represents an XML attribute.
 /// </summary>
-public class XMLProperty () : IXMLObject
+public class XMLProperty () : IXMLObject, IProperty<string>
 {
   /// <summary>
   /// The attribute name.
@@ -22,4 +24,9 @@ public class XMLProperty () : IXMLObject
   /// The attribute name.
   /// </summary>
   string IXMLObject.Tag => Key;
+
+  /// <inheritdoc/>
+  public int CompareTo (IProperty<string>? other) => other is null ? -1 : other.CompareTo(this) * -1;
+  /// <inheritdoc/>
+  public bool Equals (IProperty<string>? other) => other is not null && other.Equals(this);
 }

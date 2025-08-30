@@ -14,7 +14,7 @@ public class TextSpec : Spec
     FileInferences = [],
     Name = "textbylines",
     Operations = [
-      new SplitByLinesOperation("initial", "results"),
+      new SplitByLinesOperation("initial", "result"),
       Operation.End
     ]
   };

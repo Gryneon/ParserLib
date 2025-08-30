@@ -8,13 +8,15 @@
             <summary>
             A parser that reads binary files.
             </summary>
+            <remarks>Creates a new parser object.</remarks>
             <param name="bytes">The raw file data.</param>
             <param name="spec">The spec to use.</param>
         </member>
-        <member name="M:Parser.Binary.ByteParser.#ctor(System.Byte[],Parser.Spec)">
+        <member name="M:Parser.Binary.ByteParser.#ctor(Parser.Spec,System.Byte[])">
             <summary>
             A parser that reads binary files.
             </summary>
+            <remarks>Creates a new parser object.</remarks>
             <param name="bytes">The raw file data.</param>
             <param name="spec">The spec to use.</param>
         </member>
@@ -51,6 +53,16 @@
         <member name="P:Parser.Binary.ByteParser.BytePos">
             <summary>
             The current position in the binary file.
+            </summary>
+        </member>
+        <member name="P:Parser.Binary.ByteParser.ByteRemain">
+            <summary>
+            The size of the binary file.
+            </summary>
+        </member>
+        <member name="P:Parser.Binary.ByteParser.ByteSize">
+            <summary>
+            The size of the binary file.
             </summary>
         </member>
         <member name="P:Parser.Binary.ByteParser.Spec">

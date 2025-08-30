@@ -177,7 +177,7 @@
         </member>
         <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Common.Regex.MatchData)">
             <summary>
-            Assigns attributes nased on a <see cref="T:Common.Regex.MatchData"/>.
+            Assigns attributes based on a <see cref="T:Common.Regex.MatchData"/>.
             </summary>
             <param name="mdd"></param>
         </member>
