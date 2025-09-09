@@ -1,27 +1,24 @@
 //using Parser.Text.Tokens;
 
 namespace Parser.Text.Ops;
-public class SplitByDelimOperation ([SS("Regex")] string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected Regex OpRegex => new(delimiter, TokenOptions.All);
 
-  /// <inheritdoc/>
+public class CombineDelimOperation (string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
+{
   protected override void Execute ()
   {
-    if (CheckInput(out string? s))
+    if (CheckInput(out string? casted))
     {
-      _workToReturn = OpRegex.Split(s);
-      Status = OpStatus.Pass;
+      Status = OpStatus.Skipped;
     }
     else if (CheckInput(out IEnumerable<string>? list))
     {
-      _workToReturn = list.
-        Select(item => OpRegex.Split(item)).
-        Condense();
       Status = OpStatus.Pass;
+      _workToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
     }
     else
+    {
       Status = OpStatus.FailBadInputType;
+    }
   }
 }
 #if false

@@ -59,7 +59,7 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
   /// This function does not check token flags, those are handled in the operation mechanics.
   /// </returns>
 
-  public bool IsMatch (IToken? token, [NotNullWhen(true)] out TokenTemplateMatch? match)
+  public bool IsMatch (IToken? token, [NotNullWhen(true)][MaybeNullWhen(false)] out TokenTemplateMatch? match)
   {
     match = null;
 
@@ -102,7 +102,8 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
         TemplateNode = this,
         Token = token,
         MatchedToken = exactType,
-        PropName = NewPropName
+        PropName = NewPropName,
+        TemplateTypeIndex = Array.IndexOf(Type, exactType)
       };
       return true;
     }

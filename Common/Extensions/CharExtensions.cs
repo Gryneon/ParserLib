@@ -22,10 +22,20 @@ public static class CharExtensions
   public static bool IsLower (this char c) => c.In(_a, _z);
   public static bool IsUpper (this char c) => c is >= _A and <= _Z;
   public static bool IsControl (this char c) => c < 32;
+  /// <summary>
+  /// Checks if this character must be represented in 16 bits (256-65535).
+  /// </summary>
+  /// <param name="c">The character to check.</param>
+  /// <returns><see langword="true"/> if it is within the specified range, otherwise <see langword="false"/>.</returns>
   public static bool Is16bit (this char c) => c.In(256, short.MaxValue);
   public static bool IsNumber (this char c) => c.IsInteger() || c is '.';
   public static bool IsInteger (this char c) => c.IsPosInteger() || c is '-';
   public static bool IsPosInteger (this char c) => c.In('0', '9');
+  /// <summary>
+  /// Checks if a character is considered whitespace by Unicode standards.
+  /// </summary>
+  /// <param name="c">The character to check.</param>
+  /// <returns><see langword="true"/> if the character is whitespace, otherwise <see langword="false"/>.</returns>
   public static bool IsWhitespace (this char c) =>
     c.In(9, 13) || c.In(8192, 8202) || (int) c is 32 or 133 or 160 or
     5760 or 8232 or 8233 or 8239 or 8287 or 12288;

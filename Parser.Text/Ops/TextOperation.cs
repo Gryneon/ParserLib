@@ -79,7 +79,7 @@ public abstract class TextOperation : Operation
   protected override void Execute ()
   {
     if (_function is null || _workToReturn is null)
-      return;
+      ThrowNoOverrideError();
 
     Status = _function(ref _workToReturn);
   }

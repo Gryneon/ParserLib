@@ -1,9 +1,201 @@
 #pragma warning disable IDE1006 // Naming Styles
 
+using static Parser.DefinitionStaticFunctions;
+
 namespace Parser.Text.Ops;
 
+internal enum TokenTypeTempSpecial
+{
+  None = 0,
+  GroupSt = 1,
+  GroupEn = 2,
+  Or = 3,
+  Ws = 4,
+  WsO = 5,
+  More = 6,
+  Opt = 7,
+  Literal = 8,
+  Ref = 9,
+  Base = 10,
+  Group = 11
+}
+
+public static class TokenTypeItemFactory
+{
+  public static readonly RxS Regex = Rx(@"(?'line''(?'literal'(?:[^']|'')+?)'|(?'ws_req'\ )|(?'opt_ws_or_comment'\-)|\#(?'ref'[\w_]+)|\$(?'base'[\w_]+)|(?'gp_start'\()|(?'gp_end'\))|(?'opt'\?)|(?'more'\+)|(?'or'\|))");
+
+  internal static MatchDataCollection GetMatchData (string token_type_string) =>
+    new Regex(Regex).Matches(token_type_string).ToMDDCollection();
+
+  internal static TokenTypeGroup GetTokenItems (MatchDataCollection mdc)
+  {
+    TokenTypeGroup result = new();
+    TokenTypeItem previous = null!;
+    TokenTypeGroup parent = result;
+    int depth = 0;
+
+
+    foreach (MatchData md in mdc)
+    {
+      TokenTypeItem? item = TokenTypeItem.Generate(md);
+
+      if (item is null)
+        continue;
+      if (parent is null)
+        continue;
+
+      if (item.Type is TokenTypeTempSpecial.GroupSt)
+      {
+        TokenTypeGroup groupItem = new()
+        {
+          Parent = parent
+        };
+        depth++;
+        parent!.Add(groupItem);
+        parent = groupItem;
+      }
+      else if (item.Type is TokenTypeTempSpecial.GroupEn)
+      {
+        parent.AddOption();
+        if (parent.Parent is not null)
+          parent = parent.Parent;
+        depth--;
+
+        if (depth < 0)
+          throw new InvalidOperationException("Mismatched parentheses in token type string.");
+      }
+      else if (item.Type is TokenTypeTempSpecial.More)
+      {
+        if (previous is null)
+          throw new InvalidOperationException("Nothing to apply '+' to in token type string.");
+
+        previous.IsOneOrMany = true;
+      }
+      else if (item.Type is TokenTypeTempSpecial.Opt)
+      {
+        if (previous is null)
+          throw new InvalidOperationException("Nothing to apply '?' to in token type string.");
+
+        previous.IsOptional = true;
+      }
+      else
+      {
+        parent.Add(item);
+      }
+    }
+    parent?.AddOption();
+
+    return result;
+  }
+
+  internal static string[] GetPossibleRegexStrings (TokenTypeGroup group, Collection<string> passed)
+  {
+    Collection<string> results = [];
+    RxS builder = SE;
+
+    foreach (Collection<TokenTypeItem> option in group.Options)
+    {
+      foreach (TokenTypeItem item in option)
+      {
+        if (item is TokenTypeGroup subgroup)
+        {
+          results.AddRange(GetPossibleRegexStrings(subgroup, results));
+        }
+        else
+        {
+          builder += item.GetRegex();
+        }
+      }
+      results.Add(builder);
+    }
+    return [.. results];
+  }
+}
+
+internal abstract class TokenTypeItem : IGeneratable<MatchData, TokenTypeItem>
+{
+  public TokenTypeTempSpecial Type { get; set; }
+  public bool IsOptional { get; set; }
+  public bool IsOneOrMany { get; set; }
+  public TokenTypeGroup? Parent { get; set; }
+
+  public static TokenTypeItem? Generate (MatchData input)
+  {
+    if (input.DoesNotHaveGroup("line"))
+      return null;
+
+    else if (input.HasGroup("gp_start"))
+      return new TokenTypeBasic(TokenTypeTempSpecial.GroupSt, "(", "(?:");
+
+    else if (input.HasGroup("gp_end"))
+      return new TokenTypeBasic(TokenTypeTempSpecial.GroupEn, ")", ")");
+
+    else if (input.HasGroup("or"))
+      return new TokenTypeBasic(TokenTypeTempSpecial.Or, "|", "|");
+
+    else if (input.HasGroup("literal"))
+      return new TokenTypeBasic(TokenTypeTempSpecial.Literal, input["literal"].Content, input["literal"].Content);
+
+    else if (input.HasGroup("opt"))
+      return new TokenTypeBasic(TokenTypeTempSpecial.Opt, "?", "?");
+
+    else if (input.HasGroup("more"))
+      return new TokenTypeBasic(TokenTypeTempSpecial.More, "+", "+");
+
+    else if (input.HasGroup("ws_req"))
+      return new TokenTypeBasic(TokenTypeTempSpecial.Literal, " ", );
+
+    return null;
+  }
+  public abstract RxS GetRegex ();
+  public abstract string GetLiteral ();
+}
+
+internal sealed class TokenTypeBasic : TokenTypeItem
+{
+  public string Literal { get; set; }
+  public RxS Regex { get; set; }
+  public TokenTypeBasic (TokenTypeTempSpecial type, string literal, RxS regex)
+  {
+    Type = type;
+    Literal = literal;
+    Regex = regex;
+  }
+  public override string GetLiteral () => Literal;
+  public override RxS GetRegex () => Regex;
+}
+
+internal sealed class TokenTypeGroup : TokenTypeItem
+{
+  public Collection<TokenTypeItem> Items { get; set; } = [];
+  public Collection<Collection<TokenTypeItem>> Options { get; set; } = [];
+  public TokenTypeGroup () => Type = TokenTypeTempSpecial.Group;
+  public void Add (TokenTypeItem item)
+  {
+    if (item.Type is TokenTypeTempSpecial.Or)
+      AddOption();
+    else
+      Items.Add(item);
+  }
+  public void AddOption ()
+  {
+    if (Items.Count > 0)
+    {
+      Options.Add(Items);
+      Items = [];
+    }
+  }
+  public override RxS GetRegex () => "(?:" + string.Concat(Items.Select(item => item.GetRegex())) + ")";
+  public override string GetLiteral () => "(" + string.Concat(Items.Select(item => item.GetLiteral())) + ")";
+}
+
+/// <summary>
+/// TODO: This operation is buggy and not yet functional.
+/// </summary>
 public class TokenTemplateOperation : TextOperation
 {
+  private static readonly Regex regex = RX.TokenTemplateDefinition;
+
   //Operation Counts
   private int replacements;
   private int totalchanges;
@@ -33,8 +225,8 @@ public class TokenTemplateOperation : TextOperation
   private IToken token => tokens[token_index];
 
   //Flags of Current Selections
-  private bool isOptional => template.Type.Any(item => item.IsOptional());
-  private bool isOneOrMany => template.Type.Any(item => item.IsOneOrMany());
+  private bool isOptional (int i) => template.Type[i].IsOptional();
+  private bool isOneOrMany (int i) => template.Type[i].IsOneOrMany();
   private bool isIgnored => token.Type.IsIgnored();
   private bool allow_fail;
 
@@ -42,6 +234,21 @@ public class TokenTemplateOperation : TextOperation
     formats = [template];
   public TokenTemplateOperation (string input_key, string output_key, IEnumerable<TokenTemplate> templates) : base(input_key, output_key) =>
     formats = [.. templates];
+
+  public TokenTemplateOperation (Dictionary<string, string> template_definitions, string input_key, string output_key) : base(input_key, output_key)
+  {
+    formats = [];
+
+    Collection<MatchData> mdds = [.. template_definitions.Select<KeyValuePair<string, string>, MatchData>(item => new(regex.Matches(item.Value).))];
+
+    foreach (MatchData mdd in mdds)
+    {
+      Collection<TokenTypeItem> nodes = [];
+      TokenTypeItem? nextItem = TokenTypeItem.Generate(mdd);
+      if (nextItem is not null)
+        nodes.Add(nextItem);
+    }
+  }
 
   private void ExecInitialize ()
   {
@@ -155,7 +362,7 @@ public class TokenTemplateOperation : TextOperation
       TryAssignMatch();
 
       //Allow additional of the same token
-      if (isOneOrMany)
+      if (isOneOrMany(matchitem.Value.TemplateTypeIndex))
       {
         allow_fail = true;
         AdvanceToken();
@@ -167,7 +374,7 @@ public class TokenTemplateOperation : TextOperation
       }
     }
     //Optional token, or condition already satisfied
-    else if (allow_fail || isOptional)
+    else if (allow_fail || isOptional(template_index))
       AdvanceTemplate();
     //Reset any possible match and advance token_index by 1
     else
@@ -178,112 +385,4 @@ public class TokenTemplateOperation : TextOperation
 
     goto LoopStart;
   }
-
-  //public override OpStatus DoOperation (TextParser parser)
-  //{
-  //  object data = parser.Work;
-
-  //  if (data is null)
-  //    return OpStatus.FailBadInputNull;
-
-  //  if (data is not IEnumerable<IToken> tokenParam)
-  //    return OpStatus.FailBadInputNull;
-
-  //  tokens = [.. tokenParam];
-  //  Collection<IToken> result = [];
-  //  replacements = 0;
-  //Begin:
-  //  for (int pos = 0; pos < tokens.Count; pos++)
-  //  {
-  //    for (format_index = 0; format_index < format_count; format_index++)
-  //    {
-  //      int i = 0;
-
-  //      if (template.CheckMatch(tokens, out Collection<TokenTemplateMatch> match, out Collection<IToken> reduced))
-  //      {
-  //        result.Add(new Token(match));
-  //      }
-  //      if (HasIgnoreFlag(tokens[i].Type))
-  //      {
-  //        i++;
-  //        replacements++;
-  //        totalchanges++;
-  //        continue;
-  //      }
-  //      if (MatchesTemplate(template, tokens, i, out Collection<TokenTemplateMatch>? results, out int consume_positions))
-  //      {
-  //        result.Add(new Token(template, results));
-  //        i += consume_positions;
-  //        replacements++;
-  //        totalchanges++;
-  //      }
-  //      else
-  //      {
-  //        result.Add(tokens[i]);
-  //        i++;
-  //      }
-  //    }
-
-  //    if (replacements > 0)
-  //    {
-  //      parser.Work = result;
-  //      format_index = 0;
-  //      replacements = 0;
-  //    }
-  //  }
-  //  return totalchanges > 0 ? OpStatus.Pass : OpStatus.Skipped;
-  //}
-
-  //private static bool MatchesTemplate (TokenTemplate template, Collection<IToken> tokens, int startIndex, [NotNullWhen(true)] out Collection<TokenTemplateMatch>? results, out int consume_positions)
-  //{
-  //  consume_positions = 0;
-  //  int templateIndex = 0;
-  //  int dataIndex = startIndex;
-  //  results = [];
-
-  //  while (templateIndex < template.Count && dataIndex < tokens.Count)
-  //  {
-  //    TokenTemplateNode templateNode = template[templateIndex];
-  //    TokenType dataTokenType = tokens[dataIndex].Type;
-  //    bool template_isOptional = templateNode.Type.Any(HasOptionalFlag);
-  //    bool template_oneOrMany = templateNode.Type.Any(HasOneOrManyFlag);
-
-  //    if (HasIgnoreFlag(tokens[dataIndex].Type))
-  //    {
-  //      dataIndex++;
-  //      consume_positions++;
-  //      continue;
-  //    }
-
-  //    if (templateNode.IsMatch(tokens[dataIndex], out TokenTemplateMatch? match) || template_isOptional)
-  //    {
-  //      if (match is not null)
-  //      {
-  //        results.Add(match.Value);
-  //        consume_positions++;
-  //        dataIndex++;
-  //      }
-  //      templateIndex++;
-  //    }
-  //    else if (template_oneOrMany)
-  //    {
-  //      while (dataIndex < tokens.Count && templateNode.IsMatch(tokens[dataIndex], out TokenTemplateMatch? match2))
-  //      {
-  //        consume_positions++;
-  //        dataIndex++;
-  //      }
-  //      templateIndex++;
-  //    }
-  //    else
-  //      return false;
-  //  }
-
-  //  return templateIndex == template.Count;
-  //}
-  //private static bool HasIgnoreFlag (TokenType tokenType) =>
-  //  (tokenType & TokenType.T_Ignore) == TokenType.T_Ignore;
-  //private static bool HasOptionalFlag (TokenType tokenType) =>
-  //  (tokenType & TokenType.T_Optional) == TokenType.T_Optional;
-  //private static bool HasOneOrManyFlag (TokenType tokenType) =>
-  //  (tokenType & TokenType.T_OneOrMany) == TokenType.T_OneOrMany;
 }

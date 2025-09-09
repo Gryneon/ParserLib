@@ -1,39 +1,14 @@
 namespace Parser;
 
-/// <summary>
-/// Tokenizer tokens.
-/// </summary>
-public readonly struct TokenType : IEquatable<TokenType>, IComparable<TokenType>, ICloneable
+public class TokenTypes : Collection<TokenType>
 {
-  /// <summary>
-  /// The type name of the token.
-  /// </summary>
-  public readonly string Name
-  {
-    get => field.ToLowerInvariant();
-    init => field = value.ToLowerInvariant();
-  }
-  public int Flags { get; init; }
-  public TokenType () : this(SE, 0) { }
-  public TokenType (string name) : this(name, 0) { }
-  public TokenType (string name, int flags)
-  {
-    Name = name;
-    Flags = flags;
-  }
-  public TokenType (TokenType token) : this(token.Name, token.Flags) { }
-  public readonly bool Equals (TokenType other) => Name == other.Name && Flags == other.Flags;
-  public static bool operator == (TokenType left, TokenType right) => left.Equals(right);
-  public static bool operator != (TokenType left, TokenType right) => !(left == right);
-  public static TokenType operator | (TokenType left, int right) => new() { Name = left.Name, Flags = left.Flags | right };
-  public static TokenType operator & (TokenType left, int right) => new() { Name = left.Name, Flags = left.Flags & right };
-  public override bool Equals (object? obj) => obj is string str && Equals(str) || obj is TokenType tt && Equals(tt);
-  public override int GetHashCode () => HashCode.Combine(Name, Flags);
-  public int CompareTo (TokenType other) => Name.CompareTo(other.Name, SCO);
-  public object Clone () => new TokenType() { Name = Name, Flags = Flags };
-  public static implicit operator TokenType (string name) => new(name);
-  public static implicit operator string (TokenType type) => type.Name;
-  public static readonly TokenType Any = new();
+  public static TokenTypes operator | (TokenTypes left, int right) => [.. left.Select(item => item | right)];
+  public static implicit operator TokenTypes (string[] names) => [.. names.Select(name => new TokenType(name))];
+  public static implicit operator TokenTypes (TokenType[] types) => [.. types];
+  public static TokenTypes operator & (TokenTypes left, int right) => [.. left.Select(item => item & right)];
+  public static TokenTypes operator + (TokenTypes left, TokenType right) => [.. left, right];
+  public void Add (string s) => base.Add(new TokenType(s));
+  public void Add (string s, int flags) => base.Add(new TokenType(s, flags));
 }
 
 #if false

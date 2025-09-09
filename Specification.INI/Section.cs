@@ -44,11 +44,14 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <inheritdoc/>
   bool ICollection<PropertyObj>.IsReadOnly => false;
   /// <inheritdoc/>
+  /// <remarks>
+  /// <list type="table">
+  /// <listheader>Required Groups:</listheader>
+  /// <item><c>name</c></item> : The name of the section.<item></item><br/>
+  /// </list>
+  /// </remarks>
   public static Section Generate (MatchData input)
   {
-    input.ThrowIfAbsent("section");
-    input.ThrowIfAbsent("name");
-
     Section result = new(input["name"].Content);
     return result;
   }

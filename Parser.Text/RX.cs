@@ -17,6 +17,10 @@ public static partial class RX
   public const string XlRngSplit = @"\s*,(?![^{}]*\})\s*";
   [GeneratedRegex(XlRngSplit)]
   public static partial Regex XlRangeSplitter { get; }
+  public const string TokenTemplateDef = @"^(?'ref_name'\w+)\s*\-\s*(?'line''(?'literal'.+?)'|(?'ws_req'\ )|(?'opt_ws_or_comment'\-)|\#(?'ref'\w+)|(?'gp_start'\()|(?'gp_end'\))|(?'opt'\?)|(?'more'\+)|(?'or'\|))*$\s*";
+  [GeneratedRegex(TokenTemplateDef)]
+  public static partial Regex TokenTemplateDefinition { get; }
+
   #endregion
 
   private static TokenType Mk (string s) => new(s);

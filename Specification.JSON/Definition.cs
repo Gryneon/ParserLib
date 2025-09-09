@@ -33,7 +33,7 @@ public static class Definition
     Nm("obj_start", @"\{"),
     Nm("obj_end", @"\}"),
     Nm("bool", "true|false"),
-    //Nm("null", "null")
+    Nm("null", "null")
   ];
   private static readonly Collection<TokenType> TokenInfo = [
     "int",
@@ -46,6 +46,8 @@ public static class Definition
     "arr_end",
     "obj_start",
     "obj_end",
+    "null",
+    "dec"
   ];
   private static Collection<TokenTemplate> TokenTemplates { get; } =
   [
@@ -96,7 +98,7 @@ public static class Definition
     CaseInsensitive = true,
     FileInferences = [IfN(ExtIs, "json")],
     Operations = [
-        new DictionaryOperation(Reader, false, "initial", "matches"),
+        new DictionaryOperation(Reader, false),
         new DebugToStringOperation("matches"),
         new TokenizeOperation(),
         new DebugToStringOperation("tokens"),

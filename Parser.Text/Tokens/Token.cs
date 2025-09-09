@@ -25,23 +25,45 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
   /// </summary>
   public int Length => Content.Length;
   #endregion
+  /// <summary>
+  /// Whether this token has any properties.
+  /// </summary>
   public bool HasProperties => Properties.Count > 0;
-
+  /// <summary>
+  /// Whether this token should be ignored in processing.
+  /// </summary>
   public bool IsIgnored { get; protected init; }
+  /// <summary>
+  /// Whether this token was not parsed and is raw content.
+  /// </summary>
   public bool IsUnparsed { get; protected init; }
-  public bool IsFinal => (Type.Flags & TokenFlags.TF_Final) != 0;
+  /// <summary>
+  /// Whether this token is final and should not be processed further.
+  /// </summary>
+  public bool IsFinal => (Type.Flags & TF_Final) != 0;
+  /// <summary>
+  /// Whether this token is optional in a template match.
+  /// </summary>
   public bool IsOptional { get; protected init; }
-
+  /// <summary>
+  /// The child tokens contained within this token.
+  /// </summary>
   public Collection<Token> Children { get; } = [];
 
   #region Properties - Origin
   public TokenTemplate? Template { get; init; }
   #endregion
+  /// <summary>
+  /// The type of token this is.
+  /// </summary>
   public TokenType Type { get; init; }
-
+  /// <summary>
+  /// The properties of this token.
+  /// </summary>
   public Dictionary<string, string> Properties { get; init; } = [];
-  public string DebugOutput => $"Token: {Type} - {Content}";
-
+  /// <summary>
+  /// The number of child tokens contained within this token.
+  /// </summary>
   public int Count => Children.Count;
 
   /// <summary>
@@ -137,9 +159,16 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
   }
   public override string? ToString () =>
     IsIgnored ? "<IGNORED CONTENT>" : $"Type: {Type} Text: " + Content;
-
+  /// <inheritdoc/>
   public object Clone () => new Token(this);
+  /// <summary>
+  /// Creates a <see cref="Token"/> from a <see cref="MatchData"/> object.
+  /// </summary>
+  /// <param name="mdd">The originating object.</param>
+  /// <returns>A token that represents the contents of the <see cref="MatchData"/> object.</returns>
   public static Token Generate (MatchData mdd) => new(mdd);
+  /// <inheritdoc/>
   public bool Equals (TokenTemplateNode other) => other.IsMatch(this, out _);
+  /// <inheritdoc/>
   public void Add (IToken child) => Children.Add((Token) child);
 }

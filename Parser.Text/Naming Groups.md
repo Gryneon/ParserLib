@@ -23,7 +23,7 @@ These are the naming conventions for data keys.
 
 ### Data Names
 
-    matches   - Results of DictionaryOperation, as a Collection<MatchDataDictionary>.
+    matches   - Results of DictionaryOperation, as a Collection<MatchData>.
     tokens    - Results of TokenizeOperation, as a Collection<IToken>.
 
 

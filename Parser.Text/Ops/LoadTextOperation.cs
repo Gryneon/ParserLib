@@ -1,30 +1,63 @@
 //using Parser.Text.Tokens;
 
-namespace Parser.Text.Ops;
-public class SplitByDelimOperation ([SS("Regex")] string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected Regex OpRegex => new(delimiter, TokenOptions.All);
+using System.IO;
 
-  /// <inheritdoc/>
+namespace Parser.Text.Ops;
+
+public class LoadTextOperation (string input_key, string output_key, bool ignoreMissing) : TextOperation(input_key, output_key)
+{
   protected override void Execute ()
   {
     if (CheckInput(out string? s))
     {
-      _workToReturn = OpRegex.Split(s);
-      Status = OpStatus.Pass;
+      if (!File.Exists(s) && ignoreMissing)
+      {
+        Status = OpStatus.Skipped;
+        _workToReturn = null;
+        return;
+      }
     }
+
     else if (CheckInput(out IEnumerable<string>? list))
     {
-      _workToReturn = list.
-        Select(item => OpRegex.Split(item)).
-        Condense();
+      Collection<string> result = [];
+      foreach (string ea in list)
+      {
+        if (!File.Exists(ea) && ignoreMissing)
+          continue;
+        else if (!File.Exists(ea))
+          Status = OpStatus.FailBadOpResult;
+
+        result.Add(File.ReadAllText(ea));
+      }
+      _workToReturn = result;
       Status = OpStatus.Pass;
+      return;
     }
     else
       Status = OpStatus.FailBadInputType;
   }
 }
 #if false
+public class CombineDelimOperation (string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
+{
+  protected override void Execute ()
+  {
+    if (_workToReturn is string s)
+    {
+      Status = OpStatus.Skipped;
+    }
+    else if (_workToReturn is IEnumerable<string> list)
+    {
+      Status = OpStatus.Pass;
+      _workToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
+    }
+    else
+    {
+      Status = OpStatus.FailBadInputType;
+    }
+  }
+}
 public class TrimWhitespaceOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
 {
   protected override void Execute ()

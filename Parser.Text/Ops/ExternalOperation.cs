@@ -1,30 +1,43 @@
 //using Parser.Text.Tokens;
 
 namespace Parser.Text.Ops;
-public class SplitByDelimOperation ([SS("Regex")] string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected Regex OpRegex => new(delimiter, TokenOptions.All);
 
-  /// <inheritdoc/>
+public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut, bool> validation, string input_key, string output_key) : TextOperation(input_key, output_key) where TIn : class where TOut : class
+{
   protected override void Execute ()
   {
-    if (CheckInput(out string? s))
+    if (CheckInput(out TIn? casted))
     {
-      _workToReturn = OpRegex.Split(s);
-      Status = OpStatus.Pass;
-    }
-    else if (CheckInput(out IEnumerable<string>? list))
-    {
-      _workToReturn = list.
-        Select(item => OpRegex.Split(item)).
-        Condense();
-      Status = OpStatus.Pass;
+      TOut result = operation.Invoke(casted);
+      Status = validation(result) ? OpStatus.Pass : OpStatus.FailBadOpResult;
+      _workToReturn = result;
     }
     else
+    {
       Status = OpStatus.FailBadInputType;
+    }
   }
 }
 #if false
+public class CombineDelimOperation (string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
+{
+  protected override void Execute ()
+  {
+    if (_workToReturn is string s)
+    {
+      Status = OpStatus.Skipped;
+    }
+    else if (_workToReturn is IEnumerable<string> list)
+    {
+      Status = OpStatus.Pass;
+      _workToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
+    }
+    else
+    {
+      Status = OpStatus.FailBadInputType;
+    }
+  }
+}
 public class TrimWhitespaceOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
 {
   protected override void Execute ()

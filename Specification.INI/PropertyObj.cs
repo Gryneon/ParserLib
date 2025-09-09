@@ -30,17 +30,23 @@ public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<strin
     Value = value;
   }
   /// <inheritdoc/>
+  /// <remarks>
+  /// <list type="table">
+  /// <listheader>Required Groups:</listheader>
+  /// <item><c>key</c></item> : The name of the property.
+  /// <item><c>value</c></item> : The value of the property.
+  /// </list>
+  /// </remarks>
   public static PropertyObj Generate (MatchData input)
   {
     PropertyObj result;
 
-    if (!input.HasGroup("key") || input["key"].Content.IsEmpty())
-      throw new InvalidOperationException();
+    input.ThrowIfEmpty("key");
 
     result = new()
     {
       Key = input["key"].Content,
-      Value = input["value"].Content,
+      Value = input.HasGroup("value") ? input["value"].Content : SE,
     };
     return result;
   }
@@ -63,12 +69,20 @@ public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<strin
   /// <inheritdoc/>
   public bool Equals (PropertyObj? other) => throw new NotImplementedException();
   /// <summary>
-  /// TODO: Doc
+  /// Determines whether two <see cref="PropertyObj"/> instances are equal.
   /// </summary>
+  /// <param name="left">The first <see cref="PropertyObj"/> to compare.</param>
+  /// <param name="right">The second <see cref="PropertyObj"/> to compare.</param>
+  /// <returns><see langword="true"/> if the two <see cref="PropertyObj"/> instances are equal; otherwise, <see
+  /// langword="false"/>.</returns>
   public static bool operator == (PropertyObj left, PropertyObj right) => left is null ? right is null : left.Equals(right);
   /// <summary>
-  /// TODO: Doc
+  /// Determines whether two <see cref="PropertyObj"/> instances are not equal.
   /// </summary>
+  /// <param name="left">The first <see cref="PropertyObj"/> to compare.</param>
+  /// <param name="right">The second <see cref="PropertyObj"/> to compare.</param>
+  /// <returns><see langword="true"/> if the two <see cref="PropertyObj"/> instances are not equal; otherwise, <see
+  /// langword="false"/>.</returns>
   public static bool operator != (PropertyObj left, PropertyObj right) => !(left == right);
   /// <summary>
   /// TODO: Doc

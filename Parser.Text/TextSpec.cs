@@ -34,6 +34,8 @@ public class TextSpec : Spec
   /// Determines whether to use a byte parser or a text one.
   /// </summary>
   public bool IsTextFile => true;
+  //TODO: Implement this.
+  public Dictionary<string, RxS> RegexBasicTokens { get; init; } = [];
   /// <summary>
   /// Get => Returns the backing field or an empty Dictionary.
   /// Set => Individually adds each item from the value supplied.
@@ -57,6 +59,9 @@ public class TextSpec : Spec
   /// Case insensitive match.
   /// </summary>
   public bool? CaseInsensitive { get; init; } = false;
+  /// <summary>
+  /// $ and ^ match the start and end of each line (not the whole string).
+  /// </summary>
   public bool? MultiLine { get; init; } = true;
   /// <summary>
   /// Ignores whitepace that is not explicitly defined or escaped.
@@ -66,6 +71,9 @@ public class TextSpec : Spec
   /// Expression will not backtrack.
   /// </summary>
   public bool? NonBacktracking { get; init; } = false;
+  /// <summary>
+  /// Dot matches newline characters.
+  /// </summary>
   public bool? SingleLine { get; init; } = false;
   #endregion
   /// <summary>
