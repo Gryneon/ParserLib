@@ -1,32 +1,4 @@
 namespace Common.Regex;
-
-/// <summary>
-/// A collection of <see cref="MatchData"/> objects.
-/// </summary>
-public sealed class MatchDataCollection : Collection<MatchData>
-{
-  public override string ToString ()
-  {
-    const string i1 = "  ";
-    const string i2 = "    ";
-    string head = $"{typeof(MatchDataCollection)} Object" + Chars.CRLF;
-    string mdcs = i1 + "Matches = {";
-    if (Count > 0)
-    {
-      mdcs += Chars.CRLF;
-      foreach (MatchData mdc in this)
-      {
-        mdcs += i2 + mdc.ToString(i2) + Chars.CRLF;
-      }
-      mdcs += i1 + "}" + Chars.CRLF;
-    }
-    else
-    {
-      mdcs += " <Empty> }" + Chars.CRLF;
-    }
-    return head + mdcs;
-  }
-}
 /// <summary>
 /// A collection of groups and their captures from a regex match. This object includes additional functions and properties to make working with regex matches easier.
 /// </summary>
@@ -67,6 +39,7 @@ public sealed class MatchData : GroupData,
   /// cref="Match"/> object into a sorted dictionary for easier access and manipulation.</remarks>
   /// <param name="m">The <see cref="Match"/> object containing the results of a regular expression match.  Cannot be <see
   /// langword="null"/>.</param>
+  /// <param name="i"></param>
   public MatchData (Match? m, int i = -1) : base(m)
   {
     Groups = m is null ? [] : m.ToSortedDictionary();

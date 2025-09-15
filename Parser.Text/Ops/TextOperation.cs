@@ -7,6 +7,7 @@ public abstract class TextOperation : Operation
   /// The parser reference, initialized in <see cref="Initialize(TextParser)"/>
   /// </summary>
   [AllowNull] protected new TextParser _parser;
+  [AllowNull] protected TextSpec _spec;
 
   public TextOperation (string input_key, string output_key) : base(input_key, output_key) { }
   public TextOperation (IEnumerable<string> input_keys, string output_key) : base(input_keys, output_key) { }
@@ -139,6 +140,7 @@ public abstract class TextOperation : Operation
   {
     _function ??= DoOperation;
     _parser = parser;
+    _spec = parser.Spec;
 
     if (IgnoreAllLoads)
       _workToReturn = null;
@@ -182,9 +184,4 @@ public abstract class TextOperation : Operation
     if (_workToReturn is null) return;
     _ = _parser.Work.Save(_output_key, _workToReturn, mode);
   }
-}
-
-public class CopyOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute () => Status = OpStatus.Pass;
 }

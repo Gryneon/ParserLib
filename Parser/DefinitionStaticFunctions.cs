@@ -15,11 +15,10 @@ public static class DefinitionStaticFunctions
   public static RxS Rx ([SS("Regex")] string rx) => rx;
   public static RxS Or ([SS("Regex")] IEnumerable<string> list) => RxS.OOr(list);
   public static RxS Or ([SS("Regex")] string content, [SS("Regex")] params Collection<string> values) => RxS.Or(content, values);
-  public static TokenType Mt (string s) => new(s);
   public static InferenceNode IfN (IT it, string value) => new(it, value);
   public static InferenceNodeOr IfNOr (IEnumerable<IInferenceNode> nodes) => new(nodes);
   public static InferenceNodeAnd IfNAnd (IEnumerable<IInferenceNode> nodes) => new(nodes);
-  public static KeyValuePair<string, T> K<T> (string s, T type) where T : IConvertible => new(s, type);
+  public static KeyValuePair<string, T> K<T> (string key, T value) => new(key, value);
 
   // Word Start RxS
   public static readonly RxS St = Rx(@"\b");

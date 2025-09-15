@@ -3,4 +3,3 @@ global using Common.Extensions;
 global using Parser.Text;
 
 global using static Parser.DefinitionStaticFunctions;
-global using static Parser.Text.Tokens.TokenFlags;

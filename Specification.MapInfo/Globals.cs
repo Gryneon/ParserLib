@@ -1,8 +1,2 @@
-global using System.Collections.ObjectModel;
-
-global using Common.Regex;
-
-global using Parser;
 global using Parser.Text;
 global using Parser.Text.Ops;
-global using Parser.Text.Tokens;

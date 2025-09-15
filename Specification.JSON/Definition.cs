@@ -5,9 +5,7 @@ using System.Linq;
 
 using Common.Regex;
 
-using Parser;
 using Parser.Text.Ops;
-using Parser.Text.Tokens;
 
 using static Common.Names;
 
@@ -18,76 +16,51 @@ namespace Specification.JSON;
 /// </summary>
 public static class Definition
 {
+  private static KeyValuePair<string, RxS> TT (string name, RxS content, RxS? prefix = null, RxS? suffix = null)
+  {
+    RxS pre = Rx(prefix is null ? SE : prefix);
+    RxS suf = Rx(suffix is null ? SE : suffix);
+    RxS formed = Nm(name, pre + Nm("_content", content) + suf);
+    return new KeyValuePair<string, RxS>(name, formed);
+  }
+
   /// <summary>
   /// https://regex101.com/r/hgS1Zq/5
   /// </summary>
-  private static RxSList Reader { get; } = [
-    Nm("string", @""".*?"""),
-    Nm("dec", @"-?[0-9]*\.[0-9]+"),
-    Nm("int", @"-?[0-9]+(?:\.0+|\.)?"),
-    Nm("ws", @"\s+"),
-    Nm("colon", @"\:"),
-    Nm("comma", @"\,"),
-    Nm("arr_start", @"\["),
-    Nm("arr_end", @"\]"),
-    Nm("obj_start", @"\{"),
-    Nm("obj_end", @"\}"),
-    Nm("bool", "true|false"),
-    Nm("null", "null")
+  private static readonly Dictionary<string, RxS> ReaderBase = [
+    TT("string", Gp(@"[^\\]|\\.").Any.Lazy, "\"", "\""),
+    TT("dec", Rx(@"-?[0-9]*\.[0-9]+")),
+    TT("int", Rx(@"-?[0-9]+(?:\.0+|\.)?")),
+    TT("ws", Rx(@"\s+")),
+    TT("colon", Rx(@"\:")),
+    TT("comma", Rx(@"\,")),
+    TT("arr_st", Rx(@"\[")),
+    TT("arr_en", Rx(@"\]")),
+    TT("obj_st", Rx(@"\{")),
+    TT("obj_en", Rx(@"\}")),
+    TT("bool", Rx("true|false")),
+    TT("null", Rx("null"))
   ];
-  private static readonly Collection<TokenType> TokenInfo = [
-    "int",
-    Mt("ws") | TF_Ignore,
-    "string",
-    "bool",
-    "colon",
-    "comma",
-    "arr_start",
-    "arr_end",
-    "obj_start",
-    "obj_end",
-    "null",
-    "dec"
-  ];
-  private static Collection<TokenTemplate> TokenTemplates { get; } =
-  [
-    new()
-    {
-      Type = "Property",
-      Template =
-      [
-        new("string", null, "key"),
-        new("colon"),
-        new(["int", "decimal", "string", "bool", "object", "array"], null, "value"),
-        new(Mt("Comma") | TF_Optional)
-      ]
-    },
-    new()
-    {
-      Type = "Array",
-      Template = [
-        new("lbrace"),
-        new(Mt("arrayitem") | TF_OneOrMany),
-        new("rbrace"),
-        ]
-    },
-    new()
-    {
-      Type = "arrayitem",
-      Template = [
-        new(["int", "decimal", "string", "bool", "object", "array"]),
-        new(Mt("comma") | TF_Optional)
-        ]
-    },
-    new()
-    {
-      Type = "object",
-      Template = [
-        new("lbracket"),
-        new(Mt("property") | TF_OneOrMany),
-        new("rbracket"),
-        ]
-    },
+  //private static readonly Dictionary<string, string> FormatLiterals = [
+  //  K("[","$arr_st"),
+  //  K("]","$arr_en"),
+  //  K("{","$obj_st"),
+  //  K("}","$obj_en"),
+  //  K(",","$comma"),
+  //  K(":","$colon")
+  //];
+  private static readonly RxSList Reader = [.. ReaderBase.Values];
+  private static readonly Collection<string> BaseTokenList = [.. ReaderBase.Keys];
+  /* json_object - '{' ( #json_property^import^ ( ',' #json_property^import^ )* )? '}'
+   * json_array - '[' ( #json_value ( ',' #json_value )* )? ']'
+   * json_value - ( $int | $dec | $null | $bool | $string | #json_object | #json_array )
+   * json_property - $string^key^ ':' #json_value^value^
+   */
+  private static readonly Dictionary<string, string> TokenFormats = [
+    K("json_object", "'{' ( #json_property^import^ ( ',' #json_property^import^ )* )? '}'"),
+    K("json_array", "'[' ( #json_value ( ',' #json_value )* )? ']'"),
+    K("json_value", "( $int | $dec | $null | $bool | $string | #json_object | #json_array )"),
+    K("json_property", "$string^key^ $colon #json_value^value^")
   ];
   /// <summary>
   /// The JSON Spec.
@@ -103,12 +76,17 @@ public static class Definition
         new TokenizeOperation(),
         new DebugToStringOperation("tokens"),
         new DebugWaitForInputOperation(),
-        new TokenTemplateOperation("tokens", "tokens_templated", TokenTemplates),
+        new TokenTemplateOperation(TokenFormats),
         new DebugToStringOperation("tokens_templated"),
         new DebugWaitForInputOperation(),
         new CopyOperation("tokens_templated", "result")
       ],
-    TokenLookup = TokenInfo
+    TokenLookup = BaseTokenList,
+    ExplicitCapture = true,
+    WhitespaceTokens = ["ws"],
+    IgnorePatternWhitespace = true,
+    MultiLine = true,
+    RegexBasicTokens = ["string", "dec",]
   };
 }
 

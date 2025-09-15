@@ -15,17 +15,11 @@ public interface IToken : IEquatable<TokenTemplateNode>, IGeneratable<MatchData,
   /// <summary>
   /// The child tokens within this token. If the token is made of multiple tokens, this will be utilized.
   /// </summary>
-  Collection<Token> Children { get; }
+  Collection<IToken> Children { get; }
   /// <summary>
   /// The content of this token, or all of its children.
   /// </summary>
   string Content { get; }
-  /// <summary>Whether the token is parsed or not.</summary>
-  bool IsUnparsed { get; }
-  /// <summary>
-  /// Whether or not the token is ignored by future operations.
-  /// </summary>
-  bool IsIgnored { get; }
   bool HasProperties { get; }
   /// <summary>
   /// The length of the text of this token.
@@ -35,7 +29,7 @@ public interface IToken : IEquatable<TokenTemplateNode>, IGeneratable<MatchData,
   /// <summary>
   /// Type of token.
   /// </summary>
-  TokenType Type { get; }
+  string Type { get; }
   /// <summary>
   /// Displays the text content of this token.
   /// </summary>

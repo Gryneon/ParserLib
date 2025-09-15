@@ -1,5 +1,5 @@
 namespace Parser;
-
+#if false
 /// <summary>
 /// Tokenizer tokens.
 /// </summary>
@@ -36,6 +36,7 @@ public readonly struct TokenType : IEquatable<TokenType>, IComparable<TokenType>
   public static readonly TokenType Any = new();
 }
 
+#endif
 #if false
 public enum TokenType
 {

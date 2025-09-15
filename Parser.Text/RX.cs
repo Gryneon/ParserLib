@@ -23,16 +23,17 @@ public static partial class RX
 
   #endregion
 
-  private static TokenType Mk (string s) => new(s);
-
   // Common Group Types
-  public static Collection<TokenType> CommonIgnores { get; } = [
-    Mk("blkcomment") | TF_Ignore,
-    Mk("lncomment") | TF_Ignore,
-    Mk("ws") | TF_Ignore
+  public static Collection<string> CommonIgnores { get; } = [
+    "blkcomment",
+    "lncomment",
+    "comment",
+    "ws",
+    "wso",
+    "nl"
   ];
 
-  public static Collection<TokenType> ValueTypes { get; } = [
+  public static Collection<string> ValueTypes { get; } = [
     "int",
     "dec",
     "str",

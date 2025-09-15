@@ -30,33 +30,17 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
   /// </summary>
   public bool HasProperties => Properties.Count > 0;
   /// <summary>
-  /// Whether this token should be ignored in processing.
-  /// </summary>
-  public bool IsIgnored { get; protected init; }
-  /// <summary>
-  /// Whether this token was not parsed and is raw content.
-  /// </summary>
-  public bool IsUnparsed { get; protected init; }
-  /// <summary>
-  /// Whether this token is final and should not be processed further.
-  /// </summary>
-  public bool IsFinal => (Type.Flags & TF_Final) != 0;
-  /// <summary>
-  /// Whether this token is optional in a template match.
-  /// </summary>
-  public bool IsOptional { get; protected init; }
-  /// <summary>
   /// The child tokens contained within this token.
   /// </summary>
-  public Collection<Token> Children { get; } = [];
-
+  public Collection<IToken> Children { get; } = [];
   #region Properties - Origin
-  public TokenTemplate? Template { get; init; }
+  public TokenNode? FromNode { get; init; }
+  public TokenNodeGroup? Group => FromNode as TokenNodeGroup;
   #endregion
   /// <summary>
   /// The type of token this is.
   /// </summary>
-  public TokenType Type { get; init; }
+  public string Type { get; init; }
   /// <summary>
   /// The properties of this token.
   /// </summary>
@@ -71,25 +55,15 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
   /// </summary>
   /// <param name="type">The type of token this is.</param>
   /// <param name="content"><see cref="string"/> content to initialize this token with.</param>
-  public Token (string content, TokenType? type = null)
+  public Token (string content, string type = EmptyString)
   {
     Content = content;
-    Type = type ?? TokenType.Any;
+    Type = type;
   }
-
-  public Token (IToken token)
-  {
-    Type = token.Type;
-    Content = token.Content;
-    Position = token.Position;
-    Properties = [.. token.Properties];
-    Children = [.. token.Children];
-  }
-
-  public Token (MatchData mdd, TokenType? type = null)
+  public Token (MatchData mdd, string type = EmptyString)
   {
     Content = mdd.Content;
-    Type = type ?? TokenType.Any;
+    Type = type;
     Position = mdd.Pos;
     Properties = [.. from item in mdd.Groups
       let key = item.Key
@@ -100,9 +74,9 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
     Children = [.. from item in mdd.Groups
       select new Token(item.Value)];
   }
-  public Token (GroupData gd, TokenType? type = null)
+  public Token (GroupData gd, string type = EmptyString)
   {
-    Type = type ?? TokenType.Any;
+    Type = type;
     Content = gd.Content;
     Position = gd.Pos;
     Properties = [.. from item in gd.Captures
@@ -113,14 +87,14 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
     Children = [.. from item in gd.Captures
       select new Token(item)];
   }
-  public Token (CaptureData cd, TokenType? type = null)
+  public Token (CaptureData cd, string type = EmptyString)
   {
-    Type = type ?? TokenType.Any;
+    Type = type;
     Content = cd.Content;
     Position = cd.Pos;
     Children = [];
   }
-  public Token (Token token)
+  public Token (IToken token)
   {
     Type = token.Type;
     Content = token.Content;
@@ -128,37 +102,37 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
     Properties = [.. token.Properties];
     Children = [.. token.Children];
   }
-  public Token (string content, int pos, TokenType? type = null)
+  public Token (string content, int pos, string type = EmptyString)
   {
     Position = pos;
     Content = content;
-    Type = type ?? TokenType.Any;
+    Type = type;
   }
-  public Token (TokenTemplate template, IEnumerable<TokenTemplateMatch> matches)
+  public Token (TokenNode node, IEnumerable<IToken> tokens, string type)
   {
-    IEnumerable<IToken> tokens = matches.Select(item => item.Token);
-
-    Content = string.Join(null, tokens.Select(t => t.Content));
-    Type = template.Type;
+    FromNode = node;
+    Children = [.. tokens];
     Position = tokens.First().Position;
-    Children = [.. tokens.Cast<Token>()];
-    Template = template;
-    Properties = [];
-
-    foreach (TokenTemplateMatch match in matches)
-      if (match.StoreAsProperty)
-        try
-        {
-          Properties.Add(match.PropName!, match.PropValue);
-        }
-        catch (Exception e)
-        {
-          Debug.LogException(e);
-          continue;
-        }
+    Content = tokens.Select(t => t.Content).TextJoin();
+    Type = type;
+    Properties = [.. tokens.SelectMany(t => t.Properties)];
+  }
+  public Token (TokenNodeBaseRx item)
+  {
+    if (item is null)
+    {
+      Type = SE;
+      Content = SE;
+      return;
+    }
+    Content = item.ToString() ?? SE;
+    Type = item.RefName;
+    Children = [];
+    FromNode = item;
+    ;
   }
   public override string? ToString () =>
-    IsIgnored ? "<IGNORED CONTENT>" : $"Type: {Type} Text: " + Content;
+    $"Type: {Type} Text: " + Content;
   /// <inheritdoc/>
   public object Clone () => new Token(this);
   /// <summary>
@@ -168,7 +142,7 @@ public class Token : IToken, ICloneable, IHasChildren<IToken>
   /// <returns>A token that represents the contents of the <see cref="MatchData"/> object.</returns>
   public static Token Generate (MatchData mdd) => new(mdd);
   /// <inheritdoc/>
-  public bool Equals (TokenTemplateNode other) => other.IsMatch(this, out _);
+  public bool Equals (TokenTemplateNode? other) => other?.IsMatch(this, out _) ?? false;
   /// <inheritdoc/>
   public void Add (IToken child) => Children.Add((Token) child);
 }

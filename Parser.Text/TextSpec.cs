@@ -6,6 +6,7 @@ namespace Parser.Text;
 
 public class TextSpec : Spec
 {
+  #region Static Specs
   /// <summary>
   /// Splits a string into a <see cref="Collection{T}"/> of <see langword="string"/> objects.
   /// </summary>
@@ -18,6 +19,7 @@ public class TextSpec : Spec
       Operation.End
     ]
   };
+  #endregion
 
   #region Private Members
   private RegexOptions _options;
@@ -34,15 +36,22 @@ public class TextSpec : Spec
   /// Determines whether to use a byte parser or a text one.
   /// </summary>
   public bool IsTextFile => true;
-  //TODO: Implement this.
-  public Dictionary<string, RxS> RegexBasicTokens { get; init; } = [];
   /// <summary>
-  /// Get => Returns the backing field or an empty Dictionary.
+  /// Token types that are basic building blocks.
+  /// </summary>
+  public Collection<string> RegexBasicTokens { get; init; } = [];
+  /// <summary>
+  /// Token types to ignore.
+  /// </summary>
+  public Collection<string> WhitespaceTokens { get; init; } = [];
+  /// <summary>A list of tokenizable matches.</summary>
+  /// <remarks>
+  /// Get => Returns the backing field or an empty Dictionary.<br/>
   /// Set => Individually adds each item from the value supplied.
   /// 
   /// Setting Null clears the list.
-  /// </summary>
-  public Collection<TokenType> TokenLookup
+  /// </remarks>
+  public Collection<string> TokenLookup
   {
     get => field ?? [];
     set
@@ -92,17 +101,5 @@ public class TextSpec : Spec
   /// <summary>
   /// Loads this <see cref="TextSpec"/> to <see cref="TokenOptions"/>.
   /// </summary>
-  public void Load ()
-  {
-    TokenOptions.LoadRegexSpec(_options);
-    TokenOptions.LoadTokenSpec([.. TokenLookup]);
-  }
-
-  /// <summary>
-  /// Checks to see if a group is able to be ignored by future operations.
-  /// </summary>
-  /// <param name="groupName">The group name to check.</param>
-  /// <returns><see langword="true"/> if the <see cref="TextSpec"/> TokenLookup contains that group and the group contains the <see cref="TokenType"/> T_Ignore.</returns>
-  public bool IsIgnoreGroup (string groupName) =>
-    TokenLookup.Contains(groupName.ToLowerInvariant());
+  public void Load () => TokenOptions.LoadSpec(_options, this);
 }

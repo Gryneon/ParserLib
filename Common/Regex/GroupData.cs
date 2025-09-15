@@ -7,6 +7,9 @@ namespace Common.Regex;
 /// </summary>
 public class GroupData : CaptureData, IReadOnlyCollection<CaptureData>, IEquatable<GroupData>
 {
+  /// <summary>
+  /// The captures within this group.
+  /// </summary>
   public Collection<CaptureData> Captures { get; init; } = [];
 
   internal GroupData () { }
@@ -16,7 +19,9 @@ public class GroupData : CaptureData, IReadOnlyCollection<CaptureData>, IEquatab
   /// <param name="g">The <see cref="Group"/> to base this object on.</param>
   /// <param name="index">The group number of this group.</param>
   public GroupData (Group? g, int index = -1) : base(g, g is null ? SE : g.Name, index) =>
-    Captures = g is null ? [] : [.. g.Captures.Select((item, i) => new CaptureData(item, g.Name, i))];
+    Captures = g is null ?
+    [] :
+    [.. g.Captures.Select((item, i) => new CaptureData(item, g.Name, i))];
   /// <summary>
   /// Manual Constructor.
   /// </summary>
@@ -27,17 +32,30 @@ public class GroupData : CaptureData, IReadOnlyCollection<CaptureData>, IEquatab
   /// <param name="index"></param>
   protected GroupData (string name, string content, int pos, int len, int index = -1) : base(content, pos, len, name, index) =>
     Captures = [];
-
+  /// <summary>
+  /// Gets the capture data at the given index.
+  /// </summary>
+  /// <param name="index">The index of the data.</param>
+  /// <returns>The data at the given index.</returns>
   public CaptureData this[int index] => Captures[index];
   /// <inheritdoc/>
   public IEnumerator<CaptureData> GetEnumerator () => Captures.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 
+  /// <summary>
+  /// Whether the group is to be removed or not.
+  /// </summary>
   public bool IsRemoveGroup => Name.StartsWith("rem", SCO) && Content.Length > 0;
+  /// <summary>
+  /// Whether the group is a named group or not.
+  /// </summary>
   public bool IsNamedGroup => Name.IsNamedGroup() && Content.Length > 0;
   public override bool IsNull => Content.Length == 0 || Captures.Count == 0;
   public virtual int Count => IsNull ? 0 : Captures.Count > 0 ? Captures.Count : 1;
   public static implicit operator GroupData (Group group) => FromGroup(group);
+  /// <summary>
+  /// A null or empty group data object.
+  /// </summary>
   public static GroupData Null { get; } = new(string.Empty, string.Empty, -1, -1);
   public static GroupData FromGroup (Group group) => group is null ? Null : new(group.Name, group.Value, group.Index, group.Length);
 

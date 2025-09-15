@@ -2,7 +2,6 @@ using Parser.Ops;
 using Parser.Text.Ops;
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Text.Tokens.TokenFlags;
 
 namespace Specification.ZScript;
 
@@ -75,9 +74,9 @@ public class PrevDefinition
     FileInferences = [],
     CaseInsensitive = true,
     TokenLookup = [
-      Mt("lncomment") | TF_Ignore,
-      Mt("blkcomment") | TF_Ignore,
-      Mt("ws") | TF_Ignore,
+      "lncomment",
+      "blkcomment",
+      "ws",
       "name",
       "parent",
       "classname",
@@ -91,6 +90,7 @@ public class PrevDefinition
       "semicolon",
       "entireclass",
     ],
+    WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
     Name = "zscript",
     Operations = [
       new DictionaryOperation(Reader),

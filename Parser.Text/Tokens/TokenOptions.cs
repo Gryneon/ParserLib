@@ -5,11 +5,13 @@ namespace Parser.Text.Tokens;
 /// </summary>
 public static class TokenOptions
 {
+  public static TextSpec ActiveSpec { get; set; } = null!;
   /// <summary>
-  /// Token type lookup.
+  /// The <see cref="StringComparison"/> to use based on the above flags.
   /// </summary>
-  public static Collection<TokenType> Lookup { get; private set; } = [];
+  public static StringComparison SC => IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
+  #region Regex Properties
   /// <summary>
   /// The bits all condensed into a single flag set.
   /// </summary>
@@ -18,44 +20,16 @@ public static class TokenOptions
   /// <see langword="true"/> if we do not care about case.
   /// </summary>
   public static bool IgnoreCase => All.HasFlag(RegexOptions.IgnoreCase);
-  /// <summary>
-  /// '$' and '^' match end of line instead of end of string.
-  /// </summary>
-  public static bool Multiline => All.HasFlag(RegexOptions.Multiline);
-  /// <summary>
-  /// No backtracking in regular expressions.
-  /// </summary>
-  public static bool NonBacktracking => All.HasFlag(RegexOptions.NonBacktracking);
-  /// <summary>
-  /// Only named groups are captured.
-  /// </summary>
-  public static bool ExplicitCapture => All.HasFlag(RegexOptions.ExplicitCapture);
-  /// <summary>
-  /// Ignore spaces and newlines in the pattern string.
-  /// </summary>
-  public static bool IgnorePatternWhitespace => All.HasFlag(RegexOptions.IgnorePatternWhitespace);
-  /// <summary>
-  /// Equilivent to dot matches newline.
-  /// </summary>
-  public static bool Singleline => All.HasFlag(RegexOptions.Singleline);
+  #endregion
 
   /// <summary>
   /// Loads the regular expression flags.
   /// </summary>
   /// <param name="options">The options to set.</param>
-  public static void LoadRegexSpec (RegexOptions options) => All = options;
-  /// <summary>
-  /// Loads the token type lookup.
-  /// </summary>
-  /// <param name="lookup">The token types to reference.</param>
-  public static void LoadTokenSpec (Collection<TokenType> lookup)
+  /// <param name="spec">The specification currently loaded.</param>
+  public static void LoadSpec (RegexOptions options, TextSpec spec)
   {
-    Lookup.Clear();
-    Lookup.AddRange(lookup);
+    spec.Load();
+    ActiveSpec = spec;
   }
-
-  /// <summary>
-  /// The <see cref="StringComparison"/> to use based on the above flags.
-  /// </summary>
-  public static StringComparison SC => IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 }

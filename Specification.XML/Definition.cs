@@ -1,11 +1,9 @@
 #pragma warning disable RE0001 // Invalid regex pattern
 
-using Parser;
 using Parser.Ops;
 using Parser.Text.Ops;
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Text.Tokens.TokenFlags;
 
 namespace Specification.XML;
 
@@ -31,18 +29,6 @@ public class Definition
   /// The attribute regular expression.
   /// </summary>
   protected static RxS Attribute => Rx(@"(?<attrname>\w+)\s*=\s*""(?<attrval>.*?)""");
-
-  /// <summary>
-  /// The token type definitions.
-  /// </summary>
-  protected static Collection<TokenType> TokenTypes => [
-    Mt("ws") | TF_Ignore,
-    "endtag",
-    "noinsidetag",
-    "tagname",
-    "content",
-    "header"
-  ];
 
   /// <summary>
   /// Operation definition.
@@ -71,13 +57,13 @@ public class Definition
     ExplicitCapture = true,
     Operations = [
       new DictionaryOperation(Regex, false, "initial"),
-      new TokenizeOperation(TokenTypes, "matches"),
+      new TokenizeOperation(["ws", "endtag", "noinsidetag", "tagname", "content", "header"], "matches"),
       .. GenerationOps,
       new XMLStackOperation("objects", "xml"),
       Operation.End,
     ],
     TokenLookup = {
-      Mt("ws") | TF_Ignore,
+      "ws",
       "endtag",
       "noinsidetag",
       "tagname",
@@ -85,7 +71,12 @@ public class Definition
       "header",
       "attrname",
       "attrval",
-      Mt("comment") | TF_Ignore
+      "comment"
+    },
+    WhitespaceTokens =
+    {
+      "ws",
+      "comment"
     }
   };
 }
