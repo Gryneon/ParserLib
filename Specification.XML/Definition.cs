@@ -2,10 +2,8 @@
 
 using Parser.Ops;
 using Parser.Text.Ops;
-using Parser.Text.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Text.Tokens.TokenType;
 
 namespace Specification.XML;
 
@@ -20,7 +18,7 @@ public class Definition
   /// Old: https://regex101.com/r/jcPotD/4
   /// </summary>
   public static RxSList Regex => [
-    Nm("tag", $@"<\s*(?<endtag>\/)?\s*(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+{Attribute})*\s*(?<noinsidetag>\/)?\s*>"),
+    Nm("tagname", $@"<\s*(?<endtag>\/)?\s*(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+{Attribute})*\s*(?<noinsidetag>\/)?\s*>"),
     Nm("header", Rx(@"<\?(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+") + Attribute + Rx(@")*\s*\?>")),
     Nm("ws", @"(?<=>)\s+(?=<)"),
     Nm("comment", @"<!--(-(?!-)|[^-])*?-->"),
@@ -31,18 +29,6 @@ public class Definition
   /// The attribute regular expression.
   /// </summary>
   protected static RxS Attribute => Rx(@"(?<attrname>\w+)\s*=\s*""(?<attrval>.*?)""");
-
-  /// <summary>
-  /// The token type definitions.
-  /// </summary>
-  protected static Collection<TokenDef> TokenTypes => [
-    new(T_WS | T_Ignore, "ws"),
-    new(T_TagClose, "endtag"),
-    new(T_TagSingle, "noinsidetag"),
-    new(T_TagOpen, "tag"),
-    new(T_Content, "content"),
-    new(T_Header, "header")
-  ];
 
   /// <summary>
   /// Operation definition.
@@ -70,22 +56,27 @@ public class Definition
     CaseInsensitive = false,
     ExplicitCapture = true,
     Operations = [
-      new DictionaryOperation(Regex, "initial"),
-      new TokenizeOperation(TokenTypes, "matches"),
+      new DictionaryOperation(Regex, false, "initial"),
+      new TokenizeOperation(["ws", "endtag", "noinsidetag", "tagname", "content", "header"], "matches"),
       .. GenerationOps,
       new XMLStackOperation("objects", "xml"),
       Operation.End,
     ],
     TokenLookup = {
-      ("ws", T_WS | T_Ignore),
-      ("endtag", T_TagClose),
-      ("noinsidetag", T_TagSingle),
-      ("tag", T_TagOpen),
-      ("content", T_Content),
-      ("header", T_Header),
-      ("attrname", T_Key),
-      ("attrval", T_Value),
-      ("comment", T_BlkComment | T_Ignore)
+      "ws",
+      "endtag",
+      "noinsidetag",
+      "tagname",
+      "content",
+      "header",
+      "attrname",
+      "attrval",
+      "comment"
+    },
+    WhitespaceTokens =
+    {
+      "ws",
+      "comment"
     }
   };
 }

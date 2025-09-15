@@ -12,13 +12,25 @@ namespace Parser.Binary;
 /// <summary>
 /// A parser that reads binary files.
 /// </summary>
+/// <remarks>Creates a new parser object.</remarks>
 /// <param name="bytes">The raw file data.</param>
 /// <param name="spec">The spec to use.</param>
-public sealed class ByteParser (byte[] bytes, Spec spec)
+public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null)
 {
   #region Private Static Methods
   private static IOEx NoKeyErr (string key) => new($"BT.Data: Data doesn't have key '{key}'");
   #endregion
+
+  public static Spec DefaultSpec => new()
+  {
+    FileInferences = [],
+    Name = "default",
+    Operations = [
+      new ByteReadOperation("result", -1, ByteReadMode.Binary),
+      Operation.End
+    ]
+  };
+
   #region Internal Buffer Functions
   internal bool ContainsKey (string key) => ByteObjects.ContainsKey(key);
   internal T? Load<T> (string key) where T : notnull
@@ -147,7 +159,8 @@ public sealed class ByteParser (byte[] bytes, Spec spec)
   /// <summary>
   /// The loaded binary file.
   /// </summary>
-  private byte[] _fileContents = bytes;
+  private byte[] _fileContents = bytes ?? [];
+
   /// <summary>
   /// The data stored from the file.
   /// </summary>
@@ -158,9 +171,17 @@ public sealed class ByteParser (byte[] bytes, Spec spec)
   /// </summary>
   public int BytePos { get; set; }
   /// <summary>
+  /// The size of the binary file.
+  /// </summary>
+  public int ByteRemain => _fileContents.Length - BytePos - 1;
+  /// <summary>
+  /// The size of the binary file.
+  /// </summary>
+  public int ByteSize => _fileContents.Length;
+  /// <summary>
   /// The loaded specification.
   /// </summary>
-  public required Spec Spec { get; init; } = spec;
+  public Spec Spec { get; init; } = spec ?? DefaultSpec;
 
   /// <summary>
   /// Parses the provided binary data.

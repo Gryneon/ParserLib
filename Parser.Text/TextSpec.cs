@@ -6,6 +6,7 @@ namespace Parser.Text;
 
 public class TextSpec : Spec
 {
+  #region Static Specs
   /// <summary>
   /// Splits a string into a <see cref="Collection{T}"/> of <see langword="string"/> objects.
   /// </summary>
@@ -14,10 +15,11 @@ public class TextSpec : Spec
     FileInferences = [],
     Name = "textbylines",
     Operations = [
-      new SplitByLinesOperation("initial", "results"),
+      new SplitByLinesOperation("initial", "result"),
       Operation.End
     ]
   };
+  #endregion
 
   #region Private Members
   private RegexOptions _options;
@@ -35,12 +37,21 @@ public class TextSpec : Spec
   /// </summary>
   public bool IsTextFile => true;
   /// <summary>
-  /// Get => Returns the backing field or an empty Dictionary.
+  /// Token types that are basic building blocks.
+  /// </summary>
+  public Collection<string> RegexBasicTokens { get; init; } = [];
+  /// <summary>
+  /// Token types to ignore.
+  /// </summary>
+  public Collection<string> WhitespaceTokens { get; init; } = [];
+  /// <summary>A list of tokenizable matches.</summary>
+  /// <remarks>
+  /// Get => Returns the backing field or an empty Dictionary.<br/>
   /// Set => Individually adds each item from the value supplied.
   /// 
   /// Setting Null clears the list.
-  /// </summary>
-  public Dictionary<string, TokenType> TokenLookup
+  /// </remarks>
+  public Collection<string> TokenLookup
   {
     get => field ?? [];
     set
@@ -48,7 +59,7 @@ public class TextSpec : Spec
       field ??= [];
 
       if (value is not null)
-        field.Add(value);
+        field.AddRange(value);
     }
   } = [];
   #region Regex Properties
@@ -57,6 +68,9 @@ public class TextSpec : Spec
   /// Case insensitive match.
   /// </summary>
   public bool? CaseInsensitive { get; init; } = false;
+  /// <summary>
+  /// $ and ^ match the start and end of each line (not the whole string).
+  /// </summary>
   public bool? MultiLine { get; init; } = true;
   /// <summary>
   /// Ignores whitepace that is not explicitly defined or escaped.
@@ -66,6 +80,9 @@ public class TextSpec : Spec
   /// Expression will not backtrack.
   /// </summary>
   public bool? NonBacktracking { get; init; } = false;
+  /// <summary>
+  /// Dot matches newline characters.
+  /// </summary>
   public bool? SingleLine { get; init; } = false;
   #endregion
   /// <summary>
@@ -84,20 +101,5 @@ public class TextSpec : Spec
   /// <summary>
   /// Loads this <see cref="TextSpec"/> to <see cref="TokenOptions"/>.
   /// </summary>
-  public void Load ()
-  {
-    TokenOptions.LoadRegexSpec(_options);
-    TokenOptions.LoadTokenSpec([.. TokenLookup.Select(item => new KeyValuePair<string, TokenType>(item.Key, item.Value))]);
-  }
-
-  /// <summary>
-  /// Checks to see if a group is able to be ignored by future operations.
-  /// </summary>
-  /// <param name="groupName">The group name to check.</param>
-  /// <returns><see langword="true"/> if the <see cref="TextSpec"/> TokenLookup contains that group and the group contains the <see cref="TokenType"/> T_Ignore.</returns>
-  public bool IsIgnoreGroup (string groupName)
-  {
-    string glow = groupName.ToLowerInvariant();
-    return TokenLookup.TryGetValue(glow, out TokenType t) && t.HasFlag(T_Ignore);
-  }
+  public void Load () => TokenOptions.LoadSpec(_options, this);
 }

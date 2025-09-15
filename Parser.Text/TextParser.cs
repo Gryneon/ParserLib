@@ -7,13 +7,13 @@ using OST = Parser.OperationSequenceType;
 
 namespace Parser.Text;
 
-public sealed class TextParser (TextSpec spec)
+public sealed class TextParser (TextSpec? spec = null)
 {
   private const string Area = "TextParser.Parse";
 
   // Core Properties
   public Collection<TextOperation> Operations => [.. Spec.Operations.Cast<TextOperation>()];
-  public TextSpec Spec { get; init; } = spec;
+  public TextSpec Spec { get; init; } = spec ?? TextSpec.TextByLines;
   public int OpIndex { get; internal set; }
   // Result Storage
   [MemberNotNullWhen(true, nameof(Result))]

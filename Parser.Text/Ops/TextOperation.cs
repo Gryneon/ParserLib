@@ -7,6 +7,7 @@ public abstract class TextOperation : Operation
   /// The parser reference, initialized in <see cref="Initialize(TextParser)"/>
   /// </summary>
   [AllowNull] protected new TextParser _parser;
+  [AllowNull] protected TextSpec _spec;
 
   public TextOperation (string input_key, string output_key) : base(input_key, output_key) { }
   public TextOperation (IEnumerable<string> input_keys, string output_key) : base(input_keys, output_key) { }
@@ -42,12 +43,10 @@ public abstract class TextOperation : Operation
   }
   protected bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
-    if (_workToReturn.IsCollection())
-
-      if (_parser.Work.TryLoad(_input_key, out casted))
-      {
-        return true;
-      }
+    if (_parser.Work.TryLoad(_input_key, out casted))
+    {
+      return true;
+    }
 
     Status = OpStatus.FailBadInputType;
     casted = default;
@@ -81,12 +80,17 @@ public abstract class TextOperation : Operation
   protected override void Execute ()
   {
     if (_function is null || _workToReturn is null)
-      return;
+      ThrowNoOverrideError();
 
     Status = _function(ref _workToReturn);
   }
   protected override void CheckInputNull ()
   {
+    if (_input_key == SE || IgnoreAllLoads)
+    {
+      Debug.Log("TextOperation.CheckInputNull", $"No key checked.");
+      Status = OpStatus.Skipped;
+    }
     if (!_parser.Work.ContainsKey(_input_key))
     {
       Debug.Log("TextOperation.CheckInputNull", $"Key {_input_key} does not exist.");
@@ -136,6 +140,7 @@ public abstract class TextOperation : Operation
   {
     _function ??= DoOperation;
     _parser = parser;
+    _spec = parser.Spec;
 
     if (IgnoreAllLoads)
       _workToReturn = null;

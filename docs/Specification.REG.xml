@@ -132,6 +132,18 @@
             </summary>
             <param name="data">The data to place in the field.</param>
         </member>
+        <member name="M:Specification.REG.RegProperty.AssignValue(System.String)">
+            <summary>
+            Assigns the specified value to the <see cref="P:Specification.REG.RegProperty.Value"/> property.
+            </summary>
+            <param name="value">The value to assign. Cannot be null or empty.</param>
+        </member>
+        <member name="M:Specification.REG.RegProperty.AssignValue(System.Object)">
+            <summary>
+            Assigns a value to the <see cref="P:Specification.REG.RegProperty.Value"/> property, converting it to a string.
+            </summary>
+            <param name="value">The object to assign. If <paramref name="value"/> is <see langword="null"/>, a default value is assigned instead.</param>
+        </member>
         <member name="T:Specification.REG.RegSection">
             <summary>
             A registry key.
@@ -145,11 +157,6 @@
         <member name="P:Specification.REG.RegSection.Path">
             <summary>
             The path of the key.
-            </summary>
-        </member>
-        <member name="P:Specification.REG.RegSection.Children">
-            <summary>
-            The properties within this key.
             </summary>
         </member>
         <member name="M:Specification.REG.RegSection.#ctor(System.String,System.Boolean)">
@@ -169,9 +176,6 @@
             An empty section.
             </summary>
         </member>
-        <member name="P:Specification.REG.RegSection.Count">
-            <inheritdoc/>
-        </member>
         <member name="M:Specification.REG.RegSection.Add(Specification.REG.RegProperty)">
             <summary>
             <inheritdoc/>
@@ -182,11 +186,6 @@
             Gets the enumerator.
             </summary>
             <returns>The <see cref="T:Specification.REG.RegProperty"/>s.</returns>
-        </member>
-        <member name="M:Specification.REG.RegSection.Clear">
-            <summary>
-            <inheritdoc/>
-            </summary>
         </member>
         <member name="M:Specification.REG.RegSection.Contains(Specification.REG.RegProperty)">
             <summary>

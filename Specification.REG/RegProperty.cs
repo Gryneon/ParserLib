@@ -99,4 +99,14 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, Reg
   /// </summary>
   /// <param name="data">The data to place in the field.</param>
   public void SetParseData (MatchData data) => ParseData = data;
+  /// <summary>
+  /// Assigns the specified value to the <see cref="Value"/> property.
+  /// </summary>
+  /// <param name="value">The value to assign. Cannot be null or empty.</param>
+  public void AssignValue (string value) => Value = value;
+  /// <summary>
+  /// Assigns a value to the <see cref="Value"/> property, converting it to a string.
+  /// </summary>
+  /// <param name="value">The object to assign. If <paramref name="value"/> is <see langword="null"/>, a default value is assigned instead.</param>
+  public void AssignValue (object value) => Value = value?.ToString() ?? SE;
 }

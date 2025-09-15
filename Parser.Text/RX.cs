@@ -17,22 +17,29 @@ public static partial class RX
   public const string XlRngSplit = @"\s*,(?![^{}]*\})\s*";
   [GeneratedRegex(XlRngSplit)]
   public static partial Regex XlRangeSplitter { get; }
+  public const string TokenTemplateDef = @"^(?'ref_name'\w+)\s*\-\s*(?'line''(?'literal'.+?)'|(?'ws_req'\ )|(?'opt_ws_or_comment'\-)|\#(?'ref'\w+)|(?'gp_start'\()|(?'gp_end'\))|(?'opt'\?)|(?'more'\+)|(?'or'\|))*$\s*";
+  [GeneratedRegex(TokenTemplateDef)]
+  public static partial Regex TokenTemplateDefinition { get; }
+
   #endregion
 
   // Common Group Types
-  public static Dictionary<string, TokenType> CommonIgnores { get; } = new() {
-    ("blkcomment", T_BlkComment | T_Ignore),
-    ("lncomment", T_LnComment | T_Ignore),
-    ("ws", T_WS | T_Ignore)
-  };
+  public static Collection<string> CommonIgnores { get; } = [
+    "blkcomment",
+    "lncomment",
+    "comment",
+    "ws",
+    "wso",
+    "nl"
+  ];
 
-  public static Dictionary<string, TokenType> ValueTypes { get; } = new() {
-    ("int", T_Int),
-    ("dec", T_Dec),
-    ("str", T_String),
-    ("bool", T_Bool),
-    ("char", T_Char),
-  };
+  public static Collection<string> ValueTypes { get; } = [
+    "int",
+    "dec",
+    "str",
+    "bool",
+    "char",
+  ];
 
   // Named Groups
   public static RxS G_CLnComment => field = Nm("lncomment", CLnComment);

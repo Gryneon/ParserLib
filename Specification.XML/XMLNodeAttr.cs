@@ -10,7 +10,7 @@ public abstract class XMLNodeAttr : XMLNode
   /// </summary>
   public Collection<XMLProperty> Attributes { get; } = [];
   /// <summary>
-  /// Assigns attributes nased on a <see cref="MatchData"/>.
+  /// Assigns attributes based on a <see cref="MatchData"/>.
   /// </summary>
   /// <param name="mdd"></param>
   protected void AssignAttributes (MatchData mdd)

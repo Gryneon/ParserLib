@@ -1,10 +1,17 @@
-using static Parser.Text.Tokens.TokenFlags;
-
-namespace Parser.Text.Tokens;
-
-/// <summary>
-/// Tokenizer tokens.
-/// </summary>
+namespace Parser;
+#if false
+public class TokenTypes : Collection<string>
+{
+  public static TokenTypes operator | (TokenTypes left, int right) => [.. left.Select(item => item | right)];
+  public static implicit operator TokenTypes (string[] names) => [.. names.Select(name => new TokenType(name))];
+  public static implicit operator TokenTypes (TokenType[] types) => [.. types];
+  public static TokenTypes operator & (TokenTypes left, int right) => [.. left.Select(item => item & right)];
+  public static TokenTypes operator + (TokenTypes left, TokenType right) => [.. left, right];
+  public void Add (string s) => base.Add(new TokenType(s));
+  public void Add (string s, int flags) => base.Add(new TokenType(s, flags));
+}
+#endif
+#if false
 public enum TokenType
 {
   #region Token Masks
@@ -228,3 +235,4 @@ public enum TokenType
   T_VarRef,
   #endregion
 }
+#endif

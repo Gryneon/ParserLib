@@ -21,11 +21,6 @@
             The attribute regular expression.
             </summary>
         </member>
-        <member name="P:Specification.XML.Definition.TokenTypes">
-            <summary>
-            The token type definitions.
-            </summary>
-        </member>
         <member name="P:Specification.XML.Definition.GenerationOps">
             <summary>
             Operation definition.
@@ -75,6 +70,12 @@
             <summary>
             The attribute name.
             </summary>
+        </member>
+        <member name="M:Specification.XML.XMLProperty.CompareTo(Common.IProperty{System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.XML.XMLProperty.Equals(Common.IProperty{System.String})">
+            <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLContent">
             <summary>
@@ -177,7 +178,7 @@
         </member>
         <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Common.Regex.MatchData)">
             <summary>
-            Assigns attributes nased on a <see cref="T:Common.Regex.MatchData"/>.
+            Assigns attributes based on a <see cref="T:Common.Regex.MatchData"/>.
             </summary>
             <param name="mdd"></param>
         </member>

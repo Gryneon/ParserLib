@@ -21,7 +21,7 @@ public interface IHasChildren<in TChild>
   /// Adds multiple children.
   /// </summary>
   /// <param name="children">The children to add.</param>
-  void AddRange (IEnumerable<TChild> children)
+  virtual void AddRange (IEnumerable<TChild> children)
   {
     foreach (TChild child in children)
     {

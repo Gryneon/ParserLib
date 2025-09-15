@@ -1,0 +1,62 @@
+https://regex101.com/r/D3Mh7Y/1
+
+
+
+
+
+
+
+
+
+OLD FORMAT BELOW
+
+
+
+REGEX BASE CLASSES
+
+name - (?:[a-z_][\w_]*)
+int - (?:-?[0-9]+|-?0x[a-f0-9]{2,16})
+str - (?:\"(?:[^\n\\]|\\.)\")
+bool - (?:true|false)
+void - (?:void)
+flag - (?:(?:-|+)[\w_.]+)
+type - (?:int|bool|str|char|short|fixed|const)
+statement - (?:[^\n]*\;)-|(if|while|until|for|switch)-\([\s\S]+\)-\{[\s\S]*\}-
+
+TEMPLATE DEFINTIONS
+
+preproc - '#' #preprocname (#str|#int)
+script - 'script' (#int|#str) #scripttype '{' #statement?+ '}'
+script - 'script' (#int|#str) '(' (#param+|'void') '{' #statement?+ '}'
+function - 'function' #name '(' (#param+|'void') '{' #statement?+ '}'
+param - #type #name ('='(#int|#str|#bool|))?
+var_decl -  #type #name (',' #name)+ ';'
+zs_defaults - 'defaults' '{' (#prop|#flag|#combo)?+-'}'
+zs_class - 'class' #name ':' #name '{' (#zs_defaults|#zs_states) '}'
+
+ini_section - '[' #name ']'
+ini_property - (#name|#str) '=' #any
+
+json_object - '{' #prop+? '}' ','?
+json_array - '[' #item+? ']'
+
+json_object - '{' ( #json_property ( ',' #json_property )* )? '}'
+json_array - '[' ( #json_value ( ',' #json_value )* )? ']'
+json_value - ( $int | $dec | $null | $bool | $string | #json_object | #json_array )
+json_property - $string^key^ ':' #json_value^value^
+
+https://regex101.com/r/NQKjEC/5
+^(?'ref_name'[\w_]+)\s*\-\s*(?'line''(?'literal'(?:[^']|'')+?)'|(?'ws_req'\ )|(?'opt_ws_or_comment'\-)|\#(?'ref'[\w_]+)|(?'gp_start'\()|(?'gp_end'\))|(?'opt'\?)|(?'more'\+)|(?'or'\|))*$\s*
+
+(?'line''
+  (?'literal'(?:[^']|'')+?)'|
+  (?'ws_req'\ )|
+  (?'opt_ws_or_comment'\-)|
+  \#(?'ref'[\w_]+)|
+  \$(?'base'[\w_]+)|
+  (?'gp_start'\()|
+  (?'gp_end'\))|
+  (?'opt'\?)|
+  (?'more'\+)|
+  (?'or'\|)
+)

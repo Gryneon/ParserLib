@@ -15,7 +15,7 @@ public sealed class TextDataDictionary : IReadOnlyDictionary<string, object>
   /// <item><c>text:</c> The working text as a <see langword="string"/></item>
   /// <item><c>matches:</c> The <see cref="Collection{T}"/> of <see cref="MatchData"/> objects that <see cref="DictionaryOperation"/> creates.</item>
   /// <item><c>tokens:</c> The <see cref="Collection{T}"/> of <see cref="IToken"/> objects that <see cref="TokenizeOperation"/> creates.</item>
-  /// <item><c>results:</c> The end result.</item>
+  /// <item><c>result:</c> The end result.</item>
   /// </list>
   /// </summary>
   /// <remarks>Any string may be used as a key.</remarks>

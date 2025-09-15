@@ -52,7 +52,7 @@ public class Document : ICollection<Section>, ITextSerializer<Document>, IHasChi
     {
       foreach (PropertyObj item in section)
       {
-        this[section.Name].Set(item.Key, item.Value);
+        this[section.Name].Set<PropertyObj>(item.Key, item.Value);
       }
     }
     else

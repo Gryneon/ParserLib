@@ -1,15 +1,16 @@
 namespace Parser.Text.Tokens;
 
 /// <summary>
-/// Represents a single token's match requirements within a <see cref="TokenTemplate"/>.
+/// Represents a single token's match requirements within a <see cref="TokenFormat"/>.
 /// </summary>
-public readonly struct TokenTemplateNode : IEquatable<IToken>
+public class TokenTemplateNode : IEquatable<IToken>
 {
+  internal static string Area = "TokenTemplateNode.IsMatch";
   /// <summary>
   /// The accepted types this template will accept.<br/>
   /// To accept all types, use <c>T_NoType</c>.
   /// </summary>
-  public required TokenType[] Type { get; init; }
+  public required string[] Type { get; init; }
   /// <summary>
   /// The accepted content strings this template will accept. Matches must be exact and the case sensitivity is determined by the loaded Spec.<br/>
   /// To accept all types, use <see langword="null"/> or an empty array in the constructor.
@@ -21,30 +22,30 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
   public string? NewPropName { get; init; }
 
   [SetsRequiredMembers]
-  public TokenTemplateNode (TokenType type, string[]? matches = null, string? newProp = null)
+  public TokenTemplateNode (string type, string[]? matches = null, string? newProp = null)
   {
     Type = [type];
     Match = matches is null ? [] : [.. matches];
     NewPropName = newProp;
   }
   [SetsRequiredMembers]
-  public TokenTemplateNode (TokenType[] types, string[]? matches = null, string? newProp = null)
+  public TokenTemplateNode (string[]? types, string[]? matches = null, string? newProp = null)
   {
-    Type = [.. types];
+    Type = types is null ? [] : [.. types];
     Match = matches is null ? [] : [.. matches];
     NewPropName = newProp;
   }
   [SetsRequiredMembers]
   public TokenTemplateNode (string[] matches)
   {
-    Type = [TokenType.T_NoType];
+    Type = [];
     Match = [.. matches];
     NewPropName = null;
   }
   [SetsRequiredMembers]
   public TokenTemplateNode (string match)
   {
-    Type = [TokenType.T_NoType];
+    Type = [];
     Match = [match];
     NewPropName = null;
   }
@@ -58,21 +59,19 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
   /// This function does not check token flags, those are handled in the operation mechanics.
   /// </returns>
 
-  public bool IsMatch (IToken? token, [NotNullWhen(true)] out TokenTemplateMatch? match)
+  public bool IsMatch (IToken? token, [NotNullWhen(true)][MaybeNullWhen(false)] out TokenTemplateMatch? match)
   {
     match = null;
 
     if (token is null)
       return false;
 
-    TokenType exactType = TokenType.T_NoType;
-
+    string exactType = SE;
     bool passType = Type.IsEmpty();
-    foreach (TokenType type in Type)
-    {
-      TokenType template_type = type.Mask();
 
-      if (template_type is TokenType.T_NoType || template_type == token.Type)
+    foreach (string type in Type)
+    {
+      if (type == SE || type == token.Type)
       {
         passType = true;
         exactType = type;
@@ -80,7 +79,7 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
       }
     }
 
-    Debug.Log("TokenTemplateNode.IsMatch", passType ? $"Type {Type} Passed." : $"Type {Type} Failed ({token})");
+    Debug.Log(Area, passType ? $"Type {Type} Passed." : $"Type {Type} Failed ({token})");
 
     bool passContent = Match.IsEmpty();
     foreach (string content in Match)
@@ -94,7 +93,7 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
       }
     }
 
-    Debug.Log("TokenTemplateNode.IsMatch", passContent ? $"Content {Match.TextJoin(" or ")} Passed." : $"Content {Match.TextJoin(" or ")} Failed ({token})");
+    Debug.Log(Area, passContent ? $"Content {Match.TextJoin(" or ")} Passed." : $"Content {Match.TextJoin(" or ")} Failed ({token})");
 
     if (passContent && passType)
     {
@@ -103,7 +102,8 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
         TemplateNode = this,
         Token = token,
         MatchedToken = exactType,
-        PropName = NewPropName
+        PropName = NewPropName,
+        TemplateTypeIndex = Array.IndexOf(Type, exactType)
       };
       return true;
     }
@@ -112,11 +112,10 @@ public readonly struct TokenTemplateNode : IEquatable<IToken>
 
   public bool Equals (IToken? other) => IsMatch(other, out _);
 
-  public override string ToString () => $"{Type[0]}{(Match[0].IsEmpty() ? SE : " : " + Match[0])}";
+  public override string ToString () => $"{Type[0]}{(Match is null ? SE : " : " + Match[0])}";
 
-  public static implicit operator TokenTemplateNode ((TokenType t, string c, string n) tuple) => new(tuple.t, [tuple.c], tuple.n);
-  public static implicit operator TokenTemplateNode ((TokenType t, string c) tuple) => new(tuple.t, [tuple.c]);
-  public static implicit operator TokenTemplateNode (TokenType t) => new(t);
-  public static implicit operator TokenTemplateNode (string s) => new(s);
+  public static implicit operator TokenTemplateNode ((string Type, string Match, string Name) tuple) => new(tuple.Type, [tuple.Match], tuple.Name);
+  public static implicit operator TokenTemplateNode ((string Type, string Match) tuple) => new(tuple.Type, [tuple.Match]);
   public static implicit operator TokenTemplateNode (string[] list) => new(list);
+  public static implicit operator TokenTemplateNode (string match) => new(match);
 }

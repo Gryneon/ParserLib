@@ -46,6 +46,11 @@
             The command executed.
             </summary>
         </member>
+        <member name="P:Specification.IPL.CommandData.FieldText">
+            <summary>
+            The field content if any is set.
+            </summary>
+        </member>
         <member name="P:Specification.IPL.CommandData.PrintQty">
             <summary>
             The number of labels to print in sequence.
@@ -204,21 +209,137 @@
             <summary>
             TODO: Doc
             </summary>
+            <param name="left">The left object.</param>
+            <param name="right">The right object.</param>
         </member>
         <member name="M:Specification.IPL.CommandData.op_LessThanOrEqual(Specification.IPL.CommandData,Specification.IPL.CommandData)">
             <summary>
             TODO: Doc
             </summary>
+            <param name="left">The left object.</param>
+            <param name="right">The right object.</param>
         </member>
         <member name="M:Specification.IPL.CommandData.op_GreaterThan(Specification.IPL.CommandData,Specification.IPL.CommandData)">
             <summary>
             TODO: Doc
             </summary>
+            <param name="left">The left object.</param>
+            <param name="right">The right object.</param>
         </member>
         <member name="M:Specification.IPL.CommandData.op_GreaterThanOrEqual(Specification.IPL.CommandData,Specification.IPL.CommandData)">
             <summary>
             TODO: Doc
             </summary>
+            <param name="left">The left object.</param>
+            <param name="right">The right object.</param>
+        </member>
+        <member name="T:Specification.IPL.CommandValidationType">
+            <summary>
+            The type of command validation to perform.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.Error">
+            <summary>
+            Standard error value of -1.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.None">
+            <summary>
+            No type specified.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.InMode">
+            <summary>
+            Checks if the command is in the given mode.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.InLineCmd">
+            <summary>
+            Checks if the command is in the given line cmd.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.IsCommandType">
+            <summary>
+            Checks if the command is of the given type.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.IsCommandLetter">
+            <summary>
+            Checks if the command letter matches the given letter.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.HasFieldDefined">
+            <summary>
+            Indicates whether a specific field is defined.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.ValueWithinRange">
+            <summary>
+            Value is within the specified range (inclusive).
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.ValueWithinSet">
+            <summary>
+            Value is within the specified set.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.HasValueIndex">
+            <summary>
+            Has a data value at the specified index.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.NoDuplicateFieldIndex">
+            <summary>
+            Checks that there are no duplicate values at the specified field index.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.And">
+            <summary>
+            Logical AND.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.Or">
+            <summary>
+            Logical OR.
+            </summary>
+        </member>
+        <member name="F:Specification.IPL.CommandValidationType.Not">
+            <summary>
+            Logical NOT.
+            </summary>
+        </member>
+        <member name="T:Specification.IPL.CommandValidator_And">
+            <summary>
+            Validates that all the provided command validations pass.
+            </summary>
+            <param name="commands">A list of the validation commands that must all pass.</param>
+        </member>
+        <member name="M:Specification.IPL.CommandValidator_And.#ctor(Specification.IPL.ICommandValidator[])">
+            <summary>
+            Validates that all the provided command validations pass.
+            </summary>
+            <param name="commands">A list of the validation commands that must all pass.</param>
+        </member>
+        <member name="P:Specification.IPL.CommandValidator_And.ValidationType">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.IPL.CommandValidator_And.Validate(Specification.IPL.CommandData)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Specification.IPL.CommandValidator_InMode">
+            <summary>
+            Checks if the command is in the given mode.
+            </summary>
+            <param name="modes">A list of the accepted printer modes.</param>
+        </member>
+        <member name="M:Specification.IPL.CommandValidator_InMode.#ctor(Specification.IPL.IPLPrinterMode[])">
+            <summary>
+            Checks if the command is in the given mode.
+            </summary>
+            <param name="modes">A list of the accepted printer modes.</param>
+        </member>
+        <member name="M:Specification.IPL.CommandValidator_InMode.Validate(Specification.IPL.CommandData)">
+            <inheritdoc/>
         </member>
         <member name="P:Specification.IPL.Definition.Splits">
             <summary>
@@ -267,6 +388,23 @@
             <para>Command Reader Regex</para>
             Built from https://regex101.com/r/dGDxqF/1
             </summary>
+        </member>
+        <member name="T:Specification.IPL.ICommandValidator">
+            <summary>
+            Validates that a command is well formed.
+            </summary>
+        </member>
+        <member name="P:Specification.IPL.ICommandValidator.ValidationType">
+            <summary>
+            The type of validation to perform.
+            </summary>
+        </member>
+        <member name="M:Specification.IPL.ICommandValidator.Validate(Specification.IPL.CommandData)">
+            <summary>
+            Validates the given command data against the validation type and parameters.
+            </summary>
+            <param name="cmd">The command to validate</param>
+            <returns></returns>
         </member>
         <member name="T:Specification.IPL.InvalidCommandException">
             <summary>

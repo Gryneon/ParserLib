@@ -8,6 +8,8 @@ using Common;
 using Common.Extensions;
 
 using Parser;
+using Parser.Binary;
+using Parser.Binary.Ops;
 using Parser.Text;
 
 using Specification.IPL;
@@ -20,12 +22,14 @@ internal sealed class Program
 {
   #region Constants
   internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser.Text\Samples\";
+  internal const int LogLine = 10;
   #endregion
   #region Fields
   internal static string TestPath1 = Paths.ipl_label;
   internal static string TestPath2 = Paths.ini_vncdefault;
   internal static string? UserInput;
-  internal static TextParser Parser = new(TextSpec.TextByLines);
+  internal static TextParser Parser = new();
+  internal static ByteParser ByteParser = new();
   internal static OpStatus Status = OpStatus.AtStart;
   #endregion
   #region Basic Methods
@@ -37,12 +41,43 @@ internal sealed class Program
   [MTAThread]
   internal static Task<int> Main (string[] args)
   {
+    string[] items = ["Load", "Test", "Raw Test", "Exit"];
+    int index = 0;
+
+    void draw ()
+    {
+      Console.SetCursorPosition(0, 0);
+      Console.WriteLine("Select a function");
+      Console.WriteLine(); // spacing
+
+      for (int i = 0; i < items.Length; i++)
+      {
+        Console.Write(new string(' ', Console.WindowWidth));
+        Console.SetCursorPosition(0, Console.CursorTop);
+
+        if (i == index)
+        {
+          Console.BackgroundColor = ConsoleColor.Gray;
+          Console.ForegroundColor = ConsoleColor.Black;
+          Console.WriteLine($"> {items[i]}");
+          Console.ResetColor();
+        }
+        else
+        {
+          Console.WriteLine($"  {items[i]}");
+        }
+      }
+    }
+
+    Console.Clear();
+    draw();
+
     Debug.Verbose = true;
-    Debug.Log("Program.Main", "Program Start");
+    Debug.Log("Program", "Main", "Program Start");
 
     foreach (string path in args)
     {
-      Debug.Log("Program.Main", "Loading File : " + path);
+      Debug.Log("Program", "Main", "Loading File : " + path);
 
       string content = File.ReadAllText(TestPath1);
 
@@ -98,6 +133,7 @@ internal sealed class Program
       "mapinfo" => TestTextParser(SamplePath + "mapinfo.lmp", Specification.MapInfo.Definition.Spec),
       "json" => TestTextParser(SamplePath + "launchSettings.json", Specification.JSON.Definition.Spec),
       "xml" => TestTextParser(SamplePath + "ipl.xml", Specification.XML.Definition.Spec),
+      "ipl" => TestTextParser(SamplePath + "label.ipl", Specification.IPL.Definition.Spec),
       _ => null
     };
 
@@ -112,7 +148,7 @@ internal sealed class Program
   {
     Parser = new(spec);
     Status = Parser.Parse(File.ReadAllText(path));
-    Debug.Log("Program.TestTextParser", $"The {spec.Name} test resulted in {Status}.");
+    Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
     return Task.FromResult(SE);
   }
 
@@ -121,10 +157,11 @@ internal sealed class Program
     Spec userSpec;
     string userPath;
     string fileContent;
+    byte[] byteContent;
 
   GetFile:
 
-    Debug.Log("Program.Load", "Path to file:");
+    Debug.Log("Program", "Load", "Path to file:");
     userPath = UserLineReturn();
 
     if (userPath.IsAny(["back", "quit", "exit"]))
@@ -134,6 +171,7 @@ internal sealed class Program
       goto GetFile;
 
     fileContent = File.ReadAllText(userPath);
+    byteContent = File.ReadAllBytes(userPath);
     userSpec = Library.CheckFile(userPath);
     Debug.Log("Program.Load", $"Spec Chosen is {userSpec.Name}");
 
@@ -159,9 +197,18 @@ internal sealed class Program
       TextParser parser = new(textSpec);
       OpStatus status = parser.Parse(fileContent);
 
-      if (status > OpStatus.Fail)
+      if (status.IsFail())
         Debug.Log("Program.Load", $"Failed, status is {status}");
+      else
+        Debug.Log("Program.Load", $"Good, status is {status}");
+    }
+    else if (userSpec.Operations[0] is ByteOperation)
+    {
+      ByteParser parser = new(userSpec);
+      OpStatus status = parser.Parse(byteContent);
 
+      if (status.IsFail())
+        Debug.Log("Program.Load", $"Failed, status is {status}");
       else
         Debug.Log("Program.Load", $"Good, status is {status}");
     }

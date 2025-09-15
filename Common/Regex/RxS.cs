@@ -68,7 +68,9 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>
   /// <param name="rx2">Righthand regular expression.</param>
   /// <returns>A regular expression that is a joining of the 2 expressions.</returns>
   public static RxS operator <= (RxS rx1, [SS("Regex")] string rx2) => rx1 + PosLkBhd(rx2);
-
+  /// <summary>
+  /// Adds the lazy quantifier to the expression.
+  /// </summary>
   public RxS Lazy => $"{Content}?";
   public RxS Any => $"{Grp(Content)}*";
   public RxS Many => $"{Grp(Content)}+";

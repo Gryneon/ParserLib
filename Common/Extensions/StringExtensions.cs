@@ -9,6 +9,12 @@ namespace Common.Extensions;
 /// </summary>
 public static class StringExtensions
 {
+  /// <summary>
+  /// Case sensitive comparison.
+  /// </summary>
+  /// <param name="text">This text.</param>
+  /// <param name="other">The other text.</param>
+  /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
   public static bool Is (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCO) ?? false);
   public static bool IsAny (this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || text.Any(other, Equals);
   public static bool Like (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCOIC) ?? false);
