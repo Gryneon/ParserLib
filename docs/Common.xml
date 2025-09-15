@@ -191,6 +191,32 @@
             <param name="target">The originating method.</param>
             <param name="msg">The message to log.</param>
         </member>
+        <member name="T:Common.Excel.ExcelWorkbook">
+            <summary>
+            Repesents an Excel workbook and provides access to its sheets, tables, queries, styles, and named ranges.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.ExcelWorkbook.Path">
+            <summary>
+            The file path of the workbook, if it was opened from a file.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.ExcelWorkbook.Workbook">
+            <summary>
+            A reference to the underlying Excel Workbook object.
+            </summary>
+        </member>
+        <member name="M:Common.Excel.ExcelWorkbook.#ctor(System.String)">
+            <summary>
+            Creates an <see cref="T:Common.Excel.ExcelWorkbook"/> by opening the specified file path.
+            </summary>
+            <param name="path">The path to the workbook.</param>
+        </member>
+        <member name="T:Common.Excel.Range">
+            <summary>
+            A class representing a range of cells in Excel, which can include standard cell references, table references, and named ranges.
+            </summary>
+        </member>
         <member name="M:Common.Excel.Range.ColumnRx(System.String)">
             <summary>
             <c>[inside]</c>
@@ -294,6 +320,31 @@
             <c>ExcelRef</c> - A standard excel range reference.<br/>
             </summary>
         </member>
+        <member name="T:Common.Excel.RangeNode">
+            <summary>
+            A node within a range.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.Sheet">
+            <summary>
+            The containing worksheet.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.Row">
+            <summary>
+            The row index.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.Col">
+            <summary>
+            The column index;
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.WholeRow">
+            <summary>
+            Whether or not this is the whole row or not.
+            </summary>
+        </member>
         <member name="M:Common.Excel.RangeNode.Equals(System.Object)">
             <inheritdoc/>
         </member>
@@ -305,6 +356,11 @@
         </member>
         <member name="M:Common.Excel.RangeNode.Equals(Common.Excel.RangeNode)">
             <inheritdoc/>
+        </member>
+        <member name="T:Common.Excel.TableExt">
+            <summary>
+            An abstract base class that implements the ITableExt interface, providing a foundation for table-like data structures.
+            </summary>
         </member>
         <member name="T:Common.Extensions.CharExtensions">
             <summary>
@@ -318,6 +374,20 @@
             <param name="c">The character to check.</param>
             <returns>true is the character is between ascii 'a' and 'z', false otherwise.</returns>
         </member>
+        <member name="M:Common.Extensions.CharExtensions.Is16bit(System.Char)">
+            <summary>
+            Checks if this character must be represented in 16 bits (256-65535).
+            </summary>
+            <param name="c">The character to check.</param>
+            <returns><see langword="true"/> if it is within the specified range, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Extensions.CharExtensions.IsWhitespace(System.Char)">
+            <summary>
+            Checks if a character is considered whitespace by Unicode standards.
+            </summary>
+            <param name="c">The character to check.</param>
+            <returns><see langword="true"/> if the character is whitespace, otherwise <see langword="false"/>.</returns>
+        </member>
         <member name="M:Common.Extensions.CharExtensions.ToUpper(System.Char)">
             <summary>
             Gets the uppercase variant of this character, or the character, if there isn't one.
@@ -328,6 +398,11 @@
         <member name="T:Common.Extensions.CollectionExtensions">
             <summary>
             Extension methods for collections.
+            </summary>
+        </member>
+        <member name="T:Common.Extensions.DictionaryExtensions">
+            <summary>
+            Extensions for Dictionary objects.
             </summary>
         </member>
         <member name="M:Common.Extensions.EnumExtensions.ToInt(System.IConvertible)">
@@ -353,6 +428,42 @@
             <param name="e">The enum to check.</param>
             <param name="check">The bits to check for.</param>
             <returns><see langword="true"/> if the enum contains any of the bits provided, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="T:Common.Extensions.HashCodeExtensions">
+            <summary>
+            Extensions for HashCode objects.
+            </summary>
+        </member>
+        <member name="T:Common.Extensions.IntExtensions">
+            <summary>
+            Integer extensions for bitwise operations.
+            </summary>
+        </member>
+        <member name="M:Common.Extensions.IntExtensions.HasFlag(System.Int32,System.IConvertible)">
+            <summary>
+            Checks if a specific flag is set in the integer value.
+            </summary>
+            <param name="value">The integer value to look in.</param>
+            <param name="flag">The flag to look for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Extensions.IntExtensions.SetFlag``1(System.Int32,System.IConvertible)">
+            <summary>
+            Sets a specific flag in the integer value.
+            </summary>
+            <typeparam name="T">The type of integer value to return.</typeparam>
+            <param name="value">The integer value to modify.</param>
+            <param name="flag">The flag to set.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Extensions.IntExtensions.Toggle``1(System.Int32,System.IConvertible)">
+            <summary>
+            Toggles a specific flag in the integer value.
+            </summary>
+            <typeparam name="T">The type of integer value to return.</typeparam>
+            <param name="value">The integer value to modify.</param>
+            <param name="bit">The flag to toggle.</param>
+            <returns></returns>
         </member>
         <member name="T:Common.Extensions.NumberStylesExtensions">
             <summary>
@@ -397,6 +508,14 @@
             Extensions for string objects.
             </summary>
         </member>
+        <member name="M:Common.Extensions.StringExtensions.Is(System.String,System.String)">
+            <summary>
+            Case sensitive comparison.
+            </summary>
+            <param name="text">This text.</param>
+            <param name="other">The other text.</param>
+            <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
+        </member>
         <member name="T:Common.Extensions.ReplaceNodeKVPConverter">
             <summary>
             Converter between a <see cref="T:Common.ReplaceNode"/>s and a <see cref="T:System.Collections.Generic.KeyValuePair"/>.
@@ -421,12 +540,6 @@
             <returns>The converted object.</returns>
             <exception cref="T:System.NotSupportedException">Conversion failed.</exception>
         </member>
-        <member name="T:Common.ICanHoldMyself`1">
-            <summary>
-            Represents an object that can hold a collection of itself.
-            </summary>
-            <typeparam name="T">This type.</typeparam>
-        </member>
         <member name="T:Common.IHasChildren`1">
             <summary>
             An interface that indicates that an object contains children.
@@ -449,6 +562,38 @@
             Adds multiple children.
             </summary>
             <param name="children">The children to add.</param>
+        </member>
+        <member name="T:Common.IProperty`1">
+            <summary>
+            Represents a key and value pair.
+            </summary>
+            <typeparam name="TValue">The type of value.</typeparam>
+        </member>
+        <member name="P:Common.IProperty`1.Key">
+            <summary>
+            The key name.
+            </summary>
+        </member>
+        <member name="P:Common.IProperty`1.Value">
+            <summary>
+            The value assigned to the key.
+            </summary>
+        </member>
+        <member name="T:Common.IReadOnlyProperty`1">
+            <summary>
+            Represents a read-only key and value pair.
+            </summary>
+            <typeparam name="TValue">The type of value.</typeparam>
+        </member>
+        <member name="P:Common.IReadOnlyProperty`1.Key">
+            <summary>
+            The key name.
+            </summary>
+        </member>
+        <member name="P:Common.IReadOnlyProperty`1.Value">
+            <summary>
+            The value assigned to the key.
+            </summary>
         </member>
         <member name="T:Common.ITextSerializer">
             <summary>
@@ -546,6 +691,32 @@
         <member name="P:Common.Regex.CaptureData.Name">
             <inheritdoc/>
         </member>
+        <member name="P:Common.Regex.CaptureData.Index">
+            <summary>
+            The Capture index in the group.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.CaptureData.IsNull">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Regex.CaptureData.#ctor(System.Text.RegularExpressions.Capture,System.String,System.Int32)">
+            <summary>
+            Constructor from a <see cref="T:System.Text.RegularExpressions.Capture"/>.
+            </summary>
+            <param name="c">The <see cref="T:System.Text.RegularExpressions.Capture"/> to make this object from.</param>
+            <param name="groupName"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:Common.Regex.CaptureData.#ctor(System.String,System.Int32,System.Int32,System.String,System.Int32)">
+            <summary>
+            Manual constructor.
+            </summary>
+            <param name="content"></param>
+            <param name="pos"></param>
+            <param name="len"></param>
+            <param name="name"></param>
+            <param name="index"></param>
+        </member>
         <member name="P:Common.Regex.CommonRegex.WS_Req">
             <summary>
             Required Whitespace (including new lines)
@@ -573,10 +744,74 @@
             Represents a group in a match.
             </summary>
         </member>
+        <member name="P:Common.Regex.GroupData.Captures">
+            <summary>
+            The captures within this group.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.GroupData.#ctor(System.Text.RegularExpressions.Group,System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Common.Regex.GroupData"/> from a <see cref="T:System.Text.RegularExpressions.Group"/>.
+            </summary>
+            <param name="g">The <see cref="T:System.Text.RegularExpressions.Group"/> to base this object on.</param>
+            <param name="index">The group number of this group.</param>
+        </member>
+        <member name="M:Common.Regex.GroupData.#ctor(System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Manual Constructor.
+            </summary>
+            <param name="name"></param>
+            <param name="content"></param>
+            <param name="pos"></param>
+            <param name="len"></param>
+            <param name="index"></param>
+        </member>
+        <member name="P:Common.Regex.GroupData.Item(System.Int32)">
+            <summary>
+            Gets the capture data at the given index.
+            </summary>
+            <param name="index">The index of the data.</param>
+            <returns>The data at the given index.</returns>
+        </member>
+        <member name="M:Common.Regex.GroupData.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.GroupData.IsRemoveGroup">
+            <summary>
+            Whether the group is to be removed or not.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.GroupData.IsNamedGroup">
+            <summary>
+            Whether the group is a named group or not.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.GroupData.Null">
+            <summary>
+            A null or empty group data object.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.GroupData.Equals(Common.Regex.GroupData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Regex.GroupData.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Regex.GroupData.GetHashCode">
+            <inheritdoc/>
+        </member>
         <member name="T:Common.Regex.IGeneratable`2">
             <summary>
             Represents a type that can be generated from an input object.
             </summary>
+        </member>
+        <member name="M:Common.Regex.IGeneratable`2.ThrowImplementException``1">
+            <summary>
+            Throws a <see cref="T:System.NotImplementedException"/> to indicate that the method needs to be overridden in the implementing class.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns>Nothing.</returns>
+            <exception cref="T:System.NotImplementedException"></exception>
         </member>
         <member name="M:Common.Regex.IGeneratable`2.Generate(`0)">
             <summary>
@@ -607,7 +842,7 @@
         </member>
         <member name="P:Common.Regex.IMatchItem.EndPos">
             <summary>
-            The last position of the match.
+            The position of the last character in the match.
             </summary>
         </member>
         <member name="P:Common.Regex.IMatchItem.Content">
@@ -620,26 +855,196 @@
             The name of the match item, which is typically used for named capturing groups in regex.
             </summary>
         </member>
-        <member name="T:Common.Regex.IObjectStorage">
+        <member name="P:Common.Regex.IMatchItem.IsNull">
             <summary>
-            Represents an object that can store and retrieve output data.
+            Whether the match item is null or empty.
             </summary>
         </member>
-        <member name="P:Common.Regex.IObjectStorage.HasObject">
+        <member name="T:Common.Regex.MatchData">
             <summary>
-            The object is storing an extra object.
+            A collection of groups and their captures from a regex match. This object includes additional functions and properties to make working with regex matches easier.
             </summary>
         </member>
-        <member name="M:Common.Regex.IObjectStorage.MeetsCondition(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="arg"></param>
-            <returns><see langword="true"/> if the condition is met, <see langword="false"/> otherwise.</returns>
+        <member name="P:Common.Regex.MatchData.Index">
+            <inheritdoc/>
         </member>
-        <member name="T:Common.Regex.IObjectStorage`1">
+        <member name="P:Common.Regex.MatchData.Name">
             <summary>
-            A strongly-typed version of <see cref="T:Common.Regex.IObjectStorage"/>.
+            The group name, unused in this class.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.MatchData.Groups">
+            <summary>
+            The capture groups.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.MatchData.Count">
+            <summary>
+            The number of groups in the match.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.MatchData.IsNull">
+            <summary>
+            Gets a value indicating whether the match has no groups.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.MatchData.Origin">
+            <summary>
+            The original <see cref="T:System.Text.RegularExpressions.Match"/> object from which this <see cref="T:Common.Regex.MatchData"/> was created.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.MatchData.#ctor(System.Text.RegularExpressions.Match,System.Int32)">
+            <summary>
+            Represents data extracted from a regular expression match, including its groups,  and provides additional
+            functionality for working with the match.
+            </summary>
+            <remarks>The <see cref="P:Common.Regex.MatchData.Groups"/> property is initialized by converting the groups in the provided  <see
+            cref="T:System.Text.RegularExpressions.Match"/> object into a sorted dictionary for easier access and manipulation.</remarks>
+            <param name="m">The <see cref="T:System.Text.RegularExpressions.Match"/> object containing the results of a regular expression match.  Cannot be <see
+            langword="null"/>.</param>
+            <param name="i"></param>
+        </member>
+        <member name="M:Common.Regex.MatchData.#ctor">
+            <summary>
+            Empty constructor for serialization purposes only.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.MatchData.HasGroup(System.String)">
+            <summary>
+            Checks if the specified group exists in the match.
+            </summary>
+            <param name="groupName">The name of the group.</param>
+            <returns>
+            <see langword="true"/> if the group exists; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.DoesNotHaveGroup(System.String)">
+            <summary>
+            Determines whether the specified group does not exist.
+            </summary>
+            <param name="groupName">The name of the group to check. Cannot be null or empty.</param>
+            <returns><see langword="true"/> if the specified group does not exist; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.HasEmptyGroup(System.String)">
+            <summary>
+            Determines whether the specified group exists and contains no content.
+            </summary>
+            <param name="groupName">The name of the group to check. Cannot be null or empty.</param>
+            <returns><see langword="true"/> if the group exists and its content is empty; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.HasEmptyOrNoGroup(System.String)">
+            <summary>
+            Determines whether the specified group does not exist or exists but is empty.
+            </summary>
+            <param name="groupName">The name of the group to check. Cannot be null or empty.</param>
+            <returns><see langword="true"/> if the group does not exist or exists but is empty; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.HasGroups(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Determines whether all specified group names exist in the current collection of groups.
+            </summary>
+            <param name="groupNames">A collection of group names to check for existence.</param>
+            <returns><see langword="true"/> if all specified group names exist in the collection; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.HasAnyGroup(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Determines whether the current instance contains any of the specified group names.
+            </summary>
+            <param name="groupNames">A collection of group names to check for existence.</param>
+            <returns><see langword="true"/> if at least one of the specified group names exists in the current instance;  otherwise,
+            <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.HasGroupStartingWith(System.String)">
+            <summary>
+            Determines whether any group name starts with the specified prefix.
+            </summary>
+            <remarks>This method performs a case-insensitive comparison when checking for group names that start with
+            the specified prefix.</remarks>
+            <param name="namePart">The prefix to search for in group names. This value is case-insensitive.</param>
+            <returns><see langword="true"/> if at least one group name starts with the specified prefix; otherwise, <see
+            langword="false"/>.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="P:Common.Regex.MatchData.Item(System.String)">
+            <summary>
+            Gets the GroupData associated with the specified group name.
+            </summary>
+            <param name="groupName">The group to look up.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.ThrowIfAbsent(System.String)">
+            <summary>
+            Throws an <see cref="T:Common.Regex.AbsentGroupException"/> if the specified group does not exist.
+            </summary>
+            <param name="groupName">The name of the group to check for.</param>
+            <exception cref="T:Common.Regex.AbsentGroupException"></exception>
+        </member>
+        <member name="M:Common.Regex.MatchData.ThrowIfEmpty(System.String)">
+            <summary>
+            Throws an <see cref="T:Common.Regex.EmptyGroupException"/> if the specified group exists but has a length of 0,
+            or an <see cref="T:Common.Regex.AbsentGroupException"/> if the specified group does not exist.
+            </summary>
+            <param name="groupName">The name of the group to check for.</param>
+            <exception cref="T:Common.Regex.EmptyGroupException"></exception>
+            <exception cref="T:Common.Regex.AbsentGroupException"></exception>"
+        </member>
+        <member name="M:Common.Regex.MatchData.ToString(System.String)">
+            <summary>
+            Returns a string representation of the current <see cref="T:Common.Regex.MatchData"/> object.
+            </summary>
+            <param name="indent">A string used for indentation in the output. Defaults to an empty string if not provided.</param>
+            <remarks>The returned string includes a header and a detailed list of all groups in the match. If the
+            match is empty, the string will indicate that no groups are present.</remarks>
+            <returns>A string that represents the current <see cref="T:Common.Regex.MatchData"/> object, including its groups and their
+            values.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.ToString">
+            <summary>
+            Returns a string representation of the current <see cref="T:Common.Regex.MatchData"/> object.
+            </summary>
+            <remarks>The returned string includes a header and a detailed list of all groups in the match. If the
+            match is empty, the string will indicate that no groups are present.</remarks>
+            <returns>A string that represents the current <see cref="T:Common.Regex.MatchData"/> object, including its groups and their
+            values.</returns>
+        </member>
+        <member name="M:Common.Regex.MatchData.Add(Common.Regex.GroupData)">
+            <summary>
+            Adds the specified <see cref="T:Common.Regex.GroupData"/> item to the collection.
+            </summary>
+            <param name="item">The <see cref="T:Common.Regex.GroupData"/> item to add to the collection. Cannot be null.</param>
+        </member>
+        <member name="M:Common.Regex.MatchData.Generate(Common.Regex.MatchData)">
+            <summary>Creates a copy of the object.</summary>
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Regex.MatchData.Equals(Common.Regex.MatchData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Regex.MatchData.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Regex.MatchData.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Regex.MatchData.Equals(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Common.Regex.MatchDataCollection">
+            <summary>
+            A collection of <see cref="T:Common.Regex.MatchData"/> objects.
+            </summary>
+        </member>
+        <member name="M:Common.Regex.MatchDataCollection.ToString">
+            <summary>
+            Gets the debugging and internal values for this object.
+            </summary>
+            <returns>The debugging and internal values for this object.</returns>
+        </member>
+        <member name="T:Common.Regex.RegexExtensions">
+            <summary>
+            A static class contianing extension methods for <see cref="T:System.Text.RegularExpressions.Regex"/> related types.
             </summary>
         </member>
         <member name="M:Common.Regex.RegexExtensions.GetEnumerator(System.Text.RegularExpressions.MatchCollection)">
@@ -648,6 +1053,21 @@
             </summary>
             <param name="mc">The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> to enumerate.</param>
             <returns>The <see cref="T:System.Collections.Generic.IEnumerator`1"/>.</returns>
+        </member>
+        <member name="T:Common.Regex.RegexStaticFunctions">
+            <summary>
+            Static functions to shorthand frequent definitions.
+            </summary>
+        </member>
+        <member name="P:Common.Regex.RegexStaticFunctions.Bk">
+            <summary>
+            Word Boundary (\b)
+            </summary>
+        </member>
+        <member name="P:Common.Regex.RegexStaticFunctions.Start">
+            <summary>
+            Line Start (^)
+            </summary>
         </member>
         <member name="T:Common.Regex.RxS">
             <summary>
@@ -715,6 +1135,11 @@
             <param name="rx1">Lefthand regular expression.</param>
             <param name="rx2">Righthand regular expression.</param>
             <returns>A regular expression that is a joining of the 2 expressions.</returns>
+        </member>
+        <member name="P:Common.Regex.RxS.Lazy">
+            <summary>
+            Adds the lazy quantifier to the expression.
+            </summary>
         </member>
         <member name="P:Common.Regex.RxS.Orr">
             <summary>
