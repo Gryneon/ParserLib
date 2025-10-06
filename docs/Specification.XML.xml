@@ -61,9 +61,9 @@
             The attribute value.
             </summary>
         </member>
-        <member name="P:Specification.XML.XMLProperty.LKey">
+        <member name="P:Specification.XML.XMLProperty.UKey">
             <summary>
-            The attribute name formatted as lowercase invariant.
+            The attribute name formatted as uppercase invariant.
             </summary>
         </member>
         <member name="P:Specification.XML.XMLProperty.Specification#XML#IXMLObject#Tag">
@@ -95,7 +95,7 @@
         <member name="P:Specification.XML.XMLContent.Specification#XML#IXMLObject#Tag">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.XML.XMLContent.Generate(Common.Regex.MatchData)">
+        <member name="M:Specification.XML.XMLContent.Generate(Common.Regex.MatchDataSet)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementClose">
@@ -108,7 +108,7 @@
             Represents a closing XML element.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementClose.Generate(Common.Regex.MatchData)">
+        <member name="M:Specification.XML.XMLElementClose.Generate(Common.Regex.MatchDataSet)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementOpen">
@@ -121,7 +121,7 @@
             Represents an opening XML tag.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementOpen.Generate(Common.Regex.MatchData)">
+        <member name="M:Specification.XML.XMLElementOpen.Generate(Common.Regex.MatchDataSet)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementSingle">
@@ -134,7 +134,7 @@
             Represents a single self closing XML tag.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementSingle.Generate(Common.Regex.MatchData)">
+        <member name="M:Specification.XML.XMLElementSingle.Generate(Common.Regex.MatchDataSet)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLHeader">
@@ -147,7 +147,7 @@
             Represents an XML header.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLHeader.Generate(Common.Regex.MatchData)">
+        <member name="M:Specification.XML.XMLHeader.Generate(Common.Regex.MatchDataSet)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLNode">
@@ -176,9 +176,9 @@
             The attributes for this XML object.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Common.Regex.MatchData)">
+        <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Common.Regex.MatchDataSet)">
             <summary>
-            Assigns attributes based on a <see cref="T:Common.Regex.MatchData"/>.
+            Assigns attributes based on a <see cref="T:Common.Regex.MatchDataSet"/>.
             </summary>
             <param name="mdd"></param>
         </member>

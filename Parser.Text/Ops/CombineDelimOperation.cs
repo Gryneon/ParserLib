@@ -2,6 +2,12 @@
 
 namespace Parser.Text.Ops;
 
+/// <summary>
+/// <include file='operation.xml' path='doc/members/member[@name="M:Parser.Ops.Operation`1.DoOperation(`0)"]/*'/>
+/// </summary>
+/// <param name="delimiter"></param>
+/// <param name="input_key"></param>
+/// <param name="output_key"></param>
 public class CombineDelimOperation (string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
 {
   protected override void Execute ()
@@ -13,7 +19,7 @@ public class CombineDelimOperation (string delimiter, string input_key, string o
     else if (CheckInput(out IEnumerable<string>? list))
     {
       Status = OpStatus.Pass;
-      _workToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
+      WorkToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
     }
     else
     {

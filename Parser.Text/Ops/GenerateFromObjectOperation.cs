@@ -1,7 +1,7 @@
 namespace Parser.Text.Ops;
 
 /// <summary>
-/// Takes an input as a collection of <see cref="MatchData"/> objects,
+/// Takes an input as a collection of <see cref="MatchDataSet"/> objects,
 /// and generates a <see cref="Dictionary{TKey, TValue}"/> of items from it,
 /// provided that the specified group (or groups) are present.
 /// </summary>
@@ -11,21 +11,29 @@ namespace Parser.Text.Ops;
 /// <param name="group_name">The group name to check for.</param>
 /// <remarks><code>
 /// Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
-/// Output: Dictionary&lt;int, TOutput>
-/// </code></remarks>
+/// Output: <see cref="Dictionary{TKey, TValue}"/>Dictionary&lt;int, TOutput></code>
+/// <br/>
+/// Statuses:
+/// <code>
+/// <see cref="OpStatus.Pass"/>: Operation completed successfully.
+/// <see cref="OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
+/// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+/// </code>
+/// </remarks>
 public class GenerateFromObjectOperation<TOutput> (string input_key, string output_key, string group_name) : TextOperation(input_key, output_key)
-  where TOutput : IGeneratable<MatchData, TOutput>
+  where TOutput : IGeneratable<MatchDataSet, TOutput>
 {
   /// <inheritdoc/>
   protected override void Execute ()
   {
     Dictionary<int, TOutput> output_items = [];
-    if (CheckInput(out IDictionary<int, MatchData>? dCasted))
+    if (CheckInput(out IDictionary<int, MatchDataSet>? dCasted))
     {
-      Dictionary<int, MatchData> dict = [.. dCasted];
-      foreach (KeyValuePair<int, MatchData> kvp in dict)
+      Dictionary<int, MatchDataSet> dict = [.. dCasted];
+      foreach (KeyValuePair<int, MatchDataSet> kvp in dict)
       {
-        MatchData mdd = kvp.Value;
+        MatchDataSet mdd = kvp.Value;
         int index = kvp.Key;
         if (mdd.HasGroup(group_name) && TOutput.TryGenerate(mdd, out TOutput? result))
         {
@@ -33,12 +41,12 @@ public class GenerateFromObjectOperation<TOutput> (string input_key, string outp
         }
       }
     }
-    else if (CheckInput(out IEnumerable<MatchData>? eCasted))
+    else if (CheckInput(out IEnumerable<MatchDataSet>? eCasted))
     {
-      Collection<MatchData> iterator = [.. eCasted];
+      Collection<MatchDataSet> iterator = [.. eCasted];
       for (int index = 0; index < iterator.Count; index++)
       {
-        MatchData mdd = iterator[index];
+        MatchDataSet mdd = iterator[index];
         if (mdd.HasGroup(group_name) && TOutput.TryGenerate(mdd, out TOutput? result))
         {
           output_items.Add(index, result);
@@ -51,7 +59,7 @@ public class GenerateFromObjectOperation<TOutput> (string input_key, string outp
       return;
     }
 
-    _workToReturn = output_items;
+    WorkToReturn = output_items;
     Status = output_items.Count > 0 ? OpStatus.Pass : OpStatus.Skipped;
   }
 }

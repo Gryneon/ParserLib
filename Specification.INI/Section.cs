@@ -3,12 +3,12 @@ namespace Specification.INI;
 /// <summary>
 /// Represents a section heading in an INI formatted file.
 /// </summary>
-public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyObj>, ICollection<PropertyObj>, ITextSerializer<Section>, ICloneable
+public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<PropertyObj>, ITextSerializer<Section>, ICloneable
 {
   /// <summary>
   /// Creates an empty Section.
   /// </summary>
-  protected Section () { }
+  private Section () { }
   /// <summary>
   /// Creates a <see cref="Section"/> with the provided name.
   /// </summary>
@@ -28,7 +28,7 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <summary>
   /// The properties within the section.
   /// </summary>
-  protected PropertyCollection Properties { get; set; } = [];
+  private PropertyCollection Properties { get; init; } = [];
   /// <summary>
   /// Gets the value of a property from a given key.
   /// </summary>
@@ -40,9 +40,7 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
     set => Set<PropertyObj>(key, value);
   }
   /// <inheritdoc/>
-  public virtual int Count => Properties.Count;
-  /// <inheritdoc/>
-  bool ICollection<PropertyObj>.IsReadOnly => false;
+  public int Count => Properties.Count;
   /// <inheritdoc/>
   /// <remarks>
   /// <list type="table">
@@ -50,9 +48,23 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <item><c>name</c></item> : The name of the section.<item></item><br/>
   /// </list>
   /// </remarks>
-  public static Section Generate (MatchData input)
+  public static Section Generate (MatchDataSet input)
   {
-    Section result = new(input["name"].Content);
+    input.ThrowIfNull();
+    Collection<string> keys = input["key"].Captures.Select(c => c.Content).ToCollection();
+    Collection<string> values = input["value"].Captures.Select(c => c.Content).ToCollection();
+    PropertyCollection props = [];
+    for (int i = 0; i < keys.Count; i++)
+    {
+      if (i >= values.Count)
+        throw new ArgumentOutOfRangeException(nameof(input), "The number of values must match the number of keys.");
+      props.Add(new PropertyObj(keys[i], values[i]));
+    }
+    Section result = new()
+    {
+      Name = input["name"].Content,
+      Properties = props
+    };
     return result;
   }
   /// <summary>
@@ -73,6 +85,8 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <param name="prop">The property to add or apply.</param>
   public void Set (PropertyObj prop)
   {
+    if (prop is null)
+      return;
     if (!Properties.Contains(prop.Key))
       Properties.Add(prop);
     else
@@ -84,6 +98,7 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <param name="children"></param>
   public void SetRange (IEnumerable<PropertyObj> children)
   {
+    children.ThrowIfNull();
     foreach (PropertyObj child in children)
     {
       Set(child);
@@ -100,8 +115,7 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <param name="children">The properties to add.</param>
   public void AddRange (IEnumerable<PropertyObj> children) => SetRange(children);
   /// <inheritdoc/>
-  public IEnumerator<PropertyObj> GetEnumerator () => (IEnumerator<PropertyObj>) Properties.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
+  public IEnumerator<IProperty<string>> GetEnumerator () => Properties.GetEnumerator();
   /// <inheritdoc/>
   public void Clear () => Properties.Clear();
   /// <inheritdoc/>
@@ -117,9 +131,9 @@ public class Section : IGeneratable<MatchData, Section>, IHasChildren<PropertyOb
   /// <returns><see langword="true"/> if the property was removed, <see langword="false"/> otherwise.</returns>
   public bool Remove (string name) => Properties.Remove(name);
   /// <inheritdoc/>
-  public virtual string Serialize () => $"[{Name}]";
+  public string Serialize () => $"[{Name}]";
   /// <inheritdoc/>
-  public virtual object Clone ()
+  public object Clone ()
   {
     Section result = new(Name);
 

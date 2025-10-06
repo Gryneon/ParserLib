@@ -1,8 +1,17 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable CA1823 // Avoid unused private fields
+#pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable IDE1006 // Naming Styles
+
+using System.Collections.Generic;
+
+using Common.Extensions;
+using Common.Regex;
 
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.MapInfo;
+
 public static class Definition
 {
   // <summary>
@@ -70,6 +79,18 @@ public static class Definition
 
   //];
 
+  private static readonly RxS
+    include = Nm("include", $@"\binclude{ws}""(?'path'[^""]*)"""),
+    property = Nm("property", $@"^{wso}(?'key'\w+){eq}(?'value'.*?){wso}$"),
+    damagetype = Nm("damagetype", $@"\bdamagetype{ws}(?'type'\w+){brk_st}{properties}{brk_en}"),
+    doomednums = Nm("doomednums", $@"\bdoomednums{brk_st}{properties}{brk_en}"),
+    ws = Or(Nm("lncomment", $@"//.*?$"), Nm("blkcomment", @"/\*.*?\*/"), Nm("ws", @"\s+")),
+    wso = ws.Opt,
+    brk_st = $"{wso}{{{wso}",
+    brk_en = $"{wso}}}",
+    eq = $"{wso}={wso}",
+    properties = $"(?'content'{property}*?)";
+
   /// <summary>
   /// https://regex101.com/r/iWWPub/1
   /// </summary>
@@ -83,34 +104,27 @@ public static class Definition
       IfN(FName |Is, "mapinfo")],
     Operations = [
       new DictionaryOperation([
-        Rx(@"""(?<key>.*?)""\s*(?=:)"),
-        Nm("strqt", @"""(?<str>.*?)"""),
+        Nm("langref", @"""(?'reference'\$\w+)"""),
+        Nm("str", @"""(?'strqt'.*?)"""),
         Nm("dec", @"-?[0-9]*\.[0-9]+"),
-        Nm("int", @"-?[0-9]+(?:\.0*)?"),
+        Nm("int", @"-?[0-9]+(\.0*)?"),
         Nm("ws", @"\s+"),
-        Nm("op", @"[:{},[\]]"),
+        Nm("op", @"[():{},=;[\]]"),
         Nm("bool", @"true|false"),
-        Nm("blockkeyword", @"\b(map|episode|gameinfo|skill)\b"),
-        Nm("lookupkeyword", @"\blookup\b"),
-        Nm("lumpname", @"[\w\.\-]+")
+        Nm("blockkeyword", @"\b(map|episode|gameinfo|skill|cluster|defaultmap|adddefaultmap|doomednums)\b"),
+        Nm("keyword", @"\b(lookup|include)\b"),
+        Nm("name", @"[\w\.\-]+"),
+        Nm("lncomment", @"//.*?$"),
+        Nm("blkcomment", @"/\*.*?\*/"),
       ]),
       new TokenizeOperation(),
-      new TokenTemplateOperation([])
-    ],
-    TokenLookup = [
-      "key",
-      "int",
-      "dec",
-      "ws",
-      "op",
-      "strqt",
-      "str",
-      "bool",
-      "blockkeyword",
-      "lumpname",
-      "lncomment",
+      new TokenTemplateOperation(new Dictionary<string, string>() {
+        ("numprop1",   "$int ^key^ '=' ($name  (',' $int)? (',' '+')?) ^value^"),
+        ("numprop2",   "$int '=' $str (',' $int)?")
+      }),
+      new DebugToStringOperation("tokens_templated")
     ],
     WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
-    RegexBasicTokens = ["int", "dec", "key", "op", "strqt", "str", "bool", "blockkeyword", "lumpname"]
+    RegexBasicTokens = ["langref", "int", "dec", "op", "str", "bool", "blockkeyword", "name", "keyword"]
   };
 }

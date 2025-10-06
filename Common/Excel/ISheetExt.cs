@@ -14,11 +14,14 @@ public interface ISheetExt
   Worksheet XlSheet { get; }
   Collection<string> GetRangeValues (Worksheet sheet, Range rng)
   {
-    List<string> result = [];
-    List<XlRange> cells = [];
-    rng.Nodes.ForEach(i => cells.AddRange(sheet.Range[i.MinAddress, i.MaxAddress].Cells));
+    if (rng is null)
+      return [];
 
-    return [.. result];
+    Collection<string> result = [];
+    Collection<ICollection<XlRange>> cells;
+    cells = [.. rng.Nodes.Select(i => (ICollection<XlRange>) sheet.Range[i.MinAddress, i.MaxAddress].Cells)];
+
+    return result;
   }
   Range GetRange (Worksheet sheet, string address) => new(address);
 }

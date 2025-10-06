@@ -8,22 +8,16 @@ public class ByteJumpVarOperation (string input_key) : ByteOperation(input_key, 
 {
   protected override void Execute ()
   {
-    int? pos = BParser.Load<int>(_input_key);
+    int? pos = Parser.Load<int>(InputKey);
 
-    if (pos is null)
-    {
-      Status = FailNoSuchVarName;
-      return;
-    }
-
-    if (pos >= BParser.GetLength())
+    if (pos >= Parser.GetLength())
     {
       Status = FailBufferOverflow;
       return;
     }
 
-    BParser.SetPos(pos.Value);
-    Log("ByteStartAtOperation:", $"Position set to {pos.Value} from '{_input_key}'.");
+    Parser.SetPos(pos.Value);
+    Log("ByteStartAtOperation:", $"Position set to {pos.Value} from '{InputKey}'.");
     Status = Pass;
   }
 }

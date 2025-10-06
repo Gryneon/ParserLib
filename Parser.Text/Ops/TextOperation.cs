@@ -1,34 +1,43 @@
+using Parser.Ops;
+
 namespace Parser.Text.Ops;
 
-public abstract class TextOperation : Operation
+/// <summary>
+/// A variant of the <see cref="Operation"/> class that adds some text specific features, as well as referencing a <see cref="TextSpec"/> rather than a <see cref="Spec"/>.
+/// </summary>
+public abstract class TextOperation : Operation<TextParser>, IOperation
 {
-  protected DoOperationFunction? _function;
   /// <summary>
   /// The parser reference, initialized in <see cref="Initialize(TextParser)"/>
   /// </summary>
-  [AllowNull] protected new TextParser _parser;
-  [AllowNull] protected TextSpec _spec;
-
-  public TextOperation (string input_key, string output_key) : base(input_key, output_key) { }
-  public TextOperation (IEnumerable<string> input_keys, string output_key) : base(input_keys, output_key) { }
-
-  public TextOperation (bool ignore_all_loads) : base(ignore_all_loads) { }
+  [AllowNull] protected new TextParser Parser { get; set; }
+  /// <summary>
+  /// The spec reference, initialized in <see cref="Initialize(TextParser)"/>
+  /// </summary>
+  [AllowNull] protected TextSpec Spec { get; set; }
+  public DictionaryMode CurrentMode { get; set; } = DictionaryMode.Overwrite;
+  protected TextOperation (string input_key, string output_key) : base(input_key, output_key) { }
+  protected TextOperation (IEnumerable<string> input_keys, string output_key) : base(input_keys, output_key) { }
+  protected TextOperation (bool ignore_all_loads) : base(ignore_all_loads) { }
 
   public override OpStatus DoOperation (ref object data)
   {
     ThrowNoOverrideError();
     return OpStatus.Error;
   }
-  public virtual OpStatus DoOperation (TextParser parser)
+  public override OpStatus DoOperation<TParser> (TParser parser)
   {
     if (EndOperation)
       return OpStatus.EndCommand;
     if (SkipOperation)
       return OpStatus.Skipped;
     if (DebugOperation)
-      Debug.Log("TextOperation.DoOperation(TextParser)", "Debug operation started.");
+      Debug.Log("TextOperation.DoOperation(TParser)", "Debug operation started.");
 
-    Initialize(parser);
+    if (parser is not TextParser text_parser)
+      throw new ArgumentException($"Parser was not a {nameof(TextParser)}. Got a {parser?.GetType()}.");
+
+    Initialize(text_parser);
     CheckInputNull();
 
     if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
@@ -41,83 +50,41 @@ public abstract class TextOperation : Operation
 
     return AdjustedStatus;
   }
-  protected bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
-  {
-    if (_parser.Work.TryLoad(_input_key, out casted))
-    {
-      return true;
-    }
-
-    Status = OpStatus.FailBadInputType;
-    casted = default;
-    return false;
-  }
-  protected bool CheckInputs<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out Collection<T> casted)
-  {
-    casted = [];
-    for (int i = 0; i < _input_keys.Count; i++)
-    {
-      if (!_parser.Work.ContainsKey(_input_keys[i]))
-      {
-        Status = OpStatus.FailNoSuchVarName;
-        return false;
-      }
-      if (!_parser.Work.TryLoad(_input_keys[i], out T? temp))
-      {
-        Status = OpStatus.FailBadInputType;
-        return false;
-      }
-      casted.Add(temp);
-    }
-
-    Status = OpStatus.Pass;
-    return true;
-  }
-  /// <summary>
-  /// Performs the operation and stores the value in <c><see cref="Operation._workToReturn"/></c>,
-  /// and the <see cref="OpStatus"/> in <c><see cref="Operation.Status"/></c>
-  /// </summary>
-  protected override void Execute ()
-  {
-    if (_function is null || _workToReturn is null)
-      ThrowNoOverrideError();
-
-    Status = _function(ref _workToReturn);
-  }
+  public override OpStatus DoOperation (TextParser parser) => DoOperation<TextParser>(parser);
   protected override void CheckInputNull ()
   {
-    if (_input_key == SE || IgnoreAllLoads)
+    if (InputKey == SE || IgnoreAllLoads)
     {
       Debug.Log("TextOperation.CheckInputNull", $"No key checked.");
       Status = OpStatus.Skipped;
     }
-    if (!_parser.Work.ContainsKey(_input_key))
+    if (!Parser.Work.ContainsKey(InputKey))
     {
-      Debug.Log("TextOperation.CheckInputNull", $"Key {_input_key} does not exist.");
+      Debug.Log("TextOperation.CheckInputNull", $"Key {InputKey} does not exist.");
       Status = OpStatus.FailNoSuchVarName;
     }
-    else if (_parser.Work.TryLoad(_input_key, out object? data) && data is not null)
+    else if (Parser.Work.TryGetValue(InputKey, out object? data) && data is not null)
     {
-      Debug.Log("TextOperation.CheckInputNull", $"Key {_input_key} is not null.");
+      Debug.Log("TextOperation.CheckInputNull", $"Key {InputKey} is not null.");
       Status = OpStatus.Pass;
     }
     else
     {
-      Debug.Log("TextOperation.CheckInputNull", $"Key {_input_key} is null.");
+      Debug.Log("TextOperation.CheckInputNull", $"Key {InputKey} is null.");
       Status = OpStatus.FailBadInputNull;
     }
   }
   protected override void CheckInputsNull ()
   {
-    foreach (string key in _input_keys)
+    foreach (string key in InputKeys)
     {
-      if (!_parser.Work.ContainsKey(key))
+      if (!Parser.Work.ContainsKey(key))
       {
         Debug.Log("TextOperation.CheckInputsNull", $"Key {key} does not exist.");
         Status = OpStatus.FailNoSuchVarName;
         return;
       }
-      else if (_parser.Work.TryLoad(key, out object? data) && data is not null)
+      else if (Parser.Work.TryGetValue(key, out object? data) && data is not null)
       {
         continue;
       }
@@ -132,56 +99,67 @@ public abstract class TextOperation : Operation
     Status = OpStatus.Pass;
   }
   /// <summary>
-  /// Assigns the parser to <c><see cref="_parser"/></c> and defines <c><see cref="_function"/></c>.
+  /// Performs the operation and stores the value in <c><see cref="Operation.WorkToReturn"/></c>,
+  /// and the <see cref="OpStatus"/> in <c><see cref="Operation.Status"/></c>
+  /// </summary>
+  protected override void Execute ()
+  {
+    if (WorkToReturn is null)
+      ThrowNoOverrideError();
+
+    object? data = WorkToReturn;
+    Status = OpStatus.FailBadOpDefinition;
+    WorkToReturn = data;
+  }
+  /// <summary>
+  /// Assigns the parser to <c><see cref="Parser"/></c>.
   /// </summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
-  [MemberNotNull(nameof(_parser), nameof(_function))]
-  protected virtual void Initialize (TextParser parser)
+  [MemberNotNull(nameof(Parser))]
+  protected override void Initialize (TextParser parser)
   {
-    _function ??= DoOperation;
-    _parser = parser;
-    _spec = parser.Spec;
+    ArgumentNullException.ThrowIfNull(parser);
+    Parser = parser;
+    Spec = parser.Spec;
 
     if (IgnoreAllLoads)
-      _workToReturn = null;
-    else if (parser.Work.TryLoad(_input_key, out _workToReturn))
-      Debug.Log("TextOperation.Initialize", $"Loaded {_input_key} with value {_workToReturn}.");
-    else
     {
-      Debug.Log("TextOperation.Initialize", $"Key {_input_key} does not exist or is null.");
-      Status = OpStatus.FailNoSuchVarName;
-      _workToReturn = null;
+      WorkToReturn = null;
+      return;
     }
 
-    object? getKey (string input_key)
+    _ = loadKey(InputKey);
+
+    object? loadKey (string input_key)
     {
-      if (parser.Work.TryLoad(_input_key, out object? value))
-        return value;
+      if (Parser.Work.TryGetValue(InputKey, out object? value))
+      {
+        Debug.Log("TextOperation.Initialize", $"Loaded {InputKey} with value {value}.");
+        WorkToReturn = value;
+      }
       else
       {
-        Debug.Log("TextOperation.Initialize.getKey(string)", $"Key {input_key} does not exist or is null.");
-        return null;
+        Debug.Log("TextOperation.Initialize", $"Key {InputKey} does not exist or is null.");
+        WorkToReturn = null;
+        Status = OpStatus.FailNoSuchVarName;
       }
+      return WorkToReturn;
     }
 
-    if (_input_keys.Count > 1)
+    if (InputKeys.Count > 1)
     {
-      _multiple_input_values = [.. _input_keys.Select(getKey)];
+      MultipleInputValues?.AddRange(InputKeys.Select(loadKey));
 
-      if (_multiple_input_values.Any(item => item is null))
+      if (MultipleInputValues?.Any(item => item is null) ?? true)
       {
         Status = OpStatus.FailBadInputNull;
       }
     }
   }
-  protected virtual void AssignResult<T> (DictionaryMode mode = DictionaryMode.Overwrite)
-  {
-    if (_workToReturn is null) return;
-    _ = _parser.Work.Save<T>(_output_key, _workToReturn, mode);
-  }
   protected virtual void AssignResult (DictionaryMode mode = DictionaryMode.Overwrite)
   {
-    if (_workToReturn is null) return;
-    _ = _parser.Work.Save(_output_key, _workToReturn, mode);
+    if (WorkToReturn is null) return;
+    Parser.Mode = mode;
+    Parser.Work.Add(OutputKey, WorkToReturn);
   }
 }

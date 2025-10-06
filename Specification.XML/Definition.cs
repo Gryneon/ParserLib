@@ -1,5 +1,6 @@
 #pragma warning disable RE0001 // Invalid regex pattern
 
+using Parser;
 using Parser.Ops;
 using Parser.Text.Ops;
 
@@ -10,14 +11,14 @@ namespace Specification.XML;
 /// <summary>
 /// The XML definition object.
 /// </summary>
-public class Definition
+public static class Definition
 {
   /// <summary>
   /// <para>XML Regex for tokens</para>
   /// New: https://regex101.com/r/PTKqnJ/3
   /// Old: https://regex101.com/r/jcPotD/4
   /// </summary>
-  public static RxSList Regex => [
+  public static RxSCollection Regex => [
     Nm("tagname", $@"<\s*(?<endtag>\/)?\s*(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+{Attribute})*\s*(?<noinsidetag>\/)?\s*>"),
     Nm("header", Rx(@"<\?(?<tagname>[A-Za-z][a-zA-Z0-9]*)(?:\s+") + Attribute + Rx(@")*\s*\?>")),
     Nm("ws", @"(?<=>)\s+(?=<)"),
@@ -28,12 +29,12 @@ public class Definition
   /// <summary>
   /// The attribute regular expression.
   /// </summary>
-  protected static RxS Attribute => Rx(@"(?<attrname>\w+)\s*=\s*""(?<attrval>.*?)""");
+  private static RxS Attribute => Rx(@"(?<attrname>\w+)\s*=\s*""(?<attrval>.*?)""");
 
   /// <summary>
   /// Operation definition.
   /// </summary>
-  protected static Collection<IOperation> GenerationOps => [
+  private static Collection<IOperation> GenerationOps => [
     new GenerateFromObjectOperation<XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
     new GenerateFromObjectOperation<XMLElementClose>("tokens", "xml_close", "endtag"),
     new GenerateFromObjectOperation<XMLElementOpen>("tokens", "xml_open", "tag"),
@@ -56,22 +57,18 @@ public class Definition
     CaseInsensitive = false,
     ExplicitCapture = true,
     Operations = [
-      new DictionaryOperation(Regex, false, "initial"),
-      new TokenizeOperation(["ws", "endtag", "noinsidetag", "tagname", "content", "header"], "matches"),
+      new DictionaryOperation(Regex, false),
+      new TokenizeOperation(),
       .. GenerationOps,
       new XMLStackOperation("objects", "xml"),
       Operation.End,
     ],
-    TokenLookup = {
-      "ws",
+    RegexBasicTokens = {
       "endtag",
       "noinsidetag",
       "tagname",
       "content",
       "header",
-      "attrname",
-      "attrval",
-      "comment"
     },
     WhitespaceTokens =
     {

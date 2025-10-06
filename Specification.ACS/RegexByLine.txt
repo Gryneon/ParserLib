@@ -1,0 +1,15 @@
+﻿(?'lncomment'\/\/.*)|
+(?'blkcomment'\/\*[\s\S]*?\*\/)|
+(?'var_decl'\b(?'var_type'(int|bool|char|str))\s+(?'var_name'[a-z_][\w]*)\s*
+	(?#if next is brace open...)(?(\[)
+	(?#array declaration)	\[.*?\]\s*(\=\s*\{(?'var_expr'([^;])+)\})?|
+	(?#multiple declaration)	(\=\s*(?'var_expr'[^;,]+))?(,\s*(?'var_name'[a-z_][\w]*)\s*(\=\s*(?'var_expr'([\s\S](?<![;,]))+))?)*)\;)|
+(?'var_assn'\b(?'var_name'[a-z_][\w]*)\s*
+	(?#if next is brace open...)(?(\[)
+	(?#array declaration)	\[.*?\]\s*(\=\s*\{(?'var_expr'([^;])+)\})?|
+	(?#multiple declaration)	(\=\s*(?'var_expr'([^;])+))?\;))|
+(?'func_call'\b(?'func_name'\w+)(?<!while)\s*\((?'params'(?'param'[^,();]*)(\s*,\s*[^,();]+)*)\);)|
+(?'bko'\{)|
+(?'bkc'\})|
+(?'preproc'\#(?'pp_type'[a-z]+)(\s+(?'pp_args'.*))?)|
+(?'scripthead'\bscript\s+(?'script_name'\d+|\w+|""[^""]+"")\s+(?'script_type'OPEN|ENTER|DISCONNECT|UNLOADING|DEATH|LIGHTNING))

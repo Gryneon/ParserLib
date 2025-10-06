@@ -1,5 +1,3 @@
-using Parser.Ops;
-
 namespace Parser.Binary;
 
 public class OpLoopData (IEnumerable<IOperation> operations, bool makecollections = false, int loops = 1)

@@ -8,12 +8,12 @@ public class ByteStartAtOperation (int pos) : ByteOperation(EmptyString, EmptySt
 {
   protected override void Execute ()
   {
-    if (pos >= BParser.GetLength())
+    if (pos >= Parser.GetLength())
     {
       Status = FailBufferOverflow;
       return;
     }
-    BParser.SetPos(pos);
+    Parser.SetPos(pos);
     Log("ByteStartAtOperation:", $"Position set to {pos}.");
     Status = Pass;
   }

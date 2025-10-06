@@ -70,4 +70,8 @@ public class CaptureData : IMatchItem
     Len = len;
     Index = index;
   }
+
+  public override string ToString () => Content.ContainsAny([Chars.CRLF, Chars.LFs, Chars.CRs])
+      ? $"\"{Content.Replace([Chars.CRLF, Chars.CRs, Chars.LFs], "<NL>")}\" @ {Pos} ({Len})"
+      : $"\"{Content}\" @ {Pos} ({Len})";
 }

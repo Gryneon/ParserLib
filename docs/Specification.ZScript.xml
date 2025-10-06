@@ -4,17 +4,17 @@
         <name>Specification.ZScript</name>
     </assembly>
     <members>
-        <member name="F:Specification.ZScript.PrevDefinition.Com_Ln">
+        <member name="F:Specification.ZScript.PrevDefinition._com_Ln">
             <summary>
             Whitespace Definitions
             </summary>
         </member>
-        <member name="F:Specification.ZScript.PrevDefinition.Com_Blk">
+        <member name="F:Specification.ZScript.PrevDefinition._com_Blk">
             <summary>
             Whitespace Definitions
             </summary>
         </member>
-        <member name="F:Specification.ZScript.PrevDefinition.Ws_True">
+        <member name="F:Specification.ZScript.PrevDefinition._ws_True">
             <summary>
             Whitespace Definitions
             </summary>

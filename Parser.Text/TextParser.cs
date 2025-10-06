@@ -1,43 +1,89 @@
-using Parser.Text.Ops;
+using Parser.Ops;
 
 using static Common.Debug;
 using static Parser.OpStatus;
 
-using OST = Parser.OperationSequenceType;
-
 namespace Parser.Text;
 
-public sealed class TextParser (TextSpec? spec = null)
+public sealed class TextParser (TextSpec? spec = null) : IParser
 {
   private const string Area = "TextParser.Parse";
 
+  [MemberNotNull(nameof(Operations))]
+  private void OperationLoad ()
+  {
+    Collection<IOperation> allOps = [.. Spec.Operations];
+    Dictionary<string, int> labels = [];
+
+    // -1 ends sequence, and represents the sequence terminating.
+    int nextOrEnd (int i) => i + 1 >= allOps.Count ? -1 : i + 1;
+
+    void unpackGroup (int i, OperationCollection oc)
+    {
+      int first = allOps.Count;
+      allOps.AddRange([.. oc.Operations, new JumpOperation(nextOrEnd(i))]);
+      allOps.Replace(i, [new JumpOperation(first)]);
+    }
+
+    void unpackIf (int i, IfOperation ifop)
+    {
+      int iftrue = allOps.Count;
+      allOps.Add(ifop.IfTrue);
+      allOps.Add(new JumpOperation(nextOrEnd(i)));
+      int iffalse = allOps.Count;
+      allOps.Add(ifop.IfFalse);
+      allOps.Add(new JumpOperation(nextOrEnd(i)));
+      ifop.IfTrue = new JumpOperation(iftrue);
+      ifop.IfFalse = new JumpOperation(iffalse);
+    }
+
+    // Unpack all operations in main list recursively
+    for (int i = 0; i < allOps.Count; i++)
+    {
+      IOperation op = allOps[i];
+      if (op is OperationCollection list)
+      {
+        unpackGroup(i, list);
+        continue;
+      }
+      if (op is IfOperation ifop)
+      {
+        unpackIf(i, ifop);
+        continue;
+      }
+      if (op is OperationLabel label)
+      {
+        labels[label.Name] = i;
+        continue;
+      }
+    }
+    Operations ??= [];
+    Operations.Clear();
+    Operations.AddRange(allOps);
+  }
+
   // Core Properties
-  public Collection<TextOperation> Operations => [.. Spec.Operations.Cast<TextOperation>()];
+  [DisallowNull]
+  public Collection<IOperation> Operations { get; private set; } = [];
   public TextSpec Spec { get; init; } = spec ?? TextSpec.TextByLines;
-  public int OpIndex { get; internal set; }
+  public int OpIndex { get; private set; }
+  public int NextOpIndex { get; set; }
   // Result Storage
   [MemberNotNullWhen(true, nameof(Result))]
   public bool HasResult => Result is not null;
   public object? Result { get; internal set; }
   // Helper Properties
-  public TextOperation CurrentOp => Operations[OpIndex];
+  public IOperation CurrentOp => Operations[OpIndex];
+  public IOperation NextOp => Operations![NextOpIndex];
   public int OpCount => Operations.Count;
-  [NotNull] public TextDataDictionary? Work { get; internal set; }
-  public Collection<OST> OperationSequence { get; } = [
-    OST.TextManipulation,
-    OST.MakeDictionary,
-    OST.MakeTokens,
-    OST.TokenManipulation,
-    OST.MakeObjects,
-    OST.ObjectManipulation,
-    OST.Validation,
-    OST.AssignResult
-  ];
+  [NotNull] public IDictionary<string, object> Work { get; internal set; } = new TextDataDictionary(SE);
   public OpStatus LastStatus { get; internal set; } = AtStart;
-
+  public Dictionary<string, int> Labels { get; } = [];
+  Spec IParser.Spec => Spec;
+  public DictionaryMode Mode { get; set; } = DictionaryMode.Overwrite;
   public OpStatus Parse (string text)
   {
-    Work = new(text);
+    Work = new TextDataDictionary(text);
     return Parse();
   }
   public OpStatus Parse ()
@@ -55,15 +101,50 @@ public sealed class TextParser (TextSpec? spec = null)
     }
 
     //Setup the parser
-    Spec.Load();
+    Spec.SetAsActive();
+    OperationLoad();
+    NextOpIndex = 1;
 
-    while (OpIndex < OpCount)
+    while (NextOpIndex >= 0)
     {
-      LastStatus = CurrentOp.SkipOperation ? Skipped : CurrentOp.DoOperation(this);
-
+      if (CurrentOp is OperationLabel)
+      {
+        Log(Area, "Label Encountered");
+        AdvanceOperation();
+        continue;
+      }
+      if (CurrentOp is IfOperation ifop)
+      {
+        Log(Area, "If Operation Encountered");
+        ifop.Condition.Evaluate();
+        LastStatus = ifop.Condition.ConditionResult ? ifop.IfTrue.DoOperation(this) : ifop.IfFalse.DoOperation(this);
+        continue;
+      }
+      if (CurrentOp is JumpOperation jump)
+      {
+        Log(Area, "Jump Operation Encountered");
+        NextOpIndex = jump.OpIndex;
+        AdvanceOperation();
+        continue;
+      }
+      if (CurrentOp.EndOperation)
+      {
+        Log(Area, "End Operation Encountered");
+        NextOpIndex = -1;
+        continue;
+      }
+      if (CurrentOp.SkipOperation)
+      {
+        Log(Area, "Skip Operation Encountered");
+        LastStatus = Skipped;
+        AdvanceOperation();
+        continue;
+      }
+      LastStatus = CurrentOp.DoOperation(this);
       if (LastStatus is EndCommand)
       {
-        break;
+        NextOpIndex = -1;
+        continue;
       }
       if (LastStatus.IsFail(CurrentOp.ContinueOnFail))
       {
@@ -73,15 +154,27 @@ public sealed class TextParser (TextSpec? spec = null)
         logStatus(FailBadOpResult, "Bad operation result. Operation failed to generate proper data.");
         logStatus(FailBadOpImpossible, "Bad operation event. Impossible condition reached.");
         logStatus(Any, "Parse sequence terminated.");
-
         return LastStatus;
       }
 
-      OpIndex++;
+      AdvanceOperation();
     }
 
     Result = Work["result"];
     logResult(EndCommand, "Result has been assigned. Operation complete.");
+    Log("TextParser.Parse", "Results");
+    Log("TextParser.Parse", Work["result"]?.ToString() ?? "<null data>");
     return LastStatus;
+  }
+
+  private void AdvanceOperation ()
+  {
+    if (NextOpIndex == -1 || NextOpIndex >= OpCount)
+    {
+      NextOpIndex = -1;
+      return;
+    }
+    OpIndex = NextOpIndex;
+    NextOpIndex++;
   }
 }

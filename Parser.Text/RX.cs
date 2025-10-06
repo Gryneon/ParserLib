@@ -48,7 +48,7 @@ public static partial class RX
   public static RxS G_WS => field = Nm("ws", WS);
   public static RxS G_Name => field = Nm("name", Name);
   public static RxS G_CString => field = Nm("string", CString);
-  public static RxS G_Int => field = Nm("int", Integer);
+  public static RxS G_Int => field = Nm("int", Integers);
 
   // C-Style Common Parts
   public static RxS CLnComment => field = Gp(@"\/\/[^\n\r]*");
@@ -58,12 +58,12 @@ public static partial class RX
   public static RxS CString { get; } = Rx(@""".*?""") << BSEscape;
 
   // Other Common Parts
-  public static RxS Char { get; } = Rx(@"'[^\\]'|'\\[\\abefnr0]'|'\\u\d\d\d\d'");
+  public static RxS Chars { get; } = Rx(@"'[^\\]'|'\\[\\abefnr0]'|'\\u\d\d\d\d'");
   public static RxS Name { get; } = Rx(@"[a-zA-Z_][\w]*");
   public static RxS WS { get; } = Nm("ws", @"\s+");
   public static RxS WSO { get; } = Rx(@"\s*");
-  public static RxS Integer { get; } = Rx(@"-?\d+");
-  public static RxS Decimal { get; } = Rx(@"-?\d*\.\d+").Orr + Integer;
+  public static RxS Integers { get; } = Rx(@"-?\d+");
+  public static RxS Decimals { get; } = Rx(@"-?\d*\.\d+").Orr + Integers;
   public static RxS Boolean { get; } = Rx(@"(?n:\b(false|true)\b)");
 
   // Modifiers

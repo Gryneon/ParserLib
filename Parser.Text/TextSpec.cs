@@ -1,9 +1,15 @@
 #pragma warning disable CA1822 // Mark members as static
 
+using Parser.Ops;
 using Parser.Text.Ops;
+
+using RO = System.Text.RegularExpressions.RegexOptions;
 
 namespace Parser.Text;
 
+/// <summary>
+/// Defines a specification for parsing text files.
+/// </summary>
 public class TextSpec : Spec
 {
   #region Static Specs
@@ -22,14 +28,13 @@ public class TextSpec : Spec
   #endregion
 
   #region Private Members
-  private RegexOptions _options;
   /// <summary>
   /// Sets the specified options bit to the given value;
   /// </summary>
   /// <param name="opt">The bit to set.</param>
   /// <param name="value">The value to set it as.</param>
-  private void SetFlag (RegexOptions opt, bool? value) =>
-    _options = (value ?? false) ? _options | opt : _options & ~opt;
+  private void SetFlag (RO opt, bool? value) =>
+    RxOpt = (value ?? false) ? RxOpt | opt : RxOpt & ~opt;
   #endregion
 
   /// <summary>
@@ -44,24 +49,15 @@ public class TextSpec : Spec
   /// Token types to ignore.
   /// </summary>
   public Collection<string> WhitespaceTokens { get; init; } = [];
-  /// <summary>A list of tokenizable matches.</summary>
-  /// <remarks>
-  /// Get => Returns the backing field or an empty Dictionary.<br/>
-  /// Set => Individually adds each item from the value supplied.
-  /// 
-  /// Setting Null clears the list.
-  /// </remarks>
-  public Collection<string> TokenLookup
-  {
-    get => field ?? [];
-    set
-    {
-      field ??= [];
-
-      if (value is not null)
-        field.AddRange(value);
-    }
-  } = [];
+  public Collection<string> AllTokens => RegexBasicTokens.Concat(WhitespaceTokens).ToCollection();
+  /// <summary>
+  /// The regex options to use.
+  /// </summary>
+  public RO RxOpt { get; private set; }
+  /// <summary>
+  /// The string comparison type to use.
+  /// </summary>
+  public StringComparison SC => RxOpt.HasFlag(RO.IgnoreCase) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
   #region Regex Properties
   public bool? ExplicitCapture { get; init; } = false;
   /// <summary>
@@ -90,16 +86,11 @@ public class TextSpec : Spec
   /// </summary>
   public TextSpec ()
   {
-    SetFlag(RegexOptions.IgnoreCase, CaseInsensitive);
-    SetFlag(RegexOptions.IgnorePatternWhitespace, IgnorePatternWhitespace);
-    SetFlag(RegexOptions.Multiline, MultiLine);
-    SetFlag(RegexOptions.ExplicitCapture, ExplicitCapture);
-    SetFlag(RegexOptions.NonBacktracking, NonBacktracking);
-    SetFlag(RegexOptions.Singleline, SingleLine);
+    SetFlag(RO.IgnoreCase, CaseInsensitive);
+    SetFlag(RO.IgnorePatternWhitespace, IgnorePatternWhitespace);
+    SetFlag(RO.Multiline, MultiLine);
+    SetFlag(RO.ExplicitCapture, ExplicitCapture);
+    SetFlag(RO.NonBacktracking, NonBacktracking);
+    SetFlag(RO.Singleline, SingleLine);
   }
-
-  /// <summary>
-  /// Loads this <see cref="TextSpec"/> to <see cref="TokenOptions"/>.
-  /// </summary>
-  public void Load () => TokenOptions.LoadSpec(_options, this);
 }

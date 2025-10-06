@@ -1,120 +1,37 @@
 //using Parser.Text.Tokens;
 
 namespace Parser.Text.Ops;
-public class SplitByDelimOperation ([SS("Regex")] string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected Regex OpRegex => new(delimiter, TokenOptions.All);
 
-  /// <inheritdoc/>
-  protected override void Execute ()
-  {
-    if (CheckInput(out string? s))
-    {
-      _workToReturn = OpRegex.Split(s);
-      Status = OpStatus.Pass;
-    }
-    else if (CheckInput(out IEnumerable<string>? list))
-    {
-      _workToReturn = list.
-        Select(item => OpRegex.Split(item)).
-        Condense();
-      Status = OpStatus.Pass;
-    }
-    else
-      Status = OpStatus.FailBadInputType;
-  }
-}
-#if false
-public class TrimWhitespaceOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    if (CheckInput(out string? s))
-    {
-      _workToReturn = s.Trim();
-      Status = OpStatus.Pass;
-    }
-    else if (CheckInput(out IEnumerable<string>? ien))
-    {
-      _workToReturn = ien.Select(x => x.Trim()).ToCollection();
-      Status = OpStatus.Pass;
-    }
-    else
-      Status = OpStatus.FailBadInputType;
-  }
-}
-public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] string suffix) : TextOperation(input_key, output_key)
+public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] string suffix, string input_key, string output_key) : TextOperation(input_key, output_key)
 {
   protected RxS Assembled => new(@$"(?:{prefix})(?<keep>[\s\S]*?)(?:{suffix})");
   protected Regex OpRegex => new(Assembled);
 
   protected override void Execute ()
   {
-    if (data is null)
-      return OpStatus.FailBadInputNull;
+    if (WorkToReturn is null)
+    {
+      Status = OpStatus.FailBadInputNull;
+      return;
+    }
 
-    if (data is string s)
-      data = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
-    else if (data is IEnumerable<string> list)
+    if (WorkToReturn is string s)
+      WorkToReturn = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
+    else if (WorkToReturn is IEnumerable<string> list)
     {
       /* TODO: Finish BetweenRegexOperation.DoOperation when data is IEnumerable<string> */
       // data = list.Select(x => x.Trim()).ToCollection();
     }
     else
-      return OpStatus.FailBadInputType;
+    {
+      Status = OpStatus.FailBadInputType;
+      return;
+    }
 
-    return OpStatus.Pass;
+    Status = OpStatus.Pass;
   }
 }
-public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupGroup, IEnumerable<ReplaceNode> nodes) : ReplaceRegexOperation(nodes)
-{
-  public string Pattern { get; init; } = pattern;
-  public string LookupGroup { get; init; } = lookupGroup;
-
-  protected override void Execute ()
-  {
-    if (data is null)
-      return OpStatus.FailBadInputNull;
-
-    foreach (ReplaceNode node in Nodes)
-      if (data is string s)
-      {
-        Regex rx = new(node.LookFor);
-        string update = s;
-
-        IEnumerable<Match> results =
-          from Match m in rx.Matches(s)
-          where m.Groups.ContainsKey(LookupGroup)
-          select m;
-
-        foreach (Match m in results)
-        {
-          string name = m.Groups[LookupGroup].Value;
-          int pos = m.Index;
-          int len = m.Length;
-          update = update.
-            Remove(pos, len).
-            Insert(pos, node.ReplaceWith ?? SE);
-        }
-
-        data = update;
-      }
-      else if (data is IEnumerable<string> list)
-      {
-        //TODO: Complete RemoveSymbolOperation.DoOperation(ref object data) for IEnumerable<string>
-
-        //IEnumerable<string> result =
-        //  from string item in list
-        //  select new Regex(node.LookFor).Replace(item, node.ReplaceWith);
-
-        //data = result.ToCollection();
-      }
-      else
-        return OpStatus.FailBadInputType;
-
-    return OpStatus.Pass;
-  }
-}
+#if false
 public class RemoveCommentsOperation ([SS("Regex")] string comment, [SS("Regex")] string quote, string replaceWith = "") : TextOperation(input_key, output_key)
 {
   public string Comment { get; init; } = comment;

@@ -1,3 +1,6 @@
+using Parser.Ops;
+using Parser.Text.Ops;
+
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.INI;
@@ -5,15 +8,8 @@ namespace Specification.INI;
 /// <summary>
 /// Defines the INI spec.
 /// </summary>
-public class Definition
+public static class Definition
 {
-  /// <summary>
-  /// The INI regex pieces.
-  /// </summary>
-  protected static Collection<string> Regex => [
-    Nm("property", @"(?<key>\w+)\=(?<value>[^\;\n\r]*)"),
-    Nm("section", @"\[(?<name>[^\;\n\r]+?)\]"),
-  ];
   /// <summary>
   /// The INI Specification.
   /// </summary>
@@ -26,30 +22,10 @@ public class Definition
       IfN(ExtIs, "inf"),
     ],
     Operations = [
-      /*
-      new ReplaceRegexOperation([
-        new(@"\;.*$", ""), //Remove line comments
-        new(@"^\s+", ""), //Remove beginning ws
-        new(@"\s+$", ""), //Remove ending ws
-        new(@"\s*\=\s*", "="), //Remove ws around eq sign
-        new(@"\\" + RX.LnEnd, "") //Remove escaped newlines
-        ]),
-      new DictionaryOperation(Regex),
-      new GenerateOperation<Section>(item => Section.Generate(item.ParseData), item => item.ParseData.HasGroup("section")),
-      new GenerateFromObjectOperation<MatchDataDictionary, Property>("property"),
-      new ConsolidateOutputOperation<object>(),
-      new StackPropertyOperation<Section, Property>(true),
-      new EncapsulateOperation<Document, Section>(),
+      new DictionaryOperation(Nm("full", @"(?'section'\[(?'name'.*?)\])(\s*(?'key'\w*)\s*\=\s*(?'value'[^;\n]*))*")),
+      new GenerateOperation<Section>(Section.Generate, item => item.HasGroup("section"), "matches","sections"),
+      new EncapsulateOperation<DocumentSet, Section>("sections", "result"),
       Operation.End
-      */
-
-    ],
-    TokenLookup = [
-      "property",
-      "section",
-      "name",
-      "key",
-      "value",
     ],
     CaseInsensitive = false
   };

@@ -5,20 +5,20 @@ namespace Common.Regex;
 /// <summary>
 /// Represents a group in a match.
 /// </summary>
-public class GroupData : CaptureData, IReadOnlyCollection<CaptureData>, IEquatable<GroupData>
+public class GroupDataSet : CaptureData, IReadOnlyCollection<CaptureData>, IEquatable<GroupDataSet>
 {
   /// <summary>
   /// The captures within this group.
   /// </summary>
   public Collection<CaptureData> Captures { get; init; } = [];
 
-  internal GroupData () { }
+  internal GroupDataSet () { }
   /// <summary>
-  /// Creates a new <see cref="GroupData"/> from a <see cref="Group"/>.
+  /// Creates a new <see cref="GroupDataSet"/> from a <see cref="Group"/>.
   /// </summary>
   /// <param name="g">The <see cref="Group"/> to base this object on.</param>
   /// <param name="index">The group number of this group.</param>
-  public GroupData (Group? g, int index = -1) : base(g, g is null ? SE : g.Name, index) =>
+  public GroupDataSet (Group? g, int index = -1) : base(g, g is null ? SE : g.Name, index) =>
     Captures = g is null ?
     [] :
     [.. g.Captures.Select((item, i) => new CaptureData(item, g.Name, i))];
@@ -30,7 +30,7 @@ public class GroupData : CaptureData, IReadOnlyCollection<CaptureData>, IEquatab
   /// <param name="pos"></param>
   /// <param name="len"></param>
   /// <param name="index"></param>
-  protected GroupData (string name, string content, int pos, int len, int index = -1) : base(content, pos, len, name, index) =>
+  protected GroupDataSet (string name, string content, int pos, int len, int index = -1) : base(content, pos, len, name, index) =>
     Captures = [];
   /// <summary>
   /// Gets the capture data at the given index.
@@ -52,22 +52,26 @@ public class GroupData : CaptureData, IReadOnlyCollection<CaptureData>, IEquatab
   public bool IsNamedGroup => Name.IsNamedGroup() && Content.Length > 0;
   public override bool IsNull => Content.Length == 0 || Captures.Count == 0;
   public virtual int Count => IsNull ? 0 : Captures.Count > 0 ? Captures.Count : 1;
-  public static implicit operator GroupData (Group group) => FromGroup(group);
+  public static implicit operator GroupDataSet (Group group) => FromGroup(group);
   /// <summary>
   /// A null or empty group data object.
   /// </summary>
-  public static GroupData Null { get; } = new(string.Empty, string.Empty, -1, -1);
-  public static GroupData FromGroup (Group group) => group is null ? Null : new(group.Name, group.Value, group.Index, group.Length);
+  public static GroupDataSet Null { get; } = new(string.Empty, string.Empty, -1, -1);
+  public static GroupDataSet FromGroup (Group group) => group is null ? Null : new(group.Name, group.Value, group.Index, group.Length);
 
+  /// <summary>
+  /// Creates a string representation of the group and its captures.
+  /// </summary>
+  /// <returns>The string representation of the group and its captures.</returns>
   public override string ToString () =>
-    Count > 1 ? "[ " + Captures.Select(item => $"\"{item.Content}\"").TextJoin(", ") + " ]"
-    : Count == 1 ? $"\"{Content}\""
-    : $"<null data>";
+    Count > 1 ? "[ " + Captures.Select(item => item.ToString()).TextJoin(", ") + " ]" :
+    Count == 1 ? Captures[0].ToString() :
+    $"<null data>";
   /// <inheritdoc/>
-  public bool Equals (GroupData? other) => other is null || other.IsNull ? IsNull : other.Content.Equals(Content, SCO);
+  public bool Equals (GroupDataSet? other) => other is null || other.IsNull ? IsNull : other.Content.Equals(Content, SCO);
 
   /// <inheritdoc/>
-  public override bool Equals (object? obj) => Equals(obj as GroupData);
+  public override bool Equals (object? obj) => Equals(obj as GroupDataSet);
 
   /// <inheritdoc/>
   public override int GetHashCode () => HashCode.Combine(Name, Content, Pos, Len);

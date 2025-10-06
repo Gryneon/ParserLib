@@ -11,22 +11,22 @@ namespace Specification.IPL;
 public static class IPLExtensions
 {
   /// <summary>
-  /// Converts this <see cref="MatchData"/> into a <see cref="CommandData"/> object.
+  /// Converts this <see cref="MatchDataSet"/> into a <see cref="CommandDataSet"/> object.
   /// </summary>
   /// <param name="mdd">The match data to use.</param>
-  /// <returns>A <see cref="CommandData"/> object.</returns>
-  public static CommandData ToCommandData (this MatchData mdd) => new(mdd);
+  /// <returns>A <see cref="CommandDataSet"/> object.</returns>
+  public static CommandDataSet ToCommandData (this MatchDataSet mdd) => new(mdd);
 }
 
 /// <summary>
 /// Contains the details of an IPL command.
 /// </summary>
-public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>, IGeneratable<MatchData, CommandData>, IComparable<CommandData>, IReadOnlyCollection<object>
+public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer<CommandDataSet>, IGeneratable<MatchDataSet, CommandDataSet>, IComparable<CommandDataSet>, IReadOnlyCollection<object>
 {
   /// <summary>
   /// The data that created this object.
   /// </summary>
-  public MatchData ParseData { get; protected set; }
+  public MatchDataSet ParseData { get; }
 
   /// <summary>
   /// The full text representation of this object at creation.
@@ -63,11 +63,11 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
   /// <summary>
   /// The data attached to this command.
   /// </summary>
-  public Collection<object> Data { get; } = [];
+  public Dictionary<int, object> Data { get; } = [];
   /// <summary>
   /// The properties assigned to a line command.
   /// </summary>
-  public Collection<CommandData> Properties { get; } = [];
+  public Collection<CommandDataSet> Properties { get; } = [];
   /// <inheritdoc/>
   public int Count => Data.Count;
   /// <summary>
@@ -101,8 +101,8 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
     "<EOT>" => ICT.Advanced,
     string when CmdLetter.StartsWith('<') => ICT.Simple,
     string when CmdMode != IPLPrinterMode.None => ICT.Mode,
-    string when "BDGHILQUW".Contains(CmdLetter) && !IsEscaped && !IsShifted => ICT.Line,
-    string when "bcdfhijklmrowxyu".Contains(CmdLetter) && !IsEscaped && !IsShifted => ICT.Prop,
+    string when "BDGHILQUW".Contains(CmdLetter, SCO) && !IsEscaped && !IsShifted => ICT.Line,
+    string when "bcdfhijklmrowxyu".Contains(CmdLetter, SCO) && !IsEscaped && !IsShifted => ICT.Prop,
     "A" or "F" when !IsEscaped && !IsShifted => ICT.SetFormat,
     "E" when !IsEscaped && !IsShifted => ICT.ClearFormat,
     "E" when IsEscaped && !IsShifted => ICT.SelectFormat,
@@ -136,7 +136,7 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
   /// <summary>
   /// Creates an empty object. IsNull would equal <see langword="true"/>.
   /// </summary>
-  public CommandData ()
+  public CommandDataSet ()
   {
     ParseData = [];
     FullCommandText = SE;
@@ -144,41 +144,40 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
     CmdLetter = SE;
   }
   /// <summary>
-  /// Creates an object from a <see cref="MatchData"/>. IsNull would equal <see langword="false"/>.
+  /// Creates an object from a <see cref="MatchDataSet"/>. IsNull would equal <see langword="false"/>.
   /// </summary>
-  /// <param name="mdd">The <see cref="MatchData"/> to create an object from.</param>
-  public CommandData (MatchData mdd) : this()
+  /// <param name="mdd">The <see cref="MatchDataSet"/> to create an object from.</param>
+  public CommandDataSet ([NotNull] MatchDataSet mdd) : this()
   {
-    ParseData = mdd;
     FullCommandText = mdd.Content;
-    ParseMDD();
+    ParseData = mdd;
+    ParseMDD(mdd);
   }
   /// <summary>
   /// Creates an object from a <see cref="string"/>. IsNull would equal <see langword="false"/>.
   /// </summary>
   /// <param name="fullcmdstr">The <see cref="string"/> to create an object from.</param>
-  public CommandData (string fullcmdstr) : this()
+  public CommandDataSet (string fullcmdstr) : this()
   {
-    GenerateMDD(fullcmdstr);
+    FullCommandText = fullcmdstr;
+    ParseData = GenerateMDD(fullcmdstr);
     ParseMDD();
   }
   #endregion
 
   #region Private Methods
-  [MemberNotNull(nameof(ParseData))]
-  private void GenerateMDD (string commandText)
+  private MatchDataSet GenerateMDD (string commandText)
   {
     FullCommandText = commandText;
     Match match = Definition.OpRegex.Match(FullCommandText);
-    ParseData = new(match);
+    return new MatchDataSet(match);
   }
-  private void ParseMDD (MatchData? toParse = null)
+  private void ParseMDD (MatchDataSet? toParse = null)
   {
-    MatchData parseMe =
+    MatchDataSet parseMe =
       toParse is null && ParseData is null ? throw new InvalidOperationException("MDD Cannot be null") :
       toParse is null && ParseData is not null ? ParseData :
-      toParse is not null && ParseData is null ? toParse :
-      toParse is not null && ParseData is not null ? toParse : throw new InvalidOperationException("Impossible Statement");
+      toParse is not null ? toParse : throw new InvalidOperationException();
     CmdLetter = parseMe["letter"].Content;
     if (parseMe.HasGroup("qty"))
       CmdLetter = parseMe["qty"].Content;
@@ -190,7 +189,6 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
     {
       for (int i = 0; i < parseMe["value"].Count; i++)
       {
-        Data.Add(new object());
         Data[i] = parseMe["value"][i].Content;
       }
     }
@@ -240,6 +238,11 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
       Debug.LogException(ice);
       return ErrVal;
     }
+    catch (KeyNotFoundException aoore)
+    {
+      Debug.LogException(aoore);
+      return ErrVal;
+    }
   }
   /// <summary>
   /// Gets the data field at the given index as a <see langword="decimal"/>.
@@ -265,41 +268,26 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
   /// </summary>
   /// <param name="index">The index to assign to.</param>
   /// <param name="data">The value to assign.</param>
-  public void SetData (int index, object data)
-  {
-    try
-    {
-      Data[index] = data;
-    }
-    catch (IndexOutOfRangeException)
-    {
-      int diff = index - Count + 1;
-      if (diff < 0)
-        return;
-      for (index = 0; index < diff; index++)
-        Data.Add(0);
-      SetData(index, data);
-    }
-  }
+  public void SetData (int index, object data) => Data[index] = data;
   /// <summary>
   /// Embeds a command inside of this command.
   /// </summary>
   /// <param name="data">The command to embed.</param>
-  public void Add (CommandData data) => Properties.Add(data);
+  public void Add (CommandDataSet data) => Properties.Add(data);
   #endregion
   #region Interfaces & Overrides
   /// <inheritdoc/>
-  public bool Equals (CommandData? other) => FullCommandText.Equals(other?.FullCommandText, SCO);
+  public bool Equals (CommandDataSet? other) => FullCommandText.Equals(other?.FullCommandText, SCO);
   /// <inheritdoc/>
-  public int CompareTo (CommandData? other) => FullCommandText.CompareTo(other?.FullCommandText, SCO);
+  public int CompareTo (CommandDataSet? other) => FullCommandText.CompareTo(other?.FullCommandText, SCO);
   /// <inheritdoc/>
-  public override bool Equals (object? obj) => obj is CommandData data && Equals(data);
+  public override bool Equals (object? obj) => obj is CommandDataSet data && Equals(data);
   /// <inheritdoc/>
-  public override int GetHashCode () => FullCommandText.GetHashCode();
+  public override int GetHashCode () => FullCommandText.GetHashCode(SCO);
   /// <inheritdoc/>
   public override string ToString () => Serialize();
   /// <inheritdoc/>
-  public IEnumerator<object> GetEnumerator () => Data.GetEnumerator();
+  public IEnumerator<object> GetEnumerator () => Data.Select(item => item.Value).GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   /// <inheritdoc/>
   public string Serialize ()
@@ -308,18 +296,16 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
     string shift = IsShifted ? "<SI>" : SE;
     string cmd = CmdLetter;
     string field = Count > 0 ? GetTextData(0) : SE;
-    string props = Count > 1 ? $"{Data.Aggregate((i2, i3) => i2 = $"{i2},{i3}")}" : SE;
+    string props = Count > 1 ? $"{Data.Select(item => item.Value).Aggregate((i2, i3) => i2 = $"{i2},{i3}")}" : SE;
     return escape + shift + cmd + field + props;
   }
   /// <inheritdoc/>
-  public static CommandData Generate (MatchData input)
+  public static CommandDataSet Generate (MatchDataSet input)
   {
-    CommandData result = new(input);
+    CommandDataSet result = new(input);
 
     return result;
   }
-  /// <inheritdoc/>
-  public void SetParseData (MatchData data) => ParseData = data;
   #endregion
   #region Static Operators
   /// <summary>
@@ -328,37 +314,37 @@ public class CommandData : IEquatable<CommandData>, ITextSerializer<CommandData>
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>
   /// <returns><see langword="true"/> if left equals right, <see langword="false"/> otherwise.</returns>
-  public static bool operator == (CommandData left, CommandData right) => left.Equals(right);
+  public static bool operator == (CommandDataSet left, CommandDataSet right) => left is null && right is null || (left?.Equals(right) ?? false);
   /// <summary>
   /// Checks basic inequality with another CommonData object.
   /// </summary>
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>
   /// <returns><see langword="true"/> if left does not equal right, <see langword="false"/> otherwise.</returns>
-  public static bool operator != (CommandData left, CommandData right) => !(left == right);
+  public static bool operator != (CommandDataSet left, CommandDataSet right) => !(left == right);
   /// <summary>
   /// TODO: Doc
   /// </summary>
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>
-  public static bool operator < (CommandData left, CommandData right) => left.CompareTo(right) < 0;
+  public static bool operator < (CommandDataSet left, CommandDataSet right) => left?.CompareTo(right) < 0;
   /// <summary>
   /// TODO: Doc
   /// </summary>
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>
-  public static bool operator <= (CommandData left, CommandData right) => left.CompareTo(right) <= 0;
+  public static bool operator <= (CommandDataSet left, CommandDataSet right) => left?.CompareTo(right) <= 0;
   /// <summary>
   /// TODO: Doc
   /// </summary>
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>
-  public static bool operator > (CommandData left, CommandData right) => left.CompareTo(right) > 0;
+  public static bool operator > (CommandDataSet left, CommandDataSet right) => left?.CompareTo(right) > 0;
   /// <summary>
   /// TODO: Doc
   /// </summary>
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>
-  public static bool operator >= (CommandData left, CommandData right) => left.CompareTo(right) >= 0;
+  public static bool operator >= (CommandDataSet left, CommandDataSet right) => left?.CompareTo(right) >= 0;
   #endregion
 }

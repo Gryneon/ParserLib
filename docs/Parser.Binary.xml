@@ -153,7 +153,6 @@
             <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
             <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
             <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
-            <see cref="F:Parser.OpStatus.NoData"/> : No data was passed, but not a failure. <br/>
             </returns>
             <exception cref="T:Parser.UnknownOperationException"></exception>
         </member>

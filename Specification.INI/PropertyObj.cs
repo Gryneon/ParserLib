@@ -3,7 +3,7 @@ namespace Specification.INI;
 /// <summary>
 /// A key and value pair in an INI file.
 /// </summary>
-public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<string>, ITextSerializer<PropertyObj>
+public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<string>, ITextSerializer<PropertyObj>
 {
   /// <summary>
   /// The key name.
@@ -29,6 +29,38 @@ public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<strin
     Key = key;
     Value = value;
   }
+  /// <summary>
+  /// Creates a property from an IProperty interface
+  /// </summary>
+  /// <param name="iprop">The other property.</param>
+  [SetsRequiredMembers]
+  public PropertyObj (IProperty<object> iprop)
+  {
+    iprop.ThrowIfNull();
+    Key = iprop.Key;
+    Value = iprop.Value.ToString() ?? SE;
+  }
+  /// <summary>
+  /// Creates a property from an IProperty interface
+  /// </summary>
+  /// <param name="iprop">The other property.</param>
+  [SetsRequiredMembers]
+  public PropertyObj (IProperty<string> iprop)
+  {
+    iprop.ThrowIfNull();
+    Key = iprop.Key;
+    Value = iprop.Value ?? SE;
+  }
+  public static PropertyObj From (IProperty<object> iprop)
+  {
+    iprop.ThrowIfNull();
+    return new(iprop);
+  }
+  public static PropertyObj From (IProperty<string> iprop)
+  {
+    iprop.ThrowIfNull();
+    return new(iprop);
+  }
   /// <inheritdoc/>
   /// <remarks>
   /// <list type="table">
@@ -37,10 +69,11 @@ public class PropertyObj : IGeneratable<MatchData, PropertyObj>, IProperty<strin
   /// <item><c>value</c></item> : The value of the property.
   /// </list>
   /// </remarks>
-  public static PropertyObj Generate (MatchData input)
+  public static PropertyObj Generate (MatchDataSet input)
   {
     PropertyObj result;
 
+    input.ThrowIfNull();
     input.ThrowIfEmpty("key");
 
     result = new()

@@ -13,5 +13,5 @@ public sealed class TokenNodeBasic : TokenNode
     Type = type;
     Literal = literal;
   }
-  public override bool Match => CurrentToken.Content.Equals(Literal, TokenOptions.SC);
+  public override bool Match => CurrentToken.Content.Equals(Literal, (Spec.Active as TextSpec)?.SC ?? SCO);
 }

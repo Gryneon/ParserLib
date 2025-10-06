@@ -8,16 +8,16 @@ public class ByteRecallOperation (string input_key = "recall_pos") : ByteOperati
 {
   protected override void Execute ()
   {
-    if (!BParser.ContainsKey(_input_key))
+    if (!Parser.ContainsKey(InputKey))
     {
       Status = FailNoSuchVarName;
       return;
     }
 
-    int pos = BParser.Load<int>(_input_key);
-    BParser.SetPos(pos);
-    BParser.Clear(_input_key);
-    Log("ByteRecallOperation:", $"Position recalled {pos}, deleted '{_input_key}'.");
+    int pos = Parser.Load<int>(InputKey);
+    Parser.SetPos(pos);
+    Parser.Clear(InputKey);
+    Log("ByteRecallOperation:", $"Position recalled {pos}, deleted '{InputKey}'.");
     Status = Pass;
   }
 }

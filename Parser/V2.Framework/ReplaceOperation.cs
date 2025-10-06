@@ -6,7 +6,7 @@ using OS = Parser.V2.Framework.OpStatus;
 
 namespace Parser.V2.Framework;
 
-public class ReplaceOperation (RxSList regex, string replacewith) : Operation
+public class ReplaceOperation (RxSCollection regex, string replacewith) : Operation
 {
   public override Collection<Type> AllowedInputs => [
     typeof(string),
@@ -16,8 +16,8 @@ public class ReplaceOperation (RxSList regex, string replacewith) : Operation
     typeof(string),
     typeof(IEnumerable<string>),
     typeof(IDictionary<string, string>)];
-  protected RxSList OpRegex { get; init; } = regex;
-  protected RxSList Replacement { get; init; } = replacewith;
+  protected RxSCollection OpRegex { get; init; } = regex;
+  protected RxSCollection Replacement { get; init; } = replacewith;
 
   protected int _debug_ReplacementCount;
 
@@ -78,7 +78,7 @@ public class ReplaceOperation (RxSList regex, string replacewith) : Operation
   }
 }
 
-public sealed class DictionaryOperation (RxSList regex, string replacewith) : Operation
+public sealed class DictionaryOperation (RxSCollection regex, string replacewith) : Operation
 {
   public override Collection<Type> AllowedInputs => [
     typeof(string),
@@ -88,8 +88,8 @@ public sealed class DictionaryOperation (RxSList regex, string replacewith) : Op
     typeof(string),
     typeof(IEnumerable<string>),
     typeof(IDictionary<string, string>)];
-  internal RxSList OpRegex { get; init; } = regex;
-  internal RxSList Replacement { get; init; } = replacewith;
+  internal RxSCollection OpRegex { get; init; } = regex;
+  internal RxSCollection Replacement { get; init; } = replacewith;
 
   internal int Debug_ReplacementCount;
 

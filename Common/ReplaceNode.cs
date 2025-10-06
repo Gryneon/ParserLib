@@ -1,4 +1,6 @@
 
+using System.Diagnostics.CodeAnalysis;
+
 using Common.Regex;
 
 using SysRegex = System.Text.RegularExpressions.Regex;
@@ -19,12 +21,16 @@ public class ReplaceNode : IEquatable<ReplaceNode>
   public static ReplaceNode From (string lf, string? rw) => new(lf, rw);
   public static ReplaceNode From ((string, string?) tp) => new(tp.Item1, tp.Item2);
   public static ReplaceNode From (KeyValuePair<string, string?> kvp) => new(kvp.Key, kvp.Value);
-  public static ReplaceNode From (IProperty<string?> prop) => new(prop.Key, prop.Value);
+  public static ReplaceNode From (IProperty<string?> prop)
+  {
+    prop.ThrowIfNull();
+    return new(prop.Key, prop.Value);
+  }
 
   public static implicit operator ReplaceNode ((string, string?) tuple) => From(tuple);
   public static implicit operator ReplaceNode (KeyValuePair<string, string?> kvp) => From(kvp);
   public static implicit operator ReplaceNode (Tuple<string, string?> prop) => From(prop.ToValueTuple());
-  public static implicit operator KeyValuePair<string, string?> (ReplaceNode node) => node.ToKVP();
+  public static implicit operator KeyValuePair<string, string?> ([NotNull] ReplaceNode node) => node.ToKVP();
   #endregion
   /// <summary>
   /// The regular expression to look for.
@@ -71,7 +77,7 @@ public class ReplaceNode : IEquatable<ReplaceNode>
     LookFor.Content.Equals(other?.LookFor, sc) && (ReplaceWith is not null && other.ReplaceWith is not null && ReplaceWith.Equals(other.ReplaceWith, sc) || ReplaceWith is null && other.ReplaceWith is null);
 
   /// <inheritdoc/>
-  public override bool Equals (object? obj) => Equals(obj as ReplaceNode);
+  public override bool Equals (object? obj) => Equals(obj as ReplaceNode, SCO);
   /// <inheritdoc/>
   public override int GetHashCode () => HashCode.Combine(LookFor, ReplaceWith);
 

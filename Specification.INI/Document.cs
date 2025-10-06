@@ -3,24 +3,24 @@ namespace Specification.INI;
 /// <summary>
 /// A document, which is a collection of sections.
 /// </summary>
-public class Document : ICollection<Section>, ITextSerializer<Document>, IHasChildren<Section>
+public sealed class DocumentSet : ICollection<Section>, ITextSerializer<DocumentSet>
 {
   /// <summary>
-  /// Creates an empty <see cref="Document"/>.
+  /// Creates an empty <see cref="DocumentSet"/>.
   /// </summary>
-  public Document () { }
+  public DocumentSet () { }
   /// <summary>
-  /// Creates a <see cref="Document"/> with the provided <see cref="Section"/> objects in it.
+  /// Creates a <see cref="DocumentSet"/> with the provided <see cref="Section"/> objects in it.
   /// </summary>
-  public Document (IEnumerable<Section> sections) => Sections = [.. sections];
+  public DocumentSet (IEnumerable<Section> sections) => Sections = [.. sections];
   /// <summary>
   /// The name of the document.
   /// </summary>
   public string Name { get; set; } = SE;
   /// <summary>
-  /// A <see cref="Collection{T}"/> of <see cref="Section"/>s stored in this <see cref="Document"/>.
+  /// A <see cref="Collection{T}"/> of <see cref="Section"/>s stored in this <see cref="DocumentSet"/>.
   /// </summary>
-  protected Collection<Section> Sections { get; init; } = [];
+  private Collection<Section> Sections { get; init; } = [];
   /// <inheritdoc/>
   public int Count => Sections.Count;
 
@@ -48,9 +48,10 @@ public class Document : ICollection<Section>, ITextSerializer<Document>, IHasChi
   /// <inheritdoc/>
   public void Add (Section section)
   {
+    section.ThrowIfNull();
     if (Contains(section.Name))
     {
-      foreach (PropertyObj item in section)
+      foreach (IProperty<string> item in section)
       {
         this[section.Name].Set<PropertyObj>(item.Key, item.Value);
       }
@@ -66,6 +67,7 @@ public class Document : ICollection<Section>, ITextSerializer<Document>, IHasChi
   /// <param name="section">The section to add.</param>
   public void Ensure (Section section)
   {
+    section.ThrowIfNull();
     if (!Contains(section.Name))
       Sections.Add(section);
   }
@@ -73,8 +75,9 @@ public class Document : ICollection<Section>, ITextSerializer<Document>, IHasChi
   /// Merges 2 Sections, Favoring the parameter 'other'.
   /// </summary>
   /// <param name="other">The other document.</param>
-  public void Update (Document other)
+  public void Update (DocumentSet other)
   {
+    other ??= [];
     foreach (Section section in other.Sections)
     {
       Add(section);
@@ -91,9 +94,10 @@ public class Document : ICollection<Section>, ITextSerializer<Document>, IHasChi
     {
       result += s.Serialize() + "\n";
 
-      foreach (PropertyObj p in s)
+      foreach (IProperty<string> p in s)
       {
-        result += p.Serialize() + "\n";
+        PropertyObj obj = PropertyObj.From(p);
+        result += obj.Serialize() + "\n";
       }
     }
 

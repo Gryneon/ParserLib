@@ -10,16 +10,16 @@ public class ReplaceByStrOperation (ReplaceNodes nodes, string input_key, string
     {
       foreach (ReplaceNode node in nodes)
       {
-        s = s.Replace(node.LookFor, node.ReplaceWith);
+        s = s.Replace(node.LookFor, node.ReplaceWith, Spec.SC);
       }
-      _workToReturn = s;
+      WorkToReturn = s;
       Status = OpStatus.Pass;
     }
     else if (CheckInput(out IEnumerable<string>? list))
     {
       foreach (ReplaceNode node in nodes)
       {
-        _workToReturn = list.Select(item => item.Replace(node.LookFor, node.ReplaceWith)).ToCollection();
+        WorkToReturn = list.Select(item => item.Replace(node.LookFor, node.ReplaceWith, Spec.SC)).ToCollection();
         Status = OpStatus.Pass;
       }
     }
@@ -28,115 +28,6 @@ public class ReplaceByStrOperation (ReplaceNodes nodes, string input_key, string
   }
 }
 #if false
-public class CombineDelimOperation (string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    if (_workToReturn is string s)
-    {
-      Status = OpStatus.Skipped;
-    }
-    else if (_workToReturn is IEnumerable<string> list)
-    {
-      Status = OpStatus.Pass;
-      _workToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
-    }
-    else
-    {
-      Status = OpStatus.FailBadInputType;
-    }
-  }
-}
-public class TrimWhitespaceOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    if (CheckInput(out string? s))
-    {
-      _workToReturn = s.Trim();
-      Status = OpStatus.Pass;
-    }
-    else if (CheckInput(out IEnumerable<string>? ien))
-    {
-      _workToReturn = ien.Select(x => x.Trim()).ToCollection();
-      Status = OpStatus.Pass;
-    }
-    else
-      Status = OpStatus.FailBadInputType;
-  }
-}
-public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] string suffix) : TextOperation(input_key, output_key)
-{
-  protected RxS Assembled => new(@$"(?:{prefix})(?<keep>[\s\S]*?)(?:{suffix})");
-  protected Regex OpRegex => new(Assembled);
-
-  protected override void Execute ()
-  {
-    if (data is null)
-      return OpStatus.FailBadInputNull;
-
-    if (data is string s)
-      data = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
-    else if (data is IEnumerable<string> list)
-    {
-      /* TODO: Finish BetweenRegexOperation.DoOperation when data is IEnumerable<string> */
-      // data = list.Select(x => x.Trim()).ToCollection();
-    }
-    else
-      return OpStatus.FailBadInputType;
-
-    return OpStatus.Pass;
-  }
-}
-public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupGroup, IEnumerable<ReplaceNode> nodes) : ReplaceRegexOperation(nodes)
-{
-  public string Pattern { get; init; } = pattern;
-  public string LookupGroup { get; init; } = lookupGroup;
-
-  protected override void Execute ()
-  {
-    if (data is null)
-      return OpStatus.FailBadInputNull;
-
-    foreach (ReplaceNode node in Nodes)
-      if (data is string s)
-      {
-        Regex rx = new(node.LookFor);
-        string update = s;
-
-        IEnumerable<Match> results =
-          from Match m in rx.Matches(s)
-          where m.Groups.ContainsKey(LookupGroup)
-          select m;
-
-        foreach (Match m in results)
-        {
-          string name = m.Groups[LookupGroup].Value;
-          int pos = m.Index;
-          int len = m.Length;
-          update = update.
-            Remove(pos, len).
-            Insert(pos, node.ReplaceWith ?? SE);
-        }
-
-        data = update;
-      }
-      else if (data is IEnumerable<string> list)
-      {
-        //TODO: Complete RemoveSymbolOperation.DoOperation(ref object data) for IEnumerable<string>
-
-        //IEnumerable<string> result =
-        //  from string item in list
-        //  select new Regex(node.LookFor).Replace(item, node.ReplaceWith);
-
-        //data = result.ToCollection();
-      }
-      else
-        return OpStatus.FailBadInputType;
-
-    return OpStatus.Pass;
-  }
-}
 public class RemoveCommentsOperation ([SS("Regex")] string comment, [SS("Regex")] string quote, string replaceWith = "") : TextOperation(input_key, output_key)
 {
   public string Comment { get; init; } = comment;
@@ -236,24 +127,7 @@ public class StackPropertyOperation<TParent, TChild> (bool ignoreOrphans = true)
     return OpStatus.Pass;
   }
 }
-public class EncapsulateOperation<TParent, TChild> (string input_key, ) : TextOperation(input_key, output_key) where TParent : class, IHasChildren<TChild>, new()
-{
-  protected override void Execute ()
-  {
-    if (data is not IEnumerable<object> items)
-      return OpStatus.FailBadInputType;
 
-    TParent parent = new();
-
-    foreach (object item in items)
-      if (item is TChild child)
-        parent.Add(child);
-      else
-        Debug.Log("EncapulateOperation", $"Expected {typeof(TChild)}, Got {item.GetType().Name}.");
-    data = parent;
-    return OpStatus.Pass;
-  }
-}
 public class ConsumeTokenOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
 {
   protected override void Execute ()

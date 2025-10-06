@@ -6,7 +6,7 @@ namespace Parser.Text.Tokens;
 /// Base interface for tokens.
 /// Reference this and not <see cref="Token"/> unless defining a class.
 /// </summary>
-public interface IToken : IEquatable<TokenTemplateNode>, IGeneratable<MatchData, Token>, IHasChildren<IToken>
+public interface IToken : IGeneratable<MatchDataSet, Token>, IHasChildren<IToken>
 {
   /// <summary>
   /// The properties of this token.
@@ -20,11 +20,17 @@ public interface IToken : IEquatable<TokenTemplateNode>, IGeneratable<MatchData,
   /// The content of this token, or all of its children.
   /// </summary>
   string Content { get; }
+  /// <summary>
+  /// Gets a value indicating whether the current object contains any properties.
+  /// </summary>
   bool HasProperties { get; }
   /// <summary>
   /// The length of the text of this token.
   /// </summary>
   int Length { get; }
+  /// <summary>
+  /// The position of this token in the original text.
+  /// </summary>
   int Position { get; }
   /// <summary>
   /// Type of token.
@@ -35,4 +41,12 @@ public interface IToken : IEquatable<TokenTemplateNode>, IGeneratable<MatchData,
   /// </summary>
   /// <returns>A <see langword="string"/> representing the token.</returns>
   string? ToString () => Content;
+  /// <summary>
+  /// The node structure that this token was created from.
+  /// </summary>
+  TokenNodeGroup? FromNode { get; init; }
+  /// <summary>
+  /// The specific node item that represents this child token.
+  /// </summary>
+  TokenNode? LinkNode { get; set; }
 }

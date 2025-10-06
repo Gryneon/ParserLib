@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.2.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11012.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{E15E491A-E872-91D8-DF7A-CA59C792F064}"
 EndProject
@@ -44,6 +44,28 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabelFormControlTest", "..\LabelFormControlTest\LabelFormControlTest.csproj", "{A5FE019F-8088-4004-FB58-19D8FAC0528C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserVisualizer", "ParserVisualizer\ParserVisualizer.csproj", "{6ABFADD5-0952-4CC9-91C0-1218777AE3B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{F60AE9E8-DEC6-417D-9487-81940A3D53D3}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Common.xml = docs\Common.xml
+		docs\Parser.Binary.xml = docs\Parser.Binary.xml
+		docs\Parser.Byte.xml = docs\Parser.Byte.xml
+		docs\Parser.Text.xml = docs\Parser.Text.xml
+		docs\Parser.xml = docs\Parser.xml
+		docs\Specification.ACS.xml = docs\Specification.ACS.xml
+		docs\Specification.INI.xml = docs\Specification.INI.xml
+		docs\Specification.IPL.xml = docs\Specification.IPL.xml
+		docs\Specification.JSON.xml = docs\Specification.JSON.xml
+		docs\Specification.MapInfo.xml = docs\Specification.MapInfo.xml
+		docs\Specification.REG.xml = docs\Specification.REG.xml
+		docs\Specification.SndInfo.xml = docs\Specification.SndInfo.xml
+		docs\Specification.WAD.xml = docs\Specification.WAD.xml
+		docs\Specification.XML.xml = docs\Specification.XML.xml
+		docs\Specification.ZScript.xml = docs\Specification.ZScript.xml
+		docs\TestConsole.xml = docs\TestConsole.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,9 +137,16 @@ Global
 		{A5FE019F-8088-4004-FB58-19D8FAC0528C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5FE019F-8088-4004-FB58-19D8FAC0528C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5FE019F-8088-4004-FB58-19D8FAC0528C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ABFADD5-0952-4CC9-91C0-1218777AE3B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ABFADD5-0952-4CC9-91C0-1218777AE3B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ABFADD5-0952-4CC9-91C0-1218777AE3B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ABFADD5-0952-4CC9-91C0-1218777AE3B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F60AE9E8-DEC6-417D-9487-81940A3D53D3} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E97FF645-432C-41F1-ACD9-D9EA11D2D32D}

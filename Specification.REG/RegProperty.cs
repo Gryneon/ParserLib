@@ -1,14 +1,16 @@
+using Common.Extensions;
+
 namespace Specification.REG;
 
 /// <summary>
 /// A registry key, type, and value, with an option to delete the entry.
 /// </summary>
-public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, RegProperty>
+public sealed class RegProperty : IProperty<string>, IGeneratable<MatchDataSet, RegProperty>
 {
   /// <summary>
   /// A blank property.
   /// </summary>
-  public static RegProperty Blank { get; } = new() { ParseData = [] };
+  public static RegProperty Blank { get; } = new() { };
 
   /// <summary>
   /// The key name.
@@ -39,7 +41,7 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, Reg
   /// </summary>
   public RegSection? Parent
   {
-    get => field;
+    get;
     set
     {
       field = value;
@@ -53,17 +55,13 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, Reg
   /// </summary>
   public bool IsDefault => Key == SE;
 
-  /// <summary>
-  /// The <see cref="MatchData"/> used to create this object.
-  /// </summary>
-  public required MatchData ParseData { get; set; }
-
   private RegProperty () { }
 
   /// <inheritdoc/>
   /// <exception cref="InvalidOperationException"/>
-  public static RegProperty Generate (MatchData input)
+  public static RegProperty Generate (MatchDataSet input)
   {
+    input.ThrowIfNull();
     bool hasKey = input.HasGroup("key");
     bool hasValue = input.HasGroup("value");
     bool hasType = input.HasGroup("type");
@@ -86,7 +84,6 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, Reg
           throw new InvalidOperationException("The input MatchDataDictionary did not contain a 'value' group or a 'remval' group."),
       Type = hasType ? input["type"].Content : SE,
       Size = hasSize ? input["hsize"].Content : SE,
-      ParseData = input
     };
     return result;
   }
@@ -94,11 +91,6 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, Reg
   public bool Equals (IProperty<string>? other) => Value.Equals(other?.Value, SCO) && Key.Equals(other.Key, SCO);
   /// <inheritdoc/>
   public int CompareTo (IProperty<string>? other) => Key.CompareTo(other?.Key, SCOIC);
-  /// <summary>
-  /// Sets the parse data field.
-  /// </summary>
-  /// <param name="data">The data to place in the field.</param>
-  public void SetParseData (MatchData data) => ParseData = data;
   /// <summary>
   /// Assigns the specified value to the <see cref="Value"/> property.
   /// </summary>
@@ -109,4 +101,23 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchData, Reg
   /// </summary>
   /// <param name="value">The object to assign. If <paramref name="value"/> is <see langword="null"/>, a default value is assigned instead.</param>
   public void AssignValue (object value) => Value = value?.ToString() ?? SE;
+  /// <inheritdoc/>
+  public override bool Equals (object? obj) =>
+    obj is IProperty<string> iprop &&
+    Key.Equals(iprop.Key, SCOIC) &&
+    Value.Equals(iprop.Value, SCO);
+  /// <inheritdoc/>
+  public override int GetHashCode () => HashCode.Combine(Key.ToUpperInvariant(), Value.ToUpperInvariant());
+
+  public static bool operator == (RegProperty left, RegProperty right) => left is null ? right is null : left.Equals(right);
+
+  public static bool operator != (RegProperty left, RegProperty right) => !(left == right);
+
+  public static bool operator < (RegProperty left, RegProperty right) => left is null ? right is not null : left.CompareTo(right) < 0;
+
+  public static bool operator <= (RegProperty left, RegProperty right) => left is null || left.CompareTo(right) <= 0;
+
+  public static bool operator > (RegProperty left, RegProperty right) => left is not null && left.CompareTo(right) > 0;
+
+  public static bool operator >= (RegProperty left, RegProperty right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

@@ -111,12 +111,7 @@
             <see langword="true"/> if this key is null or default initial value;
             </summary>
         </member>
-        <member name="P:Specification.REG.RegProperty.ParseData">
-            <summary>
-            The <see cref="T:Common.Regex.MatchData"/> used to create this object.
-            </summary>
-        </member>
-        <member name="M:Specification.REG.RegProperty.Generate(Common.Regex.MatchData)">
+        <member name="M:Specification.REG.RegProperty.Generate(Common.Regex.MatchDataSet)">
             <inheritdoc/>
             <exception cref="T:System.InvalidOperationException"/>
         </member>
@@ -125,12 +120,6 @@
         </member>
         <member name="M:Specification.REG.RegProperty.CompareTo(Common.IProperty{System.String})">
             <inheritdoc/>
-        </member>
-        <member name="M:Specification.REG.RegProperty.SetParseData(Common.Regex.MatchData)">
-            <summary>
-            Sets the parse data field.
-            </summary>
-            <param name="data">The data to place in the field.</param>
         </member>
         <member name="M:Specification.REG.RegProperty.AssignValue(System.String)">
             <summary>
@@ -143,6 +132,12 @@
             Assigns a value to the <see cref="P:Specification.REG.RegProperty.Value"/> property, converting it to a string.
             </summary>
             <param name="value">The object to assign. If <paramref name="value"/> is <see langword="null"/>, a default value is assigned instead.</param>
+        </member>
+        <member name="M:Specification.REG.RegProperty.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.REG.RegProperty.GetHashCode">
+            <inheritdoc/>
         </member>
         <member name="T:Specification.REG.RegSection">
             <summary>
@@ -176,30 +171,14 @@
             An empty section.
             </summary>
         </member>
-        <member name="M:Specification.REG.RegSection.Add(Specification.REG.RegProperty)">
+        <member name="P:Specification.REG.RegSection.Name">
             <summary>
-            <inheritdoc/>
+            The name of the section.
             </summary>
         </member>
-        <member name="M:Specification.REG.RegSection.GetEnumerator">
+        <member name="P:Specification.REG.RegSection.Properties">
             <summary>
-            Gets the enumerator.
-            </summary>
-            <returns>The <see cref="T:Specification.REG.RegProperty"/>s.</returns>
-        </member>
-        <member name="M:Specification.REG.RegSection.Contains(Specification.REG.RegProperty)">
-            <summary>
-            <inheritdoc/>
-            </summary>
-        </member>
-        <member name="M:Specification.REG.RegSection.CopyTo(Specification.REG.RegProperty[],System.Int32)">
-            <summary>
-            <inheritdoc/>
-            </summary>
-        </member>
-        <member name="M:Specification.REG.RegSection.Remove(Specification.REG.RegProperty)">
-            <summary>
-            <inheritdoc/>
+            The properties within the section.
             </summary>
         </member>
     </members>

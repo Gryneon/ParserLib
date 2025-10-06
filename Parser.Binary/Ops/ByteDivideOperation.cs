@@ -8,17 +8,15 @@ public class ByteDivideOperation (int divisor, string input_key, string output_k
 {
   public override OpStatus DoOperation (ByteParser parser)
   {
-    int? dividend = parser.Load<int>(_input_key);
-
-    if (dividend is null)
-      return FailNoSuchVarName;
+    parser.ThrowIfNull();
+    int? dividend = parser.Load<int>(InputKey);
 
     if (divisor == 0)
       return FailBadOpDefinition;
 
     int quotient = dividend.Value / divisor;
 
-    parser.ByteObjects[_output_key] = quotient;
+    parser.ByteObjects[OutputKey] = quotient;
 
     Log("ByteDivideOperation", $"{dividend} / {divisor} = {quotient}");
     return Pass;

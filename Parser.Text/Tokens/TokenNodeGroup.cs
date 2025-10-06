@@ -2,17 +2,28 @@
 
 namespace Parser.Text.Tokens;
 
+public sealed class TokenNodeLibrary
+{
+  public Dictionary<string, TokenNodeGroup> Library { get; } = [];
+}
+
 /// <summary>
 /// A group of token nodes.
 /// </summary>
 public sealed class TokenNodeGroup : TokenNode
 {
-  public Collection<TokenNode> Items { get; set; } = [];
-  public Collection<Collection<TokenNode>> Options { get; set; } = [];
+  public Collection<TokenNode> Items { get; } = [];
+  public Collection<Collection<TokenNode>> Options { get; } = [];
   public int OptionCount => Options.Count + (Items.Count > 0 ? 1 : 0);
+  public string? ImportGroup { get; set; }
   public TokenNodeGroup () => Type = TokenNodeType.Group;
   public void Add (TokenNode item)
   {
+    if (item is null)
+    {
+      Debug.Log("Null Item");
+      return;
+    }
     if (item.Type is TokenNodeType.Or)
       AddOption();
     else
@@ -23,7 +34,7 @@ public sealed class TokenNodeGroup : TokenNode
     if (Items.Count > 0)
     {
       Options.Add(Items);
-      Items = [];
+      Items.Clear();
     }
   }
 
@@ -49,9 +60,10 @@ public sealed class TokenNodeGroup : TokenNode
     NodeIndex++;
   }
   #endregion
-  public override int CheckForMatch (IEnumerable<IToken> pTokens, int start_at)
+  public override int CheckForMatch (IEnumerable<IToken> tokens, int start_at)
   {
-    Tokens = [.. pTokens];
+    Tokens.Clear();
+    Tokens.AddRange(tokens);
     OptionIndex = 0;
     Consumed = 0;
     NodeIndex = 0;

@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS1591 // XML Documentation
+#pragma warning disable CS1591 // XML Documentation
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace Common.Extensions;
 
@@ -11,5 +13,5 @@ public static class SortedSetExtensions
       s += c;
     return s;
   }
-  public static void Add (this SortedSet<char> set, string chars) => set.UnionWith(chars);
+  public static void Add ([NotNull] this SortedSet<char> set, string chars) => set.UnionWith(chars);
 }

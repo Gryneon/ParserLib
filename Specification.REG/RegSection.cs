@@ -5,7 +5,7 @@ namespace Specification.REG;
 /// <summary>
 /// A registry key.
 /// </summary>
-public class RegSection : Section, IHasChildren<RegProperty>, ICollection<RegProperty>
+public class RegSection : IHasChildren<RegProperty>
 {
   /// <summary>
   /// Signifies that this key is to be deleted, not added.
@@ -35,29 +35,14 @@ public class RegSection : Section, IHasChildren<RegProperty>, ICollection<RegPro
   /// An empty section.
   /// </summary>
   public static RegSection Blank { get; } = new() { Name = SE };
-
-  bool ICollection<RegProperty>.IsReadOnly => false;
-
   /// <summary>
-  /// <inheritdoc/>
+  /// The name of the section.
   /// </summary>
+  public string Name { get; set; } = SE;
+  /// <summary>
+  /// The properties within the section.
+  /// </summary>
+  protected PropertyCollection Properties { get; } = [];
+  public int Count => Properties.Count;
   public void Add (RegProperty child) => Properties.Add(child);
-  /// <summary>
-  /// Gets the enumerator.
-  /// </summary>
-  /// <returns>The <see cref="RegProperty"/>s.</returns>
-  public new IEnumerator<RegProperty> GetEnumerator () => (IEnumerator<RegProperty>) Properties.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  /// <summary>
-  /// <inheritdoc/>
-  /// </summary>
-  public bool Contains (RegProperty item) => Properties.Contains(item);
-  /// <summary>
-  /// <inheritdoc/>
-  /// </summary>
-  public void CopyTo (RegProperty[] array, int arrayIndex) => Properties.CopyTo(array, arrayIndex);
-  /// <summary>
-  /// <inheritdoc/>
-  /// </summary>
-  public bool Remove (RegProperty item) => Properties.Remove(item);
 }

@@ -1,5 +1,8 @@
 namespace Parser.Text.Ops;
 
+/// <summary>
+/// 
+/// </summary>
 public class TokenizeOperation : TextOperation
 {
   private readonly IEnumerable<string>? _types;
@@ -9,25 +12,38 @@ public class TokenizeOperation : TextOperation
   protected override void Execute ()
   {
     Collection<IToken> tokens = [];
+    IEnumerable<string> types = _types ?? Spec.AllTokens;
 
-    if (CheckInput(out IEnumerable<MatchData>? mdds))
+    if (CheckInput(out IEnumerable<MatchDataSet>? mdds))
     {
-      foreach (MatchData mdd in mdds)
+      foreach (MatchDataSet mdd in mdds)
       {
-        string type = _types is null ? _spec.TokenLookup.First(mdd.HasGroup) : _types.First(mdd.HasGroup);
+        string type = types.First(mdd.HasGroup);
         Token? token = new(mdd, type);
-        if (!_spec.WhitespaceTokens.Contains(token.Type))
+        if (!Spec.WhitespaceTokens.Contains(token.Type))
           tokens.Add(token);
         else
-          Debug.Log("TokenizeOperation", "Execute", $"Token is whitespace or ignored \"{mdd.Content}\"");
+          Debug.Log(Tokenize_Ignore_Token, mdd.Content.Replace(["\r\n", "\n", "\r"], "<NL>"));
       }
-      _workToReturn = tokens;
+      WorkToReturn = tokens;
       Status = OpStatus.Pass;
     }
     else
     {
-      Debug.Log("TokenizeOperation", $"My type is wrong! I am a {_workToReturn?.GetType()}");
+      Debug.Log(Tokenize_Wrong_Type, WorkToReturn?.GetType().Name ?? SE);
       Status = OpStatus.FailBadInputType;
+    }
+  }
+}
+
+public class ValidateOperation (bool abort_on_fail, string key = "result") : TextOperation(key, SE)
+{
+
+  protected override void Execute ()
+  {
+    if (abort_on_fail)
+    {
+      //abort?
     }
   }
 }

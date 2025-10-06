@@ -10,29 +10,39 @@ public class IPLCommandOperation (string input_key, string output_key) : TextOpe
   /// <inheritdoc/>
   protected override void Execute ()
   {
-    Collection<CommandData> newData = [];
-    CommandData? current = null;
+    Collection<CommandDataSet> newData = [];
+    CommandDataSet? current = null;
     IPLPrinterMode mode = IPLPrinterMode.None;
     int
       format = 0,
       field = 0,
       qty = 1,
       bqty = 1;
+    IEnumerable<CommandDataSet>? items;
 
-    if (!CheckInput(out IEnumerable<CommandData>? items))
+    if (CheckInput(out IDictionary<int, CommandDataSet>? dic))
     {
-      Debug.Log("IPLCommandOperation", "Input is not a collection of CommandData.");
+      Debug.Log("IPLCommandOperation", "Input is a dictionary of CommandDataSet.");
+      items = dic.Values;
+    }
+    else if (CheckInput(out IEnumerable<CommandDataSet>? enm))
+    {
+      Debug.Log("IPLCommandOperation", "Input is a collection of CommandData.");
+      items = enm;
+    }
+    else
+    {
       Status = OpStatus.FailBadInputType;
       return;
     }
 
-    foreach (CommandData item in items)
+    foreach (CommandDataSet item in items)
     {
       Debug.Log("IPLCommandOperation", $"Processing command: {item.FullCommandText}");
       bool isPrintCommand () =>
         item.Type is ICT.Simple && (item.CmdLetter is "<ETB>" || item.CmdLetter.StartsWith(Chars.ETB));
       bool isResetFieldCommand () =>
-        mode is IPLPrinterMode.Print && item.CmdLetter == "<CAN>" || item.CmdLetter[0] == Chars.CAN;
+        mode is IPLPrinterMode.Print && item.CmdLetter == "<CAN>" || item.Count > 0 && item.CmdLetter[0] == Chars.CAN;
       bool isSetFieldCommand () =>
         mode is IPLPrinterMode.Print && item.CmdLetter == "F" && item.IsEscaped;
       bool isNextFieldCommand () =>
@@ -62,7 +72,7 @@ public class IPLCommandOperation (string input_key, string output_key) : TextOpe
           if (current is null)
           {
             Debug.Log("IPLCommandOperation", "The currently selected line object is null.");
-            throw new NullReferenceException("The currently selected line object is null.");
+            throw new InvalidOperationException("The currently selected line object is null.");
           }
           else if (current.Type is not ICT.Line)
           {
@@ -127,6 +137,6 @@ public class IPLCommandOperation (string input_key, string output_key) : TextOpe
       }
     }
 
-    _workToReturn = newData;
+    WorkToReturn = newData;
   }
 }

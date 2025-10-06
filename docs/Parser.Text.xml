@@ -4,6 +4,23 @@
         <name>Parser.Text</name>
     </assembly>
     <members>
+        <member name="T:Parser.Text.IValidator`2">
+            <summary>
+            Validates that a command is well formed.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.IValidator`2.ValidationType">
+            <summary>
+            The type of validation to perform.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.IValidator`2.Validate(`0)">
+            <summary>
+            Validates the given command data against the validation type and parameters.
+            </summary>
+            <param name="cmd">The command to validate</param>
+            <returns></returns>
+        </member>
         <member name="M:Parser.Text.Ops.ConsolidateOperation`1.Execute">
             <inheritdoc/>
         </member>
@@ -30,7 +47,7 @@
         </member>
         <member name="T:Parser.Text.Ops.GenerateFromObjectOperation`1">
             <summary>
-            Takes an input as a collection of <see cref="T:Common.Regex.MatchData"/> objects,
+            Takes an input as a collection of <see cref="T:Common.Regex.MatchDataSet"/> objects,
             and generates a <see cref="T:System.Collections.Generic.Dictionary`2"/> of items from it,
             provided that the specified group (or groups) are present.
             </summary>
@@ -40,12 +57,20 @@
             <param name="group_name">The group name to check for.</param>
             <remarks><code>
             Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
-            Output: Dictionary&lt;int, TOutput>
-            </code></remarks>
+            Output: <see cref="T:System.Collections.Generic.Dictionary`2"/>Dictionary&lt;int, TOutput></code>
+            <br/>
+            Statuses:
+            <code>
+            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
+            <see cref="F:Parser.OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
+            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+            </code>
+            </remarks>
         </member>
         <member name="M:Parser.Text.Ops.GenerateFromObjectOperation`1.#ctor(System.String,System.String,System.String)">
             <summary>
-            Takes an input as a collection of <see cref="T:Common.Regex.MatchData"/> objects,
+            Takes an input as a collection of <see cref="T:Common.Regex.MatchDataSet"/> objects,
             and generates a <see cref="T:System.Collections.Generic.Dictionary`2"/> of items from it,
             provided that the specified group (or groups) are present.
             </summary>
@@ -55,8 +80,16 @@
             <param name="group_name">The group name to check for.</param>
             <remarks><code>
             Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
-            Output: Dictionary&lt;int, TOutput>
-            </code></remarks>
+            Output: <see cref="T:System.Collections.Generic.Dictionary`2"/>Dictionary&lt;int, TOutput></code>
+            <br/>
+            Statuses:
+            <code>
+            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
+            <see cref="F:Parser.OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
+            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+            </code>
+            </remarks>
         </member>
         <member name="M:Parser.Text.Ops.GenerateFromObjectOperation`1.Execute">
             <inheritdoc/>
@@ -64,20 +97,14 @@
         <member name="T:Parser.Text.Ops.GenerateOperation`1">
             <summary>
             Text Parser Operation
-            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchData"/>.</para>
+            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchDataSet"/>.</para>
             </summary>
             <typeparam name="TOut">The end result of generation.</typeparam>
-            <param name="output_key">The key to store the output objects in.</param>
-            <param name="func">The generation function.</param>
-            <param name="predicate">The condition that the generation function requires.</param>
-            <param name="input_key">The key to pull data from.</param>
         </member>
-        <member name="M:Parser.Text.Ops.GenerateOperation`1.#ctor(System.Func{Common.Regex.MatchData,`0},System.Func{Common.Regex.IMatchItem,System.Boolean},System.String,System.String)">
+        <member name="M:Parser.Text.Ops.GenerateOperation`1.#ctor(System.Func{Common.Regex.MatchDataSet,`0},System.Func{Common.Regex.MatchDataSet,System.Boolean},System.String,System.String)">
             <summary>
-            Text Parser Operation
-            <para>Performs a conditional conversion on an object, which can be a <see cref="T:Common.Regex.MatchData"/>.</para>
+            TODO: Document this operation.
             </summary>
-            <typeparam name="TOut">The end result of generation.</typeparam>
             <param name="output_key">The key to store the output objects in.</param>
             <param name="func">The generation function.</param>
             <param name="predicate">The condition that the generation function requires.</param>
@@ -86,33 +113,99 @@
         <member name="M:Parser.Text.Ops.GenerateOperation`1.Execute">
             <inheritdoc/>
         </member>
+        <member name="M:Parser.Text.Ops.ReplaceLnEndOperation.Execute">
+            <inheritdoc/>
+        </member>
+        <member name="T:Parser.Text.Ops.ReplaceRegexOperation">
+            <summary>
+            Takes an input as a <see langword="string"/> or a collection of strings,
+            and replaces matches with the replacement values. This operation
+            can supply multiple replacement nodes.
+            </summary>
+            <param name="input_key">The key to get the input from.</param>
+            <param name="output_key">The key to write the output to.</param>
+            <param name="nodes">The replacement and look for pairs.</param>
+            <remarks><code>
+            Inputs: <see langword="string"/>, <see cref="T:System.Collections.Generic.IEnumerable`1"/>(<see langword="string"/>)<br/>
+            Output: <c>Same as input</c>
+            </code><br/>
+            Statuses:
+            <code>
+            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
+            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Parser.Text.Ops.ReplaceRegexOperation.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{Common.ReplaceNode})">
+            <summary>
+            Takes an input as a <see langword="string"/> or a collection of strings,
+            and replaces matches with the replacement values. This operation
+            can supply multiple replacement nodes.
+            </summary>
+            <param name="input_key">The key to get the input from.</param>
+            <param name="output_key">The key to write the output to.</param>
+            <param name="nodes">The replacement and look for pairs.</param>
+            <remarks><code>
+            Inputs: <see langword="string"/>, <see cref="T:System.Collections.Generic.IEnumerable`1"/>(<see langword="string"/>)<br/>
+            Output: <c>Same as input</c>
+            </code><br/>
+            Statuses:
+            <code>
+            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
+            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+            </code>
+            </remarks>
+        </member>
         <member name="M:Parser.Text.Ops.SplitByDelimOperation.Execute">
             <inheritdoc/>
         </member>
         <member name="M:Parser.Text.Ops.SplitByLinesOperation.Execute">
             <inheritdoc/>>
         </member>
-        <member name="F:Parser.Text.Ops.TextOperation._parser">
+        <member name="T:Parser.Text.Ops.TextOperation">
+            <summary>
+            A variant of the <see cref="T:Parser.Ops.Operation"/> class that adds some text specific features, as well as referencing a <see cref="T:Parser.Text.TextSpec"/> rather than a <see cref="P:Parser.Text.Ops.TextOperation.Spec"/>.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Ops.TextOperation.Parser">
             <summary>
             The parser reference, initialized in <see cref="M:Parser.Text.Ops.TextOperation.Initialize(Parser.Text.TextParser)"/>
             </summary>
         </member>
+        <member name="P:Parser.Text.Ops.TextOperation.Spec">
+            <summary>
+            The spec reference, initialized in <see cref="M:Parser.Text.Ops.TextOperation.Initialize(Parser.Text.TextParser)"/>
+            </summary>
+        </member>
         <member name="M:Parser.Text.Ops.TextOperation.Execute">
             <summary>
-            Performs the operation and stores the value in <c><see cref="F:Parser.Ops.Operation._workToReturn"/></c>,
+            Performs the operation and stores the value in <c><see cref="P:Parser.Ops.Operation.WorkToReturn"/></c>,
             and the <see cref="T:Parser.OpStatus"/> in <c><see cref="P:Parser.Ops.Operation.Status"/></c>
             </summary>
         </member>
         <member name="M:Parser.Text.Ops.TextOperation.Initialize(Parser.Text.TextParser)">
             <summary>
-            Assigns the parser to <c><see cref="F:Parser.Text.Ops.TextOperation._parser"/></c> and defines <c><see cref="F:Parser.Text.Ops.TextOperation._function"/></c>.
+            Assigns the parser to <c><see cref="P:Parser.Text.Ops.TextOperation.Parser"/></c>.
             </summary>
             <param name="parser">The parser reference to pass to the operation.</param>
+        </member>
+        <member name="T:Parser.Text.Ops.TokenizeOperation">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:Parser.Text.Ops.TokenTemplateOperation">
             <summary>
             TODO: This operation is buggy and not yet functional.
             </summary>
+        </member>
+        <member name="M:Parser.Text.Ops.TokenTemplateOperation.Execute">
+            <inheritdoc/>
+            <remarks>
+            This operation checks for token groups and builds them.
+            </remarks>
         </member>
         <member name="T:Parser.Text.Output.OutputValueContent">
             <summary>
@@ -120,7 +213,7 @@
             This one stores the content in a group and stores it in a field.
             </summary>
             <param name="varName">The field name.</param>
-            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchData"/>.</param>
+            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchDataSet"/>.</param>
         </member>
         <member name="M:Parser.Text.Output.OutputValueContent.#ctor(System.String,System.String)">
             <summary>
@@ -128,7 +221,7 @@
             This one stores the content in a group and stores it in a field.
             </summary>
             <param name="varName">The field name.</param>
-            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchData"/>.</param>
+            <param name="groupName">The group name in the <see cref="T:Common.Regex.MatchDataSet"/>.</param>
         </member>
         <member name="T:Parser.Text.Output.OutputValueStaticFunctions">
             <summary>
@@ -143,7 +236,7 @@
             <code>
             ○ Match with 2 alternative expressions, atomically.<br/>
                 ○ Match a sequence of expressions.<br/>
-                    ○ Match an empty string.<br/>
+                    ○ Match '\r'.<br/>
                     ○ Match '\n' atomically, optionally.<br/>
                 ○ Match '\n'.<br/>
             </code>
@@ -228,15 +321,25 @@
             <list type="bullet">
             <item><c>initial:</c> The original file text as a <see langword="string"/>.</item>
             <item><c>text:</c> The working text as a <see langword="string"/></item>
-            <item><c>matches:</c> The <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Common.Regex.MatchData"/> objects that <see cref="T:Parser.Text.Ops.DictionaryOperation"/> creates.</item>
+            <item><c>matches:</c> The <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Common.Regex.MatchDataSet"/> objects that <see cref="T:Parser.Text.Ops.DictionaryOperation"/> creates.</item>
             <item><c>tokens:</c> The <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Text.Tokens.IToken"/> objects that <see cref="T:Parser.Text.Ops.TokenizeOperation"/> creates.</item>
             <item><c>result:</c> The end result.</item>
             </list>
             </summary>
             <remarks>Any string may be used as a key.</remarks>
         </member>
+        <member name="F:Parser.Text.TextDataDictionary.DataOrder">
+            <summary>
+            The order that keys have been created. You can get the last key in this collection to get the last stored key.
+            </summary>
+        </member>
         <member name="P:Parser.Text.TextDataDictionary.Count">
             <inheritdoc/>
+        </member>
+        <member name="T:Parser.Text.TextSpec">
+            <summary>
+            Defines a specification for parsing text files.
+            </summary>
         </member>
         <member name="P:Parser.Text.TextSpec.TextByLines">
             <summary>
@@ -265,14 +368,15 @@
             Token types to ignore.
             </summary>
         </member>
-        <member name="P:Parser.Text.TextSpec.TokenLookup">
-            <summary>A list of tokenizable matches.</summary>
-            <remarks>
-            Get => Returns the backing field or an empty Dictionary.<br/>
-            Set => Individually adds each item from the value supplied.
-            
-            Setting Null clears the list.
-            </remarks>
+        <member name="P:Parser.Text.TextSpec.RxOpt">
+            <summary>
+            The regex options to use.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.TextSpec.SC">
+            <summary>
+            The string comparison type to use.
+            </summary>
         </member>
         <member name="P:Parser.Text.TextSpec.CaseInsensitive">
             <summary>
@@ -302,11 +406,6 @@
         <member name="M:Parser.Text.TextSpec.#ctor">
             <summary>
             Defines a new <see cref="T:Parser.Text.TextSpec"/>.
-            </summary>
-        </member>
-        <member name="M:Parser.Text.TextSpec.Load">
-            <summary>
-            Loads this <see cref="T:Parser.Text.TextSpec"/> to <see cref="T:Parser.Text.Tokens.TokenOptions"/>.
             </summary>
         </member>
         <member name="T:Parser.Text.Tokens.IToken">
@@ -407,15 +506,12 @@
         <member name="M:Parser.Text.Tokens.Token.Clone">
             <inheritdoc/>
         </member>
-        <member name="M:Parser.Text.Tokens.Token.Generate(Common.Regex.MatchData)">
+        <member name="M:Parser.Text.Tokens.Token.Generate(Common.Regex.MatchDataSet)">
             <summary>
-            Creates a <see cref="T:Parser.Text.Tokens.Token"/> from a <see cref="T:Common.Regex.MatchData"/> object.
+            Creates a <see cref="T:Parser.Text.Tokens.Token"/> from a <see cref="T:Common.Regex.MatchDataSet"/> object.
             </summary>
             <param name="mdd">The originating object.</param>
-            <returns>A token that represents the contents of the <see cref="T:Common.Regex.MatchData"/> object.</returns>
-        </member>
-        <member name="M:Parser.Text.Tokens.Token.Equals(Parser.Text.Tokens.TokenTemplateNode)">
-            <inheritdoc/>
+            <returns>A token that represents the contents of the <see cref="T:Common.Regex.MatchDataSet"/> object.</returns>
         </member>
         <member name="M:Parser.Text.Tokens.Token.Add(Parser.Text.Tokens.IToken)">
             <inheritdoc/>
@@ -426,6 +522,11 @@
             </summary>
         </member>
         <member name="T:Parser.Text.Tokens.TokenNodeBasic">
+            <summary>
+            A simple token node.
+            </summary>
+        </member>
+        <member name="T:Parser.Text.Tokens.TokenNodeCommand">
             <summary>
             A simple token node.
             </summary>
@@ -458,6 +559,11 @@
         <member name="F:Parser.Text.Tokens.TokenNodeType.Or">
             <summary>
             Alternative '|'.
+            </summary>
+        </member>
+        <member name="F:Parser.Text.Tokens.TokenNodeType.Command">
+            <summary>
+            A command modifying the previous item.
             </summary>
         </member>
         <member name="F:Parser.Text.Tokens.TokenNodeType.Any">
@@ -494,89 +600,6 @@
             <summary>
             A fully formed and stackable group.
             </summary>
-        </member>
-        <member name="T:Parser.Text.Tokens.TokenOptions">
-            <summary>
-            Stores the regular expression options for the currently running specification.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.TokenOptions.SC">
-            <summary>
-            The <see cref="T:System.StringComparison"/> to use based on the above flags.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.TokenOptions.All">
-            <summary>
-            The bits all condensed into a single flag set.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.TokenOptions.IgnoreCase">
-            <summary>
-            <see langword="true"/> if we do not care about case.
-            </summary>
-        </member>
-        <member name="M:Parser.Text.Tokens.TokenOptions.LoadSpec(System.Text.RegularExpressions.RegexOptions,Parser.Text.TextSpec)">
-            <summary>
-            Loads the regular expression flags.
-            </summary>
-            <param name="options">The options to set.</param>
-            <param name="spec">The specification currently loaded.</param>
-        </member>
-        <member name="T:Parser.Text.Tokens.TokenFormat">
-            <summary>
-            Represents a sequence to consolidate tokens and generate a more useful object.
-            </summary>
-            <remarks>
-            Creates a new token template.
-            </remarks>
-            <param name="type"></param>
-            <param name="nodes"></param>
-        </member>
-        <member name="M:Parser.Text.Tokens.TokenFormat.#ctor(System.String,System.Collections.Generic.IEnumerable{Parser.Text.Tokens.TokenTemplateNode})">
-            <summary>
-            Represents a sequence to consolidate tokens and generate a more useful object.
-            </summary>
-            <remarks>
-            Creates a new token template.
-            </remarks>
-            <param name="type"></param>
-            <param name="nodes"></param>
-        </member>
-        <member name="P:Parser.Text.Tokens.TokenFormat.Count">
-            <inheritdoc/>
-        </member>
-        <member name="T:Parser.Text.Tokens.TokenTemplateNode">
-            <summary>
-            Represents a single token's match requirements within a <see cref="T:Parser.Text.Tokens.TokenFormat"/>.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.TokenTemplateNode.Type">
-            <summary>
-            The accepted types this template will accept.<br/>
-            To accept all types, use <c>T_NoType</c>.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.TokenTemplateNode.Match">
-            <summary>
-            The accepted content strings this template will accept. Matches must be exact and the case sensitivity is determined by the loaded Spec.<br/>
-            To accept all types, use <see langword="null"/> or an empty array in the constructor.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.TokenTemplateNode.NewPropName">
-            <summary>
-            The name in the newly created parent token that this token's content will be stored under.
-            </summary>
-        </member>
-        <member name="M:Parser.Text.Tokens.TokenTemplateNode.IsMatch(Parser.Text.Tokens.IToken,System.Nullable{Parser.Text.Tokens.TokenTemplateMatch}@)">
-            <summary>
-            Analyzes a token and determines if it meets the requirements defined by this node.
-            </summary>
-            <param name="token">The token to analyze.</param>
-            <param name="match">The match results.</param>
-            <returns>
-            <see langword="true"/> if the token satisfies the template requirements, otherwise <see langword="false"/>.<br/>
-            This function does not check token flags, those are handled in the operation mechanics.
-            </returns>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.LineEnd_0">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the LineEnd method.</summary>
@@ -732,6 +755,12 @@
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32,System.Int32)">
             <summary>Pushes 3 values onto the backtracking stack.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.WordCategoriesMask">
+            <summary>Provides a mask of Unicode categories that combine to form [\w].</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Generated.Utilities.WordCharBitmap">
+            <summary>Gets a bitmap for whether each character 0 through 127 is in [\w]</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_asciiExceptWordChars">
             <summary>Supports searching for characters in or not in "\0\u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^`{|}~\u007f".</summary>

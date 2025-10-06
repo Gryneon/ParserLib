@@ -55,12 +55,12 @@ public class Range : IEquatable<Range>, IComparable<Range>, IEnumerable<RangeNod
   protected static Collection<RangeNode> DoParse (string address)
   {
     Collection<RangeNode> result = [];
-    Collection<MatchData> mdds = RangeRegex.Matches(address).ToMDDCollection();
+    Collection<MatchDataSet> mdds = RangeRegex.Matches(address).ToMDDCollection();
 
     if (mdds.Count == 0)
       goto RETURN_RESULT;
 
-    foreach (MatchData mdd in mdds)
+    foreach (MatchDataSet mdd in mdds)
     {
       RangeNode temp = RangeNode.Generate(mdd);
       if (!temp.IsEmpty)
@@ -74,11 +74,12 @@ public class Range : IEquatable<Range>, IComparable<Range>, IEnumerable<RangeNod
 
   public Range (string address)
   {
-    Nodes = [.. DoParse(address)];
-    Nodes.Sort();
+    List<RangeNode> list = [.. DoParse(address)];
+    list.Sort();
+    Nodes = [.. list];
   }
 
-  public List<RangeNode> Nodes { get; init; }
+  public Collection<RangeNode> Nodes { get; init; }
   public int Count => Nodes.Aggregate(0, (total, node) => total += node.Count);
 
   public int CompareTo (Range? other) => throw new NotImplementedException();

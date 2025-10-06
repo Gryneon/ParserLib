@@ -32,14 +32,18 @@ public static class Debug
 #if DEBUG
     try
     {
-      if (Console.CursorTop < LineStart + LineCount)
-        Console.SetCursorPosition(0, LineStart + LineCount);
+      //if (Console.CursorTop < LineStart + LineCount)
+      //  Console.SetCursorPosition(0, LineStart + LineCount);
       if (Verbose) Console.WriteLine(msg);
       LineCount++;
     }
-    catch (Exception)
+    catch (ArgumentOutOfRangeException)
     {
 
+    }
+    catch (Exception)
+    {
+      throw;
     }
 #endif
   }

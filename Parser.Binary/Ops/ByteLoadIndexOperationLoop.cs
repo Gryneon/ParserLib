@@ -10,5 +10,5 @@ namespace Parser.Binary.Ops;
 /// <param name="ops_loop">The operations to iterate through</param>
 public class ByteLoadIndexOperationLoop (string count_varname, IEnumerable<ByteOperation> ops_loop) : ByteOperationLoop(count_varname, ops_loop)
 {
-  protected override int GetCount () => (BParser.Load<IEnumerable<object>>(LoopCountVar) ?? []).Count();
+  protected override int GetCount () => (Parser.Load<IEnumerable<object>>(LoopCountVar) ?? []).Count();
 }

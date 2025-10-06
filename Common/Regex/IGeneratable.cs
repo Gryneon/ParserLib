@@ -5,8 +5,7 @@ namespace Common.Regex;
 /// <summary>
 /// Represents a type that can be generated from an input object.
 /// </summary>
-public interface IGeneratable<TIn, TOut>
-    where TOut : IGeneratable<TIn, TOut>
+public interface IGeneratable
 {
   /// <summary>
   /// Throws a <see cref="NotImplementedException"/> to indicate that the method needs to be overridden in the implementing class.
@@ -16,6 +15,14 @@ public interface IGeneratable<TIn, TOut>
   /// <exception cref="NotImplementedException"></exception>
   [DoesNotReturn]
   static T ThrowImplementException<T> () => throw new NotImplementedException("This needs to be overridden in the targeted class.");
+}
+
+/// <summary>
+/// Represents a type that can be generated from an input object.
+/// </summary>
+public interface IGeneratable<TIn, TOut> : IGeneratable
+    where TOut : IGeneratable<TIn, TOut>
+{
   /// <summary>
   /// Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
   /// </summary>

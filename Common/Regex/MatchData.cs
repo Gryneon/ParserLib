@@ -2,10 +2,10 @@ namespace Common.Regex;
 /// <summary>
 /// A collection of groups and their captures from a regex match. This object includes additional functions and properties to make working with regex matches easier.
 /// </summary>
-public sealed class MatchData : GroupData,
-  ICollection<GroupData>,
-  IGeneratable<MatchData, MatchData>,
-  IEquatable<MatchData>,
+public sealed class MatchDataSet : GroupDataSet,
+  ICollection<GroupDataSet>,
+  IGeneratable<MatchDataSet, MatchDataSet>,
+  IEquatable<MatchDataSet>,
   IEquatable<string>
 {
   /// <inheritdoc/>
@@ -17,7 +17,7 @@ public sealed class MatchData : GroupData,
   /// <summary>
   /// The capture groups.
   /// </summary>
-  public SortedDictionary<string, GroupData> Groups { get; init; } = [];
+  public SortedDictionary<string, GroupDataSet> Groups { get; init; } = [];
   /// <summary>
   /// The number of groups in the match.
   /// </summary>
@@ -27,10 +27,10 @@ public sealed class MatchData : GroupData,
   /// </summary>
   public override bool IsNull => Count == 0;
   /// <summary>
-  /// The original <see cref="Match"/> object from which this <see cref="MatchData"/> was created.
+  /// The original <see cref="Match"/> object from which this <see cref="MatchDataSet"/> was created.
   /// </summary>
   public Match? Origin { get; private set; }
-  bool ICollection<GroupData>.IsReadOnly { get; }
+  bool ICollection<GroupDataSet>.IsReadOnly { get; }
   /// <summary>
   /// Represents data extracted from a regular expression match, including its groups,  and provides additional
   /// functionality for working with the match.
@@ -40,7 +40,7 @@ public sealed class MatchData : GroupData,
   /// <param name="m">The <see cref="Match"/> object containing the results of a regular expression match.  Cannot be <see
   /// langword="null"/>.</param>
   /// <param name="i"></param>
-  public MatchData (Match? m, int i = -1) : base(m)
+  public MatchDataSet (Match? m, int i = -1) : base(m)
   {
     Groups = m is null ? [] : m.ToSortedDictionary();
     Origin = m;
@@ -50,7 +50,7 @@ public sealed class MatchData : GroupData,
   /// <summary>
   /// Empty constructor for serialization purposes only.
   /// </summary>
-  public MatchData () { }
+  public MatchDataSet () { }
   /// <summary>
   /// Checks if the specified group exists in the match.
   /// </summary>
@@ -100,13 +100,13 @@ public sealed class MatchData : GroupData,
   /// langword="false"/>.</returns>
   public bool HasGroupStartingWith (string namePart) => Groups.Keys.Any(item => item.StartsWith(namePart, SCOIC));
   /// <inheritdoc/>
-  public new IEnumerator<GroupData> GetEnumerator () => Groups.Values.GetEnumerator();
+  public new IEnumerator<GroupDataSet> GetEnumerator () => Groups.Values.GetEnumerator();
   /// <summary>
   /// Gets the GroupData associated with the specified group name.
   /// </summary>
   /// <param name="groupName">The group to look up.</param>
   /// <returns></returns>
-  public GroupData this[string groupName] => Groups.TryGetValue(groupName, out GroupData? value) ? value : Null;
+  public GroupDataSet this[string groupName] => Groups.TryGetValue(groupName, out GroupDataSet? value) ? value : Null;
   /// <summary>
   /// Throws an <see cref="AbsentGroupException"/> if the specified group does not exist.
   /// </summary>
@@ -132,25 +132,25 @@ public sealed class MatchData : GroupData,
       throw new EmptyGroupException(groupName);
   }
   /// <summary>
-  /// Returns a string representation of the current <see cref="MatchData"/> object.
+  /// Returns a string representation of the current <see cref="MatchDataSet"/> object.
   /// </summary>
   /// <param name="indent">A string used for indentation in the output. Defaults to an empty string if not provided.</param>
   /// <remarks>The returned string includes a header and a detailed list of all groups in the match. If the
   /// match is empty, the string will indicate that no groups are present.</remarks>
-  /// <returns>A string that represents the current <see cref="MatchData"/> object, including its groups and their
+  /// <returns>A string that represents the current <see cref="MatchDataSet"/> object, including its groups and their
   /// values.</returns>
   internal string ToString (string indent)
   {
     const string i1 = "  ";
     const string i2 = "    ";
 
-    string head = indent + $"{typeof(MatchData)} Object" + Chars.LFs;
+    string head = indent + $"{typeof(MatchDataSet)} Object" + Chars.LFs;
     string grps = indent + i1 + "Groups = {";
 
     if (Count > 0)
     {
       grps += Chars.CRLF;
-      foreach (KeyValuePair<string, GroupData> grp in Groups)
+      foreach (KeyValuePair<string, GroupDataSet> grp in Groups)
       {
         grps += indent + i2 + grp.Key + " = " + grp.Value + Chars.CRLF;
       }
@@ -164,27 +164,27 @@ public sealed class MatchData : GroupData,
     return head + grps;
   }
   /// <summary>
-  /// Returns a string representation of the current <see cref="MatchData"/> object.
+  /// Returns a string representation of the current <see cref="MatchDataSet"/> object.
   /// </summary>
   /// <remarks>The returned string includes a header and a detailed list of all groups in the match. If the
   /// match is empty, the string will indicate that no groups are present.</remarks>
-  /// <returns>A string that represents the current <see cref="MatchData"/> object, including its groups and their
+  /// <returns>A string that represents the current <see cref="MatchDataSet"/> object, including its groups and their
   /// values.</returns>
   public override string ToString () => ToString(SE);
   /// <summary>
-  /// Adds the specified <see cref="GroupData"/> item to the collection.
+  /// Adds the specified <see cref="GroupDataSet"/> item to the collection.
   /// </summary>
-  /// <param name="item">The <see cref="GroupData"/> item to add to the collection. Cannot be null.</param>
-  public void Add (GroupData item) => Add(item);
-  void ICollection<GroupData>.Clear () => throw new NotSupportedException();
-  bool ICollection<GroupData>.Contains (GroupData item) => throw new NotSupportedException();
-  void ICollection<GroupData>.CopyTo (GroupData[] array, int arrayIndex) => throw new NotSupportedException();
-  bool ICollection<GroupData>.Remove (GroupData item) => throw new NotSupportedException();
+  /// <param name="item">The <see cref="GroupDataSet"/> item to add to the collection. Cannot be null.</param>
+  public void Add (GroupDataSet item) => Add(item);
+  void ICollection<GroupDataSet>.Clear () => throw new NotSupportedException();
+  bool ICollection<GroupDataSet>.Contains (GroupDataSet item) => throw new NotSupportedException();
+  void ICollection<GroupDataSet>.CopyTo (GroupDataSet[] array, int arrayIndex) => throw new NotSupportedException();
+  bool ICollection<GroupDataSet>.Remove (GroupDataSet item) => throw new NotSupportedException();
   /// <summary>Creates a copy of the object.</summary>
   /// <inheritdoc/>
-  public static MatchData Generate (MatchData input) => new(input.Origin);
+  public static MatchDataSet Generate (MatchDataSet input) => input is not null ? new(input.Origin) : throw new ANEx(nameof(input));
   /// <inheritdoc/>
-  public bool Equals (MatchData? other)
+  public bool Equals (MatchDataSet? other)
   {
     if (other is null || other.IsNull)
     {
@@ -193,7 +193,7 @@ public sealed class MatchData : GroupData,
 
     if (other.Count == Count)
     {
-      foreach (GroupData item in other)
+      foreach (GroupDataSet item in other)
       {
         if (!this[item.Name].Content.Equals(item.Content, SCO))
           return false;
@@ -205,9 +205,9 @@ public sealed class MatchData : GroupData,
   }
 
   /// <inheritdoc/>
-  public override bool Equals (object? obj) => Equals(obj as MatchData);
+  public override bool Equals (object? obj) => Equals(obj as MatchDataSet);
   /// <inheritdoc/>
-  public override int GetHashCode () => Content.GetHashCode();
+  public override int GetHashCode () => Content.GetHashCode(SCO);
   /// <inheritdoc/>
   public bool Equals (string? other) => Content.Equals(other, SCO);
 }

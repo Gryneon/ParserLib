@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Threading.Tasks;
 
 using Common;
 using Common.Extensions;
@@ -11,8 +10,6 @@ using Parser;
 using Parser.Binary;
 using Parser.Binary.Ops;
 using Parser.Text;
-
-using Specification.IPL;
 
 using static Common.Names;
 
@@ -34,12 +31,12 @@ internal sealed class Program
   #endregion
   #region Basic Methods
   [MemberNotNull(nameof(UserInput))]
-  internal static void UserLine () => UserInput = Console.ReadLine()?.ToLowerInvariant() ?? SE;
+  internal static void UserLine () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
   internal static string UserLineReturn () => Console.ReadLine() ?? SE;
   #endregion
 
-  [MTAThread]
-  internal static Task<int> Main (string[] args)
+  [STAThread]
+  internal static int Main (string[] args)
   {
     string[] items = ["Load", "Test", "Raw Test", "Exit"];
     int index = 0;
@@ -75,13 +72,15 @@ internal sealed class Program
     Debug.Verbose = true;
     Debug.Log("Program", "Main", "Program Start");
 
+    args = [.. args, TestPath1];
+
     foreach (string path in args)
     {
+      string content = File.ReadAllText(path);
+
       Debug.Log("Program", "Main", "Loading File : " + path);
 
-      string content = File.ReadAllText(TestPath1);
-
-      if (Library.Lookup("ipl") is not TextSpec spec)
+      if (Library.Lookup<TextSpec>("ipl") is not TextSpec spec)
       {
         Debug.Log("Program.Main", "IPL Spec not found");
         break;
@@ -91,8 +90,9 @@ internal sealed class Program
       Status = Parser.Parse(content);
 
       Debug.Log("Program.Main", "OpStatus is " + Status);
+
       Debug.Log("Program.Main", "Result is " + Parser.Result);
-      Collection<CommandData> objects = Parser.Result as Collection<CommandData> ?? [];
+      Collection<Specification.IPL.CommandDataSet> objects = Parser.Result as Collection<Specification.IPL.CommandDataSet> ?? [];
       Debug.Log("Program.Main", "Result count = " + objects.Count);
       foreach (object item in objects)
       {
@@ -106,7 +106,7 @@ internal sealed class Program
 
     UserLine();
 
-    bool doOpen = UserInput.Like(["parse", "open"]);
+    bool doOpen = UserInput.Like(["PARSE", "OPEN"]);
     bool doTest = UserInput.StartsWith("test", SCOIC);
     bool doExit = UserInput.Like(["exit", "quit"]);
     bool doRawTest = UserInput.StartsWithAny(["C:", "\\", "/"]);
@@ -128,28 +128,36 @@ internal sealed class Program
     goto UserLoop;
 
   Test:
-    _ = UserInput[4..].Trim() switch
+    string type = UserInput[4..].Trim().ToUpperInvariant();
+    TextParser? parser = type switch
     {
-      "mapinfo" => TestTextParser(SamplePath + "mapinfo.lmp", Specification.MapInfo.Definition.Spec),
-      "json" => TestTextParser(SamplePath + "launchSettings.json", Specification.JSON.Definition.Spec),
-      "xml" => TestTextParser(SamplePath + "ipl.xml", Specification.XML.Definition.Spec),
-      "ipl" => TestTextParser(SamplePath + "label.ipl", Specification.IPL.Definition.Spec),
+      string when type.Like("mapinfo") => TestTextParser(SamplePath + "mapinfo.lmp", Specification.MapInfo.Definition.Spec),
+      string when type.Like("json") => TestTextParser(SamplePath + "launchSettings.json", Specification.JSON.Definition.Spec),
+      string when type.Like("xml") => TestTextParser(SamplePath + "ipl.xml", Specification.XML.Definition.Spec),
+      string when type.Like("ipl") => TestTextParser(SamplePath + "label.ipl", Specification.IPL.Definition.Spec),
+      string when type.Like("ini") => TestTextParser(SamplePath + "default.ini", Specification.INI.Definition.Spec),
       _ => null
     };
+    Debug.Log("Parser Operation Order:");
+    foreach (IOperation op in parser?.Operations ?? [])
+    {
+      Debug.Log(op.ToString() ?? "Error: Bad Op");
+    }
 
     goto UserLoop;
   Exit:
     Debug.Log("Program.Main", "Press any key to exit.");
     _ = Console.ReadKey();
-    return Task.FromResult(0);
+    return 0;
   }
 
-  internal static Task<string> TestTextParser (string path, TextSpec spec)
+  internal static TextParser TestTextParser (string path, TextSpec spec)
   {
+    string content = File.ReadAllText(path);
     Parser = new(spec);
-    Status = Parser.Parse(File.ReadAllText(path));
+    Status = Parser.Parse(content);
     Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
-    return Task.FromResult(SE);
+    return Parser;
   }
 
   internal static void Load ()
@@ -182,14 +190,14 @@ internal sealed class Program
     if (UserInput.IsEmpty())
       goto ParseFile;
 
-    else if (Library.Lookup(UserInput) is null)
+    else if (Library.Lookup<Spec>(UserInput) is null)
     {
       Debug.Log("Program.Load", $"Invalid Spec {UserInput}");
       goto GetSpec;
     }
     else
     {
-      userSpec = Library.Lookup(UserInput)!;
+      userSpec = Library.Lookup<Spec>(UserInput)!;
     }
   ParseFile:
     if (userSpec is TextSpec textSpec)

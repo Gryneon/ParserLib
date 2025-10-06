@@ -326,6 +326,7 @@ dotnet_naming_style.parameter_underscores.required_prefix =
 dotnet_naming_style.parameter_underscores.required_suffix = 
 dotnet_naming_style.parameter_underscores.word_separator = _
 dotnet_naming_style.parameter_underscores.capitalization = all_lower
+csharp_style_prefer_simple_property_accessors = true:suggestion
 
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line

@@ -95,6 +95,7 @@ dotnet_diagnostic.CA1805.severity = suggestion
 dotnet_diagnostic.CA1311.severity = suggestion
 dotnet_diagnostic.CA1309.severity = suggestion
 dotnet_diagnostic.CA1200.severity = suggestion
+csharp_style_prefer_simple_property_accessors = true:suggestion
 
 [*.{cs,vb}]
 charset = utf-8
@@ -235,7 +236,7 @@ dotnet_naming_symbols.public_static_readonly_fields.applicable_accessibilities =
 dotnet_naming_symbols.public_static_readonly_fields.applicable_kinds = field
 dotnet_naming_symbols.public_static_readonly_fields.required_modifiers = readonly, static
 dotnet_naming_symbols.type_parameters.applicable_accessibilities = *
-dotnet_naming_symbols.type_parameters.applicable_kinds = namespace
+dotnet_naming_symbols.type_parameters.applicable_kinds = 
 dotnet_naming_symbols.type_parameters.required_modifiers =
 dotnet_naming_symbols.types_and_namespaces.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
 dotnet_naming_symbols.types_and_namespaces.applicable_kinds = namespace, class, struct, interface, enum
@@ -293,3 +294,5 @@ dotnet_diagnostic.CA1711.severity = suggestion
 dotnet_diagnostic.CA1310.severity = suggestion
 dotnet_diagnostic.CA1305.severity = suggestion
 dotnet_diagnostic.CA1304.severity = suggestion
+dotnet_diagnostic.CS1591.severity = silent
+dotnet_diagnostic.CA2225.severity = silent

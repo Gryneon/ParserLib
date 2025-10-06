@@ -8,17 +8,17 @@ public class ByteReadDataVarNameOperation (string input_key, string output_key) 
 {
   protected override void Execute ()
   {
-    if (_input_key.IsEmpty() || !BParser.ContainsKey(_input_key))
+    if (InputKey.IsEmpty() || !Parser.ContainsKey(InputKey))
     {
       Status = FailNoSuchVarName;
       return;
     }
 
-    int size = BParser.Load<int>(_input_key);
+    int size = Parser.Load<int>(InputKey);
     Span<byte> data;
     try
     {
-      data = BParser.ReadNext(size).ToArray();
+      data = Parser.ReadNext(size).ToArray();
     }
     catch (IndexOutOfRangeException)
     {
@@ -32,8 +32,8 @@ public class ByteReadDataVarNameOperation (string input_key, string output_key) 
       return;
     }
 
-    BParser.Save(_output_key, data.ToArray());
-    Log($"DoByteReadDataVarNameOperation:", $"Read {size} bytes, stored in '{_output_key}'.");
+    Parser.Save(OutputKey, data.ToArray());
+    Log($"DoByteReadDataVarNameOperation:", $"Read {size} bytes, stored in '{OutputKey}'.");
     Status = Pass;
   }
 }

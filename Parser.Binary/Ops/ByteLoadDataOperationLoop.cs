@@ -14,5 +14,5 @@ public class ByteLoadDataOperationLoop (string count_varname, IEnumerable<ByteOp
   /// Gets the number of iterations this loop does.
   /// </summary>
   /// <returns>The </returns>
-  protected override int GetCount () => BParser.Load<int>(LoopCountVar);
+  protected override int GetCount () => Parser.Load<int>(LoopCountVar);
 }

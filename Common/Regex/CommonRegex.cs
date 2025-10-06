@@ -1,4 +1,5 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable CA1056
 
 using static Common.Regex.RegexStaticFunctions;
 

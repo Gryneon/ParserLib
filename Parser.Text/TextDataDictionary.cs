@@ -2,30 +2,34 @@ using System.Collections;
 
 using Parser.Text.Ops;
 
-using static Common.Debug;
+using DM = Common.Extensions.DictionaryMode;
 
 namespace Parser.Text;
 
-public sealed class TextDataDictionary : IReadOnlyDictionary<string, object>
+public sealed class TextDataDictionary : IDictionary<string, object>
 {
   /// <summary>
   /// Common keys
   /// <list type="bullet">
   /// <item><c>initial:</c> The original file text as a <see langword="string"/>.</item>
   /// <item><c>text:</c> The working text as a <see langword="string"/></item>
-  /// <item><c>matches:</c> The <see cref="Collection{T}"/> of <see cref="MatchData"/> objects that <see cref="DictionaryOperation"/> creates.</item>
+  /// <item><c>matches:</c> The <see cref="Collection{T}"/> of <see cref="MatchDataSet"/> objects that <see cref="DictionaryOperation"/> creates.</item>
   /// <item><c>tokens:</c> The <see cref="Collection{T}"/> of <see cref="IToken"/> objects that <see cref="TokenizeOperation"/> creates.</item>
   /// <item><c>result:</c> The end result.</item>
   /// </list>
   /// </summary>
   /// <remarks>Any string may be used as a key.</remarks>
   internal Dictionary<string, object> Properties = [];
+  /// <summary>
+  /// The order that keys have been created. You can get the last key in this collection to get the last stored key.
+  /// </summary>
   internal Collection<string> DataOrder = [];
   internal bool HasData => Properties.Count > 0;
   internal string? LastKeySaved;
 
   public TextDataDictionary (string initial)
   {
+    initial ??= SE;
     _ = Save<string>("initial", initial);
     _ = Save<string>("text", initial);
     _ = Save<int>("file_size", initial.Length);
@@ -51,7 +55,7 @@ public sealed class TextDataDictionary : IReadOnlyDictionary<string, object>
   public bool TryLoad (string key, [NotNullWhen(true)][MaybeNullWhen(false)] out object data)
   {
     bool result = ContainsKey(key);
-    data = result ? Properties[key] : default;
+    data = result ? Properties[key] : null;
     return result;
   }
   public bool TryLoadArray<T> (string key, [NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable<T> data)
@@ -60,139 +64,99 @@ public sealed class TextDataDictionary : IReadOnlyDictionary<string, object>
     data = result ? (IEnumerable<T>) Properties[key] : default;
     return result;
   }
-  public bool Save<T> (string key, object data, DictionaryMode mode = DictionaryMode.Overwrite)
+  private bool DoSave<T> (string key, object data, DM mode)
   {
-    if (mode is DictionaryMode.Overwrite)
+    if (data is null)
+      return false;
+
+    if (data is not T casted)
+      return false;
+
+    bool result = false;
+
+    Collection<T> doMakeList (IEnumerable<T>? list = null) => list is null ? [casted] : [.. list, casted];
+
+    switch (mode)
     {
-      if (!ContainsKey(key))
+      case DM.Overwrite:
+        Properties[key] = casted;
+        goto Success;
+      case DM.Ignore:
+        if (Properties.ContainsKey(key))
+          break;
+        Properties[key] = casted;
+        goto Success;
+      case DM.MakeList:
+        if (Properties.TryGetValue(key, out object? value) && value is T existing)
+          Properties[key] = new Collection<T>() { existing, casted };
+        else if (Properties.TryGetValue(key, out object? value2) && value2 is IEnumerable<T> existing2)
+          Properties[key] = doMakeList(existing2);
+        else if (Properties.TryGetValue(key, out object? _))
+          goto default;
+        else if (!Properties.TryGetValue(key, out object? _))
+          Properties[key] = doMakeList();
+        goto Success;
+      Success:
+        result = true;
+        LastKeySaved = key;
         DataOrder.Add(key);
-      Properties[key] = data;
-      LastKeySaved = key;
-      return true;
+        break;
+      default:
+        result = false;
+        break;
     }
-    else if (mode is DictionaryMode.MakeList)
-    {
-      if (ContainsKey(key) && Properties[key] is IEnumerable<T> list && data is T typed)
-      {
-        Properties[key] = list.Append(typed).ToCollection();
-        LastKeySaved = key;
-        return true;
-      }
-      else if (ContainsKey(key) && Properties[key] is T first && data is T second)
-      {
-        Properties[key] = new Collection<T>() { first, second };
-        LastKeySaved = key;
-        return true;
-      }
-      else if (!ContainsKey(key) && data is T init)
-      {
-        DataOrder.Add(key);
-        Properties[key] = init;
-        LastKeySaved = key;
-        return true;
-      }
-      else
-      {
-        Log("TextDataDictionary.Save<T>", "Make list selected, but type incorrect.");
-        return false;
-      }
-    }
-    else
-    {
-      if (ContainsKey(key) && Properties[key] is not null)
-      {
-        Log("TextDataDictionary.Save<T>", "Ignore selected, but key exists and value is not null.");
-        return false;
-      }
-      else if (ContainsKey(key))
-      {
-        Log("TextDataDictionary.Save<T>", "Ignore selected, and value was null on existing key, added the value.");
-        Properties[key] = data;
-        LastKeySaved = key;
-        return true;
-      }
-      else
-      {
-        Log("TextDataDictionary.Save<T>", "Ignore selected, and key was not present, added the value.");
-        DataOrder.Add(key);
-        Properties[key] = data;
-        LastKeySaved = key;
-        return true;
-      }
-    }
+
+    return result;
   }
-  public bool Save (string key, object data, DictionaryMode mode = DictionaryMode.Overwrite)
-  {
-    if (mode is DictionaryMode.Overwrite)
-    {
-      if (!ContainsKey(key))
-        DataOrder.Add(key);
-      Properties[key] = data;
-      LastKeySaved = key;
-      return true;
-    }
-    else if (mode is DictionaryMode.MakeList)
-    {
-      if (ContainsKey(key) && Properties[key] is IEnumerable<object> list)
-      {
-        Properties[key] = list.Append(data).ToCollection();
-        LastKeySaved = key;
-        return true;
-      }
-      else if (ContainsKey(key) && Properties[key] is not null)
-      {
-        Properties[key] = new Collection<object>() { Properties[key], data };
-        LastKeySaved = key;
-        return true;
-      }
-      else
-      {
-        DataOrder.Add(key);
-        Properties[key] = new Collection<object>() { data };
-        LastKeySaved = key;
-        return true;
-      }
-    }
-    else
-    {
-      if (ContainsKey(key) && Properties[key] is not null)
-      {
-        Log("TextDataDictionary.Save", "Ignore selected, but key exists and value is not null.");
-        return false;
-      }
-      else if (ContainsKey(key))
-      {
-        Log("TextDataDictionary.Save", "Ignore selected, and value was null on existing key, added the value.");
-        Properties[key] = data;
-        LastKeySaved = key;
-        return true;
-      }
-      else
-      {
-        Log("TextDataDictionary.Save", "Ignore selected, and key was not present, added the value.");
-        DataOrder.Add(key);
-        Properties[key] = data;
-        LastKeySaved = key;
-        return true;
-      }
-    }
-  }
-  public int GetCount (string key) =>
+  public bool Save<T> (string key, object data, DM mode = DM.Overwrite) => DoSave<T>(key, data, mode);
+  public bool Save (string key, object data, DM mode = DM.Overwrite) => DoSave<object>(key, data, mode);
+  public int GetCountOfKey (string key) =>
     !ContainsKey(key) ? 0 :
     Properties[key] is IEnumerable<object> list ? list.Count() :
     1;
+  public bool GetLastSavedKey ([NotNullWhen(true)][MaybeNullWhen(false)] out string key_name, [NotNullWhen(true)][MaybeNullWhen(false)] out object key_value)
+  {
+    key_value = null;
+    key_name = null;
+    if (DataOrder.Count > 0)
+    {
+      key_name = DataOrder[^1];
+      key_value = Properties[key_name];
+      return true;
+    }
+    else
+      return false;
+  }
 
-  #region IReadOnlyDictionary<string, object>
+  #region IDictionary<string, object>
   /// <inheritdoc/>
   public int Count => Properties.Count;
-  public IEnumerable<string> Keys => Properties.Keys;
-  public IEnumerable<object> Values => Properties.Values;
+  public ICollection<string> Keys => Properties.Keys;
+  public ICollection<object> Values => [.. Properties.Values];
+  bool ICollection<KeyValuePair<string, object>>.IsReadOnly { get; }
 
-  public object this[string key] => Properties[key];
+  public object this[string key]
+  {
+    get => TryLoad(key, out object? result) ? result : throw new AbsentGroupException();
+    set
+    {
+      if (value is not null)
+        _ = Save(key, value);
+      else
+        return;
+    }
+  }
 
-  public bool ContainsKey (string key) => ((IDictionary<string, object>) Properties).ContainsKey(key);
+  public bool ContainsKey (string key) => Properties.ContainsKey(key);
   public IEnumerator<KeyValuePair<string, object>> GetEnumerator () => Properties.GetEnumerator();
-  public bool TryGetValue (string key, [MaybeNullWhen(false)] out object value) => Properties.TryGetValue(key, out value);
+  public bool TryGetValue (string key, [MaybeNullWhen(false)] out object value) => TryLoad(key, out value);
   IEnumerator IEnumerable.GetEnumerator () => Properties.GetEnumerator();
+  public bool Remove (string key) => Properties.Remove(key);
+  void ICollection<KeyValuePair<string, object>>.Add (KeyValuePair<string, object> item) => throw new NotImplementedException();
+  public void Clear () => Properties.Clear();
+  public bool Contains (KeyValuePair<string, object> item) => Properties.ContainsKey(item.Key) && Properties[item.Key] == item.Value;
+  void ICollection<KeyValuePair<string, object>>.CopyTo (KeyValuePair<string, object>[] array, int arrayIndex) => throw new NotImplementedException();
+  bool ICollection<KeyValuePair<string, object>>.Remove (KeyValuePair<string, object> item) => throw new NotImplementedException();
+  public void Add (string key, object value) => Save(key, value);
   #endregion
 }

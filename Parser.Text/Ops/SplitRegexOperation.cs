@@ -1,8 +1,8 @@
 namespace Parser.Text.Ops;
 
-public class SplitRegexOperation (RxSList splits, string input_key = "text", string output_key = "textparts") : TextOperation(input_key, output_key)
+public class SplitRegexOperation (RxSCollection splits, string input_key = "text", string output_key = "textparts") : TextOperation(input_key, output_key)
 {
-  protected Regex OpRegex => new(splits.Combined, TokenOptions.All);
+  protected Regex OpRegex => new(splits.Combined, Spec.RxOpt);
 
   protected override void Execute ()
   {
@@ -11,14 +11,14 @@ public class SplitRegexOperation (RxSList splits, string input_key = "text", str
 
     if (CheckInput(out string? s))
     {
-      _workToReturn =
+      WorkToReturn =
         split(s).
         Where(isNotEmpty).
         ToCollection();
     }
     else if (CheckInput(out IEnumerable<string>? list))
     {
-      _workToReturn =
+      WorkToReturn =
         list.
         Select(split).
         Condense().
@@ -29,5 +29,14 @@ public class SplitRegexOperation (RxSList splits, string input_key = "text", str
     {
       Status = OpStatus.FailBadInputType;
     }
+  }
+
+  public override string ToString ()
+  {
+    string result = SE;
+
+    result += $"SplitRegexOperation: {splits.Combined}";
+
+    return result;
   }
 }

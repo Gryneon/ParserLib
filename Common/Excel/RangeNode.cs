@@ -6,7 +6,7 @@ namespace Common.Excel;
 /// <summary>
 /// A node within a range.
 /// </summary>
-public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGeneratable<MatchData, RangeNode>
+public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGeneratable<MatchDataSet, RangeNode>
 {
   #region Static Members
   public static RangeNode Empty => new();
@@ -57,11 +57,12 @@ public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGenerat
   public IMatchItem ParseData { get; protected set; }
   #endregion
 
-  protected XlRange? _rng;
+  protected XlRange? Rng { get; set; }
 
-  public RangeNode () => ParseData = new MatchData();
-  public static RangeNode Generate (MatchData mdd)
+  public RangeNode () => ParseData = new MatchDataSet();
+  public static RangeNode Generate (MatchDataSet mdd)
   {
+    ANEx.ThrowIfNull(mdd);
     RangeNode temp = Empty;
     temp.SetParseData(mdd);
 
@@ -108,7 +109,7 @@ public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGenerat
   public int CompareTo (RangeNode? other) => Address.CompareTo(other?.Address, SCOIC);
   /// <inheritdoc/>
   public bool Equals (RangeNode? other) => Address.Equals(other?.Address, SCOIC);
-  public void SetParseData (MatchData data) => throw new NotSupportedException();
+  public void SetParseData (MatchDataSet data) => throw new NotSupportedException();
 
   #region Operators
   public static bool operator == (RangeNode left, RangeNode right) =>

@@ -6,5 +6,5 @@ namespace Specification.INI;
 public class PropertyCollection : KeyedCollection<string, IProperty<string>>
 {
   /// <inheritdoc/>
-  protected override string GetKeyForItem (IProperty<string> item) => item.Key;
+  protected override string GetKeyForItem (IProperty<string> item) => item?.Key ?? throw new ArgumentNullException(nameof(item));
 }

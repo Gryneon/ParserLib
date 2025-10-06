@@ -1,14 +1,16 @@
 namespace Parser.Binary;
 
-public class ByteDataDictionary : IDictionary<string, object>
+public sealed class ByteDataDictionary : IDictionary<string, object>
 {
   private Dictionary<string, object> _dict = [];
 
   public ByteDataDictionary () { }
   public ByteDataDictionary (IDictionary<string, object> dic) => _dict = [.. dic];
 
-  public static implicit operator ByteDataDictionary (Dictionary<string, object> other) => [.. other];
-  public static explicit operator Dictionary<string, object> (ByteDataDictionary other) => [.. other];
+  public static implicit operator ByteDataDictionary (Dictionary<string, object> other) => FromDictionary(other);
+  public static explicit operator Dictionary<string, object> (ByteDataDictionary other) => ToDictionary(other);
+  public static ByteDataDictionary FromDictionary (Dictionary<string, object> other) => [.. other];
+  public static Dictionary<string, object> ToDictionary (ByteDataDictionary other) => [.. other];
 
   public object this[string key]
   {

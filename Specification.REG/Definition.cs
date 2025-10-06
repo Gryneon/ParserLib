@@ -7,10 +7,10 @@ namespace Specification.REG;
 /// <summary>
 /// Defines the Registry spec.
 /// </summary>
-public class Definition
+public static class Definition
 {
   private static readonly RxS
-    Head = Header.DefaultRx,
+    Head = Nm("header", Header.DefaultRx),
     Remkey = Nm("remkey", @"\-"),
     Remval = Nm("remval", @"\-"),
     Sectchars = Rx(@"[ \w\\*-]"),
@@ -19,7 +19,7 @@ public class Definition
     Strprop = Nm("key", RX.CString),
     Strval = Nm("value", RX.CString),
     Hexval = Nm("type", Or(Nm("hex"), Nm("qword"), Nm("dword"))) + Gp(@"\(" + Nm("hsize", @"\d+") + @"\)").Opt + @"\:" + Nm("value", @"[0-9a-f, ]+"),
-    Prop = Or(Def, Strprop) + @"\=" + Or(Remval, Strval, Hexval);
+    Prop = Nm("property", Or(Def, Strprop) + @"\=" + Or(Remval, Strval, Hexval));
   /// <summary>
   /// Defines the Registry spec.
   /// </summary>
@@ -35,23 +35,9 @@ public class Definition
         new(@"\s*\=\s*", "="), //Remove ws around eq sign
         new(@"\\" + RX.LnEnd, "") //Remove escaped newlines
       ]),
-      new DictionaryOperation([
-        Sect, Prop, Head
-      ]),
+      new DictionaryOperation([Sect, Prop, Head]),
       //new GenerateOperation()
       ],
-    TokenLookup = [
-      "key",
-      "section",
-      "default",
-      "remkey",
-      "value",
-      "name",
-      "remval",
-      "hex",
-      "qword",
-      "dword",
-      "hsize",
-    ],
+    RegexBasicTokens = ["section", "property", "header"]
   };
 }

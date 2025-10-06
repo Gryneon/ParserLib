@@ -2,15 +2,13 @@
 
 namespace Parser.Text.Tokens;
 
-public class TokenNodeBaseRx : TokenNode
+public class TokenNodeRef : TokenNode
 {
   public string RefName { get; set; }
-  public TokenNodeBaseRx (string refName)
+  public TokenNodeRef (string refName)
   {
     Type = TokenNodeType.Base;
     RefName = refName;
   }
   public override bool Match => CurrentToken.Type.Like(RefName);
 }
-
-public sealed class TokenNodeRef (string refName) : TokenNodeBaseRx(refName) { }

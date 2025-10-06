@@ -1,9 +1,9 @@
 namespace Common.Regex;
 
 /// <summary>
-/// A collection of <see cref="MatchData"/> objects.
+/// A collection of <see cref="MatchDataSet"/> objects.
 /// </summary>
-public sealed class MatchDataCollection : Collection<MatchData>
+public sealed class MatchDataCollection : Collection<MatchDataSet>
 {
   /// <summary>
   /// Gets the debugging and internal values for this object.
@@ -18,7 +18,7 @@ public sealed class MatchDataCollection : Collection<MatchData>
     if (Count > 0)
     {
       mdcs += Chars.CRLF;
-      foreach (MatchData mdc in this)
+      foreach (MatchDataSet mdc in this)
       {
         mdcs += i2 + mdc.ToString(i2) + Chars.CRLF;
       }

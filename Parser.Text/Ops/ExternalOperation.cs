@@ -10,7 +10,7 @@ public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut,
     {
       TOut result = operation.Invoke(casted);
       Status = validation(result) ? OpStatus.Pass : OpStatus.FailBadOpResult;
-      _workToReturn = result;
+      WorkToReturn = result;
     }
     else
     {
@@ -19,66 +19,6 @@ public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut,
   }
 }
 #if false
-public class CombineDelimOperation (string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    if (_workToReturn is string s)
-    {
-      Status = OpStatus.Skipped;
-    }
-    else if (_workToReturn is IEnumerable<string> list)
-    {
-      Status = OpStatus.Pass;
-      _workToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
-    }
-    else
-    {
-      Status = OpStatus.FailBadInputType;
-    }
-  }
-}
-public class TrimWhitespaceOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    if (CheckInput(out string? s))
-    {
-      _workToReturn = s.Trim();
-      Status = OpStatus.Pass;
-    }
-    else if (CheckInput(out IEnumerable<string>? ien))
-    {
-      _workToReturn = ien.Select(x => x.Trim()).ToCollection();
-      Status = OpStatus.Pass;
-    }
-    else
-      Status = OpStatus.FailBadInputType;
-  }
-}
-public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] string suffix) : TextOperation(input_key, output_key)
-{
-  protected RxS Assembled => new(@$"(?:{prefix})(?<keep>[\s\S]*?)(?:{suffix})");
-  protected Regex OpRegex => new(Assembled);
-
-  protected override void Execute ()
-  {
-    if (data is null)
-      return OpStatus.FailBadInputNull;
-
-    if (data is string s)
-      data = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
-    else if (data is IEnumerable<string> list)
-    {
-      /* TODO: Finish BetweenRegexOperation.DoOperation when data is IEnumerable<string> */
-      // data = list.Select(x => x.Trim()).ToCollection();
-    }
-    else
-      return OpStatus.FailBadInputType;
-
-    return OpStatus.Pass;
-  }
-}
 public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupGroup, IEnumerable<ReplaceNode> nodes) : ReplaceRegexOperation(nodes)
 {
   public string Pattern { get; init; } = pattern;
@@ -153,47 +93,7 @@ public class RemoveCommentsOperation ([SS("Regex")] string comment, [SS("Regex")
     return OpStatus.Pass;
   }
 }
-public class ForEachOperation (Collection<IOperation> operations, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    OpStatus status = OpStatus.AtStart;
-    Collection<object> result = [];
 
-    OpStatus doOpsOnObject (ref object obj)
-    {
-      int opcount = operations.Count;
-      OpStatus laststatus = OpStatus.Pass;
-      for (int opindex = 0; opindex < opcount; opindex++)
-      {
-        if (laststatus > OpStatus.Fail)
-          break;
-
-        IOperation current = operations[opindex];
-        bool allowfail = current.ContinueOnFail;
-        bool skip = current.SkipOperation;
-        laststatus = skip ? OpStatus.Skipped : current.DoOperation(ref obj);
-      }
-
-      return laststatus;
-    }
-
-    if (data is not IEnumerable<object> io)
-      return doOpsOnObject(ref data);
-
-    foreach (object obj in io)
-    {
-      if (status > OpStatus.Fail)
-        break;
-
-      object handoff = obj;
-      status = doOpsOnObject(ref handoff);
-      result.Add(handoff);
-    }
-    data = result;
-    return status;
-  }
-}
 public class StackPropertyOperation<TParent, TChild> (bool ignoreOrphans = true) : TextOperation(input_key, output_key) where TParent : class, IHasChildren<TChild>
 {
   protected override void Execute ()

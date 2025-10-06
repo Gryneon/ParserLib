@@ -41,7 +41,7 @@ public struct IPLCommandTemplate : IEquatable<IPLCommandTemplate>, ITextSerializ
     return escape + shift + cmd;
   }
   /// <inheritdoc/>
-  public override readonly int GetHashCode () => ToString().GetHashCode();
+  public override readonly int GetHashCode () => ToString().GetHashCode(SCO);
   /// <inheritdoc/>
   public readonly string Serialize () => ToString();
 

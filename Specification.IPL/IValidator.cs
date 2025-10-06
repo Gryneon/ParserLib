@@ -5,7 +5,7 @@ namespace Specification.IPL;
 /// <summary>
 /// Validates that a command is well formed.
 /// </summary>
-public interface ICommandValidator
+public interface IValidator<TItem> where TItem : class
 {
   /// <summary>
   /// The type of validation to perform.
@@ -16,5 +16,5 @@ public interface ICommandValidator
   /// </summary>
   /// <param name="cmd">The command to validate</param>
   /// <returns></returns>
-  bool Validate (CommandData cmd);
+  bool Validate (TItem cmd);
 }

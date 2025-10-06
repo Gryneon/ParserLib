@@ -4,16 +4,17 @@ namespace Parser.Text.Ops;
 
 public class ReplaceLnEndOperation (string lnEnd, string input_key, string output_key) : TextOperation(input_key, output_key)
 {
+  /// <inheritdoc/>
   protected override void Execute ()
   {
     if (CheckInput(out string? s))
     {
-      _workToReturn = RX.LineEnd.Replace(s, lnEnd);
+      WorkToReturn = RX.LineEnd.Replace(s, lnEnd);
       Status = OpStatus.Pass;
     }
     else if (CheckInput(out IEnumerable<string>? strList))
     {
-      _workToReturn = strList.Select(item => RX.LineEnd.Replace(item, lnEnd)).ToCollection();
+      WorkToReturn = strList.Select(item => RX.LineEnd.Replace(item, lnEnd)).ToCollection();
       Status = OpStatus.Pass;
     }
     else
@@ -21,66 +22,6 @@ public class ReplaceLnEndOperation (string lnEnd, string input_key, string outpu
   }
 }
 #if false
-public class CombineDelimOperation (string delimiter, string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    if (_workToReturn is string s)
-    {
-      Status = OpStatus.Skipped;
-    }
-    else if (_workToReturn is IEnumerable<string> list)
-    {
-      Status = OpStatus.Pass;
-      _workToReturn = list.Aggregate((v1, v2) => v1 += $"{delimiter}{v2}");
-    }
-    else
-    {
-      Status = OpStatus.FailBadInputType;
-    }
-  }
-}
-public class TrimWhitespaceOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-  protected override void Execute ()
-  {
-    if (CheckInput(out string? s))
-    {
-      _workToReturn = s.Trim();
-      Status = OpStatus.Pass;
-    }
-    else if (CheckInput(out IEnumerable<string>? ien))
-    {
-      _workToReturn = ien.Select(x => x.Trim()).ToCollection();
-      Status = OpStatus.Pass;
-    }
-    else
-      Status = OpStatus.FailBadInputType;
-  }
-}
-public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] string suffix) : TextOperation(input_key, output_key)
-{
-  protected RxS Assembled => new(@$"(?:{prefix})(?<keep>[\s\S]*?)(?:{suffix})");
-  protected Regex OpRegex => new(Assembled);
-
-  protected override void Execute ()
-  {
-    if (data is null)
-      return OpStatus.FailBadInputNull;
-
-    if (data is string s)
-      data = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
-    else if (data is IEnumerable<string> list)
-    {
-      /* TODO: Finish BetweenRegexOperation.DoOperation when data is IEnumerable<string> */
-      // data = list.Select(x => x.Trim()).ToCollection();
-    }
-    else
-      return OpStatus.FailBadInputType;
-
-    return OpStatus.Pass;
-  }
-}
 public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupGroup, IEnumerable<ReplaceNode> nodes) : ReplaceRegexOperation(nodes)
 {
   public string Pattern { get; init; } = pattern;

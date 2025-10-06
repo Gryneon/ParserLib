@@ -16,6 +16,7 @@ public abstract class ByteOperationLoop (string count, IEnumerable<ByteOperation
 
   public override OpStatus DoOperation (ByteParser parser)
   {
+    parser.ThrowIfNull();
     Initialize(parser);
     OpStatus status = OpStatus.Error;
 

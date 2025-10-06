@@ -1,13 +1,13 @@
 namespace Parser.Text.Ops;
 
-public class DictionaryOperation (RxSList list, bool fullMatchText = false, string input_key = "text", string output_key = "matches", RxS? full_match_fail = null) : TextOperation(input_key, output_key)
+public class DictionaryOperation (RxSCollection list, bool fullMatchText = false, string input_key = "text", string output_key = "matches", RxS? full_match_fail = null) : TextOperation(input_key, output_key)
 {
-  protected Regex OpRegex => new(list.Combined, TokenOptions.All);
-  protected Regex OpRegexFail => full_match_fail is null ? OpRegex : new(full_match_fail, TokenOptions.All);
+  protected Regex OpRegex => new(list.Combined, Spec.RxOpt);
+  protected Regex OpRegexFail => full_match_fail is null ? OpRegex : new(full_match_fail, Spec.RxOpt);
 
   protected override void Execute ()
   {
-    if (_parser.Work.TryLoad(_input_key, out object? input))
+    if (Parser.Work.TryGetValue(InputKey, out object? input))
       Debug.Log("DictionaryOperation", $"Input is {input?.GetType()}.");
     else
     {
@@ -17,20 +17,20 @@ public class DictionaryOperation (RxSList list, bool fullMatchText = false, stri
 
     if (input is string s)
     {
-      _workToReturn = OpRegex.Matches(s).ToMDDCollection();
+      WorkToReturn = OpRegex.Matches(s).ToMDDCollection();
       Status = OpStatus.Pass;
     }
     else if (input is IEnumerable<string> list)
     {
-      Collection<MatchData> result = [];
+      Collection<MatchDataSet> result = [];
       foreach (string part in list)
       {
-        Collection<MatchData> mdds = OpRegex.Matches(part).ToMDDCollection();
+        Collection<MatchDataSet> mdds = OpRegex.Matches(part).ToMDDCollection();
         if (fullMatchText && mdds.Count > 1)
         {
           Match m = OpRegexFail.Match(part);
           if (m.Success)
-            result.Add(new MatchData(m));
+            result.Add(new MatchDataSet(m));
         }
         else
           result.AddRange(mdds);
@@ -41,11 +41,20 @@ public class DictionaryOperation (RxSList list, bool fullMatchText = false, stri
       }
 
       Status = OpStatus.Pass;
-      _workToReturn = result;
+      WorkToReturn = result;
     }
     else
     {
       Status = OpStatus.FailBadInputType;
     }
+  }
+
+  public override string ToString ()
+  {
+    string result = SE;
+
+    result += $"DictionaryOperation: {list.Combined}";
+
+    return result;
   }
 }

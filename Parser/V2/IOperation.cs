@@ -121,7 +121,7 @@ public interface IOperation<TInput, TOutput>
     try
     {
       if (work.Current is null)
-        throw new NullReferenceException();
+        throw new ArgumentNullException(nameof(work));
       if (work.Current is not TInput input)
         throw new InvalidCastException();
       ResultPackage result = Func is null ? DoOperationWork(input) : Func.Invoke(input);

@@ -24,6 +24,10 @@ public enum TokenNodeType
   /// </summary>
   Or = 3,
   /// <summary>
+  /// A command modifying the previous item.
+  /// </summary>
+  Command = 4,
+  /// <summary>
   /// Any (Opt &amp; More) '*'.
   /// </summary>
   Any = 5,

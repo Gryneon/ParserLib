@@ -15,12 +15,8 @@ namespace Parser.Binary;
 /// <remarks>Creates a new parser object.</remarks>
 /// <param name="bytes">The raw file data.</param>
 /// <param name="spec">The spec to use.</param>
-public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null)
+public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IParser
 {
-  #region Private Static Methods
-  private static IOEx NoKeyErr (string key) => new($"BT.Data: Data doesn't have key '{key}'");
-  #endregion
-
   public static Spec DefaultSpec => new()
   {
     FileInferences = [],
@@ -42,7 +38,7 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null)
       Log("ByteParser.Load", "Loaded value is null.");
       return (T?) temp;
     }
-    return temp is null ? throw NoKeyErr(key) : (T) temp;
+    return (T) temp;
   }
   internal void Save<Span> (string key, Span<byte> data)
   {
@@ -81,6 +77,10 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null)
       else if (data is null && ByteObjects.Remove(key))
       {
         Log($"BT.Save<T>({key}, null): Sent null to Data and cleared key '{key}'.");
+      }
+      else if (data is null)
+      {
+        Log($"BT.Save<T>({key}, null): Sent null to Data but the key '{key}' could not be removed.");
       }
       else
       {
@@ -125,7 +125,7 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null)
   /// </summary>
   public ByteOperation CurrentOp =>
     (ByteOperation) (OpIndex < OpCount ? Operations[OpIndex] : Operation.End);
-
+  public DictionaryMode Mode { get; set; } = DictionaryMode.Overwrite;
   #region Result Storage
   // Result Storage
   [MemberNotNullWhen(true, nameof(Result))]
@@ -182,12 +182,14 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null)
   /// The loaded specification.
   /// </summary>
   public Spec Spec { get; init; } = spec ?? DefaultSpec;
+  public int NextOpIndex { get; set; }
+  [AllowNull] public IDictionary<string, object> Work { get; } = new BDD();
 
   /// <summary>
   /// Parses the provided binary data.
   /// </summary>
   /// <param name="bytes">The binary data.</param>
-  /// <returns><see cref="OpStatus.Pass"/> if successful, or an error code.</returns>
+  /// <returns><see cref="Pass"/> if successful, or an error code.</returns>
   public OpStatus Parse (byte[] bytes)
   {
     _fileContents = bytes;
@@ -196,7 +198,7 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null)
   /// <summary>
   /// Parses the provided binary data.
   /// </summary>
-  /// <returns><see cref="OpStatus.Pass"/> if successful, or an error code.</returns>
+  /// <returns><see cref="Pass"/> if successful, or an error code.</returns>
   public OpStatus Parse ()
   {
     LoopData.Add(new(Spec.Operations, false));

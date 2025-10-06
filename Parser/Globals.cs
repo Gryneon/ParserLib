@@ -1,5 +1,4 @@
 global using System;
-global using System.Collections;
 global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.Diagnostics.CodeAnalysis;
@@ -11,7 +10,7 @@ global using Common;
 
 global using static Common.Names;
 
-global using IT = Parser.InferenceType;
+global using IT = Parser.Inference.InferenceType;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 
 using System.Reflection;

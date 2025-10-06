@@ -10,12 +10,12 @@ public abstract class XMLNodeAttr : XMLNode
   /// </summary>
   public Collection<XMLProperty> Attributes { get; } = [];
   /// <summary>
-  /// Assigns attributes based on a <see cref="MatchData"/>.
+  /// Assigns attributes based on a <see cref="MatchDataSet"/>.
   /// </summary>
   /// <param name="mdd"></param>
-  protected void AssignAttributes (MatchData mdd)
+  protected void AssignAttributes (MatchDataSet mdd)
   {
-    if (!mdd.HasGroup("attrname") || mdd["attrname"].Count == 0)
+    if (mdd is null || !mdd.HasGroup("attrname") || mdd["attrname"].Count == 0)
       return;
 
     for (int i = 0; i < mdd["attrname"].Count; i++)

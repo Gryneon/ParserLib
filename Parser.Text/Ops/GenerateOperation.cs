@@ -4,41 +4,57 @@ namespace Parser.Text.Ops;
 
 /// <summary>
 /// Text Parser Operation
-/// <para>Performs a conditional conversion on an object, which can be a <see cref="MatchData"/>.</para>
+/// <para>Performs a conditional conversion on an object, which can be a <see cref="MatchDataSet"/>.</para>
 /// </summary>
 /// <typeparam name="TOut">The end result of generation.</typeparam>
-/// <param name="output_key">The key to store the output objects in.</param>
-/// <param name="func">The generation function.</param>
-/// <param name="predicate">The condition that the generation function requires.</param>
-/// <param name="input_key">The key to pull data from.</param>
-public class GenerateOperation<TOut> (Func<MatchData, TOut> func, Func<IMatchItem, bool> predicate, string input_key, string output_key) : TextOperation(input_key, output_key)
+public class GenerateOperation<TOut> : TextOperation
 {
-  protected Dictionary<int, TOut> _results = [];
+  protected Dictionary<int, TOut> Results { get; } = [];
+  protected Func<MatchDataSet, bool> Predicate { get; }
+  protected Func<MatchDataSet, TOut> Function { get; }
+  /// <summary>
+  /// TODO: Document this operation.
+  /// </summary>
+  /// <param name="output_key">The key to store the output objects in.</param>
+  /// <param name="func">The generation function.</param>
+  /// <param name="predicate">The condition that the generation function requires.</param>
+  /// <param name="input_key">The key to pull data from.</param>
+  public GenerateOperation (Func<MatchDataSet, TOut> func, Func<MatchDataSet, bool> predicate, string input_key, string output_key) : base(input_key, output_key)
+  {
+    Predicate = predicate;
+    Function = func;
+  }
+  public GenerateOperation (Func<MatchDataSet, TOut> func, string input_key, string output_key) : base(input_key, output_key)
+  {
+    Predicate = item => true;
+    Function = func;
+  }
+
   /// <inheritdoc/>
   protected override void Execute ()
   {
-    if (CheckInput(out IEnumerable<MatchData>? mdds))
+    if (CheckInput(out IEnumerable<MatchDataSet>? mdds))
     {
-      Collection<MatchData> mddList = mdds.ToCollection();
+      Collection<MatchDataSet> mddList = mdds.ToCollection();
       for (int i = 0; i < mddList.Count; i++)
       {
-        MatchData mdd = mddList[i];
+        MatchDataSet mdd = mddList[i];
 
-        if (predicate(mdd))
+        if (Predicate(mdd))
         {
-          TOut? result = func(mdd);
-          _results.Add(i, result);
+          TOut? result = Function(mdd);
+          Results.Add(i, result);
         }
       }
-      _workToReturn = _results;
+      WorkToReturn = Results;
       Status = OS.Pass;
     }
-    else if (CheckInput(out MatchData? mdd))
+    else if (CheckInput(out MatchDataSet? mdd))
     {
-      if (predicate(mdd))
+      if (Predicate(mdd))
       {
-        TOut? result = func(mdd);
-        _workToReturn = result;
+        TOut? result = Function(mdd);
+        WorkToReturn = result;
         Status = OS.Pass;
       }
       else

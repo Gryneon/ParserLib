@@ -23,6 +23,7 @@ public interface IHasChildren<in TChild>
   /// <param name="children">The children to add.</param>
   virtual void AddRange (IEnumerable<TChild> children)
   {
+    ANEx.ThrowIfNull(children, nameof(children));
     foreach (TChild child in children)
     {
       Add(child);

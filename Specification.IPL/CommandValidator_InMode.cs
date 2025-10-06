@@ -9,5 +9,5 @@ namespace Specification.IPL;
 public class CommandValidator_InMode (params IPLPrinterMode[] modes)
 {
   /// <inheritdoc/>
-  public bool Validate (CommandData cmd) => modes.Any(i => i == cmd.Mode);
+  public bool Validate (CommandDataSet cmd) => modes.Any(i => i == cmd.Mode);
 }

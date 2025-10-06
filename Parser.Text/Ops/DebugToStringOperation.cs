@@ -9,6 +9,8 @@ public class DebugToStringOperation : TextOperation
 {
   private static string GetCaller (object? type) =>
     $"DebugToStringOperation.Execute()<{type?.GetType()}>";
+  private static string GetCaller (string? type) =>
+    $"DebugToStringOperation.Execute()<{type}>";
   /// <summary>
   /// Constructs an operation that logs the contents of the provided key.
   /// </summary>
@@ -20,17 +22,18 @@ public class DebugToStringOperation : TextOperation
   /// <remarks>This is a debugging operation and does not store data.</remarks>
   protected override void Execute ()
   {
-    if (_workToReturn is string s)
+    if (WorkToReturn is string s)
       Log(GetCaller(s), s);
-    else if (_workToReturn is IEnumerable<string> strs)
+    else if (WorkToReturn is IEnumerable<string> strs)
       foreach (string str in strs)
         Log(GetCaller(str), str);
-    else if (_workToReturn is IEnumerable<MatchData> mdds)
-      foreach (MatchData mdd in mdds)
+    else if (WorkToReturn is IEnumerable<MatchDataSet> mdds)
+      foreach (MatchDataSet mdd in mdds)
         Log(GetCaller(mdds), mdd.ToString());
-    else if (_workToReturn is not null)
-      Log(GetCaller(_workToReturn), _workToReturn?.ToString() ?? "<null data>");
+    else if (WorkToReturn is IEnumerable<IToken> itokens)
+      foreach (IToken it in itokens)
+        Log(GetCaller("Token"), it.ToString() ?? "<null data>");
     else
-      Log(GetCaller(_workToReturn), "<null data>");
+      Log(GetCaller(WorkToReturn), WorkToReturn?.ToString() ?? "<null data>");
   }
 }

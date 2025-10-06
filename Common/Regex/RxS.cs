@@ -6,7 +6,7 @@ namespace Common.Regex;
 /// A box that contains a string representing a regular expression.
 /// </summary>
 /// <seealso cref="string" />
-public readonly struct RxS : IEquatable<string>, IComparable<string>
+public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable<RxS>
 {
   /// <summary>
   /// Gets the string value of this regular expression.
@@ -33,7 +33,7 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>
   /// <param name="other">The string to compare to.</param>
   /// <returns><see langword="true"/> if the two regular expressions are based on the same pattern string, <see langword="false"/> otherwise.</returns>
   public bool Equals ([SS("Regex")] string? other) => Content.Equals(other, SCO);
-  public int CompareTo (string? other) => Content.CompareTo(other, SCOIC);
+  public int CompareTo (string? other) => Content.CompareTo(other, SCO);
 
   public static implicit operator string (RxS rx) => rx.Content;
   public static implicit operator RxS ([SS("Regex")] string str) => Rx(str);
@@ -72,12 +72,21 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>
   /// Adds the lazy quantifier to the expression.
   /// </summary>
   public RxS Lazy => $"{Content}?";
+  /// <summary>
+  /// Adds a 'zero or many' quantifier to the expression.
+  /// </summary>
   public RxS Any => $"{Grp(Content)}*";
+  /// <summary>
+  /// Adds a 'one or many' quantifier to the expression.
+  /// </summary>
   public RxS Many => $"{Grp(Content)}+";
+  /// <summary>
+  /// Adds an optional quantifier to the expression.
+  /// </summary>
   public RxS Opt => $"{Grp(Content)}?";
 
   public RxS Bk => @$"{Content}\b";
-  public RxS End => @$"{Content}$";
+  public RxS End => $"{Content}$";
 
   public RxS WS => @$"{Content}\s+";
   public RxS WSO => @$"{Content}\s*";
@@ -109,7 +118,7 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>
   public static RxS BackRef (string name) => $@"\k<{name}>";
   public static RxS BackRef (int num) => $@"\k<{num}>";
   public static RxS Atomic ([SS("Regex")] string rx) => $"(?>{rx})";
-  public static RxS Char (string allowed) => $"[{allowed}]";
+  public static RxS CharGroup (string allowed) => $"[{allowed}]";
   public static RxS NChar (string notAllowed) => $"[^{notAllowed}]";
   public static RxS OOr (IEnumerable<string> list) => list.AggregateRegex();
 
@@ -123,12 +132,45 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>
   public static RxS Ref (int group) => $"\\{group}";
   public static RxS Ref (string name) => $"${{{name}}}";
 
+  /// <summary>
+  /// The contents before a match - "$`"
+  /// </summary>
   public static RxS BeforeMatch => "$`";
   public static RxS AfterMatch => "$'";
   public static RxS EntireMatch => "$&";
   public static RxS EntireInput => "$_";
   public static RxS LastGroup => "$+";
 
+  /// <summary>
+  /// Checks if the regular expression matches the other.
+  /// </summary>
+  /// <param name="other">The other regular expression.</param>
+  /// <returns>true if the regular expression matches, false otherwise</returns>
   public bool Is (RxS other) => Content.Is(other);
+  /// <summary>
+  /// Checks if the regular expression matches the other, ignoring case.
+  /// </summary>
+  /// <param name="other">The other regular expression.</param>
+  /// <returns>true if the regular expression matches ignoring case, false otherwise</returns>
   public bool Like (RxS other) => Content.Like(other);
+
+  /// <inheritdoc/>
+  public override bool Equals (object? obj) => obj switch
+  {
+    null => false,
+    string s => Is(s),
+    RxS rx => Is(rx),
+    RxSCollection rxc => Is(rxc.Combined),
+    _ => Is(obj.ToString() ?? SE)
+  };
+
+  /// <inheritdoc/>
+  public override int GetHashCode () => Content.GetHashCode(SCO);
+  public static bool operator == (RxS left, RxS right) => left.Equals(right);
+  public static bool operator != (RxS left, RxS right) => !(left == right);
+
+  public static bool operator < (RxS left, RxS right) => left.CompareTo(right) < 0;
+  public static bool operator > (RxS left, RxS right) => left.CompareTo(right) > 0;
+
+  public bool Equals (RxS other) => Equals(other.Content);
 }

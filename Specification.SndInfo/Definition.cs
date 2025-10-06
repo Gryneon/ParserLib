@@ -1,6 +1,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-global using Parser.Text.Ops;
+using Parser.Inference;
+using Parser.Text.Ops;
 
 using static Parser.DefinitionStaticFunctions;
 using static Parser.Text.RX;
@@ -19,7 +20,7 @@ public static class Definition
   private static RxS Wd (string word) => Nm(word, @"\w+");
 
   //https://regex101.com/r/syUVmo/3
-  private static RxSList Regex { get; } = [
+  private static RxSCollection Regex { get; } = [
     // Comments and WS
     G_CLnComment,
     G_CBlkComment,
@@ -54,15 +55,18 @@ public static class Definition
     Operations = [
       new DictionaryOperation(Regex)
     ],
-    TokenLookup = [
-      "type",
-      "int",
+    RegexBasicTokens = [
       "definition",
-      "possibility",
-      "sound",
-      "player",
-      "gender",
-      "action"
+      "random",
+      "alias",
+      "rolloff",
+      "archivepath",
+      "playersound"
+    ],
+    WhitespaceTokens = [
+      "ws",
+      "lncomment",
+      "blkcomment"
     ]
   };
 }

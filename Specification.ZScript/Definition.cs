@@ -1,3 +1,6 @@
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable IDE1006 // Naming Rule Violation
+
 using Parser.Ops;
 using Parser.Text.Ops;
 
@@ -11,44 +14,43 @@ namespace Specification.ZScript;
 //ZScript Tokenizer
 //https://regex101.com/r/dM72bX/1
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-public class PrevDefinition
+public static class PrevDefinition
 {
   /// <summary>
   /// Whitespace Definitions
   /// </summary>
-  protected static readonly RxS
-    Com_Ln = Nm("lncomment", @"\/\/.*"),
-    Com_Blk = Nm("blkcomment", @"\/\*[\s\S]*?\*\/"),
-    Ws_True = Nm("ws", @"\s+"),
+  private static readonly RxS
+    _com_Ln = Nm("lncomment", @"\/\/.*"),
+    _com_Blk = Nm("blkcomment", @"\/\*[\s\S]*?\*\/"),
+    _ws_True = Nm("ws", @"\s+"),
     // Required WS
-    _ws = Or(Com_Blk, Com_Ln, Ws_True).Many,
+    _ws = Or(_com_Blk, _com_Ln, _ws_True).Many,
     // Optional WS
     _s = Gp(_ws).Opt,
     _b = Rx(@"\b");
 
-  protected static readonly RxS
+  private static readonly RxS
     _p_name = Nm("name", @"[a-z_]\w*"),
     _p_name_def = Nm("namedef", @"[a-z_]\w*"),
     _p_flag = Nm("flagname", @"[a-z_][\w.]*"),
     _p_prop = Nm("propname", @"[a-z_][\w.]*"),
     _p_expr = Nm("expr", @"[^;]*"),
-    _p_str = Nm("str", @""".*"""),
-    _p_int = RX.G_Int,
+    //_p_str = Nm("str", @""".*"""),
+    //_p_int = RX.G_Int,
     _o_bko = _s + Nm("open", @"\{") + _s,
     _o_bkc = _s + Nm("close", @"\}") + _s,
     _o_eq = _s + Nm("equals", @"\=") + _s,
     _o_col = _s + Nm("colon", @"\:") + _s,
     _o_sc = _s + Nm("semicolon", @"\;") + _s;
 
-  protected static readonly RxS
+  private static readonly RxS
     _n_sta_anynoterm = Nm("stcontent", "[^:;]+"),
     _n_sta_state = Nm("state", _o_col),
     _n_sta_cmd = Nm("cmd", _o_sc),
     _n_sta_item = Nm("stateitem", _n_sta_anynoterm + Or(_n_sta_state, _n_sta_cmd)),
     _n_sta = _b + Nm("statdef", "states") + _o_bko + Or(_n_sta_item, _ws).Any + _o_bkc;
 
-  protected static readonly RxS
+  private static readonly RxS
     _n_def_flagadd = Nm("addflag", @"\+"),
     _n_def_flagrem = Nm("remflag", @"\-"),
     _n_def_flag = Or(_n_def_flagadd, _n_def_flagrem) + _p_flag,
@@ -57,7 +59,7 @@ public class PrevDefinition
     _n_def_item = Nm("propitem", Or(_n_def_flag, _n_def_special, _n_def_prop) + _o_sc),
     _n_def = _b + Nm("propdef", "default") + _o_bko + Or(_n_def_item, _ws).Any + _o_bkc;
 
-  protected static readonly RxS
+  private static readonly RxS
     _n_cls_ext = Nm("extend", @"\bextend" + _ws).Opt,
     _n_cls_nm = Nm("classname", _p_name_def),
     _n_cls_prnt = Gp(_o_col + Nm("parent", _p_name)).Opt,
@@ -66,34 +68,24 @@ public class PrevDefinition
   /// <summary>
   /// https://regex101.com/r/En5C8c/7
   /// </summary>
-  protected static RxSList Reader { get; } = [
+  private static RxSCollection Reader { get; } = [
     _n_cls
   ];
   public static TextSpec Spec => new()
   {
     FileInferences = [],
     CaseInsensitive = true,
-    TokenLookup = [
-      "lncomment",
-      "blkcomment",
-      "ws",
-      "name",
-      "parent",
-      "classname",
-      "open",
-      "close",
-      "propdef",
-      "statdef",
-      "extend",
-      "native",
-      "colon",
-      "semicolon",
+    RegexBasicTokens = [
       "entireclass",
     ],
     WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
-    Name = "zscript",
+    Name = "zdoom.zscript",
     Operations = [
-      new DictionaryOperation(Reader),
+      new SplitRegexOperation([]),
+      new DictionaryOperation(Reader, false, "textparts"),
+      new TokenizeOperation(),
+      new TokenTemplateOperation([]),
+      //TemplateToObjectOperation
       Operation.End
     ]
   };

@@ -23,23 +23,30 @@ public static class RegexExtensions
   #endregion
   #region Match Extensions
   public static Dictionary<string, string> ToDictionary (this Match match) =>
+    match is null ? [] :
     [.. from Group grp in match.Groups
         where grp.Value.Length > 0
         select grp.ToKvp()];
-  public static Dictionary<string, GroupData> ToGroupDictionary (this Match match) =>
+  public static Dictionary<string, GroupDataSet> ToGroupDictionary (this Match match) =>
+    match is null ? [] :
     [.. from Group grp in match.Groups
         where grp.Value.Length > 0
-        select new KeyValuePair<string, GroupData>(grp.Name, grp.ToGroupData())];
-  public static SortedDictionary<string, GroupData> ToSortedDictionary (this Match match) =>
+        select new KeyValuePair<string, GroupDataSet>(grp.Name, grp.ToGroupData())];
+  public static SortedDictionary<string, GroupDataSet> ToSortedDictionary (this Match match) =>
+    match is null ? [] :
     [.. from Group grp in match.Groups
         where grp.Value.Length > 0
-        select new KeyValuePair<string, GroupData>(grp.Name, grp.ToGroupData())];
-  public static MatchData ToMatchData (this Match match) => new(match);
+        select new KeyValuePair<string, GroupDataSet>(grp.Name, grp.ToGroupData())];
+  public static MatchDataSet ToMatchData (this Match match) => new(match);
   #endregion
   #region Group Extensions
-  public static KeyValuePair<string, string> ToKvp (this Group group) =>
-    new(group.Name, group.Value);
-  public static GroupData ToGroupData (this Group group) => new(group);
+  public static KeyValuePair<string, string> ToKvp (this Group group)
+  {
+    group.ThrowIfNull();
+    return new(group.Name, group.Value);
+  }
+
+  public static GroupDataSet ToGroupData (this Group group) => new(group);
   #endregion
   public static CaptureData ToCaptureData (this Capture cap, string groupname) =>
     new(cap, groupname);

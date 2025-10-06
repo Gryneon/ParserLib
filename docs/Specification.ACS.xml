@@ -9,10 +9,13 @@
             ACS Specification Definition
             </summary>
         </member>
-        <member name="F:Specification.ACS.Definition.KW">
-            <summary>
-            https://regex101.com/r/NoIMcf/1
-            </summary>
+        <member name="M:Specification.ACS.Definition.Splitter(System.String)">
+             <summary>
+             https://regex101.com/r/NoIMcf/1
+             </summary>
+            
+             https://regex101.com/r/tfW4Sl/1
+             <remarks>https://regex101.com/r/deLv0L/2</remarks>
         </member>
         <member name="P:Specification.ACS.Definition.Spec">
             <summary>
