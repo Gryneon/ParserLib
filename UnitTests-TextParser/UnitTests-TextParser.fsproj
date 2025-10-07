@@ -1,0 +1,17 @@
+<Project Sdk="MSTest.Sdk/4.0.0-preview.25415.9">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>UnitTests_TextParser</RootNamespace>
+    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseVSTest>true</UseVSTest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="MSTestSettings.fs" />
+    <Compile Include="Test1.fs" />
+  </ItemGroup>
+
+</Project>
