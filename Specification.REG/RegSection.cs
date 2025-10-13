@@ -1,5 +1,3 @@
-using Specification.INI;
-
 namespace Specification.REG;
 
 /// <summary>
@@ -42,7 +40,12 @@ public class RegSection : IHasChildren<RegProperty>
   /// <summary>
   /// The properties within the section.
   /// </summary>
-  protected PropertyCollection Properties { get; } = [];
+  protected Dictionary<string, IProperty<string>> Properties { get; } = [];
   public int Count => Properties.Count;
-  public void Add (RegProperty child) => Properties.Add(child);
+  public void Add (RegProperty child)
+  {
+    if (child is null)
+      return;
+    Properties.Add(child.Key, child);
+  }
 }

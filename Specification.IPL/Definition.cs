@@ -56,7 +56,8 @@ public static class Definition
     $"{Nm("adv", Eot)}{CharPart}",
     Nm("field", Escape + LetterF + Gp(Value + "|" + Rx(@"""[^""]"""))),
     TextD3 + "," + TextPart,
-    Nm("standard", Escape.Opt + Shift.Opt + Letter + Gp(Value + $"(?:,{Value})*").Opt),
+    Nm("standard", Escape.Opt + Shift.Opt + Letter + Gp($"{Value}(?:,{Value})*")),
+    Nm("standard", Escape.Opt + Shift.Opt + Letter),
     Nm("fieldtext", @".+")
   ];
   public static Regex OpRegex => new(Regex, Spec.RxOpt);
@@ -66,6 +67,7 @@ public static class Definition
     Name = "ipl",
     Operations = [
       new SplitRegexOperation(Splits, "initial", "splits"),
+
       new DictionaryOperation(Regex, true, "splits"),
       new GenerateOperation<CommandDataSet>(CommandDataSet.Generate, item => item.Len > 0, "matches", "commands"),
       new IPLCommandOperation("commands", "result"),

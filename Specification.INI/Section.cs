@@ -3,7 +3,7 @@ namespace Specification.INI;
 /// <summary>
 /// Represents a section heading in an INI formatted file.
 /// </summary>
-public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<PropertyObj>, ITextSerializer<Section>, ICloneable
+public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<PropertyObj>, ITextSerializer<Section>, ICloneable
 {
   /// <summary>
   /// Creates an empty Section.
@@ -28,7 +28,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<
   /// <summary>
   /// The properties within the section.
   /// </summary>
-  private PropertyCollection Properties { get; init; } = [];
+  private Dictionary<string, PropertyObj> Properties { get; init; } = [];
   /// <summary>
   /// Gets the value of a property from a given key.
   /// </summary>
@@ -53,17 +53,17 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<
     input.ThrowIfNull();
     Collection<string> keys = input["key"].Captures.Select(c => c.Content).ToCollection();
     Collection<string> values = input["value"].Captures.Select(c => c.Content).ToCollection();
-    PropertyCollection props = [];
+    Collection<PropertyObj> props = [];
     for (int i = 0; i < keys.Count; i++)
     {
       if (i >= values.Count)
         throw new ArgumentOutOfRangeException(nameof(input), "The number of values must match the number of keys.");
-      props.Add(new PropertyObj(keys[i], values[i]));
+      props = [.. keys.Zip(values).Select<(string, string), PropertyObj>(item => new(item.Item1, item.Item2))];
     }
     Section result = new()
     {
       Name = input["name"].Content,
-      Properties = props
+      Properties = [.. props]
     };
     return result;
   }
@@ -74,10 +74,10 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<
   /// <param name="value">The value to set it to.</param>
   public void Set<T> (string key, string value) where T : IProperty<string>, new()
   {
-    if (!Properties.Contains(key))
-      Properties.Add(new T() { Key = key, Value = value });
+    if (!Properties.TryGetValue(key, out PropertyObj? existing))
+      Properties.Add(key, new(key, value));
     else
-      Properties[key].Value = value;
+      existing.Value = value;
   }
   /// <summary>
   /// Sets the property and value given, or adds the property and value if it does not exist.
@@ -87,15 +87,11 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<
   {
     if (prop is null)
       return;
-    if (!Properties.Contains(prop.Key))
+    if (!Properties.TryGetValue(prop.Key, out PropertyObj? value))
       Properties.Add(prop);
     else
-      Properties[prop.Key].Value = prop.Value;
+      value.Value = prop.Value;
   }
-  /// <summary>
-  /// Gives the setrange rkne an
-  /// </summary>
-  /// <param name="children"></param>
   public void SetRange (IEnumerable<PropertyObj> children)
   {
     children.ThrowIfNull();
@@ -114,16 +110,16 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<
   /// </summary>
   /// <param name="children">The properties to add.</param>
   public void AddRange (IEnumerable<PropertyObj> children) => SetRange(children);
+  IEnumerator<PropertyObj> IEnumerable<PropertyObj>.GetEnumerator () => (IEnumerator<PropertyObj>) GetEnumerator();
   /// <inheritdoc/>
-  public IEnumerator<IProperty<string>> GetEnumerator () => Properties.GetEnumerator();
+  public IEnumerator<IProperty<string>> GetEnumerator () => Properties.Values.GetEnumerator();
   /// <inheritdoc/>
   public void Clear () => Properties.Clear();
   /// <inheritdoc/>
-  public bool Contains (PropertyObj item) => Properties.Contains(item);
+  public bool Contains (PropertyObj item) => item?.Key is not null && Properties.ContainsKey(item.Key);
   /// <inheritdoc/>
-  public void CopyTo (PropertyObj[] array, int arrayIndex) => Properties.CopyTo(array, arrayIndex);
-  /// <inheritdoc/>
-  public bool Remove (PropertyObj item) => Properties.Remove(item);
+  public bool Remove (PropertyObj item) => !(item is null || item.Key is null || !Properties.Remove(item.Key));
+
   /// <summary>
   /// Removes the property with the provided name.
   /// </summary>
@@ -137,10 +133,12 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IHasChildren<
   {
     Section result = new(Name);
 
-    foreach (IProperty<string> item in Properties)
+    foreach (KeyValuePair<string, PropertyObj> item in Properties)
     {
-      result.Properties.Add(new PropertyObj(item.Key, item.Value));
+      result.Properties.Add(item.Key, new PropertyObj(item.Key, item.Value.Value));
     }
     return result;
   }
+
+  IEnumerator IEnumerable.GetEnumerator () => Properties.GetEnumerator();
 }

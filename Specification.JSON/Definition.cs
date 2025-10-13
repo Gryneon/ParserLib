@@ -4,6 +4,7 @@ using System.Linq;
 
 using Common.Regex;
 
+using Parser.Ops;
 using Parser.Text.Ops;
 
 using static Common.Names;
@@ -51,7 +52,7 @@ public static class Definition
   /// <summary>
   /// The JSON Spec.
   /// </summary>
-  public static readonly TextSpec Spec = new()
+  public static TextSpec Spec => new()
   {
     Name = "json",
     CaseInsensitive = true,
@@ -123,4 +124,9 @@ public class JSONProperty (string key, object? value = null) : IJSONNode
   public string Key { get; } = key;
   /// <inheritdoc/>
   public object? Value { get; } = value;
+}
+
+public class JSONOperation (string input_key, string output_key) : Operation<TextParser>(input_key, output_key)
+{
+
 }

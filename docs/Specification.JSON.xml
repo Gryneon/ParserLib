@@ -14,7 +14,7 @@
             https://regex101.com/r/hgS1Zq/5
             </summary>
         </member>
-        <member name="F:Specification.JSON.Definition.Spec">
+        <member name="P:Specification.JSON.Definition.Spec">
             <summary>
             The JSON Spec.
             </summary>

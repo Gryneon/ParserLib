@@ -136,7 +136,7 @@
             <returns>Throws exception.</returns>
             <exception cref="T:Parser.UnknownOperationException"></exception>
         </member>
-        <member name="M:Parser.Binary.Ops.ByteOperation.DoOperation(Parser.Binary.ByteParser)">
+        <member name="M:Parser.Binary.Ops.ByteOperation.DoOperation``1(Parser.Binary.ByteParser)">
             <summary>
             Performs an operation that uses and may alter or reassign the data.
             </summary>

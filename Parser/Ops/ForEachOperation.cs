@@ -1,25 +1,16 @@
 namespace Parser.Ops;
 
-public sealed class ForEachOperation (IEnumerable<IOperation> sequence) : Operation, IOperation
+public sealed class ForEachOperation (IEnumerable<IOperation> operations, string input_key) : Operation(input_key, SE), IOperation
 {
-  bool IOperation.ContinueOnFail { get; set; }
-  bool IOperation.SkipOperation { get; set; }
+  public int OpIndex { get; set; }
+  public Collection<IOperation> Operations { get; } = [.. operations];
   bool IOperation.EndOperation => false;
-  bool IOperation.DebugOperation { get; set; }
-
   public override OpStatus DoOperation<TParser> (TParser parser_ref)
   {
-    CheckInputNull();
-
-    foreach (IOperation op in sequence)
-    {
-      OpStatus result = op.DoOperation(parser_ref);
-      if (result.IsFail(op.ContinueOnFail))
-      {
-        Status = result;
-        return Status;
-      }
-    }
+    parser_ref.NextOpIndex = OpIndex;
+    parser_ref.Cursor = 0;
+    parser_ref.CursorKey = CursorKey;
     return OpStatus.Pass;
   }
+  public string CursorKey { get; } = input_key;
 }

@@ -10,5 +10,5 @@ public class TokenNodeRef : TokenNode
     Type = TokenNodeType.Base;
     RefName = refName;
   }
-  public override bool Match => CurrentToken.Type.Like(RefName);
+  public override bool Match => CurrentToken?.Type.Like(RefName) ?? false;
 }

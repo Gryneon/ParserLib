@@ -7,6 +7,8 @@ namespace Parser.Text.Ops;
 /// </summary>
 public class TokenTemplateOperation : TextOperation
 {
+  private const string Area = "TokenTemplateOperation";
+
   //Collections
   protected Dictionary<string, TokenNodeGroup> RefGroups { get; } = [];
 
@@ -30,13 +32,14 @@ public class TokenTemplateOperation : TextOperation
 
   private TokenNodeGroup? ParentNode;
   [AllowNull] private Collection<IToken> Tokens { get; set; }
-  private Stack<(TokenNodeGroup group, int option_index, int node_index)> OptionIndexes { get; set; } = [];
+  private Stack<(TokenNodeGroup group, int token_index, int node_index, int option_index)> OptionIndexes { get; set; } = [];
 
   private int Depth { get; set; }
   private int TokenIndex { get; set; }
   private int OptionIndex { get; set; }
   private int NodeIndex { get; set; }
-  private TokenNode? Node => ParentNode?.Options[OptionIndex][NodeIndex];
+  private TokenNode? Node =>
+    ParentNode?.Options[OptionIndex].Count is null or 0 ? null : (ParentNode?.Options[OptionIndex][NodeIndex]);
   private IToken Token => Tokens[TokenIndex];
   private string NodeKeyName = SE;
   private int NodeCount => ParentNode?.Options[OptionIndex].Count ?? 0;
@@ -87,9 +90,9 @@ public class TokenTemplateOperation : TextOperation
     public int TokenIndex => Operation.TokenIndex;
   }
   #endregion
-  #region CheckPosition Method
+  #region Private Methods
   /// <summary>
-  /// 
+  /// Checks the current position for a match.
   /// </summary>
   private void CheckPosition ()
   {
@@ -134,9 +137,14 @@ public class TokenTemplateOperation : TextOperation
     Tokens.Insert(TokenState.MatchStart, new_token);
     TokenState.StartAt = TokenState.MatchStart;
   }
-  #endregion
   private void DoCheck ()
   {
+    if (Node is null)
+    {
+      Debug.Log(Area, "Node is null. Something went wrong.");
+      return;
+    }
+
     switch (Node)
     {
       case TokenNodeRef node_ref:
@@ -148,7 +156,7 @@ public class TokenTemplateOperation : TextOperation
         return;
 
       case TokenNodeGroup node_grp:
-        OptionIndexes.Push((ParentNode!, TokenIndex, NodeIndex));
+        OptionIndexes.Push((ParentNode!, TokenIndex, NodeIndex, OptionIndex));
         TokenState.StartAt = TokenIndex;
         Depth++;
         ParentNode = node_grp;
@@ -160,6 +168,29 @@ public class TokenTemplateOperation : TextOperation
       default:
         return;
     }
+  }
+  private void PopStack ()
+  {
+    (ParentNode, TokenIndex, NodeIndex, OptionIndex) = OptionIndexes.Pop();
+    Depth--;
+
+    if (TokenState.CanAdvanceOption)
+    {
+      NextOption();
+    }
+    else if (TokenState.CanReduceDepth)
+    {
+      PopStack();
+    }
+    else
+    {
+      SoftReset(false);
+    }
+  }
+  private void NextOption ()
+  {
+    OptionIndex++;
+    NodeIndex = 0;
   }
   private void SoftReset (bool pass)
   {
@@ -176,7 +207,7 @@ public class TokenTemplateOperation : TextOperation
     ParentNode = GetParent(ParentNode);
   }
   private static TokenNodeGroup GetParent (TokenNodeGroup? grp) => grp is null ? throw new ArgumentNullException(nameof(grp)) : grp.Parent is null ? grp : GetParent(grp.Parent);
-
+  #endregion
   protected override void Execute ()
   {
     if (!CheckInput(out IEnumerable<IToken>? tokens))
@@ -195,62 +226,60 @@ public class TokenTemplateOperation : TextOperation
       {
         CheckPosition();
 
-        if (TokenState.Match && TokenState.InitialMatch)
+        if (TokenState.Match)
         {
-          TokenState.MatchStart = TokenIndex;
-          TokenState.StartAt = TokenIndex;
-        }
-
-        if (TokenState.Match && TokenState.Complete)
-        {
-          CompleteMatch();
-          SoftReset(true);
-          continue;
-        }
-        if (TokenState.Match && TokenState.CanAdvanceNode)
-        {
-          if (TokenState.OneOrMany)
+          if (TokenState.InitialMatch)
           {
-            TokenState.CompleteOnNextMisMatch = true;
-            TokenIndex++;
+            TokenState.MatchStart = TokenIndex;
+            TokenState.StartAt = TokenIndex;
           }
-          else
+          if (TokenState.Complete)
           {
-            NodeIndex++;
+            CompleteMatch();
+            SoftReset(true);
+            continue;
           }
-          continue;
+          if (TokenState.CanAdvanceNode)
+          {
+            // Also is one or many, sets complete on next mismatch
+            if (TokenState.OneOrMany)
+            {
+              TokenState.CompleteOnNextMisMatch = true;
+              TokenIndex++;
+            }
+            else // Not OneOrMany
+            {
+              NodeIndex++;
+            }
+            continue;
+          }
+          else //Cannot Advance Node
+          {
+            if (TokenState.CompleteOnNextMisMatch || TokenState.Optional)
+            {
+              CompleteMatch();
+              SoftReset(true);
+              continue;
+            }
+          }
         }
-        if (!TokenState.Match && TokenState.CompleteOnNextMisMatch)
+        else // Not Match
         {
-          NodeIndex++;
-          continue;
-        }
-        if (!TokenState.Match && TokenState.OneOrMany && TokenState.CanAdvanceNode)
-        {
-          TokenState.CompleteOnNextMisMatch = true;
-          NodeIndex++;
-          continue;
-        }
-        if (!TokenState.Match && TokenState.Optional && TokenState.CanAdvanceNode)
-        {
-          NodeIndex++;
-          continue;
-        }
-        if (!TokenState.Match && TokenState.CanAdvanceOption)
-        {
-          OptionIndex++;
-          NodeIndex = 0;
-          continue;
-        }
-        if (!TokenState.Match && !TokenState.CanAdvanceOption && Depth > 0)
-        {
-          OptionIndex++;
-          continue;
-        }
-        if (!TokenState.Match && !TokenState.CanAdvanceOption && Depth == 0)
-        {
-          SoftReset(false);
-          continue;
+          if (TokenState.CanAdvanceOption)
+          {
+            NextOption();
+            continue;
+          }
+          if (Depth > 0) // Can Reduce Depth
+          {
+            PopStack();
+            continue;
+          }
+          if (Depth == 0) // At Surface
+          {
+            SoftReset(false);
+            continue;
+          }
         }
 
         /*

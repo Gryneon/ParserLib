@@ -115,6 +115,18 @@
             <param name="parser_ref">The parser to pull data from and to store data in.</param>
             <returns>An <see cref="T:Parser.OpStatus"/> that represents the result status.</returns>
         </member>
+        <member name="M:Parser.IParser.CountOfKey(System.String)">
+            <summary>
+            Counts the objects in this key.
+            </summary>
+            <param name="key">The key to get the count of.</param>
+            <returns>
+            -1 if the key does not exist. <br/>
+            0 if the key exists but is null, or is a collection of 0. <br/>
+            1 if the key is not a collection or is a collection of 1. <br/>
+            The count if the key is a collection. <br/>
+            </returns>
+        </member>
         <member name="M:Parser.Library.CheckFile(System.String)">
             <summary>
             Provides the <see cref="T:Parser.Spec"/> for the provided file path.

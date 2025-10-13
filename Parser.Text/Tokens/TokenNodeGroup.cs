@@ -1,5 +1,7 @@
 #pragma warning disable IDE1006 // Naming Styles
 
+using System.Collections;
+
 namespace Parser.Text.Tokens;
 
 public sealed class TokenNodeLibrary
@@ -10,7 +12,7 @@ public sealed class TokenNodeLibrary
 /// <summary>
 /// A group of token nodes.
 /// </summary>
-public sealed class TokenNodeGroup : TokenNode
+public sealed class TokenNodeGroup : TokenNode, ICollection<TokenNode>
 {
   public Collection<TokenNode> Items { get; } = [];
   public Collection<Collection<TokenNode>> Options { get; } = [];
@@ -33,7 +35,7 @@ public sealed class TokenNodeGroup : TokenNode
   {
     if (Items.Count > 0)
     {
-      Options.Add(Items);
+      Options.Add([.. Items]);
       Items.Clear();
     }
   }
@@ -86,5 +88,17 @@ public sealed class TokenNodeGroup : TokenNode
     }
     return Consumed;
   }
+
+  public void Clear () => ((ICollection<TokenNode>) Items).Clear();
+  public bool Contains (TokenNode item) => ((ICollection<TokenNode>) Items).Contains(item);
+  public void CopyTo (TokenNode[] array, int arrayIndex) => ((ICollection<TokenNode>) Items).CopyTo(array, arrayIndex);
+  public bool Remove (TokenNode item) => ((ICollection<TokenNode>) Items).Remove(item);
+  public IEnumerator<TokenNode> GetEnumerator () => ((IEnumerable<TokenNode>) Items).GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator () => ((IEnumerable) Items).GetEnumerator();
+
   public override bool Match => TokenConsumption >= 0;
+
+  public int Count => ((ICollection<TokenNode>) Items).Count;
+
+  public bool IsReadOnly => ((ICollection<TokenNode>) Items).IsReadOnly;
 }

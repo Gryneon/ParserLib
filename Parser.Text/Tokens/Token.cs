@@ -121,7 +121,7 @@ public class Token : IToken, ICloneable, IReadOnlyCollection<IToken>
     Content = content;
     Type = type;
   }
-  public Token (TokenNode node, IEnumerable<IToken> tokens, string type)
+  public Token (TokenNode node, IEnumerable<IToken> tokens, string type = EmptyString)
   {
     LinkNode = node;
     Children = [.. tokens];
@@ -143,7 +143,7 @@ public class Token : IToken, ICloneable, IReadOnlyCollection<IToken>
     Children = [];
     LinkNode = item;
   }
-  public Token (TokenNodeGroup grp, IEnumerable<IToken> tokens, string type)
+  public Token (TokenNodeGroup grp, IEnumerable<IToken> tokens, string type = EmptyString)
   {
     FromNode = grp;
     Children = [.. from item in tokens select new Token(item)];

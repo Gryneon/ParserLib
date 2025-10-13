@@ -132,13 +132,14 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
   public bool HasResult => Result is not null;
   public object? Result { get; private set; }
   #endregion
-
+  public int Cursor { get; set; }
   internal List<OpLoopData> LoopData { get; } = [];
   internal int LoopDepth => LoopData.Count - 1;
   internal int LoopCountRemaining { get; set; } = DNE;
   internal OpLoopData? CurrentLoop => LoopDepth >= LoopData.Count ? null : LoopData[LoopDepth];
   public Collection<IOperation> Operations => CurrentLoop?.Operations ?? [];
   public Dictionary<string, object> Metadata => ByteObjects.ToDictionary();
+  public int CountOfKey (string key) => Work.TryGetValue(key, out object? value) ? value.AsCollection().Count : -1;
   /// <summary>
   /// The last status from the last operation executed.
   /// </summary>
@@ -184,6 +185,7 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
   public Spec Spec { get; init; } = spec ?? DefaultSpec;
   public int NextOpIndex { get; set; }
   [AllowNull] public IDictionary<string, object> Work { get; } = new BDD();
+  public string? CursorKey { get; set; }
 
   /// <summary>
   /// Parses the provided binary data.
@@ -223,4 +225,6 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
 
     return LastStatus;
   }
+
+  public void AddOperationSequence (IEnumerable<IOperation> ops) => throw new NotImplementedException();
 }

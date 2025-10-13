@@ -3,7 +3,7 @@ namespace Specification.INI;
 /// <summary>
 /// A key and value pair in an INI file.
 /// </summary>
-public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<string>, ITextSerializer<PropertyObj>
+public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<string>, ITextSerializer<PropertyObj>, IEquatable<IProperty<string>>
 {
   /// <summary>
   /// The key name.
@@ -17,13 +17,11 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// Creates an empty <see cref="PropertyObj"/>.
   /// </summary>
   public PropertyObj () { }
-
   /// <summary>
   /// Creates a property from a key and value
   /// </summary>
   /// <param name="key">The key of the new property.</param>
   /// <param name="value">The value of the new property.</param>
-  [SetsRequiredMembers]
   public PropertyObj (string key, string value)
   {
     Key = key;
@@ -33,7 +31,6 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// Creates a property from an IProperty interface
   /// </summary>
   /// <param name="iprop">The other property.</param>
-  [SetsRequiredMembers]
   public PropertyObj (IProperty<object> iprop)
   {
     iprop.ThrowIfNull();
@@ -44,7 +41,6 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// Creates a property from an IProperty interface
   /// </summary>
   /// <param name="iprop">The other property.</param>
-  [SetsRequiredMembers]
   public PropertyObj (IProperty<string> iprop)
   {
     iprop.ThrowIfNull();
@@ -101,6 +97,12 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   public string Serialize () => $"  {Key}={Value}";
   /// <inheritdoc/>
   public bool Equals (PropertyObj? other) => throw new NotImplementedException();
+  public static implicit operator KeyValuePair<string, PropertyObj> (PropertyObj from)
+  {
+    from.ThrowIfNull();
+    return new(from.Key, new(from.Key, from.Value));
+  }
+
   /// <summary>
   /// Determines whether two <see cref="PropertyObj"/> instances are equal.
   /// </summary>

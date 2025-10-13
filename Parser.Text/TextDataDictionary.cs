@@ -27,9 +27,14 @@ public sealed class TextDataDictionary : IDictionary<string, object>
   internal bool HasData => Properties.Count > 0;
   internal string? LastKeySaved;
 
-  public TextDataDictionary (string initial)
+  public TextDataDictionary (string? initial)
   {
-    initial ??= SE;
+    if (initial is not null)
+      Initialize(initial);
+  }
+  public TextDataDictionary () { }
+  public void Initialize ([NotNull] string initial)
+  {
     _ = Save<string>("initial", initial);
     _ = Save<string>("text", initial);
     _ = Save<int>("file_size", initial.Length);
@@ -55,7 +60,7 @@ public sealed class TextDataDictionary : IDictionary<string, object>
   public bool TryLoad (string key, [NotNullWhen(true)][MaybeNullWhen(false)] out object data)
   {
     bool result = ContainsKey(key);
-    data = result ? Properties[key] : null;
+    data = result ? Properties[key] : default;
     return result;
   }
   public bool TryLoadArray<T> (string key, [NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable<T> data)
@@ -127,11 +132,11 @@ public sealed class TextDataDictionary : IDictionary<string, object>
     else
       return false;
   }
-
   #region IDictionary<string, object>
   /// <inheritdoc/>
   public int Count => Properties.Count;
-  public ICollection<string> Keys => Properties.Keys;
+
+  public ICollection<string> Keys => [.. Properties.Keys];
   public ICollection<object> Values => [.. Properties.Values];
   bool ICollection<KeyValuePair<string, object>>.IsReadOnly { get; }
 
@@ -149,7 +154,7 @@ public sealed class TextDataDictionary : IDictionary<string, object>
 
   public bool ContainsKey (string key) => Properties.ContainsKey(key);
   public IEnumerator<KeyValuePair<string, object>> GetEnumerator () => Properties.GetEnumerator();
-  public bool TryGetValue (string key, [MaybeNullWhen(false)] out object value) => TryLoad(key, out value);
+  public bool TryGetValue (string key, [MaybeNullWhen(false)][NotNullWhen(true)] out object? value) => TryLoad(key, out value);
   IEnumerator IEnumerable.GetEnumerator () => Properties.GetEnumerator();
   public bool Remove (string key) => Properties.Remove(key);
   void ICollection<KeyValuePair<string, object>>.Add (KeyValuePair<string, object> item) => throw new NotImplementedException();

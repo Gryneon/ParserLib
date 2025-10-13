@@ -6,17 +6,29 @@ namespace Parser.Text.Tokens;
 
 public static class TokenNodeFactory
 {
-  public static readonly RxS Regex = Rx(@"(?'line''(?'literal'(?:[^']|'')+?)'|\$(?'base'[\w_]+)|\#(?'ref'[\w_]+)|(?'gp_start'\()|(?'gp_end'\))|(?'opt'\?)|(?'more'\+)|(?'or'\|)|(?'any'\*)|\^(?'command'[\w_]+)\^|(?'ws'\s*))");
-
-  internal static TokenNodeGroup GetTokenNodes (string token_type_string, out string? import_group)
+  public static readonly RxS Regex = Rx(
+"""
+(?'line'
+  '(?'literal'(?:[^']|'')+?)'|
+  \$(?'base'[\w_]+)|
+  \#(?'ref'[\w_]+)|
+  (?'gp_start'\()|
+  (?'gp_end'\))|
+  (?'opt'\?)|
+  (?'more'\+)|
+  (?'or'\|)|
+  (?'any'\*)|
+  \^(?'command'[\w_]+)\^|
+  (?'ws'\s*))
+""");
+  public static TokenNodeGroup GetTokenNodes (string token_type_string, out string? import_group)
   {
-    MatchDataCollection mdc = new Regex(Regex).Matches(token_type_string).ToMDDCollection();
+    MatchDataCollection mdc = new Regex(Regex, ROML | ROIPW).Matches(token_type_string).ToMDDCollection();
 
     import_group = null;
 
-    TokenNodeGroup result = new();
-    TokenNode previous = null!;
-    TokenNodeGroup? parent = result;
+    TokenNode? previous = null;
+    TokenNodeGroup? parent = new();
     int depth = 0;
 
     void ThrowIfPrevNull (string item)
@@ -40,15 +52,15 @@ public static class TokenNodeFactory
         throw new InvalidOperationException("Mismatched parentheses in token type string.");
       }
     }
-
+    Debug.Log("TokenNodeFactory.GetTokenNodes", "Beginning iteration through nodes");
     foreach (MatchDataSet md in mdc)
     {
       TokenNode? item = TokenNode.Generate(md);
-
       if (item is null)
         continue;
       if (parent is null)
         continue;
+      Debug.Log("TokenNodeFactory.GetTokenNodes", $"Node Processed: {item.Type}");
 
       switch (item.Type)
       {
@@ -73,20 +85,21 @@ public static class TokenNodeFactory
           parent.AddOption();
           break;
         case TokenNodeType.Any:
-          previous.IsAny = true;
+          ThrowIfPrevNull("*");
+          previous!.IsAny = true;
           break;
         case TokenNodeType.More:
           ThrowIfPrevNull("+");
-          previous.IsOneOrMany = true;
+          previous!.IsOneOrMany = true;
           break;
         case TokenNodeType.Opt:
           ThrowIfPrevNull("?");
-          previous.IsOptional = true;
+          previous!.IsOptional = true;
           break;
         case TokenNodeType.Command:
           string c = md["command"].Content;
           ThrowIfPrevNull($"^{c}^");
-          previous.CommandString = c;
+          previous!.CommandString = c;
           if (c.Like("import"))
           {
             if (previous is not TokenNodeRef prev_ref)
@@ -121,6 +134,6 @@ public static class TokenNodeFactory
     }
     parent?.AddOption();
 
-    return result;
+    return parent;
   }
 }

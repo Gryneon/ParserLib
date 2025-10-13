@@ -107,7 +107,7 @@ public abstract class TextOperation : Operation<TextParser>, IOperation
     if (WorkToReturn is null)
       ThrowNoOverrideError();
 
-    object? data = WorkToReturn;
+    object data = WorkToReturn;
     Status = OpStatus.FailBadOpDefinition;
     WorkToReturn = data;
   }
@@ -118,7 +118,7 @@ public abstract class TextOperation : Operation<TextParser>, IOperation
   [MemberNotNull(nameof(Parser))]
   protected override void Initialize (TextParser parser)
   {
-    ArgumentNullException.ThrowIfNull(parser);
+    parser.ThrowIfNull();
     Parser = parser;
     Spec = parser.Spec;
 
@@ -161,5 +161,17 @@ public abstract class TextOperation : Operation<TextParser>, IOperation
     if (WorkToReturn is null) return;
     Parser.Mode = mode;
     Parser.Work.Add(OutputKey, WorkToReturn);
+  }
+  protected override bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T? casted) where T : default
+  {
+    if (Parser.Work.TryLoad(InputKey, out object? item) && item is T temp)
+    {
+      Status = OpStatus.Pass;
+      casted = temp;
+      return true;
+    }
+    Status = OpStatus.FailBadInputType;
+    casted = default;
+    return false;
   }
 }

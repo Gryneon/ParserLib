@@ -22,7 +22,7 @@ public abstract class TokenNode : IGeneratable<MatchDataSet, TokenNode>
   protected int StartAt { get; set; }
   protected int Consumed { get; set; }
   protected bool IsMoreTokens => StartAt + Consumed < Tokens.Count;
-  protected IToken CurrentToken => Tokens[StartAt];
+  protected IToken? CurrentToken => Tokens[StartAt];
 
   protected void ValidateStart ()
   {
@@ -68,7 +68,7 @@ public abstract class TokenNode : IGeneratable<MatchDataSet, TokenNode>
   #endregion
   public static TokenNode? Generate (MatchDataSet input)
   {
-    ArgumentNullException.ThrowIfNull(input);
+    input.ThrowIfNull();
 
     if (input.DoesNotHaveGroup("line"))
       return null;

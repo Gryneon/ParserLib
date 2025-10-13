@@ -55,7 +55,6 @@ public class Operation : IOperation
   /// </summary>
   public bool IgnoreAllLoads { get; protected set; }
   public OpStatus Status { get; protected set; } = OpStatus.Skipped;
-
   #region Operation Flags
   /// <inheritdoc/>
   public bool ContinueOnFail { get; set; }
@@ -115,17 +114,17 @@ public class Operation : IOperation
   /// <exception cref="UnknownOperationException"/>
   public virtual OpStatus DoOperation (ref object data) =>
     EndOperation ? OpStatus.EndCommand : throw new UnknownOperationException();
-  protected bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T? casted)
+  protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T? casted)
   {
-    if (Parser.Work.ContainsKey(InputKey) && Parser.Work.TryGetValue(InputKey, out object? item) && item is T temp)
-      goto Pass;
+    if (Parser.Work.TryGetValue(InputKey, out object? item) && item is T temp)
+    {
+      Status = OpStatus.Pass;
+      casted = temp;
+      return true;
+    }
     Status = OpStatus.FailBadInputType;
     casted = default;
     return false;
-  Pass:
-    Status = OpStatus.Pass;
-    casted = temp;
-    return true;
   }
 
   protected bool CheckInputs<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out Collection<T> casted)
@@ -192,6 +191,7 @@ public class Operation : IOperation
     InputKey = input_key;
     OutputKey = output_key;
   }
+  public bool Equals (IOperation? other) => EndOperation && (other?.EndOperation ?? false) || Equals(this, other);
 }
 
 public class Operation<TParser> : Operation where TParser : IParser
@@ -225,4 +225,6 @@ public class Operation<TParser> : Operation where TParser : IParser
   protected Operation (string input_key, string output_key) : base(input_key, output_key) { }
   protected Operation (IEnumerable<string> input_keys, string output_key) : base(input_keys, output_key) { }
   protected Operation (bool ignore_all_loads) : base(ignore_all_loads) { }
+  protected override bool CheckInput<T> ([MaybeNullWhen(false), NotNullWhen(true)] out T? casted) where T : default =>
+    base.CheckInput(out casted);
 }

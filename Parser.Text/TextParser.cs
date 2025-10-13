@@ -12,35 +12,40 @@ public sealed class TextParser (TextSpec? spec = null) : IParser
   [MemberNotNull(nameof(Operations))]
   private void OperationLoad ()
   {
-    Collection<IOperation> allOps = [.. Spec.Operations];
+    Operations = [.. Spec.Operations];
     Dictionary<string, int> labels = [];
 
     // -1 ends sequence, and represents the sequence terminating.
-    int nextOrEnd (int i) => i + 1 >= allOps.Count ? -1 : i + 1;
+    int nextOrEnd (int i) => i + 1 >= Operations.Count ? -1 : i + 1;
 
     void unpackGroup (int i, OperationCollection oc)
     {
-      int first = allOps.Count;
-      allOps.AddRange([.. oc.Operations, new JumpOperation(nextOrEnd(i))]);
-      allOps.Replace(i, [new JumpOperation(first)]);
+      int first = Operations.Count;
+      Operations.AddRange([.. oc.Operations, new JumpOperation(nextOrEnd(i))]);
+      Operations.Replace(i, [new JumpOperation(first)]);
     }
-
+    void unpackForeach (int i, ForEachOperation feop)
+    {
+      int first = Operations.Count;
+      Operations.AddRange([new StartLoopOperation(feop.CursorKey, nextOrEnd(i)), .. feop.Operations, new NextLoopOperation(first)]);
+      feop.OpIndex = first;
+    }
     void unpackIf (int i, IfOperation ifop)
     {
-      int iftrue = allOps.Count;
-      allOps.Add(ifop.IfTrue);
-      allOps.Add(new JumpOperation(nextOrEnd(i)));
-      int iffalse = allOps.Count;
-      allOps.Add(ifop.IfFalse);
-      allOps.Add(new JumpOperation(nextOrEnd(i)));
+      int iftrue = Operations.Count;
+      Operations.Add(ifop.IfTrue);
+      Operations.Add(new JumpOperation(nextOrEnd(i)));
+      int iffalse = Operations.Count;
+      Operations.Add(ifop.IfFalse);
+      Operations.Add(new JumpOperation(nextOrEnd(i)));
       ifop.IfTrue = new JumpOperation(iftrue);
       ifop.IfFalse = new JumpOperation(iffalse);
     }
 
     // Unpack all operations in main list recursively
-    for (int i = 0; i < allOps.Count; i++)
+    for (int i = 0; i < Operations.Count; i++)
     {
-      IOperation op = allOps[i];
+      IOperation op = Operations[i];
       if (op is OperationCollection list)
       {
         unpackGroup(i, list);
@@ -51,15 +56,17 @@ public sealed class TextParser (TextSpec? spec = null) : IParser
         unpackIf(i, ifop);
         continue;
       }
+      if (op is ForEachOperation feop)
+      {
+        unpackForeach(i, feop);
+        continue;
+      }
       if (op is OperationLabel label)
       {
         labels[label.Name] = i;
         continue;
       }
     }
-    Operations ??= [];
-    Operations.Clear();
-    Operations.AddRange(allOps);
   }
 
   // Core Properties
@@ -76,17 +83,22 @@ public sealed class TextParser (TextSpec? spec = null) : IParser
   public IOperation CurrentOp => Operations[OpIndex];
   public IOperation NextOp => Operations![NextOpIndex];
   public int OpCount => Operations.Count;
-  [NotNull] public IDictionary<string, object> Work { get; internal set; } = new TextDataDictionary(SE);
+  [NotNull] IDictionary<string, object> IParser.Work => Work;
+  [AllowNull] public TextDataDictionary Work { get; } = [];
   public OpStatus LastStatus { get; internal set; } = AtStart;
   public Dictionary<string, int> Labels { get; } = [];
   Spec IParser.Spec => Spec;
   public DictionaryMode Mode { get; set; } = DictionaryMode.Overwrite;
+  public int Cursor { get; set; }
+  public string? CursorKey { get; set; }
+  public int CountOfKey (string key) => Work.TryGetValue(key, out object? value) ? value.AsCollection().Count : -1;
   public OpStatus Parse (string text)
   {
-    Work = new TextDataDictionary(text);
+    text.ThrowIfNull();
+    Work.Initialize(text);
     return Parse();
   }
-  public OpStatus Parse ()
+  internal OpStatus Parse ()
   {
     // Local Functions
     void logStatus (OpStatus status, string msg)
@@ -166,7 +178,6 @@ public sealed class TextParser (TextSpec? spec = null) : IParser
     Log("TextParser.Parse", Work["result"]?.ToString() ?? "<null data>");
     return LastStatus;
   }
-
   private void AdvanceOperation ()
   {
     if (NextOpIndex == -1 || NextOpIndex >= OpCount)

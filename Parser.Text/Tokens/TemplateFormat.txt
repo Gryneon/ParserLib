@@ -31,7 +31,7 @@ script - 'script' (#int|#str) '(' (#param+|'void') '{' #statement?+ '}'
 function - 'function' #name '(' (#param+|'void') '{' #statement?+ '}'
 param - #type #name ('='(#int|#str|#bool|))?
 var_decl -  #type #name (',' #name)+ ';'
-zs_defaults - 'defaults' '{' (#prop|#flag|#combo)?+-'}'
+zs_defaults - 'defaults' '{' (#prop|#flag|#combo)* '}'
 zs_class - 'class' #name ':' #name '{' (#zs_defaults|#zs_states) '}'
 
 ini_section - '[' #name ']'

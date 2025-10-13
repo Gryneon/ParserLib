@@ -4,6 +4,53 @@
         <name>Parser.Text</name>
     </assembly>
     <members>
+        <member name="T:Parser.Text.Debug">
+            <summary>
+            Static class containing debugging logs.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Debug.Verbose">
+            <summary>
+            Set to <see langword="true"/> to output debugging information to the output stream.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Debug.LineStart">
+            <summary>
+            Set to the line you must go to when making logs.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Debug.LineCount">
+            <summary>
+            This increments when a log is written. Set to 0 to reset to top.
+            </summary>
+        </member>
+        <member name="M:Parser.Text.Debug.SetStream(System.IO.TextWriter)">
+            <summary>
+            Sets the output stream.
+            </summary>
+            <param name="stream">The stream to output to.</param>
+        </member>
+        <member name="M:Parser.Text.Debug.Log(System.String)">
+            <summary>
+            Logs a message to the output stream.
+            </summary>
+            <param name="msg">The message to log.</param>
+        </member>
+        <member name="M:Parser.Text.Debug.Log(System.String,System.String)">
+            <summary>
+            Logs a message to the output stream.
+            </summary>
+            <param name="src">The orignating class.</param>
+            <param name="msg">The message to log.</param>
+        </member>
+        <member name="M:Parser.Text.Debug.LogFrom(System.String,System.String,System.String)">
+            <summary>
+            Logs a message to the output stream.
+            </summary>
+            <param name="src">The orignating class.</param>
+            <param name="target">The originating method.</param>
+            <param name="msg">The message to log.</param>
+        </member>
         <member name="T:Parser.Text.IValidator`2">
             <summary>
             Validates that a command is well formed.
@@ -20,6 +67,52 @@
             </summary>
             <param name="cmd">The command to validate</param>
             <returns></returns>
+        </member>
+        <member name="T:Parser.Text.Ops.CombineDelimOperation">
+            <summary>
+            <summary>
+				Performs an operation that uses and may alter or reassign the data.
+			</summary><returns>
+				<see cref="F:Parser.OpStatus.Error" /> : The operation encountered a fatal error.<br />
+				<see cref="F:Parser.OpStatus.Pass" /> : The operation completed.<br />
+				<see cref="F:Parser.OpStatus.Skipped" /> : The operation was skipped or not executed. <br />
+				<see cref="F:Parser.OpStatus.FailBadInputNull" /> : The operation was given a null value. <br />
+				<see cref="F:Parser.OpStatus.FailBadInputType" /> : The operation was given an incompatible object as input. <br />
+				<see cref="F:Parser.OpStatus.FailBadOpDefinition" /> : The operation or specification definition has an error or is not valid. <br />
+				<see cref="F:Parser.OpStatus.FailBadOpImpossible" /> : The operation reached an impossible statement. <br />
+				<see cref="F:Parser.OpStatus.FailNullOpResult" /> : The operation resulted in a null value. <br />
+				<see cref="F:Parser.OpStatus.FailBufferOverflow" /> : The operation advanced beyond the EOL of the input. <br />
+				<see cref="F:Parser.OpStatus.FailNoSuchVarName" /> : The operation was supplied an invalid key.<br />
+				<see cref="F:Parser.OpStatus.FailNoSpec" /> : The operation does not have a valid <see cref="T:Parser.Spec" />.<br />
+				<see cref="F:Parser.OpStatus.EndCommand" /> : The operation completed and was the final operation. <br />
+			</returns><exception cref="T:Parser.UnknownOperationException" />
+            </summary>
+            <param name="delimiter">What to space the text parts with.</param>
+            <param name="input_key">The input key.</param>
+            <param name="output_key">The output key.</param>
+        </member>
+        <member name="M:Parser.Text.Ops.CombineDelimOperation.#ctor(System.String,System.String,System.String)">
+            <summary>
+            <summary>
+				Performs an operation that uses and may alter or reassign the data.
+			</summary><returns>
+				<see cref="F:Parser.OpStatus.Error" /> : The operation encountered a fatal error.<br />
+				<see cref="F:Parser.OpStatus.Pass" /> : The operation completed.<br />
+				<see cref="F:Parser.OpStatus.Skipped" /> : The operation was skipped or not executed. <br />
+				<see cref="F:Parser.OpStatus.FailBadInputNull" /> : The operation was given a null value. <br />
+				<see cref="F:Parser.OpStatus.FailBadInputType" /> : The operation was given an incompatible object as input. <br />
+				<see cref="F:Parser.OpStatus.FailBadOpDefinition" /> : The operation or specification definition has an error or is not valid. <br />
+				<see cref="F:Parser.OpStatus.FailBadOpImpossible" /> : The operation reached an impossible statement. <br />
+				<see cref="F:Parser.OpStatus.FailNullOpResult" /> : The operation resulted in a null value. <br />
+				<see cref="F:Parser.OpStatus.FailBufferOverflow" /> : The operation advanced beyond the EOL of the input. <br />
+				<see cref="F:Parser.OpStatus.FailNoSuchVarName" /> : The operation was supplied an invalid key.<br />
+				<see cref="F:Parser.OpStatus.FailNoSpec" /> : The operation does not have a valid <see cref="T:Parser.Spec" />.<br />
+				<see cref="F:Parser.OpStatus.EndCommand" /> : The operation completed and was the final operation. <br />
+			</returns><exception cref="T:Parser.UnknownOperationException" />
+            </summary>
+            <param name="delimiter">What to space the text parts with.</param>
+            <param name="input_key">The input key.</param>
+            <param name="output_key">The output key.</param>
         </member>
         <member name="M:Parser.Text.Ops.ConsolidateOperation`1.Execute">
             <inheritdoc/>
@@ -201,11 +294,16 @@
             TODO: This operation is buggy and not yet functional.
             </summary>
         </member>
-        <member name="M:Parser.Text.Ops.TokenTemplateOperation.Execute">
+        <member name="F:Parser.Text.Ops.TokenTemplateOperation.ParentNode">
             <inheritdoc/>
             <remarks>
             This operation checks for token groups and builds them.
             </remarks>
+        </member>
+        <member name="M:Parser.Text.Ops.TokenTemplateOperation.CheckPosition">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:Parser.Text.Output.OutputValueContent">
             <summary>
@@ -429,9 +527,19 @@
             The content of this token, or all of its children.
             </summary>
         </member>
+        <member name="P:Parser.Text.Tokens.IToken.HasProperties">
+            <summary>
+            Gets a value indicating whether the current object contains any properties.
+            </summary>
+        </member>
         <member name="P:Parser.Text.Tokens.IToken.Length">
             <summary>
             The length of the text of this token.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.IToken.Position">
+            <summary>
+            The position of this token in the original text.
             </summary>
         </member>
         <member name="P:Parser.Text.Tokens.IToken.Type">
@@ -444,6 +552,16 @@
             Displays the text content of this token.
             </summary>
             <returns>A <see langword="string"/> representing the token.</returns>
+        </member>
+        <member name="P:Parser.Text.Tokens.IToken.FromNode">
+            <summary>
+            The node structure that this token was created from.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.IToken.LinkNode">
+            <summary>
+            The specific node item that represents this child token.
+            </summary>
         </member>
         <member name="T:Parser.Text.Tokens.Token">
             <summary>
@@ -471,24 +589,24 @@
             The length of the token.
             </summary>
         </member>
-        <member name="P:Parser.Text.Tokens.Token.HasProperties">
-            <summary>
-            Whether this token has any properties.
-            </summary>
-        </member>
-        <member name="P:Parser.Text.Tokens.Token.Children">
-            <summary>
-            The child tokens contained within this token.
-            </summary>
-        </member>
         <member name="P:Parser.Text.Tokens.Token.Type">
             <summary>
             The type of token this is.
             </summary>
         </member>
+        <member name="P:Parser.Text.Tokens.Token.HasProperties">
+            <summary>
+            Whether this token has any properties.
+            </summary>
+        </member>
         <member name="P:Parser.Text.Tokens.Token.Properties">
             <summary>
             The properties of this token.
+            </summary>
+        </member>
+        <member name="P:Parser.Text.Tokens.Token.Children">
+            <summary>
+            The child tokens contained within this token.
             </summary>
         </member>
         <member name="P:Parser.Text.Tokens.Token.Count">
@@ -503,6 +621,9 @@
             <param name="type">The type of token this is.</param>
             <param name="content"><see cref="T:System.String"/> content to initialize this token with.</param>
         </member>
+        <member name="M:Parser.Text.Tokens.Token.ToString">
+            <inheritdoc/>
+        </member>
         <member name="M:Parser.Text.Tokens.Token.Clone">
             <inheritdoc/>
         </member>
@@ -514,6 +635,12 @@
             <returns>A token that represents the contents of the <see cref="T:Common.Regex.MatchDataSet"/> object.</returns>
         </member>
         <member name="M:Parser.Text.Tokens.Token.Add(Parser.Text.Tokens.IToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Parser.Text.Tokens.Token.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Parser.Text.Tokens.Token.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc/>
         </member>
         <member name="M:Parser.Text.Tokens.TokenNode.Consume">

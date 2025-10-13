@@ -13,5 +13,5 @@ public sealed class TokenNodeCommand : TokenNode
     Type = TokenNodeType.Command;
     Command = command;
   }
-  public override bool Match => CurrentToken.Content.Equals(Command, SCOIC);
+  public override bool Match => CurrentToken?.Content.Equals(Command, SCOIC) ?? false;
 }

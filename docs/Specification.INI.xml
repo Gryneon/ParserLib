@@ -101,14 +101,6 @@
         <member name="M:Specification.INI.DocumentSet.Remove(Specification.INI.Section)">
             <inheritdoc/>
         </member>
-        <member name="T:Specification.INI.PropertyCollection">
-            <summary>
-            A collection of properties.
-            </summary>
-        </member>
-        <member name="M:Specification.INI.PropertyCollection.GetKeyForItem(Common.IProperty{System.String})">
-            <inheritdoc/>
-        </member>
         <member name="T:Specification.INI.PropertyObj">
             <summary>
             A key and value pair in an INI file.
@@ -281,12 +273,6 @@
             </summary>
             <param name="prop">The property to add or apply.</param>
         </member>
-        <member name="M:Specification.INI.Section.SetRange(System.Collections.Generic.IEnumerable{Specification.INI.PropertyObj})">
-            <summary>
-            Gives the setrange rkne an
-            </summary>
-            <param name="children"></param>
-        </member>
         <member name="M:Specification.INI.Section.Add(Specification.INI.PropertyObj)">
             <summary>
             Adds the property, or sets the value of the property if it already exists.
@@ -306,9 +292,6 @@
             <inheritdoc/>
         </member>
         <member name="M:Specification.INI.Section.Contains(Specification.INI.PropertyObj)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.Section.CopyTo(Specification.INI.PropertyObj[],System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:Specification.INI.Section.Remove(Specification.INI.PropertyObj)">
