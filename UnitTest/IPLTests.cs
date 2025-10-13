@@ -55,13 +55,13 @@ public class IPLTests
 public class JSON_Tests
 {
   [Theory]
-  [InlineData("( $int | $dec | $null | $bool | $string | #json_object | #json_array )")]
+  [InlineData("$int | $dec | $null | $bool | $string | #json_object | #json_array")]
   public void JSON_TokenTemplateParse (string parse)
   {
-    TokenNodeGroup nodeGroup = TokenNodeFactory.GetTokenNodes(parse, out string? import_group);
+    TokenNodeGroup nodeGroup = TokenNodeFactory.GetTokenNodes(parse, out string? _);
     Assert.Null(nodeGroup.Parent);
     Assert.Empty(nodeGroup.Items);
     Assert.NotEmpty(nodeGroup.Options);
-    Assert.Single(nodeGroup.Options[0]);
+    _ = Assert.Single(nodeGroup.Options[0]);
   }
 }

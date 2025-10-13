@@ -1,4 +1,5 @@
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CA1710 // Identifiers should have correct suffix
 
 using System.Collections;
 

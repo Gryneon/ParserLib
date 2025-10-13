@@ -302,7 +302,7 @@
         </member>
         <member name="M:Parser.Text.Ops.TokenTemplateOperation.CheckPosition">
             <summary>
-            
+            Checks the current position for a match.
             </summary>
         </member>
         <member name="T:Parser.Text.Output.OutputValueContent">

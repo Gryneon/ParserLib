@@ -46,7 +46,7 @@ public static class Definition
   private static readonly Dictionary<string, string> TokenFormats = [
     K("json_object", "'{' ( #json_property ^import^ ( ',' #json_property ^import^ )* )? '}'"),
     K("json_array", "'[' ( #json_value ( ',' #json_value )* )? ']'"),
-    K("json_value", "( $int | $dec | $null | $bool | $string | #json_object | #json_array )"),
+    K("json_value", "$int | $dec | $null | $bool | $string | #json_object | #json_array"),
     K("json_property", "$string ^key^ ':' #json_value ^value^")
   ];
   /// <summary>

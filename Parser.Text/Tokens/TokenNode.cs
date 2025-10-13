@@ -1,4 +1,5 @@
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CA2227 // Collection properties should be read only
 
 namespace Parser.Text.Tokens;
 

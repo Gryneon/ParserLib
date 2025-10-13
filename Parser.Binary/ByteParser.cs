@@ -28,10 +28,10 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
   };
 
   #region Internal Buffer Functions
-  internal bool ContainsKey (string key) => ByteObjects.ContainsKey(key);
+  internal bool ContainsKey (string key) => Work.ContainsKey(key);
   internal T? Load<T> (string key) where T : notnull
   {
-    object? temp = ByteObjects.TryGetValue(key, out object? value) ? value : null;
+    object? temp = Work.TryGetValue(key, out object? value) ? value : null;
 
     if (temp is null)
     {
@@ -42,7 +42,7 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
   }
   internal void Save<Span> (string key, Span<byte> data)
   {
-    if (ByteObjects.TryGetValue(key, out object? atKey))
+    if (Work.TryGetValue(key, out object? atKey))
     {
       if (atKey is Collection<byte[]> binary)
       {
@@ -53,17 +53,17 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
       {
         // Overwrite
         Log($"ByteParser.Save<Span>({key}, Span<byte>)", $"Sent data and started the collection.");
-        ByteObjects[key] = new Collection<byte[]>() { array, data.ToArray() };
+        Work[key] = new Collection<byte[]>() { array, data.ToArray() };
       }
     }
     else
     {
-      ByteObjects[key] = data.Length > 0 ? data.ToArray() : [];
+      Work[key] = data.Length > 0 ? data.ToArray() : [];
     }
   }
   internal void Save<T> (string key, T? data)
   {
-    if (ByteObjects.TryGetValue(key, out object? atKey))
+    if (Work.TryGetValue(key, out object? atKey))
     {
       if (atKey is Collection<T> list && data is not null)
       {
@@ -72,9 +72,9 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
       else if (atKey is T item && data is not null)
       {
         Collection<T> newlist = [item, data];
-        ByteObjects[key] = newlist;
+        Work[key] = newlist;
       }
-      else if (data is null && ByteObjects.Remove(key))
+      else if (data is null && Work.Remove(key))
       {
         Log($"BT.Save<T>({key}, null): Sent null to Data and cleared key '{key}'.");
       }
@@ -85,19 +85,19 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
       else
       {
         Collection<object> newlist = [atKey, data];
-        ByteObjects[key] = newlist;
+        Work[key] = newlist;
       }
     }
     else if (data is not null)
     {
-      ByteObjects[key] = data;
+      Work[key] = data;
     }
     else
     {
       Log($"BT.Save<T>({key}, null): Sent null to Data and cleared key '{key}'.");
     }
   }
-  internal void Clear (string key) => ByteObjects.Remove(key);
+  internal void Clear (string key) => Work.Remove(key);
   internal Span<byte> ReadNext (int count)
   {
     Span<byte> result = _fileContents.AsSpan().Slice(BytePos, count);
@@ -138,7 +138,7 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
   internal int LoopCountRemaining { get; set; } = DNE;
   internal OpLoopData? CurrentLoop => LoopDepth >= LoopData.Count ? null : LoopData[LoopDepth];
   public Collection<IOperation> Operations => CurrentLoop?.Operations ?? [];
-  public Dictionary<string, object> Metadata => ByteObjects.ToDictionary();
+  public Dictionary<string, object> Metadata => Work.ToDictionary();
   public int CountOfKey (string key) => Work.TryGetValue(key, out object? value) ? value.AsCollection().Count : -1;
   /// <summary>
   /// The last status from the last operation executed.
@@ -161,12 +161,6 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
   /// The loaded binary file.
   /// </summary>
   private byte[] _fileContents = bytes ?? [];
-
-  /// <summary>
-  /// The data stored from the file.
-  /// </summary>
-  public BDD ByteObjects { get; } = [];
-
   /// <summary>
   /// The current position in the binary file.
   /// </summary>
@@ -184,7 +178,8 @@ public sealed class ByteParser (Spec? spec = null, byte[]? bytes = null) : IPars
   /// </summary>
   public Spec Spec { get; init; } = spec ?? DefaultSpec;
   public int NextOpIndex { get; set; }
-  [AllowNull] public IDictionary<string, object> Work { get; } = new BDD();
+  public BDD Work { get; } = [];
+  IDictionary<string, object> IParser.Work => Work;
   public string? CursorKey { get; set; }
 
   /// <summary>

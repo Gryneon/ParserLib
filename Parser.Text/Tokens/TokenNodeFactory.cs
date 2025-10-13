@@ -6,6 +6,8 @@ namespace Parser.Text.Tokens;
 
 public static class TokenNodeFactory
 {
+  private const string Area = "TokenNodeFactory";
+
   public static readonly RxS Regex = Rx(
 """
 (?'line'
@@ -28,7 +30,7 @@ public static class TokenNodeFactory
     import_group = null;
 
     TokenNode? previous = null;
-    TokenNodeGroup? parent = new();
+    TokenNodeGroup filling_group = [];
     int depth = 0;
 
     void ThrowIfPrevNull (string item)
@@ -47,7 +49,7 @@ public static class TokenNodeFactory
     }
     void ThrowIfGrandparentNull ()
     {
-      if (parent.Parent is null)
+      if (filling_group.Parent is null)
       {
         throw new InvalidOperationException("Mismatched parentheses in token type string.");
       }
@@ -58,7 +60,7 @@ public static class TokenNodeFactory
       TokenNode? item = TokenNode.Generate(md);
       if (item is null)
         continue;
-      if (parent is null)
+      if (filling_group is null)
         continue;
       Debug.Log("TokenNodeFactory.GetTokenNodes", $"Node Processed: {item.Type}");
 
@@ -67,22 +69,22 @@ public static class TokenNodeFactory
         case TokenNodeType.GroupSt:
           TokenNodeGroup groupItem = new()
           {
-            Parent = parent
+            Parent = filling_group
           };
           depth++;
-          parent!.Add(groupItem);
-          parent = groupItem;
+          filling_group!.Add(groupItem);
+          filling_group = groupItem;
           break;
         case TokenNodeType.GroupEn:
-          parent.AddOption();
+          filling_group.AddOption();
           ThrowIfGrandparentNull();
-          previous = parent;
-          parent = parent.Parent;
+          previous = filling_group;
+          filling_group = filling_group.Parent!;
           depth--;
           ThrowIfDepthNeg();
           break;
         case TokenNodeType.Or:
-          parent.AddOption();
+          filling_group.AddOption();
           break;
         case TokenNodeType.Any:
           ThrowIfPrevNull("*");
@@ -119,21 +121,22 @@ public static class TokenNodeFactory
         case TokenNodeType.Base:
           goto default;
         case TokenNodeType.Group:
+          Debug.Log(Area, "Group Encountered. This should never occur.");
           TokenNodeGroup inner_group = new()
           {
-            Parent = parent
+            Parent = filling_group!
           };
           break;
         case TokenNodeType.None:
           throw new InvalidOperationException("No Token node type was assigned.");
         default:
-          parent.Add(item);
+          filling_group.Add(item);
           previous = item;
           break;
       }
     }
-    parent?.AddOption();
+    filling_group!.AddOption();
 
-    return parent;
+    return filling_group;
   }
 }

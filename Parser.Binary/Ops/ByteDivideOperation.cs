@@ -16,7 +16,7 @@ public class ByteDivideOperation (int divisor, string input_key, string output_k
 
     int quotient = dividend.Value / divisor;
 
-    parser.ByteObjects[OutputKey] = quotient;
+    parser.Work[OutputKey] = quotient;
 
     Log("ByteDivideOperation", $"{dividend} / {divisor} = {quotient}");
     return Pass;

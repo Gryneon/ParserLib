@@ -12,7 +12,7 @@ namespace Parser.Binary.Ops;
 public abstract class ByteOperation (string input_key, string output_key) : Operation<ByteParser>(input_key, output_key)
 {
   [AllowNull] public new ByteParser Parser { get; protected set; }
-  protected ByteDataDictionary BData => Parser.ByteObjects;
+  protected ByteDataDictionary BData => Parser.Work;
   #region Unused Overrides
   /// <summary>Do not use.</summary>
   /// <returns>Throws exception.</returns>
@@ -57,7 +57,7 @@ public abstract class ByteOperation (string input_key, string output_key) : Oper
   protected override void Initialize (ByteParser parser) => Parser = parser;
   protected override void CheckInputNull ()
   {
-    if (Parser.ByteObjects is null)
+    if (Parser.Work is null)
     {
       Log("ByteOperation.CheckInputNull", "Input is null.");
       Status = FailBadInputNull;
