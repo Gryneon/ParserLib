@@ -63,5 +63,7 @@ public class JSON_Tests
     Assert.Empty(nodeGroup.Items);
     Assert.NotEmpty(nodeGroup.Options);
     _ = Assert.Single(nodeGroup.Options[0]);
+    Assert.Equal(7, nodeGroup.Options.Count);
+    Assert.Equal(TokenNodeType.Base, nodeGroup.Options[0][0].Type);
   }
 }

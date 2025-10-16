@@ -45,11 +45,6 @@
             The loaded binary file.
             </summary>
         </member>
-        <member name="P:Parser.Binary.ByteParser.ByteObjects">
-            <summary>
-            The data stored from the file.
-            </summary>
-        </member>
         <member name="P:Parser.Binary.ByteParser.BytePos">
             <summary>
             The current position in the binary file.

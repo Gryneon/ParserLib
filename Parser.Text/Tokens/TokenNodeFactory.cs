@@ -107,6 +107,7 @@ public static class TokenNodeFactory
             if (previous is not TokenNodeRef prev_ref)
               throw new InvalidOperationException("previous must be a ref_group");
 
+            previous.ImportGroup = true;
             import_group = prev_ref.RefName;
           }
           else if (c.Like("key"))

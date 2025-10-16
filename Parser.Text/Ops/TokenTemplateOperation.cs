@@ -39,7 +39,8 @@ public class TokenTemplateOperation : TextOperation
   private int OptionIndex { get; set; }
   private int NodeIndex { get; set; }
   private TokenNode? Node =>
-    ParentNode?.Options[OptionIndex].Count is null or 0 ? null : (ParentNode?.Options[OptionIndex][NodeIndex]);
+    ParentNode?.Options[OptionIndex].Count is null or 0 ? null :
+    ParentNode.Options[OptionIndex][NodeIndex];
   private IToken Token => Tokens[TokenIndex];
   private string NodeKeyName = SE;
   private int NodeCount => ParentNode?.Options[OptionIndex].Count ?? 0;
@@ -53,16 +54,10 @@ public class TokenTemplateOperation : TextOperation
       get;
       set
       {
+        //if it Goes from false to true, set InitialMatch
         if (value && !field)
-        {
           InitialMatch = value;
-          field = value;
-        }
-        else
-        {
-          field = value;
-          InitialMatch = false;
-        }
+        field = value;
       }
     }
     public bool InitialMatch { get; set; }
@@ -106,12 +101,33 @@ public class TokenTemplateOperation : TextOperation
       return;
 
     DoCheck();
+  }
+  private static void AssignProperties (IToken parent, IEnumerable<IToken>? children)
+  {
+    TokenNode? this_node = parent.LinkNode;
+    bool do_command_property_copy = this_node?.ImportGroup ?? false;
 
-    Node.ThrowIfNull();
+    Collection<string> keys = [];
+    Collection<string> values = [];
 
-    if (TokenState.Match && TokenState.Complete)
+    if (do_command_property_copy && children is not null)
     {
-      CompleteMatch();
+      foreach (IToken child in children)
+      {
+        TokenNode? child_node = child.LinkNode;
+
+        if (child_node is null)
+        {
+          Debug.Log(Area, "Child Node was null when assigning properties.");
+          continue;
+        }
+
+        if (child_node.ImportKey) keys.Add(child.Content);
+        if (child_node.ImportValue) values.Add(child.Content);
+      }
+
+      IEnumerable<(string, string)> zipped = Enumerable.Zip(keys, values);
+      parent.Properties.AddRange(zipped);
     }
   }
   private void CompleteMatch ()
@@ -119,20 +135,14 @@ public class TokenTemplateOperation : TextOperation
     IEnumerable<IToken>? sub = Tokens.Skip(TokenState.MatchStart).Take(TokenState.MatchLength);
     Tokens.RemoveCount(TokenState.MatchLength, TokenState.MatchStart);
     ParentNode.ThrowIfNull();
-    IEnumerable<(string, string)>? properties =
-      sub.
-      Where(item => item.Type.Like(ParentNode.ImportGroup)).
-      Select(item =>
-          (item.Children.First(item => item.LinkNode?.ImportKey ?? false).Content,
-          item.Children.First(item => item.LinkNode?.ImportValue ?? false).Content)
-        );
-    Token new_token = new(sub.Select(item => item.Content).TextJoin(), sub.First().Position, NodeKeyName)
+
+    Token new_token = new()
     {
       FromNode = ParentNode.Parent is null ? ParentNode : ParentNode.Parent,
       Type = NodeKeyName,
-      Properties = [.. properties.Select<(string, string), KeyValuePair<string, string>>((a) => new(a.Item1, a.Item2))]
+      Properties = []
     };
-    new_token.Properties.AddRange(properties);
+    AssignProperties(new_token, sub);
     new_token.Children.AddRange(sub);
     Tokens.Insert(TokenState.MatchStart, new_token);
     TokenState.StartAt = TokenState.MatchStart;
@@ -232,6 +242,8 @@ public class TokenTemplateOperation : TextOperation
           {
             TokenState.MatchStart = TokenIndex;
             TokenState.StartAt = TokenIndex;
+            TokenState.InitialMatch = false;
+            //No Continue.
           }
           if (TokenState.Complete)
           {

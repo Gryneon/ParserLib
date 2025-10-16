@@ -9,6 +9,7 @@ public abstract class TokenNode : IGeneratable<MatchDataSet, TokenNode>
   public TokenNodeType Type { get; set; }
   public bool ImportKey { get; set; }
   public bool ImportValue { get; set; }
+  public bool ImportGroup { get; set; }
   public bool IsOptional { get; set; }
   public bool IsOneOrMany { get; set; }
   public bool IsAny { get; set; }

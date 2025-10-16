@@ -18,33 +18,26 @@ public class SplitByLinesOperation (string input_key, string output_key) : TextO
   }
 }
 
-public class AssemblyRule
+public class SplitOperation
 {
-  public bool Global { get; set; }
-
-}
-
-public class AssembleByRulesOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
-{
-#pragma warning disable IDE1006 // Naming Styles
-  private string? cs;
-  private int i;
-  private char c;
-  protected override void Execute ()
+  public SplitOperation (string delimeter, string input_key = "text", string output_key)
   {
-    if (CheckInput(out string? s))
-    {
-      cs = s;
-      for (i = 0; i < cs.Length; i++)
-      {
-        c = cs[i];
 
+  }
+  public SplitOperation (IEnumerable<string> delimeters)
+  {
 
-      }
-    }
-    else
-    {
-      Status = OpStatus.FailBadInputType;
-    }
+  }
+  public SplitOperation (RxS regex)
+  {
+
+  }
+  public SplitOperation (RxSCollection regexes)
+  {
+
+  }
+  public SplitOperation ()
+  {
+
   }
 }
