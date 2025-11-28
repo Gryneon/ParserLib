@@ -3,7 +3,7 @@ namespace Specification.IPL;
 /// <summary>
 /// Represents a command to compare.
 /// </summary>
-public struct IPLCommandTemplate : IEquatable<IPLCommandTemplate>, ITextSerializer<IPLCommandTemplate>
+public struct IPLCommandTemplate : IEquatable<IPLCommandTemplate>, ITextSerializer
 {
   /// <summary>
   /// The command type.

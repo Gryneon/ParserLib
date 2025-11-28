@@ -42,4 +42,19 @@ public interface IGeneratable<TIn, TOut> : IGeneratable
       return false;
     }
   }
+  static virtual bool TryGenerate (object input, [NotNullWhen(true)][MaybeNullWhen(false)] out TOut output)
+  {
+    try
+    {
+      if (input is not TIn @in)
+        throw new ArgumentException(nameof(@in));
+      output = TOut.Generate(@in);
+      return output is null ? throw new ArgumentNullException(nameof(output)) : true;
+    }
+    catch (ArgumentNullException)
+    {
+      output = default;
+      return false;
+    }
+  }
 }

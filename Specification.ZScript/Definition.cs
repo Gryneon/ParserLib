@@ -1,9 +1,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Rule Violation
 
-using Parser.Ops;
-using Parser.Text.Ops;
-
+using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.ZScript;
@@ -14,6 +12,7 @@ namespace Specification.ZScript;
 //ZScript Tokenizer
 //https://regex101.com/r/dM72bX/1
 
+[DefinitionExport]
 public static class PrevDefinition
 {
   /// <summary>
@@ -71,22 +70,23 @@ public static class PrevDefinition
   private static RxSCollection Reader { get; } = [
     _n_cls
   ];
-  public static TextSpec Spec => new()
+  [Export("zdoom.zscript")]
+  public static ISpec Spec => new Spec()
   {
     FileInferences = [],
-    CaseInsensitive = true,
+    RxOpt = ROML | ROIPW | ROIC | ROEC,
     RegexBasicTokens = [
       "entireclass",
     ],
     WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
     Name = "zdoom.zscript",
     Operations = [
-      new SplitRegexOperation([]),
-      new DictionaryOperation(Reader, false, "textparts"),
+      new SplitOperation(),
+      new DictionaryOperation(Reader, ROML | ROIPW | ROIC | ROEC, false, "textparts"),
       new TokenizeOperation(),
       new TokenTemplateOperation([]),
       //TemplateToObjectOperation
-      Operation.End
+      Parser.Ops.Operation.End
     ]
   };
 }

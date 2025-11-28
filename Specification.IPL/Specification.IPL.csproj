@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <Deterministic>true</Deterministic>
@@ -22,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Parser.Text\Parser.Text.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
   </ItemGroup>
 

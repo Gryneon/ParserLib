@@ -1,5 +1,16 @@
+global using System;
+global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
+
+global using Common;
 global using Common.Extensions;
+global using Common.Regex;
 
-global using Parser.Text;
+global using Parser;
+global using Parser.Ops;
+global using Parser.Ops.Text;
+global using Parser.Tokens;
 
+global using static Common.Names;
 global using static Parser.DefinitionStaticFunctions;
+

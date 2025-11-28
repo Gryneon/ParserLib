@@ -3,41 +3,37 @@
 namespace Common.Regex;
 
 /// <summary>
-/// A box that contains a string representing a regular expression.
+/// A box that contains a string representing a regular expression. Basically just an extension of <see cref="string"/>.
 /// </summary>
 /// <seealso cref="string" />
 public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable<RxS>
 {
-  /// <summary>
-  /// Gets the string value of this regular expression.
-  /// </summary>
-  /// <value>
-  /// The content of this regular expression.
-  /// </value>
+  /// <summary>Gets the string value of this regular expression.</summary>
+  /// <value>The content of this regular expression.</value>
   public string Content { get; init; }
-  /// <summary>
-  /// Gets the length of the content.
-  /// </summary>
-  /// <value>
-  /// The length of the content.
-  /// </value>
+  /// <summary>Gets the length of the content.</summary>
+  /// <value>The length of the content.</value>
   public int Length => Content.Length;
-  /// <summary>
-  /// Retrieves the regular expression stored.
-  /// </summary>
+  /// <summary>Retrieves the regular expression stored.</summary>
   /// <returns>The regular expression as a string.</returns>
   public override string ToString () => Content;
-  /// <summary>
-  /// Compares the regular expressions for equality.
-  /// </summary>
-  /// <param name="other">The string to compare to.</param>
-  /// <returns><see langword="true"/> if the two regular expressions are based on the same pattern string, <see langword="false"/> otherwise.</returns>
-  public bool Equals ([SS("Regex")] string? other) => Content.Equals(other, SCO);
-  public int CompareTo (string? other) => Content.CompareTo(other, SCO);
+  public int CompareTo ([SS("Regex")] string? other) => Content.CompareTo(other, SCO);
 
   public static implicit operator string (RxS rx) => rx.Content;
   public static implicit operator RxS ([SS("Regex")] string str) => Rx(str);
-
+  /// <summary>
+  /// Concatenates 2 regular expressions.
+  /// </summary>
+  /// <param name="rx1">The left expression.</param>
+  /// <param name="rx2">The right expression.</param>
+  /// <returns>A regular expression formed from the 2 regular expressions.</returns>
+  public static RxS operator + (RxS rx1, RxS rx2) => $"{rx1}{rx2}";
+  /// <summary>
+  /// Concatenates 2 regular expressions.
+  /// </summary>
+  /// <param name="rx1">The left expression.</param>
+  /// <param name="rx2">The right expression.</param>
+  /// <returns>A regular expression formed from the 2 regular expressions.</returns>
   public static RxS operator + (RxS rx1, [SS("Regex")] string rx2) => $"{rx1}{rx2}";
   public static RxS operator ! (RxS rx1) => NegLkAhd(rx1);
   /// <summary>
@@ -68,13 +64,11 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   /// <param name="rx2">Righthand regular expression.</param>
   /// <returns>A regular expression that is a joining of the 2 expressions.</returns>
   public static RxS operator <= (RxS rx1, [SS("Regex")] string rx2) => rx1 + PosLkBhd(rx2);
-  /// <summary>
-  /// Adds the lazy quantifier to the expression.
-  /// </summary>
+  /// <summary>Adds the lazy quantifier to the expression.</summary>
+  /// <value><c>?</c></value>
   public RxS Lazy => $"{Content}?";
-  /// <summary>
-  /// Adds a 'zero or many' quantifier to the expression.
-  /// </summary>
+  /// <summary>Adds a 'zero or many' quantifier to the expression.</summary>
+  /// <value><c>*</c></value>
   public RxS Any => $"{Grp(Content)}*";
   /// <summary>
   /// Adds a 'one or many' quantifier to the expression.
@@ -94,15 +88,15 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   public RxS Or ([SS("Regex")] string content) => $"{Content}|{Grp(content)}";
   public RxS Or (IEnumerable<string> list) => $"{Content}|{Grp(list.TextJoin("|"))}";
   public static RxS Or ([SS("Regex")] string content, params Collection<string> values) => Grp($"{content}|{values.TextJoin("|")}");
-  /// <summary>
-  /// Append a pipe operator.
-  /// </summary>
-  public RxS Orr => $"{Content}|";
 
   public RxS ([SS("Regex")] string s) => Content = s;
   public RxS (RxS rx) => Content = rx;
 
+  /// <summary>The beginning of the text, not a line beginning.</summary>
+  /// <value><c>\A</c></value>
   public static RxS Start => Rx(@"\A");
+  /// <summary>The beginning of the text, or a line beginning if the appropriate flag is enabled.</summary>
+  /// <value><c>^</c></value>
   public static RxS LnStart => Rx("^");
   public static RxS TruEnd => Rx(@"\z");
 
@@ -132,10 +126,11 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   public static RxS Ref (int group) => $"\\{group}";
   public static RxS Ref (string name) => $"${{{name}}}";
 
-  /// <summary>
-  /// The contents before a match - "$`"
-  /// </summary>
+  /// <summary>The contents before a match.</summary>
+  /// <value><c>$`</c></value>
   public static RxS BeforeMatch => "$`";
+  /// <summary>The contents after a match.</summary>
+  /// <value><c>$'</c></value>
   public static RxS AfterMatch => "$'";
   public static RxS EntireMatch => "$&";
   public static RxS EntireInput => "$_";
@@ -154,23 +149,33 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   /// <returns>true if the regular expression matches ignoring case, false otherwise</returns>
   public bool Like (RxS other) => Content.Like(other);
 
-  /// <inheritdoc/>
-  public override bool Equals (object? obj) => obj switch
-  {
-    null => false,
-    string s => Is(s),
-    RxS rx => Is(rx),
-    RxSCollection rxc => Is(rxc.Combined),
-    _ => Is(obj.ToString() ?? SE)
-  };
-
-  /// <inheritdoc/>
   public override int GetHashCode () => Content.GetHashCode(SCO);
   public static bool operator == (RxS left, RxS right) => left.Equals(right);
+  public static bool operator == (RxS left, [SS("regex")] string right) => left.Equals(right);
+  public static bool operator != (RxS left, [SS("regex")] string right) => !(left == right);
   public static bool operator != (RxS left, RxS right) => !(left == right);
 
   public static bool operator < (RxS left, RxS right) => left.CompareTo(right) < 0;
   public static bool operator > (RxS left, RxS right) => left.CompareTo(right) > 0;
 
+  /// <summary>
+  /// Compares the regular expressions for equality.
+  /// </summary>
+  /// <param name="other">The string to compare to.</param>
+  /// <returns><see langword="true"/> if the two regular expressions are based on the same pattern string, <see langword="false"/> otherwise.</returns>
+  public bool Equals ([SS("Regex")] string? other) => Content.Equals(other, SCO);
+  /// <summary>
+  /// Compares the regular expressions for equality.
+  /// </summary>
+  /// <param name="other">The regular expression to compare to.</param>
+  /// <returns><see langword="true"/> if the two regular expressions are based on the same pattern string, <see langword="false"/> otherwise.</returns>
   public bool Equals (RxS other) => Equals(other.Content);
+  public override bool Equals (object? obj) => obj switch
+  {
+    null => false,
+    string s => Equals(s),
+    RxS rx => Equals(rx.Content),
+    RxSCollection rxc => Equals(rxc.Combined.Content),
+    _ => Equals(obj.ToString() ?? SE)
+  };
 }

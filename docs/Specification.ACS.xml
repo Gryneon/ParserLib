@@ -6,16 +6,17 @@
     <members>
         <member name="T:Specification.ACS.Definition">
             <summary>
-            ACS Specification Definition
+            ACS Specification Definition <br/>
+            <see href="https://regex101.com/r/mTwORe/1">Regex</see>
+            https://regex101.com/r/FCoqFI/1
             </summary>
         </member>
         <member name="M:Specification.ACS.Definition.Splitter(System.String)">
-             <summary>
-             https://regex101.com/r/NoIMcf/1
-             </summary>
-            
-             https://regex101.com/r/tfW4Sl/1
-             <remarks>https://regex101.com/r/deLv0L/2</remarks>
+            <summary>
+            https://regex101.com/r/NoIMcf/1 <br/>
+            </summary>
+            https://regex101.com/r/tfW4Sl/1
+            <remarks>https://regex101.com/r/deLv0L/2</remarks>
         </member>
         <member name="P:Specification.ACS.Definition.Spec">
             <summary>

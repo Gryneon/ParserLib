@@ -6,8 +6,11 @@
 using System.Collections.Generic;
 
 using Common.Extensions;
-using Common.Regex;
 
+using Parser;
+using Parser.Ops.Text;
+
+using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.MapInfo;
@@ -91,14 +94,26 @@ public static class Definition
     eq = $"{wso}={wso}",
     properties = $"(?'content'{property}*?)";
 
+  private static readonly Dictionary<string, RxS> Translator = [
+    K("{", brk_st),
+    K("}", Rx($"{wso}}}")),
+    K("=", Rx($"{wso}={wso}")),
+    K("damagetype", Rx($@"\bdamagetype\b{ws}")),
+    K("doomednums", Rx($@"\bdoomednums\b{ws}")),
+    K("class", Nm("classname", @"\b\w+\b")),
+    K("i", Nm("int", RX.Integers)),
+    K("d", Nm("dec", RX.Decimals)),
+    K("s", Nm("str", RX.CString)),
+    K("c", Nm("char", RX.Chars)),
+
+  ];
+
   /// <summary>
   /// https://regex101.com/r/iWWPub/1
   /// </summary>
-  public static readonly TextSpec Spec = new()
+  public static readonly Spec Spec = new()
   {
     Name = "mapinfo",
-    CaseInsensitive = true,
-    ExplicitCapture = true,
     FileInferences = [
       IfN(ExtIs, "mapinfo"),
       IfN(FName |Is, "mapinfo")],
@@ -125,6 +140,7 @@ public static class Definition
       new DebugToStringOperation("tokens_templated")
     ],
     WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
-    RegexBasicTokens = ["langref", "int", "dec", "op", "str", "bool", "blockkeyword", "name", "keyword"]
+    RegexBasicTokens = ["langref", "int", "dec", "op", "str", "bool", "blockkeyword", "name", "keyword"],
+    RxOpt = ROIC | ROEC,
   };
 }

@@ -1,4 +1,5 @@
-using Parser.Text.Ops;
+using Parser;
+using Parser.Ops.Text;
 
 using static Parser.DefinitionStaticFunctions;
 
@@ -23,18 +24,18 @@ public static class Definition
   /// <summary>
   /// Defines the Registry spec.
   /// </summary>
-  public static TextSpec Spec => new()
+  public static ISpec Spec => new Spec()
   {
     Name = "reg",
     FileInferences = [IfN(ExtIs, "reg")],
     Operations = [
-      new ReplaceRegexOperation("initial", "text", [
-        new(@"\;.*$", ""), //Remove line comments
-        new(@"^\s+", ""), //Remove beginning ws
-        new(@"\s+$", ""), //Remove ending ws
-        new(@"\s*\=\s*", "="), //Remove ws around eq sign
-        new(@"\\" + RX.LnEnd, "") //Remove escaped newlines
-      ]),
+      new ReplaceOperation([
+        (@"\;.*$", ""), //Remove line comments
+        (@"^\s+", ""), //Remove beginning ws
+        (@"\s+$", ""), //Remove ending ws
+        (@"\s*\=\s*", "="), //Remove ws around eq sign
+        (@"\\" + RX.LnEnd, "") //Remove escaped newlines
+      ], "initial", "text"),
       new DictionaryOperation([Sect, Prop, Head]),
       //new GenerateOperation()
       ],

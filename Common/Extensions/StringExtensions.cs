@@ -1,5 +1,9 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using System.Diagnostics.CodeAnalysis;
+
+using Common.Regex;
+
 using SysRegex = System.Text.RegularExpressions.Regex;
 
 namespace Common.Extensions;
@@ -17,27 +21,79 @@ public static class StringExtensions
   /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
   public static bool Is (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCO) ?? false);
   public static bool IsAny (this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || text.Any(other, Equals);
-  public static bool Like (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCOIC) ?? false);
-  public static bool Like (this string? text, string[] other) => text.IsEmpty() && other.IsEmpty() || (text?.Any(other, Like) ?? false);
-  public static bool Any (this string? text, IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
-  public static bool ContainsAny (this string text, IEnumerable<string> other, StringComparison sc = SCO) => other.Any(x => text.Contains(x, sc));
   public static bool IsAlphanumeric (this string s) => s.All(item => item.IsAlphanumeric());
   public static bool IsControl (this string s) => s.All(item => item.IsControl());
   public static bool IsWhitespace (this string s) => s.All(item => item.IsWhitespace());
   public static bool IsNumber (this string s) => decimal.TryParse(s, out decimal _);
   public static bool IsPosInteger (this string s) => int.TryParse(s, out int _) && s.All(item => item.IsPosInteger());
-  public static bool ContainsNewLine (this string s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
   /// <summary>
   /// Checks if a string is null or empty.
   /// </summary>
   /// <param name="text"></param>
   /// <returns><see langword="true"/> if the string is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
-  public static bool IsEmpty (this string? text) => string.IsNullOrEmpty(text);
-  public static bool IsNotEmpty (this string? text) => !text.IsEmpty();
+  public static bool IsEmpty ([NotNullWhen(false)] this string? text) => string.IsNullOrEmpty(text);
+  public static bool IsNotEmpty ([NotNullWhen(true)] this string? text) => !text.IsEmpty();
+  public static bool IsNamedGroup (this string text) => !text.IsPosInteger();
+  /// <summary>
+  /// Case insensitive comparison.
+  /// </summary>
+  /// <param name="text">This text.</param>
+  /// <param name="other">The other text.</param>
+  /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
+  public static bool Like (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCOIC) ?? false);
+  public static bool Like (this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || (text?.Any(other, Like) ?? false);
+  public static bool Any (this string? text, IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
+  public static bool ContainsAny (this string text, IEnumerable<string> other, StringComparison sc = SCO) => other.Any(x => text.Contains(x, sc));
+  public static bool ContainsNewLine (this string s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
+  public static int ContainsCount (this string s, string checkFor, StringComparison sc = SCO)
+  {
+    if (s is null || checkFor is null || s.Length == 0 || checkFor.Length == 0)
+      return 0;
+
+    int count = 0;
+    int pos = -1;
+    do
+    {
+      pos = s.IndexOf(checkFor, pos, sc);
+      if (pos != -1)
+      {
+        count++;
+        pos++;
+      }
+    } while (pos != -1);
+    return count;
+  }
   public static int? ToInt (this string s) => int.TryParse(s, out int value) ? value : null;
   public static decimal? ToDecimal (this string s) => decimal.TryParse(s, out decimal value) ? value : null;
+  public static bool? ToBool (this string s) => bool.TryParse(s, out bool value) ? value : null;
+  public static bool ValidateWithRegex (this string s, RxS validation_expression, RegexOptions options = RegexOptions.None)
+  {
+    MatchCollection matches = SysRegex.Matches(s, validation_expression);
+    return matches.Count == 1 && matches[0].Length == s?.Length;
+  }
+  public static DateTime? ToDateTime (this string s) => DateTime.TryParse(s, out DateTime value) ? value : null;
+  public static TimeSpan? ToTimeSpan (this string s) => TimeSpan.TryParse(s, out TimeSpan value) ? value : null;
   public static Collection<string> Expand (this string s) => [.. s.Select(item => item.ToString())];
+  public static string Remove (this string? text, string regex, RegexOptions options = RegexOptions.None) => text is null ? SE : SysRegex.Replace(text, regex, SE, options);
   public static string Remove (this string s, Match match) => s is null ? SE : match is null ? s : s.Remove(match.Index, match.Length);
+  public static string Remove (this string? text, int changed_pos, int changed_length) => text.Replace(changed_pos, changed_length);
+  public static string RemoveChars (this string? text, string chars) => new(text?.Where(item => !chars.Contains(item, SCO)).ToArray());
+  public static string RemoveAllButChars (this string? text, string chars) => new(text?.Where(item => chars.Contains(item, SCO)).ToArray());
+  public static string RemoveAll (this string? text, string regex, RegexOptions options = RegexOptions.None)
+  {
+    string result = text ?? string.Empty;
+
+    while (SysRegex.IsMatch(result, regex))
+      result = result.Remove(regex, options);
+
+    return result;
+  }
+  /// <summary>
+  /// Removes all null characters from the string.
+  /// </summary>
+  /// <param name="text">The input string.</param>
+  /// <returns>The input string with all null characters removed.</returns>
+  public static string RemoveNulls (this string? text) => text?.Replace("\0", "", SCO) ?? string.Empty;
   public static string Replace (this string s, Match match, string replaceWith)
   {
     if (s is null)
@@ -60,54 +116,16 @@ public static class StringExtensions
       s = s.Replace(lf, replaceWith, SCO);
     return s;
   }
-  public static string ReplaceIfContainsGroup (this string s, Match match, string group, string replaceWith) =>
-    match is not null && match.Groups.ContainsKey(group) ? s.Replace(match, replaceWith) : s;
-  public static string ReplaceAllIfContainsGroup (this string s, MatchCollection matches, string group, string replaceWith)
+  public static string Replace (this string? text, int changed_pos, int changed_length, string replacement = EmptyString)
   {
-    if (matches is null)
-      return s;
-    foreach (Match m in matches)
-      s = s.ReplaceIfContainsGroup(m, group, replaceWith);
-    return s;
-  }
-  public static bool Equals (this string s, char c) => s is not null && s.Length == 1 && c == s[0];
-  public static bool EqualsAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
-    list.Any(s2 => s.Equals(s2, sc));
-  public static bool EqualsAll (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
-    list.All(s2 => s.Equals(s2, sc));
-  public static bool StartsWithAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
-    list.Any(s2 => s.StartsWith(s2, sc));
-  public static bool EndsWithAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
-    list.Any(s2 => s.EndsWith(s2, sc));
-  public static int ContainsCount (this string s, string checkFor, StringComparison sc = SCO)
-  {
-    if (s is null || checkFor is null || s.Length == 0 || checkFor.Length == 0)
-      return 0;
+    if (text is null)
+      return string.Empty;
 
-    int count = 0;
-    int pos = -1;
-    do
-    {
-      pos = s.IndexOf(checkFor, pos, sc);
-      if (pos != -1)
-      {
-        count++;
-        pos++;
-      }
-    } while (pos != -1);
-    return count;
-  }
-  public static bool IsNamedGroup (this string text) => !text.IsPosInteger();
-  public static string RemoveAll (this string? text, string regex, RegexOptions options = RegexOptions.None)
-  {
-    string result = text ?? string.Empty;
+    ArgumentOutOfRangeException.ThrowIfNegative(changed_pos);
+    ArgumentOutOfRangeException.ThrowIfNegative(changed_length);
 
-    while (SysRegex.IsMatch(result, regex))
-      result = result.Remove(regex, options);
-
-    return result;
+    return text.PreReplace(changed_pos) + replacement + text.PostReplace(changed_pos, changed_length);
   }
-  public static string Remove (this string? text, string regex, RegexOptions options = RegexOptions.None) => text is null ? SE : SysRegex.Replace(text, regex, SE, options);
   public static string Replace (this string? text, IEnumerable<string> lfs, IEnumerable<string> rws)
   {
     Collection<string> lfsc = [.. lfs];
@@ -128,6 +146,7 @@ public static class StringExtensions
     }
     return text;
   }
+  public static string Replace (this string? text, ReplaceNode node, RegexOptions options = ROIPW) => node?.ReplaceRegex(text ?? SE, options) ?? SE;
   public static string ReplaceRange (this string text, int start, int length, char rep = '\0')
   {
     if (text is null)
@@ -143,24 +162,27 @@ public static class StringExtensions
 
     return new(array);
   }
-  /// <summary>
-  /// Removes all null characters from the string.
-  /// </summary>
-  /// <param name="text">The input string.</param>
-  /// <returns>The input string with all null characters removed.</returns>
-  public static string RemoveNulls (this string? text) => text?.Replace("\0", "", SCO) ?? string.Empty;
+  public static string ReplaceIfContainsGroup (this string s, Match match, string group, string replaceWith) =>
+    match is not null && match.Groups.ContainsKey(group) ? s.Replace(match, replaceWith) : s;
+  public static string ReplaceAllIfContainsGroup (this string s, MatchCollection matches, string group, string replaceWith)
+  {
+    if (matches is null)
+      return s;
+    foreach (Match m in matches)
+      s = s.ReplaceIfContainsGroup(m, group, replaceWith);
+    return s;
+  }
+  public static bool Equals (this string s, char c) => s is not null && s.Length == 1 && c == s[0];
+  public static bool EqualsAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
+    list.Any(s2 => s.Equals(s2, sc));
+  public static bool EqualsAll (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
+    list.All(s2 => s.Equals(s2, sc));
+  public static bool StartsWithAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
+    list.Any(s2 => s.StartsWith(s2, sc));
+  public static bool EndsWithAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
+    list.Any(s2 => s.EndsWith(s2, sc));
   public static string PreReplace (this string text, int changed_pos) => text[..(changed_pos - 1)];
   public static string PostReplace (this string text, int changed_pos, int replace_length) => text[(changed_pos + replace_length)..];
-  public static string Replace (this string? text, int changed_pos, int changed_length, string replacement = EmptyString)
-  {
-    if (text is null)
-      return string.Empty;
-
-    ArgumentOutOfRangeException.ThrowIfNegative(changed_pos);
-    ArgumentOutOfRangeException.ThrowIfNegative(changed_length);
-
-    return text.PreReplace(changed_pos) + replacement + text.PostReplace(changed_pos, changed_length);
-  }
   public static string RecursiveReplace (this string text, string lf, string rw, StringComparison options = SCO)
   {
     string temp = text ?? "";
@@ -170,5 +192,20 @@ public static class StringExtensions
 
     return temp;
   }
-  public static string Remove (this string? text, int changed_pos, int changed_length) => text.Replace(changed_pos, changed_length);
+  public static (int Line, int Col) Get2DPosition (this string text, int position)
+  {
+    if (text is null || position < 0)
+      return (-1, -1);
+    string before = text[..position];
+
+    int lnst = before.LastIndexOfAny(['\n', '\r', '\v']);
+    int lines = 0; // Count newlines, \r, \n or \r\n.
+    int col = text.Length - lnst;
+    return (lines, col);
+  }
+  public static void ThrowIfNullOrEmpty ([NotNull] this string? text)
+  {
+    if (text.IsEmpty())
+      throw new ANEx(nameof(text));
+  }
 }

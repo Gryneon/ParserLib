@@ -1,2 +1,2 @@
 global using Parser;
-global using Parser.Binary.Ops;
+global using Parser.Ops;

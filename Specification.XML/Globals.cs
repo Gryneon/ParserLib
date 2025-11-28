@@ -4,6 +4,6 @@ global using System.Linq;
 
 global using Common.Regex;
 
-global using Parser.Text;
-
 global using static Common.Names;
+
+

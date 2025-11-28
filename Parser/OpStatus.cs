@@ -94,6 +94,14 @@ public enum OpStatus
   /// </summary>
   PastFail = Fail * 12,
   /// <summary>
+  /// Indicates that the operation sequence has been failed via an action in defined in the specification.
+  /// </summary>
+  DefinedFail = Fail * 13,
+  /// <summary>
+  /// Indicates that the parser was not passed any initial input.
+  /// </summary>
+  FailNoInput = Fail * 14,
+  /// <summary>
   /// Indicates that the operation sequence has been completed successfully, and no further operations are needed.
   /// </summary>
   EndCommand = 65536,

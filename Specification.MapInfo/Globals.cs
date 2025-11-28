@@ -1,2 +1,2 @@
-global using Parser.Text;
-global using Parser.Text.Ops;
+global using Common.Regex;
+

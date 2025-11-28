@@ -1,18 +1,18 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using static Parser.DefinitionStaticFunctions;
+using Parser.Ops.Binary;
 
-using BRM = Parser.Binary.ByteReadMode;
+using static Parser.DefinitionStaticFunctions;
+using static Parser.Ops.Binary.ByteReadOperation;
 
 namespace Specification.WAD;
 /// <summary>
 /// A static class containing the WAD, WAD2, and PAK specificiations.
 /// </summary>
+[DefinitionExport(true)]
 public static class Definition
 {
-  private static ByteStartAtOperation Start => new(0);
-  private static ByteReadOperation GetFileID => Read("identification", 4, BRM.Text);
-  private static ByteReadOperation Read (string name, int bytes, BRM mode = BRM.Value) => new(name, bytes, mode);
+  [Export("wad")]
   public static Spec WAD => new()
   {
     Name = "wad",
@@ -21,22 +21,23 @@ public static class Definition
       IfN(HeadSt, "PWAD")
     ],
     Operations = [
-      Start,
-      GetFileID,
-      Read("numlumps", 4),
-      Read("diroffset", 4),
+      Operation.CreateCursor("bytes", 0),
+      ReadString("identification", 4),
+      ReadInt("numlumps"),
+      ReadInt("diroffset"),
       new ByteJumpVarOperation("diroffset"),
-      new ByteLoadIndexOperationLoop("numlumps", [
-        Read("filepos", 4),
-        Read("size", 4),
-        Read("name", 8, BRM.Text),
+      Operation.ForCount([
+        ReadInt("filepos"),
+        ReadInt("size"),
+        ReadString("name", 8),
         new ByteSavePosOperation("savepos"),
         new ByteJumpVarOperation("filepos"),
-        new ByteReadDataVarNameOperation("data", "size"),
+        ReadBinary("size", "data"),
         new ByteRecallOperation("savepos"),
-      ])
+      ], "numlumps")
     ]
   };
+  [Export("pack")]
   public static Spec PAK => new()
   {
     Name = "pack",
@@ -44,23 +45,24 @@ public static class Definition
       IfN(HeadSt, "PACK")
     ],
     Operations = [
-      Start,
-      GetFileID,
-      Read("diroffset", 4),
-      Read("dirsize", 4),
+      Operation.CreateCursor("bytes", 0),
+      ReadString("identification", 4),
+      ReadInt("diroffset"),
+      ReadInt("dirsize"),
       new ByteDivideOperation(64, "dirsize", "entrycount"),
       new ByteJumpVarOperation("diroffset"),
-      new ByteLoadIndexOperationLoop("entrycount", [
-        Read("name", 50, BRM.Text),
-        Read("offset", 4),
-        Read("size", 4),
+      Operation.ForCount( [
+        ReadString("name", 50),
+        ReadInt("offset"),
+        ReadInt("size"),
         new ByteSavePosOperation("savepos"),
         new ByteJumpVarOperation("offset"),
-        new ByteReadDataVarNameOperation("data", "size"),
+        ReadBinary("size", "data"),
         new ByteRecallOperation("savepos"),
-      ])
+      ], "entrycount")
     ]
   };
+  [Export("wad2")]
   public static Spec WAD2 => new()
   {
     Name = "wad2",
@@ -68,24 +70,24 @@ public static class Definition
       IfN(HeadSt, "WAD2")
     ],
     Operations = [
-      Start,
-      GetFileID,
-      Read("numlumps", 4),
-      Read("diroffset", 4),
+      Operation.CreateCursor("bytes", 0),
+      ReadString("identification", 4),
+      ReadInt("numlumps"),
+      ReadInt("diroffset"),
       new ByteJumpVarOperation("diroffset"),
-      new ByteLoadIndexOperationLoop("numlumps", [
-        Read("filepos", 4),
-        Read("dsize", 4),
-        Read("size", 4),
-        Read("type", 1),
-        Read("cmprs", 1),
-        Read("dummy", 2),
-        Read("name", 16, BRM.Text),
+      Operation.ForCount([
+        ReadInt("filepos"),
+        ReadInt("dsize"),
+        ReadInt("size"),
+        ReadByte("type"),
+        ReadByte("cmprs"),
+        ReadShort("dummy"),
+        ReadString("name", 16),
         new ByteSavePosOperation("savepos"),
         new ByteJumpVarOperation("filepos"),
-        new ByteReadDataVarNameOperation("data", "dsize"),
+        ReadBinary("dsize", "data"),
         new ByteRecallOperation("savepos"),
-      ]),
+      ], "numlumps"),
     ]
   };
 }

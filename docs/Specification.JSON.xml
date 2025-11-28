@@ -35,21 +35,6 @@
             </summary>
             <returns>The JSON as a string.</returns>
         </member>
-        <member name="T:Specification.JSON.JSONValue">
-            <summary>
-            A JSON value.
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Specification.JSON.JSONValue.#ctor(System.Object)">
-            <summary>
-            A JSON value.
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="P:Specification.JSON.JSONValue.Value">
-            <inheritdoc/>
-        </member>
         <member name="T:Specification.JSON.JSONProperty">
             <summary>
             A JSON keyed property.
@@ -69,7 +54,19 @@
             Gets the property key name.
             </summary>
         </member>
-        <member name="P:Specification.JSON.JSONProperty.Value">
+        <member name="T:Specification.JSON.JSONValue">
+            <summary>
+            A JSON value.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Specification.JSON.JSONValue.#ctor(System.Object)">
+            <summary>
+            A JSON value.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="P:Specification.JSON.JSONValue.Value">
             <inheritdoc/>
         </member>
     </members>

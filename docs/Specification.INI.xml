@@ -11,94 +11,115 @@
         </member>
         <member name="P:Specification.INI.Definition.Spec">
             <summary>
-            The INI Specification.
+            The INI Spec
             </summary>
         </member>
-        <member name="T:Specification.INI.DocumentSet">
+        <member name="T:Specification.INI.INIDocument">
             <summary>
             A document, which is a collection of sections.
             </summary>
         </member>
-        <member name="M:Specification.INI.DocumentSet.#ctor">
+        <member name="M:Specification.INI.INIDocument.FromINIDocument(Specification.INI.INIDocument)">
             <summary>
-            Creates an empty <see cref="T:Specification.INI.DocumentSet"/>.
+            Creates an <c>INIDocument</c> from another <c>INIDocument</c>.
+            </summary>
+            <param name="other">The specified document.</param>
+            <returns>An <c>INIDocument</c> that is a deep clone of the specified object.</returns>
+        </member>
+        <member name="M:Specification.INI.INIDocument.FromSections(System.Collections.Generic.IEnumerable{Specification.INI.Section})">
+            <summary>
+            Creates an <c>INIDocument</c> from an array or collection of <see cref="T:Specification.INI.Section"/> objects.
+            </summary>
+            <param name="sections">The array or collection of sections.</param>
+            <returns>The newly created document.</returns>
+        </member>
+        <member name="M:Specification.INI.INIDocument.#ctor">
+            <summary>
+            Creates an empty <see cref="T:Specification.INI.INIDocument"/>.
             </summary>
         </member>
-        <member name="M:Specification.INI.DocumentSet.#ctor(System.Collections.Generic.IEnumerable{Specification.INI.Section})">
+        <member name="M:Specification.INI.INIDocument.#ctor(System.Collections.Generic.IEnumerable{Specification.INI.Section})">
             <summary>
-            Creates a <see cref="T:Specification.INI.DocumentSet"/> with the provided <see cref="T:Specification.INI.Section"/> objects in it.
+            Creates a <see cref="T:Specification.INI.INIDocument"/> with the provided <see cref="T:Specification.INI.Section"/> objects in it.
             </summary>
         </member>
-        <member name="P:Specification.INI.DocumentSet.Name">
+        <member name="M:Specification.INI.INIDocument.#ctor(Specification.INI.INIDocument)">
+            <summary>
+            Creates a deep copy of the passed document.
+            </summary>
+            <param name="other">The document to copy.</param>
+        </member>
+        <member name="P:Specification.INI.INIDocument.Name">
             <summary>
             The name of the document.
             </summary>
         </member>
-        <member name="P:Specification.INI.DocumentSet.Sections">
+        <member name="P:Specification.INI.INIDocument.Sections">
             <summary>
-            A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Specification.INI.Section"/>s stored in this <see cref="T:Specification.INI.DocumentSet"/>.
+            A <see cref="T:System.Collections.ObjectModel.Collection`1">Collection&lt;Section></see> object stored in this <see cref="T:Specification.INI.INIDocument"/>.
             </summary>
         </member>
-        <member name="P:Specification.INI.DocumentSet.Count">
+        <member name="P:Specification.INI.INIDocument.Count">
             <inheritdoc/>
         </member>
-        <member name="P:Specification.INI.DocumentSet.Item(System.Int32)">
+        <member name="P:Specification.INI.INIDocument.Item(System.Int32)">
             <summary>
             Gets the (nth) Section.
             </summary>
             <param name="index">The index.</param>
             <returns>The Section at that index.</returns>
         </member>
-        <member name="P:Specification.INI.DocumentSet.Item(System.String)">
+        <member name="P:Specification.INI.INIDocument.Item(System.String)">
             <summary>
             Gets the section named 'name'.
             </summary>
             <param name="name">The name to identtiry it,</param>
             <returns>The section starting with that name.</returns>
         </member>
-        <member name="M:Specification.INI.DocumentSet.Contains(System.String)">
+        <member name="M:Specification.INI.INIDocument.Contains(System.String)">
             <summary>
             Checks if the document contains a section with the provided name.
             </summary>
             <param name="name">The name to check for.</param>
             <returns><see langword="true"/> if the document contains a section with the given name, <see langword="false"/> otherwise.</returns>
         </member>
-        <member name="M:Specification.INI.DocumentSet.Add(Specification.INI.Section)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.DocumentSet.Ensure(Specification.INI.Section)">
-            <summary>
-            Adds a section, if it does not exist.
-            </summary>
+        <member name="M:Specification.INI.INIDocument.Add(Specification.INI.Section)">
+            <summary>Adds a section if it does not exist.
+            If it does exist, it adds or updates all the values contained in the provided <see cref="T:Specification.INI.Section"/>.</summary>
             <param name="section">The section to add.</param>
         </member>
-        <member name="M:Specification.INI.DocumentSet.Update(Specification.INI.DocumentSet)">
+        <member name="M:Specification.INI.INIDocument.Add(System.String)">
+            <summary>Adds a section with the specified name if it does not exist.</summary>
+            <param name="section_name">The name of the section to add.</param>
+        </member>
+        <member name="M:Specification.INI.INIDocument.Ensure(Specification.INI.Section)">
+            <summary>Adds a section if it does not exist.</summary>
+            <param name="section">The section to add.</param>
+        </member>
+        <member name="M:Specification.INI.INIDocument.Update(Specification.INI.INIDocument)">
             <summary>
             Merges 2 Sections, Favoring the parameter 'other'.
             </summary>
             <param name="other">The other document.</param>
         </member>
-        <member name="M:Specification.INI.DocumentSet.GetEnumerator">
+        <member name="M:Specification.INI.INIDocument.GetEnumerator">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.DocumentSet.Serialize">
+        <member name="M:Specification.INI.INIDocument.Serialize">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.DocumentSet.ToString">
+        <member name="M:Specification.INI.INIDocument.ToString">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.DocumentSet.Clear">
+        <member name="M:Specification.INI.INIDocument.Clear">
             <summary>
             Clears and removes all sections.
             </summary>
         </member>
-        <member name="M:Specification.INI.DocumentSet.Contains(Specification.INI.Section)">
+        <member name="M:Specification.INI.INIDocument.Clone">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.DocumentSet.CopyTo(Specification.INI.Section[],System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.DocumentSet.Remove(Specification.INI.Section)">
+        <member name="M:Specification.INI.INIDocument.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc/>
         </member>
         <member name="T:Specification.INI.PropertyObj">
@@ -232,9 +253,7 @@
             <param name="name">The name of the section.</param>
         </member>
         <member name="P:Specification.INI.Section.Name">
-            <summary>
-            The name of the section.
-            </summary>
+            <summary>The name of the section.</summary>
         </member>
         <member name="P:Specification.INI.Section.Properties">
             <summary>
@@ -260,7 +279,7 @@
             </list>
             </remarks>
         </member>
-        <member name="M:Specification.INI.Section.Set``1(System.String,System.String)">
+        <member name="M:Specification.INI.Section.Set(System.String,System.String)">
             <summary>
             Sets the given property to the given value.
             </summary>
@@ -285,6 +304,9 @@
             </summary>
             <param name="children">The properties to add.</param>
         </member>
+        <member name="M:Specification.INI.Section.System#Collections#Generic#IEnumerable{Specification#INI#PropertyObj}#GetEnumerator">
+            <inheritdoc/>
+        </member>
         <member name="M:Specification.INI.Section.GetEnumerator">
             <inheritdoc/>
         </member>
@@ -308,6 +330,9 @@
             <inheritdoc/>
         </member>
         <member name="M:Specification.INI.Section.Clone">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.INI.Section.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc/>
         </member>
     </members>

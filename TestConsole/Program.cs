@@ -1,32 +1,22 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 using Common;
-using Common.Extensions;
 
 using Parser;
-using Parser.Binary;
-using Parser.Binary.Ops;
-using Parser.Text;
-
-using static Common.Names;
 
 namespace TestConsole;
 
 internal sealed class Program
 {
   #region Constants
-  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser.Text\Samples\";
+  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\";
   internal const int LogLine = 10;
   #endregion
   #region Fields
   internal static string TestPath1 = Paths.ipl_label;
   internal static string TestPath2 = Paths.ini_vncdefault;
   internal static string? UserInput;
-  internal static TextParser Parser = new();
-  internal static ByteParser ByteParser = new();
+  internal static IParser Parser = new XParser();
   internal static OpStatus Status = OpStatus.AtStart;
   #endregion
   #region Basic Methods
@@ -76,17 +66,13 @@ internal sealed class Program
 
     foreach (string path in args)
     {
-      string content = File.ReadAllText(path);
+      string content;
+      try { content = File.ReadAllText(path); }
+      catch (DirectoryNotFoundException) { content = "<STX><ESC>P<ESC>C<ETX>"; }
 
       Debug.Log("Program", "Main", "Loading File : " + path);
 
-      if (Library.Lookup<TextSpec>("ipl") is not TextSpec spec)
-      {
-        Debug.Log("Program.Main", "IPL Spec not found");
-        break;
-      }
-
-      Parser = new(spec);
+      Parser = new XParser(Specification.IPL.Definition.Spec);
       Status = Parser.Parse(content);
 
       Debug.Log("Program.Main", "OpStatus is " + Status);
@@ -118,7 +104,7 @@ internal sealed class Program
     else if (doExit)
       goto Exit;
     else if (doRawTest)
-      _ = TestTextParser(UserInput, Library.CheckFile(UserInput) as TextSpec ?? TextSpec.TextByLines);
+      _ = TestTextParser(UserInput, Library.Lookup<ISpec>(Library.CheckFile(UserInput)) ?? Spec.TextByLines);
 
     Debug.Log("Program.Main", "Bad command given.");
     goto UserLoop;
@@ -129,13 +115,15 @@ internal sealed class Program
 
   Test:
     string type = UserInput[4..].Trim().ToUpperInvariant();
-    TextParser? parser = type switch
+    IParser? parser = type switch
     {
       string when type.Like("mapinfo") => TestTextParser(SamplePath + "mapinfo.lmp", Specification.MapInfo.Definition.Spec),
       string when type.Like("json") => TestTextParser(SamplePath + "launchSettings.json", Specification.JSON.Definition.Spec),
       string when type.Like("xml") => TestTextParser(SamplePath + "ipl.xml", Specification.XML.Definition.Spec),
       string when type.Like("ipl") => TestTextParser(SamplePath + "label.ipl", Specification.IPL.Definition.Spec),
       string when type.Like("ini") => TestTextParser(SamplePath + "default.ini", Specification.INI.Definition.Spec),
+      string when type.Like("udmf") => TestTextParser(SamplePath + "map.udmf", Specification.UDMF.Definition.Spec),
+      string when type.Like("decorate") => TestTextParser(SamplePath + "Weapon_MkII.dec", Specification.Decorate.Definition.Spec),
       _ => null
     };
     Debug.Log("Parser Operation Order:");
@@ -151,10 +139,10 @@ internal sealed class Program
     return 0;
   }
 
-  internal static TextParser TestTextParser (string path, TextSpec spec)
+  internal static IParser TestTextParser (string path, ISpec spec)
   {
     string content = File.ReadAllText(path);
-    Parser = new(spec);
+    Parser = new XParser(spec);
     Status = Parser.Parse(content);
     Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
     return Parser;
@@ -162,8 +150,9 @@ internal sealed class Program
 
   internal static void Load ()
   {
-    Spec userSpec;
+    ISpec userSpec;
     string userPath;
+    string? specName;
     string fileContent;
     byte[] byteContent;
 
@@ -180,7 +169,8 @@ internal sealed class Program
 
     fileContent = File.ReadAllText(userPath);
     byteContent = File.ReadAllBytes(userPath);
-    userSpec = Library.CheckFile(userPath);
+    specName = Library.CheckFile(userPath);
+    userSpec = specName is not null ? Library.Lookup<ISpec>(specName) ?? Spec.Unknown : Spec.Unknown;
     Debug.Log("Program.Load", $"Spec Chosen is {userSpec.Name}");
 
   GetSpec:
@@ -190,19 +180,19 @@ internal sealed class Program
     if (UserInput.IsEmpty())
       goto ParseFile;
 
-    else if (Library.Lookup<Spec>(UserInput) is null)
+    else if (Library.Lookup<ISpec>(UserInput) is not null)
     {
       Debug.Log("Program.Load", $"Invalid Spec {UserInput}");
       goto GetSpec;
     }
     else
     {
-      userSpec = Library.Lookup<Spec>(UserInput)!;
+      userSpec = Library.Lookup<ISpec>(UserInput)!;
     }
   ParseFile:
-    if (userSpec is TextSpec textSpec)
+    if (userSpec.IsTextFile)
     {
-      TextParser parser = new(textSpec);
+      XParser parser = new(userSpec);
       OpStatus status = parser.Parse(fileContent);
 
       if (status.IsFail())
@@ -210,9 +200,9 @@ internal sealed class Program
       else
         Debug.Log("Program.Load", $"Good, status is {status}");
     }
-    else if (userSpec.Operations[0] is ByteOperation)
+    else
     {
-      ByteParser parser = new(userSpec);
+      XParser parser = new(userSpec);
       OpStatus status = parser.Parse(byteContent);
 
       if (status.IsFail())

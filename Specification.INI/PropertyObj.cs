@@ -3,7 +3,7 @@ namespace Specification.INI;
 /// <summary>
 /// A key and value pair in an INI file.
 /// </summary>
-public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<string>, ITextSerializer<PropertyObj>, IEquatable<IProperty<string>>
+public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<string>, ITextSerializer, IEquatable<IProperty<string>>
 {
   /// <summary>
   /// The key name.
@@ -12,7 +12,7 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// <summary>
   /// The value assigned to the key.
   /// </summary>
-  public string Value { get; set; } = SE;
+  public string? Value { get; set; } = SE;
   /// <summary>
   /// Creates an empty <see cref="PropertyObj"/>.
   /// </summary>
@@ -35,7 +35,7 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   {
     iprop.ThrowIfNull();
     Key = iprop.Key;
-    Value = iprop.Value.ToString() ?? SE;
+    Value = iprop?.Value?.ToString() ?? SE;
   }
   /// <summary>
   /// Creates a property from an IProperty interface
@@ -81,7 +81,7 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   }
   /// <inheritdoc/>
   public bool Equals (IProperty<string>? other) =>
-    Key.Equals(other?.Key, SCOIC) && Value.Equals(other.Value, SCO);
+    Key.Equals(other?.Key, SCOIC) && (Value?.Equals(other.Value, SCO) ?? false);
   /// <inheritdoc/>
   public int CompareTo (IProperty<string>? other) =>
     Key.CompareTo(other?.Key, SCOIC);
@@ -100,7 +100,7 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   public static implicit operator KeyValuePair<string, PropertyObj> (PropertyObj from)
   {
     from.ThrowIfNull();
-    return new(from.Key, new(from.Key, from.Value));
+    return new(from.Key, new(from.Key, from?.Value ?? SE));
   }
 
   /// <summary>

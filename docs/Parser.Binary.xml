@@ -9,61 +9,15 @@
             A parser that reads binary files.
             </summary>
             <remarks>Creates a new parser object.</remarks>
-            <param name="bytes">The raw file data.</param>
-            <param name="spec">The spec to use.</param>
+        </member>
+        <member name="P:Parser.Binary.ByteParser.FileData">
+            <summary>
+            Gets the file data as a list of bytes.
+            </summary>
         </member>
         <member name="M:Parser.Binary.ByteParser.#ctor(Parser.Spec,System.Byte[])">
-            <summary>
-            A parser that reads binary files.
-            </summary>
-            <remarks>Creates a new parser object.</remarks>
             <param name="bytes">The raw file data.</param>
             <param name="spec">The spec to use.</param>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.OpCount">
-            <summary>
-            The total operation count.
-            </summary>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.CurrentOp">
-            <summary>
-            The current operation.
-            </summary>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.LastStatus">
-            <summary>
-            The last status from the last operation executed.
-            </summary>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.OpIndex">
-            <summary>
-            The current operation index.
-            </summary>
-        </member>
-        <member name="F:Parser.Binary.ByteParser._fileContents">
-            <summary>
-            The loaded binary file.
-            </summary>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.BytePos">
-            <summary>
-            The current position in the binary file.
-            </summary>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.ByteRemain">
-            <summary>
-            The size of the binary file.
-            </summary>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.ByteSize">
-            <summary>
-            The size of the binary file.
-            </summary>
-        </member>
-        <member name="P:Parser.Binary.ByteParser.Spec">
-            <summary>
-            The loaded specification.
-            </summary>
         </member>
         <member name="M:Parser.Binary.ByteParser.Parse(System.Byte[])">
             <summary>
@@ -78,44 +32,6 @@
             </summary>
             <returns><see cref="F:Parser.OpStatus.Pass"/> if successful, or an error code.</returns>
         </member>
-        <member name="T:Parser.Binary.Ops.ByteLoadDataOperationLoop">
-            <summary>
-            Represents an iterative loop, like to get objects from an archive, or read pixels.
-            This one loads the count from the number of objects in the collection stored in the count key provided.
-            </summary>
-            <param name="count_varname">The key that has the count stored.</param>
-            <param name="ops_loop">The operations to iterate through.</param>
-        </member>
-        <member name="M:Parser.Binary.Ops.ByteLoadDataOperationLoop.#ctor(System.String,System.Collections.Generic.IEnumerable{Parser.Binary.Ops.ByteOperation})">
-            <summary>
-            Represents an iterative loop, like to get objects from an archive, or read pixels.
-            This one loads the count from the number of objects in the collection stored in the count key provided.
-            </summary>
-            <param name="count_varname">The key that has the count stored.</param>
-            <param name="ops_loop">The operations to iterate through.</param>
-        </member>
-        <member name="M:Parser.Binary.Ops.ByteLoadDataOperationLoop.GetCount">
-            <summary>
-            Gets the number of iterations this loop does.
-            </summary>
-            <returns>The </returns>
-        </member>
-        <member name="T:Parser.Binary.Ops.ByteLoadIndexOperationLoop">
-            <summary>
-            Represents an iterative loop, like to get objects from an archive, or read pixels.
-            This one loads the count from the count key provided.
-            </summary>
-            <param name="count_varname">The key to count the values from.</param>
-            <param name="ops_loop">The operations to iterate through</param>
-        </member>
-        <member name="M:Parser.Binary.Ops.ByteLoadIndexOperationLoop.#ctor(System.String,System.Collections.Generic.IEnumerable{Parser.Binary.Ops.ByteOperation})">
-            <summary>
-            Represents an iterative loop, like to get objects from an archive, or read pixels.
-            This one loads the count from the count key provided.
-            </summary>
-            <param name="count_varname">The key to count the values from.</param>
-            <param name="ops_loop">The operations to iterate through</param>
-        </member>
         <member name="T:Parser.Binary.Ops.ByteOperation">
             <summary>
             Base class for all byte operations. must expose parser, do not use other methods.
@@ -126,12 +42,7 @@
             Base class for all byte operations. must expose parser, do not use other methods.
             </summary>
         </member>
-        <member name="M:Parser.Binary.Ops.ByteOperation.DoOperation(System.Object@)">
-            <summary>Do not use.</summary>
-            <returns>Throws exception.</returns>
-            <exception cref="T:Parser.UnknownOperationException"></exception>
-        </member>
-        <member name="M:Parser.Binary.Ops.ByteOperation.DoOperation``1(Parser.Binary.ByteParser)">
+        <member name="M:Parser.Binary.Ops.ByteOperation.DoOperation(Parser.Binary.ByteParser)">
             <summary>
             Performs an operation that uses and may alter or reassign the data.
             </summary>
@@ -151,19 +62,8 @@
             </returns>
             <exception cref="T:Parser.UnknownOperationException"></exception>
         </member>
-        <member name="T:Parser.Binary.Ops.ByteOperationLoop">
-            <summary>
-            Represents an iterative loop, like to get objects from an archive, or read pixels.
-            </summary>
-            <param name="count">The key that determines the loop count.</param>
-            <param name="ops_loop">The operations to preform in this loop.</param>
-        </member>
-        <member name="M:Parser.Binary.Ops.ByteOperationLoop.#ctor(System.String,System.Collections.Generic.IEnumerable{Parser.Binary.Ops.ByteOperation})">
-            <summary>
-            Represents an iterative loop, like to get objects from an archive, or read pixels.
-            </summary>
-            <param name="count">The key that determines the loop count.</param>
-            <param name="ops_loop">The operations to preform in this loop.</param>
+        <member name="M:Parser.Binary.Ops.ByteOperation.Execute">
+            <inheritdoc/>
         </member>
     </members>
 </doc>

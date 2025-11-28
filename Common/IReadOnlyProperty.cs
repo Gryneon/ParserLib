@@ -15,5 +15,5 @@ public interface IReadOnlyProperty<TValue> :
   /// <summary>
   /// The value assigned to the key.
   /// </summary>
-  TValue Value { get; }
+  TValue? Value { get; }
 }

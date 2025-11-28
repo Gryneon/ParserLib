@@ -7,7 +7,7 @@ namespace Specification.XML;
 /// <summary>
 /// Represents an XML attribute.
 /// </summary>
-public sealed class XMLProperty () : IXMLObject, IProperty<string>
+public sealed class XMLProperty () : IXMLObject, IProperty<string>, IEquatable<IProperty<string>>
 {
   /// <summary>
   /// The attribute name.
@@ -16,7 +16,7 @@ public sealed class XMLProperty () : IXMLObject, IProperty<string>
   /// <summary>
   /// The attribute value.
   /// </summary>
-  public string Value { get; set; } = SE;
+  public string? Value { get; set; } = SE;
   /// <summary>
   /// The attribute name formatted as uppercase invariant.
   /// </summary>
@@ -31,20 +31,20 @@ public sealed class XMLProperty () : IXMLObject, IProperty<string>
   public int CompareTo (IProperty<string>? other) => other is null ? -1 : other.CompareTo(this) * -1;
   /// <inheritdoc/>
   public bool Equals (IProperty<string>? other) => other is not null && other.Equals(this);
-
-  public override bool Equals (object? obj) => obj is not null && (ReferenceEquals(this, obj) || Key == ((IProperty<object>) obj).Key && Value == ((IProperty<object>) obj).Value.ToString());
-
+  /// <inheritdoc/>
+  public override bool Equals (object? obj) => obj is IProperty<string> iprop && Key == iprop.Key && Value == iprop.Value?.ToString();
+  /// <inheritdoc/>
   public override int GetHashCode () => HashCode.Combine(Key, Value);
-
+  /// <summary>
+  /// Standard equality operator.
+  /// </summary>
+  /// <param name="left">The left property.</param>
+  /// <param name="right">The right property.</param>
+  /// <returns>Returns <see langword="true"/> if the 2 properties are equal.</returns>
   public static bool operator == (XMLProperty left, XMLProperty right) => left is null ? right is null : left.Equals(right);
-
   public static bool operator != (XMLProperty left, XMLProperty right) => !(left == right);
-
   public static bool operator < (XMLProperty left, XMLProperty right) => left is null ? right is not null : left.CompareTo(right) < 0;
-
   public static bool operator <= (XMLProperty left, XMLProperty right) => left is null || left.CompareTo(right) <= 0;
-
   public static bool operator > (XMLProperty left, XMLProperty right) => left is not null && left.CompareTo(right) > 0;
-
   public static bool operator >= (XMLProperty left, XMLProperty right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

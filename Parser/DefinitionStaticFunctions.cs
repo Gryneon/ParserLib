@@ -1,5 +1,3 @@
-using Common.Regex;
-
 using Parser.Inference;
 
 namespace Parser;
@@ -14,13 +12,15 @@ public static class DefinitionStaticFunctions
   public static RxS Nm (string name, [SS("Regex")] string rx) => RxS.GrpNm(name, rx);
   public static RxS Nm (string common) => RxS.GrpNm(common, common);
   public static RxS Gp ([SS("Regex")] string rx) => RxS.Grp(rx);
-  public static RxS Rx ([SS("Regex")] string rx) => rx;
+  public static RxS Rx ([SS("Regex")] string rx) => RxS.Rx(rx);
+  public static RxS Rx ([SS("Regex")] params Collection<string> values) => Or(values);
   public static RxS Or ([SS("Regex")] IEnumerable<string> list) => RxS.OOr(list);
   public static RxS Or ([SS("Regex")] string content, [SS("Regex")] params Collection<string> values) => RxS.Or(content, values);
   public static InferenceNode IfN (IT it, string value) => new(it, value);
-  public static InferenceNodeOr IfNOr (IEnumerable<IInferenceNode> nodes) => new(nodes);
-  public static InferenceNodeAnd IfNAnd (IEnumerable<IInferenceNode> nodes) => new(nodes);
+  public static InferenceNodeOr IfNOr (params IEnumerable<IInferenceNode> nodes) => new(nodes);
+  public static InferenceNodeAnd IfNAnd (params IEnumerable<IInferenceNode> nodes) => new(nodes);
   public static KeyValuePair<string, T> K<T> (string key, T value) => new(key, value);
+  public static KeyValuePair<TKey, TValue> K<TKey, TValue> (TKey key, TValue value) => new(key, value);
 
   // Word Start RxS
   public static readonly RxS St = Rx(@"\b");
@@ -28,7 +28,8 @@ public static class DefinitionStaticFunctions
   // IT Flag Combos
   public static readonly IT
     ExtIs = Ext | Is,
-    HeadSt = FileHeader | Start;
+    HeadSt = FileHeader | Start,
+    BodyContains = FileContent | Contains;
 
   // Constants
   public const IT

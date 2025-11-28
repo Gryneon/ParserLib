@@ -1,19 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Common.Regex;
-
-using Parser.Ops;
-using Parser.Text.Ops;
-
-using static Common.Names;
-
 namespace Specification.JSON;
 
 /// <summary>
 /// Defines a JSON Specification.
 /// </summary>
+[DefinitionExport]
 public static class Definition
 {
   private static KeyValuePair<string, RxS> TT (string name, RxS content, RxS? prefix = null, RxS? suffix = null)
@@ -37,96 +27,38 @@ public static class Definition
     TT("null", Rx(@"\bnull\b"))
   ];
   private static readonly RxSCollection Reader = [.. ReaderBase.Values];
-  //private static readonly Collection<string> BaseTokenList = [.. ReaderBase.Keys];
-  /* json_object - '{' ( #json_property^import^ ( ',' #json_property^import^ )* )? '}'
-   * json_array - '[' ( #json_value ( ',' #json_value )* )? ']'
-   * json_value - ( $int | $dec | $null | $bool | $string | #json_object | #json_array )
-   * json_property - $string^key^ ':' #json_value^value^
+  /*private static readonly Collection<string> BaseTokenList = [.. ReaderBase.Keys];
+   *  json_object - '{' ( #json_property^import^ ( ',' #json_property^import^ )* )? '}'
+   *  json_array - '[' ( #json_value ( ',' #json_value )* )? ']'
+   *  json_value - ( $int | $dec | $null | $bool | $string | #json_object | #json_array )
+   *  json_property - $string^key^ ':' #json_value^value^
    */
-  private static readonly Dictionary<string, string> TokenFormats = [
-    K("json_object", "'{' ( #json_property ^import^ ( ',' #json_property ^import^ )* )? '}'"),
-    K("json_array", "'[' ( #json_value ( ',' #json_value )* )? ']'"),
-    K("json_value", "$int | $dec | $null | $bool | $string | #json_object | #json_array"),
-    K("json_property", "$string ^key^ ':' #json_value ^value^")
-  ];
+  //private static readonly Dictionary<string, string> TokenFormats = [
+  // K("json_object", "'{' ( #json_property ^import^ ( ',' #json_property ^import^ )* )? '}'"),
+  // K("json_array", "'[' ( #json_value ( ',' #json_value )* )? ']'"),
+  // K("json_value", "$int | $dec | $null | $bool | $string | #json_object | #json_array"),
+  // K("json_property", "$string ^key^ ':' #json_value ^value^")
+  //];
   /// <summary>
   /// The JSON Spec.
   /// </summary>
-  public static TextSpec Spec => new()
+  [Export("json")]
+  public static ISpec Spec => new Spec()
   {
     Name = "json",
-    CaseInsensitive = true,
     FileInferences = [IfN(ExtIs, "json")],
     Operations = [
-        new DictionaryOperation(Reader, false),
+        new DictionaryOperation(Reader, ROML | ROIPW | ROEC | ROIC, false),
         new DebugToStringOperation("matches"),
         new TokenizeOperation(),
         new DebugToStringOperation("tokens"),
-        new DebugWaitForInputOperation(),
-        new TokenTemplateOperation(TokenFormats) {ContinueOnFail=true},
-        new DebugToStringOperation("tokens_templated"),
-        new DebugWaitForInputOperation(),
-        new CopyOperation("tokens_templated", "result")
+        //new TokenTemplateOperation(TokenFormats) {ContinueOnFail=true},
+        new JSONOperation("tokens", "json"),
+        new DebugToStringOperation("json"),
+        Operation.SetResultKey("json")
       ],
-    ExplicitCapture = true,
     WhitespaceTokens = ["ws"],
-    IgnorePatternWhitespace = true,
-    MultiLine = true,
-    RegexBasicTokens = ["string", "dec", "int", "op", "bool", "null"]
+    RegexBasicTokens = ["string", "dec", "int", "op", "bool", "null"],
+    RxOpt = ROML | ROIPW | ROEC | ROIC
   };
-}
-
-/// <summary>
-/// Basic interface for JSON parts.
-/// </summary>
-public interface IJSONNode
-{
-  /// <summary>
-  /// The value stored in this node.
-  /// </summary>
-  object? Value { get; }
-  /// <summary>
-  /// Gets the JSON of this node.
-  /// </summary>
-  /// <returns>The JSON as a string.</returns>
-  string? ToString () => Value switch
-  {
-    null => "null",
-    string str => $"\"{str}\"",
-    bool b => b ? "true" : "false",
-    IEnumerable<JSONProperty> props => $"[{props.TextJoin(",")}]",
-    IEnumerable<JSONValue> vals => $"{{{vals.TextJoin(",")}}}",
-    IConvertible iConv => iConv.ToString(CICC),
-    _ when Value.IsCollection() => Value.AsCollection().Select(item => item is IConvertible cConv ? cConv.ToString(CICC) : "null").TextJoin(","),
-    _ => throw new InvalidCastException("Unknown object type.")
-  };
-}
-
-/// <summary>
-/// A JSON value.
-/// </summary>
-/// <param name="value"></param>
-public class JSONValue (object? value = null) : IJSONNode
-{
-  /// <inheritdoc/>
-  public object? Value { get; } = value;
-}
-/// <summary>
-/// A JSON keyed property.
-/// </summary>
-/// <param name="key">The key name.</param>
-/// <param name="value">The value stored.</param>
-public class JSONProperty (string key, object? value = null) : IJSONNode
-{
-  /// <summary>
-  /// Gets the property key name.
-  /// </summary>
-  public string Key { get; } = key;
-  /// <inheritdoc/>
-  public object? Value { get; } = value;
-}
-
-public class JSONOperation (string input_key, string output_key) : Operation<TextParser>(input_key, output_key)
-{
-
 }

@@ -24,3 +24,4 @@ global using StringTuple = (string Key, string Value);
 [assembly: AssemblyTitle("VNCChecker")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]
+

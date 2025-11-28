@@ -1,23 +1,34 @@
-using Common.Extensions;
+using System.Reflection;
 
 using Parser.Inference;
 
 namespace Parser;
 
-public class Library : KeyedCollection<string, Spec>
+public class Library : KeyedCollection<string, ISpec>
 {
+  /// <summary>
+  /// The singleton instance of this object.
+  /// </summary>
   protected static Library Instance { get; } = [Spec.Unknown];
   protected static Dictionary<string, ReadOnlyCollection<IInferenceNode>> SpecInferences =>
     [.. Instance.Select(
       item => new KeyValuePair<string, ReadOnlyCollection<IInferenceNode>>(item.Name, item.FileInferences))];
 
-  protected Library () { }
-  protected override string GetKeyForItem (Spec item) => item?.Name ?? SE;
+  protected Library ()
+  {
+    IReadOnlyList<(Type Type, PropertyInfo Property)> matches = ReflectionHelper.GetTypesWithAttributeAndProperties<DefinitionExportAttribute>(typeof(ISpec));
 
-  public static void AddToLibrary (Spec spec) => Instance.Add(spec);
-  public static void AddToLibrary (IEnumerable<Spec> specs) => Instance.AddRange(specs);
-  public static void AddToLibrary (params Collection<Spec> speclist) => Instance.AddRange(speclist);
-  public static TSpec? Lookup<TSpec> (string name) where TSpec : Spec => (Instance.Contains(name) ? Instance[name] : null) as TSpec;
+    foreach ((Type? type, PropertyInfo? prop) in matches)
+    {
+      Console.WriteLine($"Type: {type.FullName}, Property: {prop.Name}");
+    }
+  }
+  protected override string GetKeyForItem (ISpec item) => item?.Name ?? SE;
+
+  public static void AddToLibrary (ISpec spec) => Instance.Add(spec);
+  public static void AddToLibrary (IEnumerable<ISpec> specs) => Instance.AddRange(specs);
+  public static void AddToLibrary (params Collection<ISpec> speclist) => Instance.AddRange(speclist);
+  public static TSpec? Lookup<TSpec> (string? name) where TSpec : class, ISpec => (name is not null && Instance.Contains(name) ? Instance[name] : null) as TSpec;
   public static bool TryLookup<TSpec> (string name, [NotNullWhen(true)][MaybeNullWhen(false)] out TSpec spec) where TSpec : Spec
   {
     if (Instance.Contains(name) && Instance[name] is TSpec s)
@@ -35,7 +46,7 @@ public class Library : KeyedCollection<string, Spec>
   /// <summary>
   /// Provides the <see cref="Spec"/> for the provided file path.
   /// </summary>
-  public static Spec CheckFile (string path)
+  public static string? CheckFile (string path)
   {
     foreach (KeyValuePair<string, ReadOnlyCollection<IInferenceNode>> fi in SpecInferences)
     {
@@ -43,12 +54,12 @@ public class Library : KeyedCollection<string, Spec>
       {
         if (node.CheckFile(path))
         {
-          Debug.Log($"CheckFile({path})", "File match found. S");
-          return Instance[fi.Key];
+          Log($"CheckFile({path})", "File match found. S");
+          return fi.Key;
         }
       }
     }
-    return Spec.Unknown;
+    return null;
   }
-  public static IEnumerable<Spec> SpecList => Instance.ToCollection();
+  public static IEnumerable<ISpec> SpecList => Instance.ToCollection();
 }

@@ -1,10 +1,12 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using Parser;
 using Parser.Inference;
-using Parser.Text.Ops;
+using Parser.Ops.Text;
 
+using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Text.RX;
+using static Parser.RX;
 
 namespace Specification.SndInfo;
 
@@ -14,7 +16,7 @@ public static class Definition
   private static readonly RxS Ref = Gp(@"(?<qt>""?)\*?[\/.\w-]+\{qt}");
   private static readonly RxS D = Nm("int", @"\d+");
   private static readonly RxS Sndref = Nm("sound", Ref);
-  private static readonly RxS Format = Rx(@"\s+").Orr.Add(@"\s*\=\s*");
+  private static readonly RxS Format = Rx(@"\s+|") + Gp(@"\s*\=\s*");
   private static readonly RxS Act = Nm("action", @"\*\w+");
   private static RxS Cmd (string cmd) => @"\$" + Nm(cmd, Nm("type", cmd));
   private static RxS Wd (string word) => Nm(word, @"\w+");
@@ -37,15 +39,10 @@ public static class Definition
     Cmd("playersound") + @"(?:dup)?" + WS + Wd("player") + WS + Wd("gender") + WS + Act + WS + Sndref
   ];
 
-  public static readonly TextSpec Spec = new()
+  public static readonly Spec Spec = new()
   {
     Name = "sndinfo",
-    CaseInsensitive = true,
-    ExplicitCapture = true,
-    IgnorePatternWhitespace = true,
-    SingleLine = false,
-    NonBacktracking = false,
-    MultiLine = true,
+    RxOpt = ROML | ROIPW | ROIC | ROEC,
     FileInferences = [
       new InferenceNodeOr([
         IfN(ExtIs, "sndinfo"),

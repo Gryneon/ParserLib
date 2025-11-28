@@ -16,14 +16,19 @@
             Old: https://regex101.com/r/jcPotD/4
             </summary>
         </member>
-        <member name="P:Specification.XML.Definition.Attribute">
+        <member name="F:Specification.XML.Definition.Attribute">
             <summary>
             The attribute regular expression.
             </summary>
         </member>
-        <member name="P:Specification.XML.Definition.GenerationOps">
+        <member name="F:Specification.XML.Definition.TagName">
             <summary>
-            Operation definition.
+            The attribute regular expression.
+            </summary>
+        </member>
+        <member name="F:Specification.XML.Definition.WS">
+            <summary>
+            The attribute regular expression.
             </summary>
         </member>
         <member name="P:Specification.XML.Definition.Spec">
@@ -76,6 +81,23 @@
         </member>
         <member name="M:Specification.XML.XMLProperty.Equals(Common.IProperty{System.String})">
             <inheritdoc/>
+        </member>
+        <member name="M:Specification.XML.XMLProperty.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.XML.XMLProperty.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Specification.XML.XMLProperty.op_Equality(Specification.XML.XMLProperty,Specification.XML.XMLProperty)">
+            <summary>
+            Standard equality operator.
+            </summary>
+            <param name="left">The left property.</param>
+            <param name="right">The right property.</param>
+            <returns>Returns <see langword="true"/> if the 2 properties are equal.</returns>
+        </member>
+        <member name="P:Specification.XML.XMLComment.Content">
+            <summary>Comment content.</summary>
         </member>
         <member name="T:Specification.XML.XMLContent">
             <summary>
@@ -160,12 +182,6 @@
             The name of the element.
             </summary>
         </member>
-        <member name="P:Specification.XML.XMLNode.ParseData">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.XML.XMLNode.SetParseData(Common.Regex.IMatchItem)">
-            <inheritdoc/>
-        </member>
         <member name="T:Specification.XML.XMLNodeAttr">
             <summary>
             Represents an XML attribute.
@@ -197,7 +213,7 @@
             Operation to stack the nodes inside each other.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLStackOperation.DoOperation(System.Object@)">
+        <member name="M:Specification.XML.XMLStackOperation.Execute">
             <inheritdoc/>
         </member>
     </members>

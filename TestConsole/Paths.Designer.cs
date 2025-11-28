@@ -19,7 +19,7 @@ namespace TestConsole {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Paths {
@@ -61,7 +61,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\Parser.Text\Samples\sample.acs.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
         /// </summary>
         internal static string acs_testscript {
             get {
@@ -70,7 +70,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\UnitTests\process.html.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\UnitTests\process.html.
         /// </summary>
         internal static string html_processfile {
             get {
@@ -79,7 +79,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\Parser.Text\Samples\default.ini.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\default.ini.
         /// </summary>
         internal static string ini_vncdefault {
             get {
@@ -88,7 +88,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\Specification.IPL\Samples\6456 batch.txt.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt.
         /// </summary>
         internal static string ipl_batch6456 {
             get {
@@ -97,7 +97,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\Johntay4\source\repos\Projects\Parser.Text\Samples\label.ipl.
+        ///   Looks up a localized string similar to C:\Users\Johntay4\source\repos\Git\ParserLib\Parser\Samples\label.ipl.
         /// </summary>
         internal static string ipl_label {
             get {
@@ -106,7 +106,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\Parser.Text\Samples\mapinfo.lmp.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
         /// </summary>
         internal static string mapinfo_common {
             get {
@@ -115,7 +115,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\Specification.REG\Resources\Types\ipl.reg.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
         /// </summary>
         internal static string reg_iplfile {
             get {
@@ -124,7 +124,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\Parser.Text\Samples\sndinfo.txt.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt.
         /// </summary>
         internal static string sndinfo_test {
             get {
@@ -133,20 +133,11 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Projects\Specification.XML\Schemas\specification.xsd.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
         /// </summary>
         internal static string xsd_specification {
             get {
                 return ResourceManager.GetString("xsd_specification", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Demon zscript file.
-        /// </summary>
-        internal static string zs_demon {
-            get {
-                return ResourceManager.GetString("zs_demon", resourceCulture);
             }
         }
     }

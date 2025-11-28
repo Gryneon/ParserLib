@@ -1,28 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="1">
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <Authors>John Taylor</Authors>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <FileVersion>1.0.0.0</FileVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <NuGetAuditLevel>low</NuGetAuditLevel>
+    <NuGetAuditLevel>high</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>
-    <TargetFramework>net10.0</TargetFramework>
-    <WarningLevel>9999</WarningLevel>
-    <PackageId></PackageId>
-    <Title>Common Library</Title>
-    <Company></Company>
-    <FileVersion>1.0.0</FileVersion>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <Authors>John Taylor</Authors>
     <RepositoryType>git</RepositoryType>
+    <TargetFramework>net10.0</TargetFramework>
+    
+    <Title>Common Library</Title>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,10 +35,6 @@
       <EmbedInteropTypes>true</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
 </Project>

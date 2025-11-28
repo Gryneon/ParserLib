@@ -9,7 +9,7 @@ namespace Common;
 /// <summary>
 /// A node that defines a string replacement operation.
 /// </summary>
-public class ReplaceNode : IEquatable<ReplaceNode>
+public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?>>
 {
   #region Static Members
   /// <summary>
@@ -18,8 +18,8 @@ public class ReplaceNode : IEquatable<ReplaceNode>
   /// <param name="lf">The string to look for.</param>
   /// <param name="rw">The string to replace with</param>
   /// <returns>A new <see cref="ReplaceNode"/> object.</returns>
-  public static ReplaceNode From (string lf, string? rw) => new(lf, rw);
-  public static ReplaceNode From ((string, string?) tp) => new(tp.Item1, tp.Item2);
+  public static ReplaceNode From ([SS("regex")] string lf, string? rw) => new(lf, rw);
+  public static ReplaceNode From ((string LookFor, string? ReplaceWith) tp) => new(tp.LookFor, tp.ReplaceWith);
   public static ReplaceNode From (KeyValuePair<string, string?> kvp) => new(kvp.Key, kvp.Value);
   public static ReplaceNode From (IProperty<string?> prop)
   {
@@ -27,7 +27,7 @@ public class ReplaceNode : IEquatable<ReplaceNode>
     return new(prop.Key, prop.Value);
   }
 
-  public static implicit operator ReplaceNode ((string, string?) tuple) => From(tuple);
+  public static implicit operator ReplaceNode ((string LookFor, string? ReplaceWith) tuple) => From(tuple);
   public static implicit operator ReplaceNode (KeyValuePair<string, string?> kvp) => From(kvp);
   public static implicit operator ReplaceNode (Tuple<string, string?> prop) => From(prop.ToValueTuple());
   public static implicit operator KeyValuePair<string, string?> ([NotNull] ReplaceNode node) => node.ToKVP();
@@ -71,18 +71,37 @@ public class ReplaceNode : IEquatable<ReplaceNode>
   /// <param name="other">The other <see cref="ReplaceNode"/>.</param>
   /// <returns><see langword="true"/> if the <see cref="ReplaceNode"/> objects are equal to each other, otherwise <see langword="false"/>.</returns>
   public bool Equals (ReplaceNode? other) =>
-    LookFor == other?.LookFor && ReplaceWith == other.ReplaceWith;
+    other is not null && LookFor == other.LookFor && ReplaceWith == other.ReplaceWith;
 
   public bool Equals (ReplaceNode? other, StringComparison sc) =>
-    LookFor.Content.Equals(other?.LookFor, sc) && (ReplaceWith is not null && other.ReplaceWith is not null && ReplaceWith.Equals(other.ReplaceWith, sc) || ReplaceWith is null && other.ReplaceWith is null);
+    LookFor.Content.Equals(other?.LookFor, sc) && (
+      ReplaceWith is not null &&
+      other.ReplaceWith is not null &&
+      ReplaceWith.Equals(other.ReplaceWith, sc) || ReplaceWith is null && other.ReplaceWith is null);
 
   /// <inheritdoc/>
-  public override bool Equals (object? obj) => Equals(obj as ReplaceNode, SCO);
+  public override bool Equals (object? obj) => Equals(obj as IProperty<string>, SCO);
   /// <inheritdoc/>
   public override int GetHashCode () => HashCode.Combine(LookFor, ReplaceWith);
 
-  public virtual SysRegex OpRegex => new(LookFor);
-
-  public string ReplaceRegex (string input) => OpRegex.Replace(input, ReplaceWith ?? SE);
+  public string ReplaceRegex (string input, RegexOptions options, TimeSpan? timeOut = null)
+  {
+    SysRegex opRegex =
+      timeOut is null ?
+        new(LookFor, options) :
+        new(LookFor, options, timeOut.Value);
+    return opRegex.Replace(input, ReplaceWith ?? SE);
+  }
+  /// <summary>
+  /// Recursively replaces text literallly, and does not interpret the string as a regular expression.
+  /// </summary>
+  /// <param name="input">The text to operate on.</param>
+  /// <param name="sc"><see cref="StringComparison"/> properties.</param>
+  /// <returns>A <see cref="string"/> with the text replaced as directed.</returns>
   public string ReplaceText (string input, StringComparison sc = SCO) => input.RecursiveReplace(LookFor, ReplaceWith ?? SE, sc);
+  public bool Equals (IProperty<string?>? other) =>
+    LookFor.Content.Equals(other?.Key, SCO) && (
+      ReplaceWith is not null &&
+      other.Value is not null &&
+      ReplaceWith.Equals(other.Value, SCO) || ReplaceWith is null && other.Value is null);
 }

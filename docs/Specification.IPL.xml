@@ -4,24 +4,12 @@
         <name>Specification.IPL</name>
     </assembly>
     <members>
-        <member name="T:Specification.IPL.IPLExtensions">
-            <summary>
-            Extensions for this Spec.
-            </summary>
-        </member>
-        <member name="M:Specification.IPL.IPLExtensions.ToCommandData(Common.Regex.MatchDataSet)">
-            <summary>
-            Converts this <see cref="T:Common.Regex.MatchDataSet"/> into a <see cref="T:Specification.IPL.CommandDataSet"/> object.
-            </summary>
-            <param name="mdd">The match data to use.</param>
-            <returns>A <see cref="T:Specification.IPL.CommandDataSet"/> object.</returns>
-        </member>
         <member name="T:Specification.IPL.CommandDataSet">
             <summary>
             Contains the details of an IPL command.
             </summary>
         </member>
-        <member name="P:Specification.IPL.CommandDataSet.ParseData">
+        <member name="P:Specification.IPL.CommandDataSet.Origin">
             <summary>
             The data that created this object.
             </summary>
@@ -218,10 +206,11 @@
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_GreaterThan(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
             <summary>
-            TODO: Doc
+            Whether or not the left object is greater than the right object.
             </summary>
             <param name="left">The left object.</param>
             <param name="right">The right object.</param>
+            <returns><see langword="true"/> if the left object is greater than the right object, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_GreaterThanOrEqual(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
             <summary>
@@ -304,24 +293,6 @@
             <summary>
             Logical NOT.
             </summary>
-        </member>
-        <member name="T:Specification.IPL.CommandValidator_And">
-            <summary>
-            Validates that all the provided command validations pass.
-            </summary>
-            <param name="commands">A list of the validation commands that must all pass.</param>
-        </member>
-        <member name="M:Specification.IPL.CommandValidator_And.#ctor(System.Collections.ObjectModel.Collection{Parser.Text.IValidator{Specification.IPL.CommandDataSet,Specification.IPL.CommandValidationType}})">
-            <summary>
-            Validates that all the provided command validations pass.
-            </summary>
-            <param name="commands">A list of the validation commands that must all pass.</param>
-        </member>
-        <member name="P:Specification.IPL.CommandValidator_And.ValidationType">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.IPL.CommandValidator_And.Validate(Specification.IPL.CommandDataSet)">
-            <inheritdoc/>
         </member>
         <member name="T:Specification.IPL.CommandValidator_InMode">
             <summary>
@@ -534,6 +505,18 @@
             Selects the format to be used.
             </summary>
         </member>
+        <member name="T:Specification.IPL.IPLExtensions">
+            <summary>
+            Extensions for this Spec.
+            </summary>
+        </member>
+        <member name="M:Specification.IPL.IPLExtensions.ToCommandData(Common.Regex.MatchDataSet)">
+            <summary>
+            Converts this <see cref="T:Common.Regex.MatchDataSet"/> into a <see cref="T:Specification.IPL.CommandDataSet"/> object.
+            </summary>
+            <param name="mdd">The match data to use.</param>
+            <returns>A <see cref="T:Specification.IPL.CommandDataSet"/> object.</returns>
+        </member>
         <member name="T:Specification.IPL.IPLPrinterMode">
             <summary>
             The different possible printer modes.
@@ -578,23 +561,6 @@
             <summary>
             TODO: Doc
             </summary>
-        </member>
-        <member name="T:Specification.IPL.IValidator`1">
-            <summary>
-            Validates that a command is well formed.
-            </summary>
-        </member>
-        <member name="P:Specification.IPL.IValidator`1.ValidationType">
-            <summary>
-            The type of validation to perform.
-            </summary>
-        </member>
-        <member name="M:Specification.IPL.IValidator`1.Validate(`0)">
-            <summary>
-            Validates the given command data against the validation type and parameters.
-            </summary>
-            <param name="cmd">The command to validate</param>
-            <returns></returns>
         </member>
     </members>
 </doc>

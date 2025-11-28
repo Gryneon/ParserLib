@@ -18,7 +18,7 @@ public class InferenceNode (IT type, string content) : IInferenceNode
       bytes = new byte[size];
       using FileStream fs = File.OpenRead(filepath);
       fs.ReadExactly(bytes, 0, size);
-      return Encoding.UTF8.GetString(bytes);
+      return bytes.ByteArrToString();
     }
     string loadText () => File.ReadAllText(filepath, Encoding.UTF8);
     bool type (IT flag) => Type.HasFlag(flag);

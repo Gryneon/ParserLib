@@ -1,18 +1,34 @@
-using Common.Extensions;
-
 namespace Parser.Ops;
 
-public delegate OpStatus DoOperationFunction (ref object data);
-
-public class Operation : IOperation
+/// <summary>
+/// The abstract base class for operations. All operations should inherit from <see cref="Operation"/>.<br/>
+/// All usage or references should be stored as <see cref="IOperation"/> objects.
+/// </summary>
+public abstract class Operation : IOperation
 {
   #region Throwing Functions
+  /// <summary>
+  /// Throws an <see cref="InvalidOperationException"/> if condition is <see langword="true"/>.
+  /// </summary>
+  /// <param name="condition">The condition to check.</param>
+  /// <param name="msg">The exception message.</param>
+  /// <exception cref="InvalidOperationException"></exception>
+  protected static void ThrowIf ([DoesNotReturnIf(true)] bool condition, string msg)
+  {
+    if (condition) throw new InvalidOperationException(msg);
+  }
   /// <summary>
   /// Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.
   /// </summary>
   /// <exception cref="NotImplementedException"/>
   [DoesNotReturn]
-  protected static void ThrowNoOverrideError () => throw new NotImplementedException("This needs to be overridden by the inheriting class.");
+  protected static void ThrowNoOverrideError () => throw new NotImplementedException();
+  /// <summary>
+  /// Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.
+  /// </summary>
+  /// <exception cref="NotImplementedException"/>
+  [DoesNotReturn]
+  protected static T ThrowNoOverrideError<T> () => throw new NotImplementedException("This needs to be overridden by the inheriting class.");
   /// <summary>
   /// Throws an <see cref="NotSupportedException"/>. Use if you must prevent a valid overload from a base class from being used.
   /// </summary>
@@ -28,95 +44,212 @@ public class Operation : IOperation
   [DoesNotReturn]
   protected static void ThrowBadParserError (object parser, [NotNull] Type desired_parser) =>
     throw new ArgumentException($"Parser was not a {desired_parser.Name}. Got a {parser?.GetType()}.");
-  public virtual OpStatus DoOperation<TParser> (TParser parser_ref) where TParser : IParser => throw new NotImplementedException();
   #endregion
+  #region Static Operation Methods & Properties
+  public static IOperation JumpTo (string label) => new OperationAction(OAT.GotoLabel, label);
+  public static IOperation JumpToFirst () => new OperationAction(OAT.GotoFirst);
+  public static IOperation JumpTo (int index) => new OperationAction(OAT.GotoIndex, index);
+  public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
+
+  public static IOperation Fail () => new OperationAction(OAT.ForceFail);
+  public static IOperation Done () => new OperationAction(OAT.ForcePass);
+  public static IOperation Prompt () => new OperationAction(OAT.Prompt);
+
+  public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey);
+  public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey);
+  public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey);
+  public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
+  public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
+
+  public static IOperation BreakLoop () => new OperationAction(OAT.BreakLoop);
+  public static IOperation StartLoop (LoopOperation loopOperation) => new OperationAction(OAT.StartLoop, loopOperation);
+  public static IOperation NextLoop (int increment = 1) => new OperationAction(OAT.NextLoop, increment);
+  public static IOperation ContinueLoop (int increment = 1) => new OperationAction(OAT.ContinueLoop, increment);
+
+  public static IOperation ClearCursor () => new OperationAction(OAT.ClearCursor);
+  public static IOperation CreateCursor (string key, int start_at) => new OperationAction(OAT.CreateCursor);
+  public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor);
+
+  public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation(operations)
+  {
+    Type = LoopType.While,
+    Condition = condition,
+    Count = null
+  };
+  public static IOperation Until (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation(operations)
+  {
+    Type = LoopType.Until,
+    Condition = condition,
+    Count = null
+  };
+  public static IOperation ForEach (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation(operations)
+  {
+    Type = LoopType.ForEach,
+    CursorKey = cursor_key,
+    Count = null
+  };
+  public static IOperation ForCount (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation(operations)
+  {
+    Type = LoopType.ForCount,
+    CursorKey = cursor_key,
+    Count = null
+  };
+  public static IOperation ForCount (IEnumerable<IOperation> operations, string count_key, int count) => new LoopOperation(operations)
+  {
+    Type = LoopType.ForCount,
+    CursorKey = count_key,
+    Count = count
+  };
+
+  /// <summary>
+  /// A built in operation that ends the operation sequence.
+  /// </summary>
+  public static IOperation End => new OperationAction(OperationActionType.ForcePass);
+  #endregion
+  #region Stored Keys & Data
   /// <summary>
   /// The loaded data from the input keys if there are multiple keys provided.
   /// </summary>
-  protected Collection<object?>? MultipleInputValues { get; }
-  /// <summary>
-  /// The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.
-  /// </summary>
-  protected object? WorkToReturn { get; set; }
+  protected Collection<object?> MultipleInputValues { get; } = [];
   /// <summary>
   /// A collection of all of the input keys. This will only contain one key if only one key is provided.
   /// </summary>
-  protected Collection<string> InputKeys { get; }
+  [NotNullIfNotNull(nameof(InputKey))]
+  protected Collection<string> InputKeys { get; } = [];
   /// <summary>
   /// The input key provided, or the first input key if multiple are provided.
   /// </summary>
-  protected string InputKey { get; set; }
+  [NotNullIfNotNull(nameof(InputKeys))]
+  protected string? InputKey
+  {
+    get => InputKeys.IsEmpty() ? null : InputKeys[0];
+    set
+    {
+      value ??= SE;
+      if (InputKeys.IsEmpty())
+      {
+        InputKeys.Add(value);
+      }
+      else
+      {
+        InputKeys[0] = value;
+      }
+    }
+  }
   /// <summary>
   /// The output key provided.
   /// </summary>
   protected string OutputKey { get; set; }
   /// <summary>
-  /// Whether or not this operation loads any data.
+  /// The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.
   /// </summary>
-  public bool IgnoreAllLoads { get; protected set; }
-  public OpStatus Status { get; protected set; } = OpStatus.Skipped;
+  protected object? WorkToReturn { get; set; }
+  /// <summary>
+  /// The status of the operation.
+  /// </summary>
+  protected OpStatus Status { get; set; } = OpStatus.Skipped;
+  #endregion
+  #region Calculated Properties
+  /// <summary>
+  /// The adjusted status taking into account operation flags.
+  /// </summary>
+  protected virtual OpStatus AdjustedStatus =>
+    Status is OpStatus.Skipped ? OpStatus.Skipped : Status.IsFail() && ContinueOnFail ? OpStatus.FailOverride : Status;
+  #endregion
   #region Operation Flags
   /// <inheritdoc/>
   public bool ContinueOnFail { get; set; }
   /// <inheritdoc/>
   public bool SkipOperation { get; set; }
-  /// <inheritdoc/>
-  public bool EndOperation { get; init; }
-  /// <inheritdoc/>
-  public bool DebugOperation { get; set; }
-  #endregion
-
   /// <summary>
-  /// Checks the parsers current working data, and sets the Status to <see cref="OpStatus.FailBadInputNull"/> if it is null.
+  /// Whether or not this operation loads any data.
+  /// </summary>
+
+  [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkToReturn))]
+  public bool IgnoreAllLoads => InputKey.IsEmpty();
+  #endregion
+  #region Input Checks
+  /// <summary>
+  /// Checks the parsers current working data, and sets the Status to <see cref="OpStatus.FailNoSuchVarName"/> if it is missing.
   /// This method is for when one input is provided.
   /// </summary>
-  protected virtual void CheckInputNull () => ThrowNoOverrideError();
+
+  protected void CheckInputNull ()
+  {
+    if (InputKey == SE || IgnoreAllLoads)
+    {
+      Log("TextOperation.CheckInputNull", $"No key checked.");
+      Status = OpStatus.Skipped;
+    }
+    else if (!Data.CanLoad(InputKey))
+    {
+      Log("TextOperation.CheckInputNull", $"Key {InputKey} does not exist.");
+      Status = OpStatus.FailNoSuchVarName;
+    }
+    else if (Data.CanLoad(InputKey))
+    {
+      Log("TextOperation.CheckInputNull", $"Key {InputKey} is not null.");
+      Status = OpStatus.Pass;
+    }
+  }
   /// <summary>
-  /// Checks the parsers current working data, and sets the Status to <see cref="OpStatus.FailBadInputNull"/> if it is null.
+  /// Checks the parsers current working data, and sets the Status to <see cref="OpStatus.FailNoSuchVarName"/> if it is missing.
   /// This method is for when more than one input is provided.
   /// </summary>
-  protected virtual void CheckInputsNull () => ThrowNoOverrideError();
-  /// <inheritdoc/>
-  protected virtual void Execute () => ThrowNoOverrideError();
+  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
+  protected bool CheckInputsNull ()
+  {
+    if (InputKeys is null)
+    {
+      Status = OpStatus.FailBadInputNull;
+      return false;
+    }
+
+    foreach (string key in InputKeys)
+    {
+      if (!Parser.Data.ContainsKey(key))
+      {
+        Debug.Log("TextOperation.CheckInputsNull", $"Key {key} does not exist.");
+        Status = OpStatus.FailNoSuchVarName;
+        return false;
+      }
+      else if (Parser.Data.TryGetValue(key, out object? data) && data is not null)
+      {
+        continue;
+      }
+      else
+      {
+        Debug.Log("TextOperation.CheckInputsNull", $"Key {key} is null.");
+        Status = OpStatus.FailBadInputNull;
+        return false;
+      }
+    }
+    Debug.Log("TextOperation.CheckInputsNull", $"All keys are not null.");
+    Status = OpStatus.Pass;
+    InputKey ??= SE;
+    return true;
+  }
   /// <summary>
   /// Sets the status to EndCommand or Skipped if the operation is flagged to be those.
   /// </summary>
   protected virtual void CheckOperationFlags ()
   {
-    if (EndOperation)
-    {
-      Debug.Log("Operation.CheckOperationFlags", "Ending operation sequence.");
-      Status = OpStatus.EndCommand;
-    }
-    else if (SkipOperation)
+    if (SkipOperation)
     {
       Debug.Log("Operation.CheckOperationFlags", "Skipping operation.");
       Status = OpStatus.Skipped;
     }
   }
   /// <summary>
-  /// Performs an operation that uses and may alter or reassign the data.
+  /// Checks if the data stored in <see cref="InputKey"/> is of type <typeparamref name="T"/>.
   /// </summary>
-  /// <returns>
-  /// <see cref="OpStatus.Error"/> : The operation encountered a fatal error.<br/>
-  /// <see cref="OpStatus.Pass"/> : The operation completed.<br/>
-  /// <see cref="OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
-  /// <see cref="OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
-  /// <see cref="OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
-  /// <see cref="OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
-  /// <see cref="OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
-  /// <see cref="OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
-  /// <see cref="OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
-  /// <see cref="OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
-  /// <see cref="OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="Spec"/>.<br/>
-  /// <see cref="OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
-  /// </returns>
-  /// <exception cref="UnknownOperationException"/>
-  public virtual OpStatus DoOperation (ref object data) =>
-    EndOperation ? OpStatus.EndCommand : throw new UnknownOperationException();
-  protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T? casted)
+  /// <typeparam name="T">The type or interface to check against.</typeparam>
+  /// <param name="casted">The data casted to the type specified.</param>
+  /// <returns>Returns <see langword="true"/> if the data is of the correct type, <see langword="false"/> otherwise.</returns>
+  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
+  protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
-    if (Parser.Work.TryGetValue(InputKey, out object? item) && item is T temp)
+    if (!IgnoreAllLoads && Parser.Data.TryLoad(InputKey, out T? temp))
     {
       Status = OpStatus.Pass;
       casted = temp;
@@ -126,52 +259,95 @@ public class Operation : IOperation
     casted = default;
     return false;
   }
-
+  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
+  protected virtual bool CheckArray<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable<T> casted)
+  {
+    if (!IgnoreAllLoads && Parser.Data.TryLoadArray(InputKey, out IEnumerable<T>? temp))
+    {
+      Status = OpStatus.Pass;
+      casted = temp;
+      return true;
+    }
+    Status = OpStatus.FailBadInputType;
+    casted = default;
+    return false;
+  }
+  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
+  protected virtual bool CheckArray ([NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable casted)
+  {
+    if (!IgnoreAllLoads && Parser.Data.TryLoadArray(InputKey, out IEnumerable? temp))
+    {
+      Status = OpStatus.Pass;
+      casted = temp;
+      return true;
+    }
+    Status = OpStatus.FailBadInputType;
+    casted = default;
+    return false;
+  }
+  /// <summary>
+  /// Checks all the inputs provided and validates them to a common class or interface.
+  /// </summary>
+  /// <typeparam name="T">The common class or interface.</typeparam>
+  /// <param name="casted">The collection of inputs.</param>
+  /// <returns>Returns <see langword="true"/> if the check passed, <see langword="false"/> otherwise.</returns>
+  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected bool CheckInputs<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out Collection<T> casted)
   {
     casted = [];
+    if (InputKeys is null) throw new InvalidOperationException();
     for (int i = 0; i < InputKeys.Count; i++)
     {
-      if (Parser.Work.TryGetValue(InputKeys[i], out object? temp) && temp is T temp2)
-        casted.Add(temp2);
+      if (Parser.Data.TryLoad(InputKeys[i], out T? temp))
+        casted.Add(temp);
       else
       {
-        Status = !Parser.Work.ContainsKey(InputKeys[i]) ? OpStatus.FailNoSuchVarName : OpStatus.FailBadInputType;
+        Status = !Parser.Data.ContainsKey(InputKeys[i]) ? OpStatus.FailNoSuchVarName : OpStatus.FailBadInputType;
         return false;
       }
     }
 
     Status = OpStatus.Pass;
+    InputKey ??= SE;
     return true;
   }
-  protected virtual OpStatus AdjustedStatus =>
-    Status is OpStatus.Skipped || Status.IsFail() && ContinueOnFail ? OpStatus.Skipped :
-    EndOperation ? OpStatus.EndCommand :
-    Status;
+  #endregion
+  #region Reference Properties
   /// <summary>
-  /// A built in operation that ends the operation sequence.
+  /// The reference to the parser.
   /// </summary>
-  public static Operation End => new() { EndOperation = true };
   [AllowNull] protected IParser Parser { get; set; }
+  /// <summary>
+  /// The reference to the <see cref="DataDictionary"/>.
+  /// </summary>
+  [AllowNull] protected DataDictionary Data => Parser.Data;
+  /// <summary>
+  /// The reference to the specification.
+  /// </summary>
+  [AllowNull] protected ISpec Spec { get; set; }
+  #endregion
+  #region State Properties
+  /// <summary>
+  /// The jump target of any <see cref="OperationActionType.BreakLoop"/> action that is called.
+  /// </summary>
+  public int LoopBreak { get; set; }
+  /// <summary>
+  /// The jump target of any <see cref="OperationActionType.ContinueLoop"/> and the beginning of the loop section.
+  /// </summary>
+  public int LoopStart { get; set; }
+  #endregion
+  #region Constructors
   /// <summary>
   /// Multiple input keys.
   /// </summary>
   protected Operation (IEnumerable<string> input_keys, string output_key)
   {
     InputKeys = [.. input_keys];
-
-    if (InputKeys.Count == 0)
-    {
-      IgnoreAllLoads = true;
-      InputKey = SE;
-    }
-    else
-      InputKey = InputKeys[0];
-
+    InputKey = !input_keys.Any() ? SE : InputKeys[0];
     OutputKey = output_key;
   }
   /// <summary>
-  /// Private constructor for the static <see cref="End"/> object.
+  /// Constructor for the static <see cref="End"/> object, and for operations that do not touch data.
   /// </summary>
   protected Operation ()
   {
@@ -179,52 +355,95 @@ public class Operation : IOperation
     OutputKey = SE;
     InputKeys = [];
   }
-  protected Operation (bool ignore_all_loads) : this() => IgnoreAllLoads = ignore_all_loads;
   /// <summary>
   /// Single input key.
   /// </summary>
   protected Operation (string input_key, string output_key)
   {
-    if (input_key.IsEmpty())
-      IgnoreAllLoads = true;
-    InputKeys = [input_key];
+    InputKeys = IgnoreAllLoads ? [] : [input_key];
     InputKey = input_key;
     OutputKey = output_key;
   }
-  public bool Equals (IOperation? other) => EndOperation && (other?.EndOperation ?? false) || Equals(this, other);
-}
+  #endregion
+  public OpStatus DoOperation (IParser parser_ref)
+  {
+    if (SkipOperation)
+      return OpStatus.Skipped;
 
-public class Operation<TParser> : Operation where TParser : IParser
-{
-  /// <summary>
-  /// Performs an operation that uses and may alter or reassign the data.
-  /// </summary>
-  /// <returns>
-  /// <see cref="OpStatus.Error"/> : The operation encountered a fatal error.<br/>
-  /// <see cref="OpStatus.Pass"/> : The operation completed.<br/>
-  /// <see cref="OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
-  /// <see cref="OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
-  /// <see cref="OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
-  /// <see cref="OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
-  /// <see cref="OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
-  /// <see cref="OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
-  /// <see cref="OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
-  /// <see cref="OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
-  /// <see cref="OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="Spec"/>.<br/>
-  /// <see cref="OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
-  /// </returns>
-  /// <exception cref="UnknownOperationException"/>
-  public virtual OpStatus DoOperation (TParser parser_ref) =>
-    base.DoOperation(parser_ref);
-  /// <summary>
-  /// Initializes the operation. Sets <see cref="Parser"/>.
-  /// </summary>
-  /// <param name="parser"></param>
-  protected virtual void Initialize (TParser parser) => Parser = parser;
+    Initialize(parser_ref);
+    CheckInputNull();
 
-  protected Operation (string input_key, string output_key) : base(input_key, output_key) { }
-  protected Operation (IEnumerable<string> input_keys, string output_key) : base(input_keys, output_key) { }
-  protected Operation (bool ignore_all_loads) : base(ignore_all_loads) { }
-  protected override bool CheckInput<T> ([MaybeNullWhen(false), NotNullWhen(true)] out T? casted) where T : default =>
-    base.CheckInput(out casted);
+    if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
+
+    Execute();
+
+    if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
+
+    AssignResult();
+
+    return AdjustedStatus;
+  }
+  /// <summary>
+  /// Performs the operation and stores the value in <c><see cref="Operation.WorkToReturn"/></c>,
+  /// and the <see cref="OpStatus"/> in <c><see cref="Operation.Status"/></c><br/>
+  /// Use <c><see cref="CheckInput{T}(out T)"/></c> or <see cref="CheckArray{T}(out IEnumerable{T})"/> to validate single variables.
+  /// Use <see cref="CheckInputs{T}(out Collection{T})"/> to validate mulitple.
+  /// </summary>
+  protected virtual void Execute ()
+  {
+    ThrowIf(WorkToReturn is null, "This needs to be overridden by the inheriting class.");
+
+    object data = WorkToReturn;
+    Status = OpStatus.FailBadOpDefinition;
+    WorkToReturn = data;
+  }
+  /// <summary>
+  /// Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.
+  /// </summary>
+  /// <param name="parser">The parser reference to pass to the operation.</param>
+  protected void Initialize (IParser parser)
+  {
+    parser.ThrowIfNull();
+    Parser = parser;
+    Spec = parser.Spec;
+
+    if (IgnoreAllLoads)
+    {
+      WorkToReturn = null;
+      return;
+    }
+
+    object? loadKey (string input_key)
+    {
+      if (Parser.Data.TryGetValue(InputKey, out object? value))
+      {
+        Log("TextOperation.Initialize", $"Loaded {InputKey} with value {value}.");
+        WorkToReturn = value;
+      }
+      else
+      {
+        Log("TextOperation.Initialize", $"Key {InputKey} does not exist or is null.");
+        WorkToReturn = null;
+        Status = OpStatus.FailNoSuchVarName;
+      }
+      return WorkToReturn;
+    }
+
+    object? data = loadKey(InputKey);
+
+    if (InputKeys.Count > 1)
+    {
+      MultipleInputValues?.AddRange(InputKeys.Select(loadKey));
+
+      if (MultipleInputValues?.Any(item => item is null) ?? true)
+      {
+        Status = OpStatus.FailBadInputNull;
+      }
+    }
+  }
+  protected void AssignResult (DictionaryMode mode = DictionaryMode.Overwrite)
+  {
+    if (WorkToReturn is null) return;
+    Parser.Data.Add(OutputKey, WorkToReturn);
+  }
 }

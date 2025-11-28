@@ -1,60 +1,43 @@
 #pragma warning disable IDE0051 // Remove unused private members
 #pragma warning disable IDE0052 // Remove unread private members
 
+using System.Text.RegularExpressions;
+
+using static Parser.RX;
+using static Parser.Tokens.TokenStaticFunctions;
+
 namespace Specification.ACS;
 /// <summary>
-/// ACS Specification Definition
+/// ACS Specification Definition <br/>
+/// <see href="https://regex101.com/r/mTwORe/1">Regex</see>
+/// https://regex101.com/r/FCoqFI/1
 /// </summary>
+[DefinitionExport(true)]
 public static class Definition
 {
   /// <summary>
-  /// https://regex101.com/r/NoIMcf/1
+  /// https://regex101.com/r/NoIMcf/1 <br/>
   /// </summary>
-  ///
   /// https://regex101.com/r/tfW4Sl/1
   /// <remarks>https://regex101.com/r/deLv0L/2</remarks>
-
-  // Keywords
-  //private static readonly RxS KW = Gp("script|restart|suspend|terminate|function|int|str|global|world|bool|if|for|switch|case|break|continue|while|until|return");
-  //private static readonly RxS OP = Gp(@"\+\+|\-\-|\&\&\=?|\|\|\=?|[!+*%<>&|=^/-]\=?");
-  //private static readonly RxS PP = Gp(@"^\s*\#(?:(?:lib)?define|import|include)");
-  //private static readonly RxS ST = Gp("enter|open|respawn|disconnect|lightning|unloading");
-  //private static readonly RxS DT = Gp(@"int|bool|char|str");
-  //private static readonly RxS Int = Gp(@"-?\d+");
 
   //Splitter
   //https://regex101.com/r/yR81eF/1
   private static RxS Splitter (string keeps) => Rx($@"\s+|(?<!\s)(?=[{keeps}])|(?<=[{keeps}])");
-  //private static readonly RxS Splits = Splitter(@"(),;{}\[\]");
-  //private static Collection<TokenDef> TokenTypes => [
-  //  new TokenDef(T_Ignore | T_LnComment, "lncomment", CLnComment),
-  //  new TokenDef(T_SemiColon, "semicolon", @"\;"),
-  //  new TokenDef(T_Ignore | T_NL, "nl", @"\s*(?:\r\n?|\n)+\s*"),
-  //  new TokenDef(T_Ignore | T_WS, "ws", @"[ \t]+"),
-  //  new TokenDef(T_Ignore | T_BlkComment, "blkcomment", CBlkComment),
-  //  new TokenDef(T_DblQt, "string", @"""(?:[^\\]|\\.)*?"""),
-  //  new TokenDef(T_SinQt, "char", @"'[^'\\]'|'\\.'|'\\u\d\d\d\d'"),
-  //  new TokenDef(T_Int, "integer", _int),
-  //  new TokenDef(T_Dec, "decimal", @"-?\d*\.\d+|\d+\."),
-  //  new TokenDef(T_Operator, "op", @"[-*+&|=<>]{2}|\!\=|\<\=|\>\=|[,;:<{}()*>?!%^&=+|\/-]"),
-  //  new TokenDef(T_Name, "keyword", _kW),
-  //  new TokenDef(T_Name, "name", @"[a-zA-Z_]\w*"),
-  //  new TokenDef(T_PreProc, "preproc", @"\#.*?$"),
-  //  new TokenDef(T_BlockStart, "arrayopen", @"\["),
-  //  new TokenDef(T_BlockEnd, "arrayclose", @"\]"),
-  //  new TokenDef(T_BlockStart, "blockopen", @"\{"),
-  //  new TokenDef(T_BlockEnd, "blockclose", @"\}"),
-  //  new TokenDef(T_BlockStart, "parenopen", @"\("),
-  //  new TokenDef(T_BlockEnd, "parenclose", @"\)"),
-  //];
+  private static string Ws => Nm("t_ws", @"\s+");
+  private static string Wso => Nm("t_ws", @"\s*");
+  private static string ACS_PreProc1 => MarkAs("preproc", @"^\s*\#(library|import|include)\s+");
+  private const RegexOptions RxOptions = ROML | ROIC | ROIPW | ROEC;
   /// <summary>
   /// Defined Specification
   /// </summary>
-  public static TextSpec Spec => new()
+
+  [Export("zdoom.acs")]
+  public static ISpec Spec => new Spec()
   {
     FileInferences = [IfN(ExtIs, "acs")],
     Name = "zdoom.acs",
-    CaseInsensitive = true,
+    RxOpt = RxOptions | ROSL,
     Operations = [
       new DictionaryOperation([
         G_CBlkComment,
@@ -64,7 +47,24 @@ public static class Definition
         G_Int,
         G_Name,
         G_CString,
-      ])
+      ], RxOptions | ROSL)
+    ]
+  };
+  [Export("zdoom.modeldef")]
+  public static ISpec ModelDef => new Spec()
+  {
+    FileInferences = [IfNOr(
+      IfN(ExtIs, "modeldef"),
+      IfN(FName|Is, "modeldef"))],
+    Name = "zdoom.modeldef",
+    RxOpt = RxOptions,
+    Operations = [
+      new DictionaryOperation([], RxOptions),
+      new DebugToStringOperation("matches"),
+      new DebugWaitForInputOperation(),
+      new TokenizeOperation(),
+      new DebugToStringOperation("tokens"),
+      new DebugWaitForInputOperation(),
     ]
   };
 }

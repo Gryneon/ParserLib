@@ -1,4 +1,4 @@
-using Parser.Text.Ops;
+using Parser.Ops;
 
 using OS = Parser.OpStatus;
 
@@ -7,23 +7,22 @@ namespace Specification.XML;
 /// <summary>
 /// Operation to stack the nodes inside each other.
 /// </summary>
-public class XMLStackOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
+public class XMLStackOperation (string input_key, string output_key) : Operation(input_key, output_key)
 {
   /// <inheritdoc/>
-  public override OS DoOperation (ref object data)
+  protected override void Execute ()
   {
+    if (!CheckInput(out IEnumerable<IXMLObject>? items))
+    {
+      Status = OS.FailBadInputType;
+      return;
+    }
     OS result = OS.Error;
     Collection<IXMLObject> tree = [];
 
     int depth = 0;
     Collection<string> nodeNames = [];
     Collection<XMLNodeAttr> parentNodes = [];
-
-    if (data is null)
-      return OS.FailBadInputNull;
-
-    if (data is not IEnumerable<IXMLObject> items)
-      return OS.FailBadInputType;
 
     foreach (IXMLObject item in items)
     {
@@ -71,7 +70,7 @@ public class XMLStackOperation (string input_key, string output_key) : TextOpera
     result = OS.Pass;
 
   Finish:
-    data = tree;
-    return result;
+    WorkToReturn = tree;
+    Status = result;
   }
 }

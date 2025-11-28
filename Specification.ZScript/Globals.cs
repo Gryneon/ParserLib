@@ -4,6 +4,7 @@
 //global using Common;
 global using Common.Regex;
 
-global using Parser.Text;
+global using Parser;
+global using Parser.Ops.Text;
 
 //global using static Common.Names;

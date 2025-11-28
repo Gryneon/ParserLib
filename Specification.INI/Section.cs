@@ -3,7 +3,7 @@ namespace Specification.INI;
 /// <summary>
 /// Represents a section heading in an INI formatted file.
 /// </summary>
-public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<PropertyObj>, ITextSerializer<Section>, ICloneable
+public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<PropertyObj>, ITextSerializer, ICloneable
 {
   /// <summary>
   /// Creates an empty Section.
@@ -21,9 +21,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// </summary>
   /// <param name="name">The name of the section.</param>
   public static explicit operator Section (string name) => new() { Name = name };
-  /// <summary>
-  /// The name of the section.
-  /// </summary>
+  /// <summary>The name of the section.</summary>
   public string Name { get; set; } = SE;
   /// <summary>
   /// The properties within the section.
@@ -34,10 +32,10 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// </summary>
   /// <param name="key">The key of the property.</param>
   /// <returns>The value of the property.</returns>
-  public string this[string key]
+  public string? this[string key]
   {
     get => Properties[key].Value;
-    set => Set<PropertyObj>(key, value);
+    set => Set(key, value ?? SE);
   }
   /// <inheritdoc/>
   public int Count => Properties.Count;
@@ -72,7 +70,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// </summary>
   /// <param name="key">The key name.</param>
   /// <param name="value">The value to set it to.</param>
-  public void Set<T> (string key, string value) where T : IProperty<string>, new()
+  public void Set (string key, string value)
   {
     if (!Properties.TryGetValue(key, out PropertyObj? existing))
       Properties.Add(key, new(key, value));
@@ -110,6 +108,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// </summary>
   /// <param name="children">The properties to add.</param>
   public void AddRange (IEnumerable<PropertyObj> children) => SetRange(children);
+  /// <inheritdoc/>
   IEnumerator<PropertyObj> IEnumerable<PropertyObj>.GetEnumerator () => (IEnumerator<PropertyObj>) GetEnumerator();
   /// <inheritdoc/>
   public IEnumerator<IProperty<string>> GetEnumerator () => Properties.Values.GetEnumerator();
@@ -135,10 +134,10 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
 
     foreach (KeyValuePair<string, PropertyObj> item in Properties)
     {
-      result.Properties.Add(item.Key, new PropertyObj(item.Key, item.Value.Value));
+      result.Properties.Add(item.Key, new PropertyObj(item.Key, item.Value?.Value ?? SE));
     }
     return result;
   }
-
+  /// <inheritdoc/>
   IEnumerator IEnumerable.GetEnumerator () => Properties.GetEnumerator();
 }

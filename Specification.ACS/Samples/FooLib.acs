@@ -1,0 +1,33 @@
+﻿//foolib.acs, the script (library) text file
+#library "foolib"
+#include "zcommon.acs"
+
+#define MAX_OBJECTIVES 4 //max number of objectives per map
+
+//this array holds the objectives, this is altered each time you enter a new map
+world str 0:objectives[];
+
+//this function is called by script 999 (See below)
+function void printobjs(void)
+{
+    HudMessage(s:"Objectives\n\n"; 
+        HUDMSG_PLAIN | HUDMSG_LOG, 0, CR_RED, 0.0, 0.0, 5.0 );
+    
+    //print out each objective
+    for(int x = 0; x < MAX_OBJECTIVES; x++)
+    {
+        HudMessage(s:objectives[x]; 
+            HUDMSG_PLAIN | HUDMSG_LOG, 0, CR_WHITE, 0.0, (x * 0.1) + 0.1, 5.0);
+    }
+}
+
+//This script will execute each time you enter a new map, showing the 
+//mission objectives for that particular map.  If you want the player 
+//to be able to see their objectives after they disappear, you'll need 
+//to set up a puke 999 alias in a KEYCONF lump.
+script 999 ENTER
+{
+    printobjs();
+    delay(35 * 5); //five second delay
+    //note that delays cannot be put in functions, which is why it appears here
+}

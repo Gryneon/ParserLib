@@ -1,9 +1,14 @@
-using Common.Extensions;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+
+using Common.Regex;
 
 using Parser;
-using Parser.Text;
-using Parser.Text.Ops;
-using Parser.Text.Tokens;
+using Parser.Ops;
+using Parser.Ops.Text;
+
+using Specification.IPL;
 
 namespace UnitTest;
 
@@ -13,13 +18,33 @@ public class IPLTests
   [InlineData("<STX><ESC>P;<ESC>C;E3;F3;<ETX>\n<STX>H2;o200,399;c20;l2;w2;d3,string me;<ETX>")]
   public void IPL_ParseTest (string initial_string)
   {
-    TextParser textParser = new();
-    OpStatus status = textParser.Parse(initial_string);
-    Assert.True(status < OpStatus.Fail);
-    Assert.Contains("initial", textParser.Work.Keys);
-    Assert.Contains("text", textParser.Work.Keys);
-    Assert.Contains("matches", textParser.Work.Keys);
-    Assert.Equal(10, textParser.Work["matches"].AsCollection().Count);
+    XParser parser = new(Definition.Spec);
+    OpStatus status = parser.Parse(initial_string);
+    Assert.False(status.IsFail(false));
+    Assert.Contains("initial", parser.Data.Keys);
+    Assert.Contains("text", parser.Data.Keys);
+    Assert.Contains("matches", parser.Data.Keys);
+    Assert.True(parser.Data.TryLoad("matches", out IEnumerable<MatchDataSet>? objects));
+    Collection<MatchDataSet> objs = [.. objects];
+    Assert.Equal(10, objs.Count);
+    Assert.Equal("E", objs[2].Groups["letter"].Content);
+  }
+
+  [Fact]
+  public void IPL_ParseTestFull ()
+  {
+    string initial_string = File.ReadAllText(@"C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 Batch.txt");
+    XParser parser = new(Definition.Spec);
+    OpStatus status = parser.Parse(initial_string);
+    Assert.False(status.IsFail(false));
+    Assert.Contains("initial", parser.Data.Keys);
+    Assert.Contains("text", parser.Data.Keys);
+    Assert.Contains("matches", parser.Data.Keys);
+    Assert.True(parser.Data.TryLoad("commands", out IEnumerable<CommandDataSet>? objects));
+    Collection<CommandDataSet> objs = [.. objects];
+    Assert.Equal("c", objs[0].CmdLetter);
+    Assert.Equal("P", objs[1].CmdLetter);
+    Assert.True(objs[0].IsEscaped);
   }
 
   [Theory]
@@ -27,7 +52,7 @@ public class IPLTests
   [InlineData(null, OpStatus.Pass)]
   public void IPL_ParseFailure (string? initial_string, OpStatus result)
   {
-    TextParser textParser = new(Specification.IPL.Definition.Spec);
+    XParser textParser = new(Definition.Spec);
     OpStatus status = textParser.Parse(initial_string ?? "");
     Assert.Equal(result, status);
     Assert.Equal(result, textParser.LastStatus);
@@ -38,32 +63,16 @@ public class IPLTests
   public void IPL_ParseNoVarName (string initial_string)
   {
     IOperation testOp = new CopyOperation("not_a_key", "unused");
-    TextSpec spec = new()
+    Spec spec = new()
     {
       FileInferences = [],
       Name = "test",
       Operations = [testOp]
     };
 
-    TextParser textParser = new(spec);
-    var status = textParser.Parse(initial_string);
+    XParser textParser = new(spec);
+    OpStatus status = textParser.Parse(initial_string);
     Assert.Equal(OpStatus.FailNoSuchVarName, status);
     Assert.Equal(OpStatus.FailNoSuchVarName, textParser.LastStatus);
-  }
-}
-
-public class JSON_Tests
-{
-  [Theory]
-  [InlineData("$int | $dec | $null | $bool | $string | #json_object | #json_array")]
-  public void JSON_TokenTemplateParse (string parse)
-  {
-    TokenNodeGroup nodeGroup = TokenNodeFactory.GetTokenNodes(parse, out string? _);
-    Assert.Null(nodeGroup.Parent);
-    Assert.Empty(nodeGroup.Items);
-    Assert.NotEmpty(nodeGroup.Options);
-    _ = Assert.Single(nodeGroup.Options[0]);
-    Assert.Equal(7, nodeGroup.Options.Count);
-    Assert.Equal(TokenNodeType.Base, nodeGroup.Options[0][0].Type);
   }
 }

@@ -19,7 +19,7 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchDataSet, 
   /// <summary>
   /// The value.
   /// </summary>
-  public string Value { get; set; } = SE;
+  public string? Value { get; set; } = SE;
   /// <summary>
   /// The type of property.
   /// </summary>
@@ -88,7 +88,7 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchDataSet, 
     return result;
   }
   /// <inheritdoc/>
-  public bool Equals (IProperty<string>? other) => Value.Equals(other?.Value, SCO) && Key.Equals(other.Key, SCO);
+  public bool Equals (IProperty<string>? other) => Value is not null && Value.Equals(other?.Value, SCO) && Key.Equals(other.Key, SCO);
   /// <inheritdoc/>
   public int CompareTo (IProperty<string>? other) => Key.CompareTo(other?.Key, SCOIC);
   /// <summary>
@@ -105,9 +105,9 @@ public sealed class RegProperty : IProperty<string>, IGeneratable<MatchDataSet, 
   public override bool Equals (object? obj) =>
     obj is IProperty<string> iprop &&
     Key.Equals(iprop.Key, SCOIC) &&
-    Value.Equals(iprop.Value, SCO);
+    (Value?.Equals(iprop.Value, SCO) ?? false);
   /// <inheritdoc/>
-  public override int GetHashCode () => HashCode.Combine(Key.ToUpperInvariant(), Value.ToUpperInvariant());
+  public override int GetHashCode () => HashCode.Combine(Key.ToUpperInvariant(), Value?.ToUpperInvariant());
 
   public static bool operator == (RegProperty left, RegProperty right) => left is null ? right is null : left.Equals(right);
 

@@ -8,16 +8,6 @@ namespace Common.Extensions;
 public static class DictionaryExtensions
 {
   // Dictionary <TKey, TValue>
-  public static void Add<TKey, TValue> (this Dictionary<TKey, TValue> dic, IDictionary<TKey, TValue> other) where TKey : notnull
-  {
-    if (other is null)
-      return;
-
-    foreach (KeyValuePair<TKey, TValue> item in other)
-    {
-      dic.Add(item);
-    }
-  }
   public static void Add<TKey, TValue> (this Dictionary<TKey, TValue> dic, (TKey Key, TValue Value) item) where TKey : notnull =>
     dic?.Add(item.Key, item.Value);
   public static void Add<TKey, TValue> (this Dictionary<TKey, TValue> dic, KeyValuePair<TKey, TValue> item) where TKey : notnull
@@ -32,7 +22,7 @@ public static class DictionaryExtensions
   public static void Add<TKey, TValue> (this SortedDictionary<TKey, TValue> dic, KeyValuePair<TKey, TValue> item) where TKey : notnull =>
     dic?.Add(item.Key, item.Value);
   public static void AddRange<TKey, TValue> (this Dictionary<TKey, TValue> dic, IDictionary<TKey, TValue> items) where TKey : notnull =>
-    dic.Add(items);
+    dic.AddRange(items);
   public static void AddRange<TKey, TValue> (this Dictionary<TKey, TValue> dic, IEnumerable<KeyValuePair<TKey, TValue>> items) where TKey : notnull
   {
     if (items is null)
@@ -49,6 +39,13 @@ public static class DictionaryExtensions
     foreach ((TKey Key, TValue Value) item in items)
     {
       dic.Add(item);
+    }
+  }
+  public static void AddRange<TKey, TValue> (this Dictionary<TKey, TValue> dic, IEnumerable list) where TKey : notnull
+  {
+    foreach (KeyValuePair<TKey, TValue> item in list.OfType<KeyValuePair<TKey, TValue>>())
+    {
+      dic?.Add(item.Key, item.Value);
     }
   }
 }

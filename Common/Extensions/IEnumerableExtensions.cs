@@ -6,7 +6,7 @@ namespace Common.Extensions;
 
 public static class IEnumerableExtensions
 {
-  // Generic
+  // IEnumerable<T>
   public static Collection<T> ToCollection<T> (this IEnumerable<T> list) => [.. list];
   public static string TextJoin<T> (this IEnumerable<T> list, string separator = EmptyString)
   {
@@ -18,28 +18,48 @@ public static class IEnumerableExtensions
     foreach (T? item in list)
     {
       string? itemString = item?.ToString();
-
       if (string.IsNullOrEmpty(itemString))
         continue;
 
-      if (result.Length != 0)
+      if (result.IsNotEmpty())
         result += separator;
-
       result += itemString;
     }
     return result;
   }
-  public static bool IsEmpty<T> (this IEnumerable<T>? list) => list is null || !list.Any();
-
-  // IEnumerable<string>
-  public static string TextJoin (this IEnumerable<string> list, string separator = EmptyString) =>
-    list.IsEmpty() ? SE : list.Aggregate((v1, v2) => v1 = $"{v1}{separator}{v2}");
-  public static Collection<string> Condense (this IEnumerable<IEnumerable<string>> listlist) =>
-    [.. listlist.Aggregate((list1, list2) => list1.Concat(list2))];
-  public static RxS AggregateRegex (this IEnumerable<string> list) => list.TextJoin("|");
   public static int LastIndex<T> (this IEnumerable<T> list) => list is null ? -1 : list.Count() - 1;
   public static int LastIndex<T> (this IReadOnlyCollection<T> list) => list is null ? -1 : list.Count - 1;
 
-  //public static IEnumerable<KeyValuePair<TKey, TValue>> ToKVP<TKey, TValue> (this IEnumerable<(TKey Key, TValue Value)> tuples) where TKey : notnull where TValue : notnull =>
-  //  tuples.Select<(TKey Key, TValue Value), KeyValuePair<TKey, TValue>>((TKey a, TValue b) => (a,b).ToKVP());
+  // IEnumerable
+  public static int Count (this IEnumerable list)
+  {
+    IEnumerator? iter = list?.GetEnumerator();
+    int i = 0;
+    while (iter != null && iter.MoveNext()) { i++; }
+    return i;
+  }
+  public static string TextJoin (this IEnumerable list, string separator = EmptyString)
+  {
+    if (list is null)
+      return SE;
+
+    string result = SE;
+    foreach (object item in list)
+    {
+      string? itemString = item?.ToString();
+      if (string.IsNullOrEmpty(itemString))
+        continue;
+      if (result.IsNotEmpty())
+        result += separator;
+      result += itemString;
+    }
+    return result;
+  }
+  public static Collection<string> ToStringCollection (this IEnumerable list) => list.AsCollection<string>();
+  public static bool IsEmpty (this IEnumerable? list) => list is null || list.Count() == 0;
+
+  // IEnumerable<string>
+  public static Collection<string> Condense (this IEnumerable<IEnumerable<string>> listlist) =>
+    [.. listlist.Aggregate((list1, list2) => list1.Concat(list2))];
+  public static RxS AggregateRegex (this IEnumerable<string> list) => list.TextJoin("|");
 }

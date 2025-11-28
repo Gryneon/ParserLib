@@ -5,7 +5,7 @@ namespace Common.Regex;
 /// <summary>
 /// Data for one capture.
 /// </summary>
-public class CaptureData : IMatchItem
+public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<CaptureData>
 {
   /// <inheritdoc/>
   public int Pos { get; init; } = -1;
@@ -35,8 +35,8 @@ public class CaptureData : IMatchItem
   /// Constructor from a <see cref="Capture"/>.
   /// </summary>
   /// <param name="c">The <see cref="Capture"/> to make this object from.</param>
-  /// <param name="groupName"></param>
-  /// <param name="index"></param>
+  /// <param name="groupName">The name of the group.</param>
+  /// <param name="index">The index of the capture.</param>
   public CaptureData (Capture? c, string groupName = EmptyString, int index = -1)
   {
     if (c is null)
@@ -57,11 +57,11 @@ public class CaptureData : IMatchItem
   /// <summary>
   /// Manual constructor.
   /// </summary>
-  /// <param name="content"></param>
-  /// <param name="pos"></param>
-  /// <param name="len"></param>
-  /// <param name="name"></param>
-  /// <param name="index"></param>
+  /// <param name="content">The text of the capture.</param>
+  /// <param name="pos">The position in the string.</param>
+  /// <param name="len">The length of the string.</param>
+  /// <param name="name">The name of the group.</param>
+  /// <param name="index">The index of the capture.</param>
   protected CaptureData (string content, int pos, int len, string name, int index)
   {
     Name = name;
@@ -74,4 +74,15 @@ public class CaptureData : IMatchItem
   public override string ToString () => Content.ContainsAny([Chars.CRLF, Chars.LFs, Chars.CRs])
       ? $"\"{Content.Replace([Chars.CRLF, Chars.CRs, Chars.LFs], "<NL>")}\" @ {Pos} ({Len})"
       : $"\"{Content}\" @ {Pos} ({Len})";
+  public bool Equals (CaptureData? other) => other is not null && Pos == other.Pos && Name == other.Name && Index == other.Index && Content.Is(other.Content);
+  public override bool Equals (object? obj) => Equals(obj as CaptureData);
+  public override int GetHashCode () => HashCode.Combine(Pos, Index, Name, Content);
+  public int CompareTo (CaptureData? other) => Pos.CompareTo(other?.Pos);
+
+  public static bool operator == (CaptureData left, CaptureData right) => left is null ? right is null : left.Equals(right);
+  public static bool operator != (CaptureData left, CaptureData right) => !(left == right);
+  public static bool operator < (CaptureData left, CaptureData right) => left is null ? right is not null : left.CompareTo(right) < 0;
+  public static bool operator <= (CaptureData left, CaptureData right) => left is null || left.CompareTo(right) <= 0;
+  public static bool operator > (CaptureData left, CaptureData right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator >= (CaptureData left, CaptureData right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

@@ -10,9 +10,4 @@ public abstract class XMLNode : IXMLObject
   /// The name of the element.
   /// </summary>
   public string Tag { get; set; } = SE;
-  /// <inheritdoc/>
-  public IMatchItem ParseData { get; protected set; } = new MatchDataSet();
-
-  /// <inheritdoc/>
-  public void SetParseData (IMatchItem data) => ParseData = data;
 }

@@ -9,8 +9,8 @@ public class INITests
   [Fact]
   public void INI_Constructor ()
   {
-    DocumentSet test = [new Section("Section1")];
-    test["Section1"].Set<PropertyObj>("key", "Section1_Value");
+    INIDocument test = new([(Section) "Section1"]);
+    test["Section1"].Set("key", "Section1_Value");
     Assert.Contains(test["Section1"], static item => item.Key.Is("key"));
     int count = test["Section1"].Count;
     Assert.Equal(1, count);

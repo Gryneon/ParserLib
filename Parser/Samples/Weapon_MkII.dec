@@ -1,0 +1,85 @@
+Actor Weapon_MkII : Weapon_BasePistol
+{
+	Weapon.AmmoType1 "AmmoMag_MkII"
+	
+	Inventory.Icon "Gmk2A0"
+	
+	Tag "MkII Sidearm"
+	
+	States
+	{
+	Select:
+		MK2G A 0
+		Goto Super::Select
+	
+	Ready:
+		MK2G A 1 A_WeaponReady(WRF_NOSECONDARY|WRF_ALLOWRELOAD)
+		Loop
+	
+	Fire:
+		MK2G A 1 A_JumpIfInventory("AmmoMag_MkII", 1, "Fire.HasAmmo")
+		Goto Reload
+	Fire.HasAmmo:
+		MK2G A 2
+		MK2G B 5 A_GunFlash("Shoot")
+		MK2G C 4
+		MK2G B 4 A_ReFire("Fire")
+		Goto Ready
+	
+	Shoot:
+		MK2F A 0 A_JumpIfInventory("InvMod_MkII_Silent", 1, "Shoot.Silent")
+		MK2F A 0 A_PlayWeaponSound("Weapon/MkII")
+		MK2F A 0 A_AlertMonsters(496)
+		Goto Shoot.Finish
+		
+	Shoot.Silent:
+		TNT1 A 0 A_PlayWeaponSound("Weapon/MkIISilent")
+	Shoot.Finish:
+		"----" A 0 A_JumpIfInventory("InvMod_MkII_Grip", 1, "Bullets.Grip")
+		"----" A 0 A_JumpIfInventory("InvMod_MkII_Refit", 1, "Bullets.F7")
+		
+		"----" A 0 A_FireCustomMissile("WeaponProj_MkII", FRandom(-2.1,2.1), true, 0, 0, 0, FRandom(-2.1,2.1))
+		Goto Flash
+	
+	Bullets.Grip:
+		"----" A 0 A_JumpIfInventory("InvMod_MkII_Refit", 1, "Bullets.Grip.F7")
+		"----" A 0 A_FireCustomMissile("WeaponProj_MkII", FRandom(-1.4,1.4), true, 0, 0, 0, FRandom(-1.4,1.4))
+		Goto Flash
+	Bullets.Grip.F7:
+		"----" A 0 A_FireCustomMissile("WeaponProj_MkII_57", FRandom(-1.3,1.3), true, 0, 0, 0, FRandom(-1.3,1.3))
+		Goto Flash
+	Bullets.F7:
+		"----" A 0 A_FireCustomMissile("WeaponProj_MkII_57", FRandom(-2.0,2.0), true, 0, 0, 0, FRandom(-2.0,2.0))
+	Flash:
+		MK2F A 4 Bright A_Light1
+		Goto LightDone
+	
+	Reload:
+		MK2G A 1 A_JumpIfInventory("AmmoMag_MkII", 0, "Reload.Full")
+		MK2G A 0 A_JumpIfInventory("Ammo_Clip", 1, "Reload.Start")
+		MK2G A 0 A_JumpIfInventory("AmmoMag_MkII", 1, "Ready")
+		Goto ChangeWeapon
+	Reload.Start:
+		MK2G DEFGHIJKLMNOPQR 2
+		MK2G S 2 A_GiveInventory("ReloadMkII", 1)
+		Goto Ready
+	Reload.Full:
+		MK2G A 10 A_PlayWeaponSound("Weapon/MkIIEmpty")
+		Goto Ready
+	}
+}
+
+Actor ReloadMkII : Action_Base
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_GiveInventory("AmmoMag_MkII", 1)
+		TNT1 A 0 A_TakeInventory("Ammo_Clip", 1, TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_JumpIfInventory("AmmoMag_MkII", 0, "Done")
+		TNT1 A 0 A_JumpIfInventory("Ammo_Clip", 1, "Pickup")
+	Done:
+		TNT1 A 0 A_PlayWeaponSound("Weapon/MkIIEmpty")
+		Stop
+	}
+}

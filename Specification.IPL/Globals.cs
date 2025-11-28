@@ -8,8 +8,9 @@ global using Common;
 global using Common.Regex;
 
 global using Parser;
-global using Parser.Text;
 
 global using static Common.Names;
 
 global using ICT = Specification.IPL.IPLCommandType;
+
+

@@ -1,0 +1,1103 @@
+#library "RPGMFunc"
+
+#include "zcommon.acs"
+
+#import "RPGConst.acs"
+#import "RPGIList.acs"
+#import "RPGDList.acs"
+#import "RPGOList.acs"
+#import "RPGPList.acs"
+#import "RPGSList.acs"
+#import "RPGWList.acs"
+#import "RPGMVars.acs"
+#import "RPGSpecs.acs"
+#import "RPGAFunc.acs"
+#import "RPGPFunc.acs"
+#import "RPGSFunc.acs"
+#import "RPGWFunc.acs"
+#import "RPGColor.acs"
+#import "RPGDraw.acs"
+
+#define GRID_TITLE_X	7
+#define GRID_TITLE_Y	5
+#define GRID_TAB_X		15
+#define GRID_MENU_X		15
+#define GRID_MENU_Y		15
+
+#define GRID_SCREEN_X	HUD_WIDTH / MENU_BOXWIDTH
+#define GRID_SCREEN_Y	HUD_HEIGHT / MENU_BOXHEIGHT
+
+bool gridSet = false;
+
+int grid_x[GRID_SCREEN_X];
+int grid_y[GRID_SCREEN_Y];
+
+int title_x[GRID_TITLE_X];
+int title_y[GRID_TITLE_Y];
+int dec_y = 192;
+int tab_x[GRID_TAB_X];
+int tab_y = 256;
+int menu_x[GRID_MENU_X];
+int menu_y[GRID_MENU_Y];
+
+function void InitGrid (void)
+{
+	if(gridSet)
+		return;
+	
+	int i;
+	
+	for(i = 0; i < GRID_SCREEN_X; i++)
+		grid_x[i] = MENU_BOXWIDTH * i;
+	
+	for(i = 0; i < GRID_SCREEN_Y; i++)
+		grid_y[i] = MENU_BOXHEIGHT * i;
+	
+	for(i = 0; i < GRID_TITLE_X; i++)
+		title_x[i] = grid_x[7+i];
+	
+	for(i = 0; i < GRID_TITLE_Y; i++)
+		title_y[i] = grid_y[1+i];
+	
+	for(i = 0; i < GRID_TAB_X; i++)
+		tab_x[i] = grid_x[3+i];
+	
+	for(i = 0; i < GRID_MENU_X; i++)
+		menu_x[i] = grid_x[3+i] + 8;
+	
+	for(i = 0; i < GRID_MENU_Y; i++)
+		menu_y[i] = grid_y[8+i] + 8;
+}
+
+//**********************************************************************************************************************
+//	Cursor Commands and General Checks
+//**********************************************************************************************************************
+
+function int MouseEdge (void)
+{
+	int width = I2F(GetScreenWidth());
+	int height = I2F(GetScreenHeight());
+	
+	int ratio = FixedDiv(width, height);
+	
+	int setratio = FixedDiv(HUD_FWIDTH, HUD_FHEIGHT);
+	
+	if(ratio > setratio)
+	{
+		int factor = FixedDiv(ratio, setratio);
+		int modwidth = FixedMul(HUD_FWIDTH, factor);
+		return (modwidth - HUD_FWIDTH) / 2;
+	}
+	return 0;
+}
+
+function void MenuCursor (void)
+{
+	int player = PlayerNumber();
+	
+	int MousePosX = GetPlayerInput(-1, INPUT_YAW);
+	int MousePosY = GetPlayerInput(-1, INPUT_PITCH);
+	
+	Menu_CursorX[player] -= MousePosX * 1600;
+	Menu_CursorY[player] -= MousePosY * 1600;
+	
+	int buf = MouseEdge();
+	
+	Menu_CursorX[player] = Range(Menu_CursorX[player], -buf, HUD_FWIDTH + buf);
+	Menu_CursorY[player] = Range(Menu_CursorY[player], 0, HUD_FHEIGHT);
+	
+	DrawCursor();
+}
+
+function bool CursorInBox (int x, int y)
+{
+	int x2 = x + MENU_BOXWIDTH;
+	int y2 = y + MENU_BOXHEIGHT;
+	
+	return CustomCursorBox(x, x2, y, y2);
+}
+
+function bool CustomCursorBox(int x, int x2, int y, int y2)
+{
+	int player = PlayerNumber();
+	
+	int xc2 = I2F(x2);
+	int yc2 = I2F(y2);
+	
+	int xc = I2F(x);
+	int yc = I2F(y);
+	
+	int curx = Menu_CursorX[player];
+	int cury = Menu_CursorY[player];
+	
+	return WithinRange(curx, xc, xc2) && WithinRange(cury, yc, yc2);
+}
+
+function int GetBoxStatus (int x, int y)
+{	
+	bool in = CursorInBox(x, y);
+	
+	if(in)
+	{
+		if(KeyPress(BT_ATTACK))
+			return M_STATUS_CLICK;
+		
+		if(KeyExec(BT_ATTACK))
+			return M_STATUS_RELEASE;
+		
+		return M_STATUS_OVER;
+	}
+	return M_STATUS_NORMAL;
+}
+
+function void DragDropListSelect(int x, int y, int xSize, int ySize, int count)
+{
+	int player = PlayerNumber();
+	
+	if(Menu_IsDragging[player])
+		Menu_Selection[player] = Menu_ItemDrag[player];
+	
+	for(int i = 0; i < count; i++)
+	{
+		int x1 = x;
+		int x2 = x + xSize;
+		int y1 = y + 10*(i+1);
+		int y2 = y + 10*(i+2);
+		
+		//if(y2 - y > ySize)
+		//	break;
+		
+		bool inbox = CustomCursorBox(x1, x2, y1, y2);
+		
+		if(inbox)
+			Menu_Selection[player] = i;
+	}
+}
+
+function int DragDropListStatus (void)
+{
+	int player = PlayerNumber();
+	
+	if(!HasSelection())
+		return M_STATUS_NORMAL;
+	
+	if(KeyPress(BT_ATTACK))
+		return M_STATUS_CLICK;
+	
+	if(KeyExec(BT_ATTACK))
+		return M_STATUS_RELEASE;
+	
+	if(!Menu_IsDragging[player])
+		return M_STATUS_OVER;
+	
+	return M_STATUS_NORMAL;
+}
+
+function bool MenuActive (void)
+{
+	int player = PlayerNumber();
+	return !Menu_ForcePrompt[player] && !Menu_DisableMenu[player];
+}
+
+//**********************************************************************************************************************
+//	Exec Checks
+//**********************************************************************************************************************
+
+function void CheckOpenMenu (void)
+{
+	int player = PlayerNumber();
+	
+	if(KeyPress(BT_MENUKEY) && !Menu_PlayerUsing[player])
+		ACS_NamedExecuteAlways("Menu", 0);
+}
+
+function void CheckExitMenu (void)
+{
+	if(KeyExec(BT_MENUKEY) && MenuActive())
+		ExitMenu();
+}
+
+//**********************************************************************************************************************
+//	Exec Commands
+//**********************************************************************************************************************
+
+function void ExitMenu (void)
+{
+	int player = PlayerNumber();
+	
+	PlayerFreeze(false);
+	ClearMenu(true);
+	
+	Menu_PlayerUsing[player] = false;
+	Menu_DialogTID[player] = 0;
+}
+
+function bool CycleGameSkill (void)
+{
+	int player = PlayerNumber();
+	
+	if(Menu_SkillChange < 3)
+		Menu_SkillChange++;
+	else
+		Menu_SkillChange = 1;
+	
+	Menu_ForcePrompt[player] = Menu_SkillPending != Menu_SkillChange;
+	
+	return Menu_ForcePrompt[player];
+}
+
+function void ApplySkillsChosen (void)
+{
+	int player = PlayerNumber();
+	
+	for(int i = 0; i < SkillChosenCount(); i++)
+	{
+		if(Menu_SkillChosen[i][player] > 0)
+		{
+			ACS_NamedExecuteAlways("AddSkill", 0, i, Menu_SkillChosen[i][player]);
+			Menu_SkillChosen[i][player] = 0;
+		}
+	}
+}
+
+function void ResetSkillsChosen (void)
+{
+	int player = PlayerNumber();
+	
+	for(int i = 0; i < SkillChosenCount(); i++)
+	{
+		IncrementUserVar(0, "skillpoints", Menu_SkillChosen[i][player]);
+		Menu_SkillChosen[i][player] = 0;
+	}
+}
+
+function void PopupInit (int popup)
+{
+	int player = PlayerNumber();
+	Menu_Fade[player] = true;
+	Menu_DisableMenu[player] = true;
+	Menu_Popup[player] = popup;
+}
+
+function void PopupDestroy (void)
+{
+	int player = PlayerNumber();
+	Menu_Fade[player] = false;
+	Menu_DisableMenu[player] = false;
+	Menu_Popup[player] = POPUP_NONE;
+}
+
+function void StartDrag (int box)
+{
+	int player = PlayerNumber();
+	Menu_ItemDrag[player] = Menu_Selection[player];
+	Menu_IsDragging[player] = true;
+	DrawCursorText(GetSkillName(Menu_Selection[player]));
+	Menu_DragOrigin[player] = box;
+}
+
+function void QueueSkill (int amt)
+{
+	int player = PlayerNumber();
+	int skill = Menu_Selection[player];
+	int skillPoints = GetUserVar(0, "skillpoints");
+	
+	if(skillPoints >= amt && Menu_SkillChosen[skill][player] >= -amt)
+	{
+		Menu_SkillChosen[skill][player] += amt;
+		IncrementUserVar(0, "skillpoints", -amt);
+	}
+	
+	Menu_ForcePrompt[player] = SkillChosenCount() > 0;
+}
+
+function void ClearDrag (void)
+{
+	int player = PlayerNumber();
+	Menu_ItemDrag[player] = CLEAR;
+	Menu_IsDragging[player] = false;
+	ClearMessage(MSG_CURSORTEXT, 1);
+	Menu_DragOrigin[player] = NULL;
+}
+
+//**********************************************************************************************************************
+//	Clear Commands
+//**********************************************************************************************************************
+
+function void ClearMenu (bool cursor)
+{
+	int player = PlayerNumber();
+	
+	ClearMessage(MSG_CURSORTEXT, 1);
+	
+	ClearMessage2(MSG_MENUFRONT, Menu_NextMessageID[player]);
+	Menu_NextMessageID[player] = MSG_MENUFRONT;
+	
+	ClearMessage3(MSG_MENUBACK, Menu_LastMessageID[player]);
+	Menu_LastMessageID[player] = MSG_MENUBACK;
+	
+	if(cursor)
+		ClearMessage(MSG_CURSOR, 1);
+}
+
+//**********************************************************************************************************************
+//	Button Commands
+//**********************************************************************************************************************
+
+function bool ExecButton (int x, int y, str text)
+{
+	return ExecButton2(x, y, text) == M_STATUS_RELEASE;
+}
+
+function int ExecButton2 (int x, int y, str text)
+{
+	return ExecButton3(x, y, text, "MN_BTN01", "MN_BTN02");
+}
+
+function int ExecButton3 (int x, int y, str text, str img1, str img2)
+{
+	return ExecButton4(x, y, text, img1, img2, CR_UNTRANSLATED);
+}
+
+function int ExecButton4 (int x, int y, str text, str img1, str img2, int color)
+{
+	return ExecButton5(x, y, text, img1, img2, color, true);
+}
+
+function int ExecButton5 (int x, int y, str text, str img1, str img2, int color, bool checkFade)
+{
+	int status = GetBoxStatus(x, y);
+
+	DrawButton3(x, y, text, status, img1, img2, color, checkFade);
+	
+	return status;
+}
+
+function bool ExecImageButton (int x, int y, str img)
+{
+	int status = GetBoxStatus(x, y);
+	
+	DrawImageButton(x, y, img, status);
+	
+	return status == M_STATUS_RELEASE;
+}
+
+function void ExecTabButton (int x, int y, int tab, bool valid)
+{
+	int player = PlayerNumber();
+	int status = GetBoxStatus(x, y);
+	
+	if(!valid)
+		status = M_STATUS_INVALID;
+	
+	if(Menu_Tab[player] != tab && status == M_STATUS_RELEASE)
+	{
+		Menu_Tab[player] = tab;
+		Menu_SubTab[player] = NULL;
+	}
+	DrawTabButton(x, y, tab, status);
+}
+
+function void ExecSubTabButton (int x, int y, int subtab, bool valid, str img)
+{
+	int player = PlayerNumber();
+	int status = GetBoxStatus(x, y);
+	
+	if(!valid)
+		status = M_STATUS_INVALID;
+	
+	if(Menu_SubTab[player] != subtab && status == M_STATUS_RELEASE)
+		Menu_SubTab[player] = subtab;
+	
+	DrawButton(x, y, "", status, "MN_BTN01", "MN_BTN02");
+	DrawImage(x + 10, y + 20, img);
+}
+
+function void ExecNoticeButton (int x, int y, int tx, bool valid)
+{
+	int player = PlayerNumber();
+	
+	int sp = GetUserVar(0, "skillpoints");
+	int pp = GetUserVar(0, "perkpoints");
+	
+	if(sp > 0 && !Menu_NoticeSkill[player])
+	{
+		Menu_NoticeSkill[player] = true;
+		DrawText(tx, y, StrParam(i:sp, s:" Unused skill points"));
+		if(ExecCheckButton(x, y, Menu_Tab[player] != 5 && valid, "Use"))
+			Menu_Tab[player] = 5;
+	}
+	else if(pp > 0 && !Menu_NoticePerk[player])
+	{
+		Menu_NoticePerk[player] = true;
+		DrawText(tx, y, StrParam(i:pp, s:" Unused perks"));
+		if(ExecCheckButton(x, y, Menu_Tab[player] != 6 && valid, "Use"))
+			Menu_Tab[player] = 6;
+	}
+	else
+	{
+		DrawBox(x, y, "MN_BTN01");
+	}
+}
+
+function int ExecTextDisplay (int x, int y, int tx, str text, int boxes)
+{
+	int status = M_STATUS_NORMAL;
+	int ret = status;
+	
+	DrawText(tx, y, text);
+	
+	for(int i = 0; i < boxes; i++)
+	{
+		int x2 = i * MENU_BOXWIDTH;
+		
+		status = GetBoxStatus(x + x2, y);
+		
+		if(status > M_STATUS_INVALID && ret < status)
+			ret = status;
+	}
+	
+	return ret;
+}
+
+function bool ExecCheckButton (int x, int y, bool valid, str text)
+{
+	if(valid)
+		return ExecButton(x, y, text);
+	
+	DrawTextBox(x, y, "MN_BTN01", text);
+	return false;
+}
+
+function void ExecNotificationBox (int rows)
+{
+	int player = PlayerNumber();
+	Menu_NoticeSkill[player] = false;
+	Menu_NoticePerk[player] = false;
+	
+	for(int y = 2; y < 2 + rows; y++)
+	{
+		ExecNoticeButton(grid_x[15], grid_y[y], grid_x[17] + 24, MenuActive());
+		
+		for(int x = 16; x < 20; x++)
+			DrawBox(grid_x[x], grid_y[y], "MN_BTN01");
+	}
+}
+
+function void ExecTabRow (void)
+{
+	int player = PlayerNumber();
+	bool allowperks = GetLevel() >= 5;
+	bool allowskills = GetLevel() >= 2;
+	bool allowcrafting = GetPerk(PERK_Craft);
+
+	for(int t = 1; t < MENU_TAB_ARRAY; t++)
+	{
+		bool valid = MenuActive();
+		int x = tab_x[Menu_TabSpot[t]];
+		
+		if(t == 5)
+			valid = allowskills && valid;
+		else if(t == 6)
+			valid = allowperks && valid;
+		else if(t == 8)
+			valid = allowcrafting && valid;
+		
+		ExecTabButton(x, tab_y, t, valid);
+	}
+}
+
+function int GetSelectionSkillChosen (void)
+{
+	int player = PlayerNumber();
+	return GetSkillChosen(Menu_Selection[player]);
+}
+
+function void ExecSkillBox (int x, int y, int xSize, int ySize, int box, str label, int count)
+{
+	int player = PlayerNumber();
+	int cx = x + grid_x[(xSize - 1) / 2] - (xSize % 2) * 24;
+	
+	DrawText2(cx, y - MENU_BOXHEIGHT, "BIGFONT", label);
+	DrawBox(x, y, "MN_BOX01");
+	
+	DragDropListSelect(x, y, grid_x[xSize], grid_y[ySize], count);
+	
+	if(box == MDO_SKILLCHOSEN)
+		Menu_Selection[player] = SkillChosenPos(Menu_Selection[player]);
+	
+	if(Menu_Selection[player] != CLEAR)
+		Menu_CurrentBox[player] = box;
+	
+	int select = Menu_Selection[player];
+	int status = DragDropListStatus();
+	
+	if(box == MDO_SKILLLIST)
+		DrawSkillList(cx, y, status);
+	else if(box == MDO_SKILLCHOSEN)
+		DrawChosenSkillList(cx, y, status);
+	
+	//Skill Selected, Mouse Held, Not Dragging
+	if(HasSelection() && !Menu_IsDragging[player] && status == M_STATUS_CLICK)
+		StartDrag(box);
+	
+	//Dragging
+	if(Menu_IsDragging[player])
+	{
+		//Mouse Held
+		if(status == M_STATUS_CLICK)
+			DrawCursorText(GetSkillName(Menu_ItemDrag[player]));
+		
+		//Mouse Released
+		else if(status == M_STATUS_RELEASE)
+		{
+			int skillPoints = GetUserVar(0, "skillpoints");
+			
+			//Box Is Not Origin
+			if(box != Menu_DragOrigin[player])
+			{
+				bool inDropZone = CustomCursorBox(x, x + grid_x[xSize], y, y + grid_y[ySize]);
+				bool check = false;
+				int queueNumber = 0;
+				
+				if(box == MDO_SKILLCHOSEN)
+				{
+					check = skillPoints > 0;
+					queueNumber = 1;
+				}
+				
+				else if(box == MDO_SKILLLIST)
+				{
+					check = GetSelectionSkillChosen() > 0;
+					queueNumber = -1;
+				}
+				
+				if(inDropZone && check)
+					QueueSkill(queueNumber);
+			}
+			
+			ClearDrag();
+		}
+	}
+}
+
+//**********************************************************************************************************************
+//	Menu Layout
+//**********************************************************************************************************************
+
+function bool HasSelection (void)
+{
+	int player = PlayerNumber();
+	return Menu_Selection[player] >= 0 || Menu_IsDragging[player];
+}
+
+function void DrawSaveMenu (void)
+{
+	int player = PlayerNumber();
+	
+	if(Menu_ForcePrompt[player])
+	{
+		DrawText(menu_x[7], menu_y[10], "Save Changes?");
+		
+		if(ExecButton4(menu_x[6], menu_y[11], "Save", "MN_BTN01", "MN_BTN02", CR_GREEN) == M_STATUS_RELEASE)
+		{
+			switch(Menu_Tab[player])
+			{
+			case 1:
+				if(Menu_SkillChange != Menu_SkillPending)
+				{
+					ACS_NamedExecuteAlways("SkillChangeAlert", 0, Menu_SkillPending, Menu_SkillChange);
+					Menu_SkillPending = Menu_SkillChange;
+					PopupInit(POPUP_RELOAD);
+				}
+				Menu_SkillChange = 0;
+				break;
+			case 5:
+				ApplySkillsChosen();
+				break;
+			}
+			Menu_ForcePrompt[player] = false;
+		}
+		if(ExecButton4(menu_x[8], menu_y[11], "Cancel", "MN_BTN01", "MN_BTN02", CR_RED) == M_STATUS_RELEASE)
+		{
+			switch(Menu_Tab[player])
+			{
+			case 1:
+				Menu_SkillChange = 0;
+				break;
+			case 5:
+				ResetSkillsChosen();
+				break;
+			}
+			Menu_ForcePrompt[player] = false;
+		}
+	}
+}
+
+function void DrawMissionQuery (int mission, int map, int owner)
+{
+	int player = PlayerNumber();
+	
+	DrawText2A(menu_x[7], menu_y[6], "BIGFONT", MissionInfo[mission][MI_NAME]);
+	DrawTextA(menu_x[7], menu_y[7], MissionInfo[mission][MI_DESC]);
+	
+	if(ExecButton5(menu_x[5], menu_y[8], "Accept", "MN_BTN01", "MN_BTN02", CR_GREEN, false) == M_STATUS_RELEASE)
+	{
+		ACS_NamedExecuteAlways("AddMission", 0, mission, map, owner);
+		PopupDestroy();
+	}
+	if(ExecButton5(menu_x[9], menu_y[8], "Decline", "MN_BTN01", "MN_BTN02", CR_RED, false) == M_STATUS_RELEASE)
+	{
+		PopupDestroy();
+	}
+}
+
+function void DrawReloadQuery (void)
+{
+	int player = PlayerNumber();
+	
+	if(Menu_DisableMenu[player])
+	{
+		DrawText2A(menu_x[7], menu_y[6], "BIGFONT", "Reload Level?");
+		DrawTextA(menu_x[7], menu_y[7], "Your progress will be saved.\nWaiting will apply changes to the next map.");
+		
+		if(ExecButton5(menu_x[5], menu_y[8], "Wait", "MN_BTN01", "MN_BTN02", CR_GREEN, false) == M_STATUS_RELEASE)
+		{
+			PopupDestroy();
+		}
+		if(ExecButton5(menu_x[9], menu_y[8], "Reload", "MN_BTN01", "MN_BTN02", CR_RED, false) == M_STATUS_RELEASE)
+		{
+			Menu_SkillChange = Menu_SkillPending;
+			ACS_NamedExecuteAlways("Reload", 0);
+			PopupDestroy();
+		}
+	}
+}
+
+function void DrawWeaponTabs (void)
+{
+	for(int w = 1; w <= 10; w++)
+		ExecSubTabButton(menu_x[1], menu_y[w], w, MenuActive() && GetWeaponVar(w - 1) > 0, GetWeaponIcon(w - 1) );
+}
+
+function void DrawModName (void)
+{
+	DrawText2(title_x[3], dec_y, "BIGFONT", "\c[Yellow]Choices");
+	DrawBox(title_x[2], dec_y, "MN_BAR01");
+}
+
+function void DrawBackground (void)
+{
+	DrawBox(grid_x[4], grid_y[9], "MN_BACK1");
+}
+
+function void DrawSkillDescription (int x, int y)
+{
+	int player = PlayerNumber();
+	DrawText(x, y, SkillInfo[Menu_Selection[player]][SI_DESC]);
+}
+
+function void DrawSkillReqs (int x, int y)
+{
+	int player = PlayerNumber();
+	DrawText(x, y, GetSkillReqs(Menu_Selection[player]));
+}
+
+function void DrawSkillEffects (int x, int y)
+{
+	int player = PlayerNumber();
+	DrawText(x, y, GetSkillEffects(Menu_Selection[player]));
+}
+
+function void DrawPlayerEffects (int x, int y, bool temp)
+{
+	int player = PlayerNumber();
+	DrawText(x, y, GetPlayerEffects(temp));
+}
+
+function void DrawMenuTitle (void)
+{
+	int player = PlayerNumber();
+	
+	DrawText2(title_x[3], title_y[1] + 16, "BIGFONT", Menu_TitleList[Menu_Tab[player]]);
+	DrawText2(title_x[3], title_y[3], "BIGFONT", GetSpecStr());
+	
+	for(int x = 1; x <= 5; x++)
+		for(int y = 1; y <= 3; y++)
+			DrawBox(title_x[x], title_y[y], "MN_BTN01");
+}
+
+function void InitMenu (void)
+{
+	ClearMenu(false);
+	InitGrid();
+	DrawBackground();
+	DrawModName();
+	DrawMenuTitle();
+	ExecTabRow();
+	ExecNotificationBox(4);
+}
+
+function void DrawMenu (void)
+{
+	int player = PlayerNumber();
+	int x, y;
+	
+	Menu_Selection[player] = CLEAR;
+	
+	InitMenu();
+	
+	//Menus and panels
+	switch(Menu_Tab[player])
+	{
+	case 1: // Options
+		
+		//Game Difficulty
+		if(Menu_SkillPending == 0)
+			Menu_SkillPending = GameSkill();
+		
+		if(Menu_SkillChange == 0)
+			Menu_SkillChange = Menu_SkillPending;
+
+		DrawBox(menu_x[1], menu_y[1], "MN_BAR02");
+		DrawText(menu_x[2], menu_y[1], "Game Difficulty:");
+		DrawText(menu_x[4], menu_y[1], DifficultyName[Menu_SkillChange]);
+		
+		int status = ExecButton3(menu_x[5], menu_y[1], "", "MN_TOG02", "MN_TOG01");
+		
+		str desc = StrParam(
+			s:"The game difficulty changes the ai of enemies,\n",
+			s:"increases their aggressiveness, and spawns\n",
+			s:"higher level enemies. It is recommended to play\n",
+			s:"on easy or normal for your first playthrough,\n",
+			s:"if you are not completely familiar with at least\n",
+			s:"most of the new game mechanics.");
+		
+		if(status == M_STATUS_OVER || status == M_STATUS_CLICK)
+			DrawText(menu_x[7], menu_y[7], desc);
+		
+		else if(status == M_STATUS_RELEASE)
+		{
+			if(player == 0 || GetCVar("rpg_server_equality"))
+				CycleGameSkill();
+			
+			else
+				ACS_NamedExecuteAlways("WrongPlayerAlert", 0, StrParam(s:"\c[green]Only ", n:1, s:" can do that"));
+		}
+		
+		//Fade
+		DrawBox(menu_x[1], menu_y[2], "MN_BAR02");
+		DrawText(menu_x[2], menu_y[2], "Fade:");
+		DrawText(menu_x[3], menu_y[2], Menu_Text_OffOn[Menu_Fade[player]]);
+		
+		status = ExecButton3(menu_x[5], menu_y[2], "", "MN_TOG02", "MN_TOG01");
+		
+		desc = StrParam(s:"Debug Menu Fade Setting");
+		
+		if(status == M_STATUS_OVER || status == M_STATUS_CLICK)
+			DrawText(menu_x[7], menu_y[7], desc);
+		
+		else if(status == M_STATUS_RELEASE)
+			Menu_Fade[player] = !Menu_Fade[player];
+		
+		//Weapon Autoswitch
+		DrawBox(menu_x[1], menu_y[3], "MN_BAR02");
+		DrawText(menu_x[2], menu_y[3], "Weapon Autoswitch:");
+		DrawText(menu_x[4], menu_y[3], Menu_Text_OffOn[AutoSwitchActive(player)]);
+		
+		status = ExecButton3(menu_x[5], menu_y[3], "", "MN_TOG02", "MN_TOG01");
+		
+		if(AutoSwitchActive(player))
+			desc = "Always switch to a newly picked up weapon";
+		else
+			desc = "Only switch weapons when forced to";
+		
+		if(status == M_STATUS_OVER || status == M_STATUS_CLICK)
+			DrawText(menu_x[7], menu_y[7], desc);
+
+		else if(status == M_STATUS_RELEASE)
+			ToggleAutoSwitch(player);
+		
+		//Save Game
+		DrawBox(menu_x[1], menu_y[9], "MN_BAR02");
+		DrawText(menu_x[3], menu_y[9], "Save game");
+		
+		status = ExecButton3(menu_x[5], menu_y[9], "", "MN_TOG02", "MN_TOG01");
+		
+		desc = "Save the current game in an autosave slot";
+		
+		if(status == M_STATUS_OVER || status == M_STATUS_CLICK)
+			DrawText(menu_x[7], menu_y[7], desc);
+
+		else if(status == M_STATUS_RELEASE)
+			Autosave();
+		
+		DrawSaveMenu();
+		
+		break;
+	case 2:
+	
+		bool full = false;
+		
+		for(int j = 0, i = 0; i < 1024; i++)
+		{
+			status = GetUserArray(0, "user_m_status", i);
+			
+			if(WithinRange(status, MISSION_GOT, MISSION_DONE))
+			{
+				DrawText(menu_x[7], menu_y[2 + j], MissionInfo[i][MI_NAME]);
+				DrawBox(menu_x[6], menu_y[2 + j++], "MN_BAR02");
+			}
+			
+			if(j == 8)
+			{
+				full = true;
+				break;
+			}
+			
+			if(status == MISSION_NONE)
+				break;
+		}
+		
+		if(j == 0) // No Missions
+			DrawText2(menu_x[7], menu_y[2], "BIGFONT", "No Missions Available");
+		
+		if(full) // 8 Visible
+			DrawTextBox(menu_x[7], menu_y[10], "MN_BTN01", "More");
+		
+		break;
+	case 3: // Stats
+	
+		DrawTextBox(menu_x[1], menu_y[1], "MN_BTN01", "\c[Yellow]Exp:");
+		DrawTextBox(menu_x[2], menu_y[1], "MN_BTN01", StrParam(s:"\c[Gold]", i:GetExp()));
+		DrawTextBox(menu_x[3], menu_y[1], "MN_BTN01", "\c[Yellow]/");
+		DrawTextBox(menu_x[4], menu_y[1], "MN_BTN01", StrParam(s:"\c[Yellow]", i:GetLevelUp(GetLevel())));
+		
+		DrawTextBox(menu_x[1], menu_y[2], "MN_BTN01", "\c[Orange]Souls:");
+		DrawTextBox(menu_x[2], menu_y[2], "MN_BTN01", StrParam(s:"\c[Orange]", i:CheckInventory("Inv_Soul")));
+		
+		DrawTextBox(menu_x[1], menu_y[3], "MN_BTN01", "\c[Teal]Renown:");
+		DrawTextBox(menu_x[2], menu_y[3], "MN_BTN01", StrParam(s:"\c[Teal]", i:GetRenown()));
+		
+		break;
+	case 4: // Inventory / Weapons
+		
+		DrawWeaponTabs();
+		
+		str dmg = "";
+		int acc1 = 0;
+		int acc2 = 0;
+		int base = 10;
+		int rad = 128;
+		int splash = 128;
+		int shots = 7;
+		
+		switch(Menu_SubTab[player])
+		{
+		case 1: // Unarmed
+			
+			dmg = SurroundNumber("d", base, " * 2");
+			
+			break;
+		case 2: // Melee
+			
+			dmg = SurroundNumber("d", base, " * 2");
+			
+			break;
+		case 3: // Pistol
+			
+			//list upgrades, priority, link to crafting if available
+			
+			acc1 = 2, acc2 = 1;
+			
+			if(GetWeaponVar(WT_PISTOL) == W_PISTOL && GetWeaponMod(WT_PISTOL) & WM2_PISTOL_SECOND)
+				acc1 = 2, acc2 = 5;
+			
+			if(GetWeaponVar(WT_PISTOL) == W_MKII)
+			{
+				base = 8;
+				
+				//if(GetWeaponMod(WT_PISTOL) & WM2_MKII_GRIP
+			}
+			
+			dmg = StrParam(i:(base + GetSkill(SKILL_OldSchool) * 2));
+			
+			break;
+		case 4: // Shotgun
+			
+			acc1 = 2, acc2 = 7;
+		
+			if(GetWeaponVar(WT_SHOTGUN) == W_RIOTGUN)
+			{
+				base = 9;
+				acc1 = 2, acc2 = 3;
+			}
+			
+			if(GetWeaponVar(WT_SHOTGUN) == W_STRIKER)
+				base = 9;
+			
+			dmg = StrParam(i:(base + GetSkill(SKILL_OldSchool)), s:" x ", i:shots);
+			
+			break;
+		case 5: // SuperShotgun
+		
+			acc1 = 3, acc2 = 5;
+			shots = 20;
+			dmg = StrParam(i:base, s:" x ", i:shots);
+			
+			break;
+		case 6: // Chaingun
+		
+			acc1 = 2, acc2 = 5;
+			
+			if(GetWeaponVar(WT_CHAINGUN) == W_GRINDER)
+				base = 18;
+			
+			dmg = StrParam(i:(base + GetSkill(SKILL_OldSchool) + GetSkill(SKILL_Gunner) * 2 + GetSkill(SKILL_Heavy)));
+			
+			break;
+		case 7: // RocketLauncher
+			
+			acc1 = 0, acc2 = 3;
+			base = 80;
+			dmg = StrParam(i:base, s:SurroundNumber(" (", splash, ") r "), i:rad);
+			
+			break;
+		case 8: // PlasmaRifle
+			
+			acc1 = 0, acc2 = 5;
+			base = 20;
+			dmg = StrParam(i:base);
+			
+			break;
+		case 9: // BFG
+			
+			base = NULL;
+			dmg = StrParam(s:"?");
+			
+			break;
+		case 10: // Rifle
+			
+			acc1 = 1, acc2 = 5;
+			dmg = StrParam(i:base);
+			
+			break;
+		}
+		
+		DrawTextBox(menu_x[2], menu_y[1], "MN_BTN01", "DMG:");
+		DrawTextBox(menu_x[3], menu_y[1], "MN_BTN01", dmg);
+		
+		DrawTextBox(menu_x[2], menu_y[2], "MN_BTN01", "ACC:");
+		DrawTextBox(menu_x[3], menu_y[2], "MN_BTN01", StrParam(i:acc1, s:".", i:acc2));
+		
+		DrawTextBox(menu_x[9], menu_y[10], "MN_BTN01", "\c[Gold]Credits:");
+		DrawTextBox(menu_x[10], menu_y[10], "MN_BTN01", StrParam(s:"\c[Gold]", i:CheckInventory("Inv_Gold")));
+		
+		break;
+	case 5: // Skills
+	
+		int skillpoints = GetUserVar(0, "skillpoints");
+		
+		DrawText(menu_x[2], menu_y[1], StrParam(s:"\c[Green]Skill points: ", i:skillpoints));
+		DrawBox(menu_x[1], menu_y[1], "MN_BAR02");
+		
+		ExecSkillBox (menu_x[2], menu_y[3], 3, 6, MDO_SKILLLIST, "Skills Available", SKILL_ARRAY);
+		ExecSkillBox (menu_x[11], menu_y[3], 3, 6, MDO_SKILLCHOSEN, "Skills Selected", SkillChosenCount());
+		
+		if(HasSelection())
+		{
+			DrawSkillDescription(menu_x[7], menu_y[9]);
+			DrawSkillReqs(menu_x[7], menu_y[6]);
+			DrawSkillEffects(menu_x[7], menu_y[4]);
+		}
+		
+		DrawSaveMenu();
+		
+		break;
+	case 6: // Perks
+		
+		//Perks remaining
+		DrawText(menu_x[2], menu_y[1], StrParam(s:"\c[green]Perks: ", i:GetUserVar(0, "perkpoints")));
+		
+		DrawSaveMenu();
+		
+		break;
+	case 7: // Goals
+		
+		DrawText2(menu_x[7], menu_y[2], "BIGFONT", "No Achievements Available");
+		
+		break;
+	case 8: // Crafting
+	
+		DrawText2(menu_x[7], menu_y[2], "BIGFONT", "Crafting is Under Construction");
+		
+		break;
+	case 9: // Help
+		
+		DrawText2(menu_x[7], menu_y[2], "BIGFONT", "Help is not usuable");
+		
+		break;
+	}
+	
+	//Popups
+	
+	if(Menu_Popup[player] == POPUP_RELOAD)
+		DrawReloadQuery();
+}
+
+function void DrawDialog (void)
+{
+	int player = PlayerNumber();
+	bool allowexit = true;
+	bool allowfollow = false;
+	
+	bool isfollowing = false;
+	
+	ClearMenu(false);
+	
+	if(ExecCheckButton(menu_x[13], menu_y[12], allowexit, "Exit"))
+		ExitMenu();
+	
+	if(ExecCheckButton(menu_x[13], menu_y[11], allowfollow, StrParam(s:"Follow\n", s:Menu_Text_OffOn[isfollowing])))
+	{
+		isfollowing = !isfollowing;
+		//follow code
+	}
+	
+	//Popups
+	
+	if(Menu_Popup[player] == POPUP_MISSION)
+		DrawMissionQuery(Null, Null, Null);
+}
+
+//**********************************************************************************************************************
+//	Wishlist Storage
+//**********************************************************************************************************************
+
+function int WishListGet (int index)
+{
+	int player = PlayerNumber();
+	return Menu_WishList[index][player];
+}
+
+function int WishListGetUnused (void)
+{
+	for(int i = 0; i < 10; i++)
+		if(WishListGet(i) == NULL)
+			return i;
+	
+	return EXCEPTION;
+}
+
+function void WishlistPut (int item)
+{
+	int player = PlayerNumber();
+	int index = WishListGetUnused();
+	
+	if(index == EXCEPTION)
+		//WishListFullAlert(item);
+		{}
+	else
+		Menu_WishList[index][player] = item;
+		//WishListPutAlert(item);
+}

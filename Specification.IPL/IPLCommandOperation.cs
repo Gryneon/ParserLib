@@ -1,11 +1,11 @@
-using Parser.Text.Ops;
+using Parser.Ops;
 
 namespace Specification.IPL;
 
 /// <summary>
 /// An operation that fills out the mode, format, and field numbers.
 /// </summary>
-public class IPLCommandOperation (string input_key, string output_key) : TextOperation(input_key, output_key)
+public class IPLCommandOperation (string input_key, string output_key) : Operation(input_key, output_key)
 {
   /// <inheritdoc/>
   protected override void Execute ()
@@ -136,7 +136,6 @@ public class IPLCommandOperation (string input_key, string output_key) : TextOpe
         return;
       }
     }
-
     WorkToReturn = newData;
   }
 }

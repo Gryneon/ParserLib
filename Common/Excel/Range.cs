@@ -89,7 +89,7 @@ public class Range : IEquatable<Range>, IComparable<Range>, IEnumerable<RangeNod
 
   public override bool Equals (object? obj)
   {
-    if (obj is not Range or RangeNode)
+    if (obj is not Range and not RangeNode)
       return false;
 
     if (obj is Range rng)

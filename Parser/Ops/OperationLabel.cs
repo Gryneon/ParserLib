@@ -1,20 +1,23 @@
+
 namespace Parser.Ops;
 
-public sealed class OperationLabel (string name) : IOperation
+public sealed class OperationLabel (string name) : IOperation, IPlaceholderOperation
 {
   public string Name { get; } = name;
-  public OpStatus Status { get; } = OpStatus.Pass;
-  public bool ContinueOnFail { get; set; }
-  public bool SkipOperation { get; set; }
-  public bool EndOperation { get; init; }
-  public bool StartOperation { get; init; }
-  public bool DebugOperation { get; set; }
+  bool IOperation.ContinueOnFail { get; set; }
+  public bool IgnoreAllLoads => true;
+  bool IOperation.SkipOperation { get; set; }
+  public int LoopBreak { get; set; }
+  public int LoopStart { get; set; }
+  public bool NeverExecutes => true;
 
-  /// <summary>
-  /// Always passes, does no checks.
-  /// </summary>
-  /// <typeparam name="TParser">The parser type.</typeparam>
-  /// <param name="parser_ref">The parser object.</param>
-  /// <returns>Always returns <see cref="OpStatus.Pass"/>.</returns>
-  OpStatus IOperation.DoOperation<TParser> (TParser parser_ref) => OpStatus.Pass;
+  public int Unpack ([NotNull] Collection<IOperation> operations, int index, IParser? parser_ref = null)
+  {
+    parser_ref?.Labels.Add(Name, index);
+    operations.ThrowIfNull();
+    operations.RemoveAt(index);
+    return operations.Count;
+  }
+
+  OpStatus IOperation.DoOperation (IParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
 }

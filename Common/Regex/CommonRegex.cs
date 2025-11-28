@@ -5,6 +5,9 @@ using static Common.Regex.RegexStaticFunctions;
 
 namespace Common.Regex;
 
+/// <summary>
+/// Common Regex Parts.
+/// </summary>
 public static class CommonRegex
 {
   // Common Patterns
