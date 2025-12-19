@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    
     <AnalysisLevel>preview-all</AnalysisLevel>
     <DefaultLanguage>en-US</DefaultLanguage>
     <Deterministic>true</Deterministic>
@@ -13,6 +12,7 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
+    <Platforms>AnyCPU;x86;x64</Platforms>
 
     <!-- To enable Microsoft.Testing.Platform, uncomment the following line. -->
     <!-- <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner> -->

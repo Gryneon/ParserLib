@@ -72,12 +72,12 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
           if (current is null)
           {
             Debug.Log("IPLCommandOperation", "The currently selected line object is null.");
-            throw new InvalidOperationException("The currently selected line object is null.");
+            Status = OpStatus.FailBadOpResult;
           }
           else if (current.Type is not ICT.Line)
           {
             Debug.Log("IPLCommandOperation", "The currently selected line object is not a line object.");
-            throw new InvalidCommandException("The currently selected line object is not a line object.");
+            Status = OpStatus.FailBadOpResult;
           }
           else if (current.Type is ICT.Line)
           {
@@ -112,13 +112,14 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
           field = item.GetIntData(0);
         if (isNextFieldCommand())
           field++;
+
+        item.FieldNum = field;
       }
       void updateResult () => newData.Add(item);
       OpStatus assignCommon ()
       {
-        try { setLineCmd(); }
-        catch (InvalidCommandException) { return OpStatus.FailBadOpResult; }
-        catch (NullReferenceException) { return OpStatus.FailBadInputNull; }
+        setLineCmd();
+        if (Status.IsFail(ContinueOnFail)) { return Status; }
         setMode();
         setFormat();
         setQty();

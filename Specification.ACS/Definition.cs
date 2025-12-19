@@ -33,7 +33,7 @@ public static class Definition
   /// </summary>
 
   [Export("zdoom.acs")]
-  public static ISpec Spec => new Spec()
+  public static Spec Spec => new()
   {
     FileInferences = [IfN(ExtIs, "acs")],
     Name = "zdoom.acs",
@@ -51,7 +51,7 @@ public static class Definition
     ]
   };
   [Export("zdoom.modeldef")]
-  public static ISpec ModelDef => new Spec()
+  public static Spec ModelDef => new()
   {
     FileInferences = [IfNOr(
       IfN(ExtIs, "modeldef"),

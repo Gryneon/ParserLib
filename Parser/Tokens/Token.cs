@@ -1,96 +1,8 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using Parser.Tokens.Node;
+
 namespace Parser.Tokens;
-
-public sealed class RegexToken : IRegexToken, IEquatable<CToken>
-{
-  public Dictionary<string, string> Properties { get; init; } = [];
-  public Collection<IToken> Children { get; } = [];
-  public string? Content { get; init; }
-  public bool HasProperties => Properties.Count != 0;
-  public int Length { get; }
-  public int Depth { get; set; }
-  public int Position { get; init; }
-  public int EndPos => Position + Length - 1;
-  public string Type { get; init; }
-  public TokenNodeGroup? FromNode { get; init; }
-  public TokenNode? LinkNode { get; set; }
-  public CToken? Node { get; set; }
-  public int Count => Children.Count;
-
-  public void Add (IToken child) => Children.Add(child);
-  public IEnumerator<IToken> GetEnumerator () => Children.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  public bool Equals (CToken? other) => other is not null && other.Match(this);
-
-  public RegexToken (MatchDataSet mdd, string type = EmptyString)
-  {
-    mdd.ThrowIfNull();
-    Type = type;
-    Position = mdd.Pos;
-    Content = mdd.Content;
-    Children = [.. from item in mdd.Groups
-      select new RegexToken(item.Value)];
-  }
-  public RegexToken (GroupDataSet gd, string type = EmptyString)
-  {
-    gd.ThrowIfNull();
-    Type = type;
-    Content = gd.Content;
-    Position = gd.Pos;
-    Children = [.. from item in gd.Captures
-      select new RegexToken(item)];
-  }
-  public RegexToken (CaptureData cd, string type = EmptyString)
-  {
-    cd.ThrowIfNull();
-    Type = type;
-    Content = cd.Content;
-    Position = cd.Pos;
-  }
-}
-
-public sealed class ParentToken : IParentToken, IEquatable<CToken>
-{
-  public TemplateSet? Template { get; init; }
-  public Collection<IToken> Children { get; } = [];
-  public Dictionary<string, string> Properties { get; init; } = [];
-  string? IToken.Content => null;
-  public bool HasProperties => Properties.Count > 0;
-  public int Length => Children.Last().EndPos - Children.First().Position;
-  public int Depth { get; set; }
-  public int Position => Children.First().Position;
-  public int EndPos => Children.Last().EndPos;
-  public string Type { get; init; } = SE;
-  public TokenNodeGroup? FromNode { get; init; }
-  public TokenNode? LinkNode { get; set; }
-  public CToken? Node { get; set; }
-  public int Count => Children.Count;
-
-  public void Add (IToken child) => Children.Add(child);
-  public IEnumerator<IToken> GetEnumerator () => Children.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  public bool Equals (CToken? other) => other is not null && other.Match(this);
-
-  public ParentToken (TokenNode node, IEnumerable<IToken> tokens, string type = EmptyString)
-  {
-    LinkNode = node;
-    Children = [.. tokens];
-    Type = type;
-  }
-  public ParentToken (IEnumerable<IToken> tokens, string type = EmptyString)
-  {
-    Children = [.. tokens];
-    Type = type;
-  }
-  public ParentToken (TokenNodeGroup grp, IEnumerable<IToken> tokens, string type = EmptyString)
-  {
-    FromNode = grp;
-    Children = [.. from item in tokens select new Token(item)];
-    Type = type;
-  }
-  public ParentToken () { }
-}
 
 /// <summary>Base abstract for tokens.<br/>
 /// Reference this and not <see cref="IToken"/> when defining a class.<br/>
@@ -126,6 +38,7 @@ public class Token : IToken, ICloneable, IEquatable<CToken>
   public TokenNodeGroup? FromNode { get; init; }
   public TokenNode? LinkNode { get; set; }
   public CToken? Node { get; set; }
+  public bool IsIgnored { get; set; }
   #endregion
   #region Constructors
   /// <summary>Creates a <see cref="Token"/> from a string and optionally a type.</summary>
@@ -136,12 +49,9 @@ public class Token : IToken, ICloneable, IEquatable<CToken>
     Content = content;
     Type = type;
   }
-  public Token (MatchDataSet mdd, string type = EmptyString)
+  protected Token ()
   {
-    mdd.ThrowIfNull();
-    Type = type;
-    Position = mdd.Pos;
-    Content = mdd.Content;
+    Type = SE;
   }
   public Token (IToken token)
   {
@@ -174,13 +84,23 @@ public class Token : IToken, ICloneable, IEquatable<CToken>
   #region Overrides & Interfaces
   /// <inheritdoc/>
   public override string? ToString () =>
-    $"Type: {Type} Text: " + Content;
+    $"Token: Type: {Type} Text: " + Content;
   /// <inheritdoc/>
   public object Clone () => new Token(this);
   /// <summary>Creates a <see cref="Token"/> from a <see cref="MatchDataSet"/> object.</summary>
-  /// <param name="mdd">The originating object.</param>
+  /// <param name="data">The originating object, as a <see cref="MatchDataSet"/> paired with a string</param>
   /// <returns>A token that represents the contents of the <see cref="MatchDataSet"/> object.</returns>
-  public static Token Generate (MatchDataSet mdd) => new(mdd);
+  public static Token Generate ((MatchDataSet MDD, string Type) data)
+  {
+    data.MDD.ThrowIfNull();
+    Token token = new()
+    {
+      Content = data.MDD.Content,
+      Type = data.Type,
+      Position = data.MDD.Pos,
+    };
+    return token;
+  }
   public bool Equals (CToken? other) => other is not null && other.Match(this);
   #endregion
 }

@@ -18,14 +18,12 @@ public class XParser : IParser
   public IOperation NextOp => Operations[NextOpIndex];
   /// <inheritdoc/>
   public OpStatus LastStatus { get; protected set; } = AtStart;
-  public XParser (ISpec? spec = null)
+  public XParser (Spec? spec = null)
   {
     InitializeParser(spec ?? Parser.Spec.Unknown);
   }
 
-  /// <summary>
-  /// Loads the operations into a flat pattern.
-  /// </summary>
+  /// <summary>Loads the operations into a flat pattern.</summary>
   [MemberNotNull(nameof(Operations))]
   protected void OperationLoad ()
   {
@@ -36,15 +34,11 @@ public class XParser : IParser
     {
       IOperation op = Operations[i];
       int oldCount = Operations.Count;
-      int newCount = op switch
+      if (op is IPlaceholderOperation ipo)
       {
-        OperationCollection oc => oc.Unpack(Operations, i),
-        IfOperation ifop => ifop.Unpack(Operations, i),
-        LoopOperation feop => feop.Unpack(Operations, i),
-        _ => Operations.Count
-      };
-      if (oldCount != newCount)
-        Log(Area, "OperationLoad", $"Operation Group Expanded From {oldCount} to {newCount}.");
+        int newCount = ipo.Unpack(Operations, i);
+        Log(Area, "OperationLoad", $"Operation Group Expanded From {oldCount} to {newCount}.", ConsoleColor.Black, ConsoleColor.Cyan);
+      }
     }
   }
   [MemberNotNull(nameof(DefaultSpec))]
@@ -67,7 +61,7 @@ public class XParser : IParser
   /// </summary>
   /// <param name="spec">The specificiation to use.</param>
   [MemberNotNull(nameof(Data), nameof(Spec))]
-  protected void InitializeParser (ISpec spec)
+  protected void InitializeParser (Spec spec)
   {
     Data = new() { Parser = this };
     Spec = spec;
@@ -76,11 +70,11 @@ public class XParser : IParser
   }
   public Collection<CursorData> Cursors { get; set; } = [];
   /// <inheritdoc/>
-  public ISpec? DefaultSpec { get; private set; }
+  public Spec? DefaultSpec { get; private set; }
   /// <summary>
   /// The spec to use for this parser.
   /// </summary>
-  public ISpec Spec { get; set; }
+  public Spec Spec { get; set; }
   /// <inheritdoc/>
   [NotNull] public Collection<IOperation>? Operations { get; set; }
   /// <inheritdoc/>
@@ -123,6 +117,54 @@ public class XParser : IParser
   {
     if (status == Any || status == LastStatus)
       Log(Area, $"{OpIndex}-{LastStatus}: {msg}");
+  }
+  public IEnumerable<OpStatus> StepInit (string content)
+  {
+    InitializeData(content);
+    Log(Area, "StepInit", "Initialized");
+
+    while (NextOpIndex >= 0)
+    {
+      if (CurrentOp is IfOperation ifop)
+      {
+        Log(Area, "If Operation Encountered");
+        LastStatus = ifop.Condition.Evaluate() ? ifop.IfTrue.DoOperation(this) : ifop.IfFalse.DoOperation(this);
+        continue;
+      }
+      if (CurrentOp.SkipOperation)
+      {
+        Log(Area, "Skip Operation Encountered");
+        LastStatus = Skipped;
+        AdvanceOperation();
+        continue;
+      }
+      Log(Area, "StepInit", $"Performing Operation {CurrentOp.GetType().Name}.");
+      LastStatus = CurrentOp.DoOperation(this);
+      Log(Area, "StepInit", $"Operation resulted in {LastStatus}.");
+      yield return LastStatus;
+      if (LastStatus is EndCommand)
+      {
+        NextOpIndex = -1;
+        continue;
+      }
+      if (LastStatus.IsFail(CurrentOp.ContinueOnFail))
+      {
+        LogStatus(FailBadInputNull, "Given bad input, cannot be null");
+        LogStatus(FailBadInputType, "Given bad input, invalid type.");
+        LogStatus(FailBadOpDefinition, "Bad operation definition.");
+        LogStatus(FailBadOpResult, "Bad operation result. Operation failed to generate proper data.");
+        LogStatus(FailBadOpImpossible, "Bad operation event. Impossible condition reached.");
+        LogStatus(Any, "Parse sequence terminated.");
+        yield break;
+      }
+
+      AdvanceOperation();
+    }
+
+    LogResult(EndCommand, "Result has been assigned. Operation complete.");
+    Log(Area, "Parse", "Results");
+    Log(Area, "Parse", Data["result"]?.ToString() ?? "<null data>");
+    yield break;
   }
   public OpStatus Parse (byte[] bytes)
   {

@@ -45,7 +45,6 @@ public static class RegexExtensions
     group.ThrowIfNull();
     return new(group.Name, group.Value);
   }
-
   public static GroupDataSet ToGroupData (this Group group) => new(group);
   #endregion
   public static CaptureData ToCaptureData (this Capture cap, string groupname) =>

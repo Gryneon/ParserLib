@@ -3,6 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 using Parser.Inference;
+using Parser.Ops;
 using Parser.Ops.Text;
 
 using static Common.Chars;
@@ -18,7 +19,13 @@ public static class Definition
   /// Build from https://regex101.com/r/WJUiK8/2
   /// </summary>
   public static RxSCollection Splits => [
-    Rx($@"(;?{Etx}[\S\s]*?{Stx})|((?<!{Stx})(?=\r|{Cr}|{FS}.*?{FS}|{Can}|{Esc}|{Etb}))|(^[^><]*{Stx})|{Etx}|{Nul}|;|{Lf}")
+    Rx($@";?{Etx}[\S\s]*?{Stx}"),
+    Rx($@"(?<!{Stx})(?=\r|{Cr}|{FS}.*?{FS}|{Can}|{Esc}|{Etb})"),
+    $"(^[^><]*{Stx})",
+    Etx,
+    ";",
+    Nul,
+    Lf
   ];
   private static readonly RxS
     AVal = Gp($",?{Value()}"),
@@ -65,15 +72,16 @@ public static class Definition
   ];
   public static Regex OpRegex => new(Regex, Spec.RxOpt);
   [Export("ipl")]
-  public static ISpec Spec => new Spec()
+  public static Spec Spec => new()
   {
     Name = "ipl",
     Operations = [
-      new SplitOperation(Splits, "initial", "splits"),
-      new DebugToStringOperation("splits"),
-      new DictionaryOperation(Regex, ROML | ROIPW | ROEC | ROSL, false, "splits"),
-      new GenerateOperation<CommandDataSet>(CommandDataSet.Generate, item => item.Len > 0, "matches", "commands"),
-      new IPLCommandOperation("commands", "result"),
+      new SplitOperation(Splits, ROML | ROIPW | ROEC | ROSL, "text", "textparts"),
+      new DebugToStringOperation("textparts"),
+      new DictionaryOperation(Regex, ROML | ROIPW | ROEC | ROSL, false, "textparts", "matches"),
+      new GenerateOperation<MatchDataSet, CommandDataSet>(CommandDataSet.Generate, item => item.Len > 0, "matches", "commands"),
+      new IPLCommandOperation("commands", "commands"),
+      Operation.CopyKey("commands", "result"),
       //new ValidateOperation<CommandData>(false)
     ],
     FileInferences = [

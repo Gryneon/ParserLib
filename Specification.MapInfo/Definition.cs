@@ -109,7 +109,7 @@ public static class Definition
   ];
 
   /// <summary>
-  /// https://regex101.com/r/iWWPub/1
+  /// Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see>
   /// </summary>
   public static readonly Spec Spec = new()
   {
@@ -136,11 +136,11 @@ public static class Definition
       new TokenTemplateOperation(new Dictionary<string, string>() {
         ("numprop1",   "$int ^key^ '=' ($name  (',' $int)? (',' '+')?) ^value^"),
         ("numprop2",   "$int '=' $str (',' $int)?")
-      }),
-      new DebugToStringOperation("tokens_templated")
+      }, "tokens", "tokens"),
+      new DebugToStringOperation("tokens")
     ],
     WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
     RegexBasicTokens = ["langref", "int", "dec", "op", "str", "bool", "blockkeyword", "name", "keyword"],
-    RxOpt = ROIC | ROEC,
+    RxOpt = ROIC | ROEC | ROML,
   };
 }

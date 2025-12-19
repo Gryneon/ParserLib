@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AnalysisLevel>preview-all</AnalysisLevel>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <Authors>John Taylor</Authors>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <ErrorReport>send</ErrorReport>
+    <FileVersion>1.0.0.0</FileVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <NuGetAuditLevel>high</NuGetAuditLevel>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <Nullable>enable</Nullable>
+    <RepositoryType>git</RepositoryType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Title>Console Menu Library</Title>
+    <WarningLevel>9999</WarningLevel>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Parser\Parser.csproj" />
+  </ItemGroup>
+
+</Project>

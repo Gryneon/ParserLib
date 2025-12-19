@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
-using Parser.Tokens;
+using Parser.Tokens.Chunk;
+using Parser.Tokens.Node;
 
 namespace UnitTest;
 

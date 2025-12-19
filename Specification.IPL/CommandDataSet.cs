@@ -216,18 +216,18 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGene
   /// <returns>The data at the given index as an <see langword="int"/>.</returns>
   public int GetIntData (int index)
   {
+    if (!Data.TryGetValue(index, out object? value))
+    {
+      Debug.Log("CommandDataSet", $"GetIntData({index})", "No data.");
+      return ErrVal;
+    }
     try
     {
-      return (int) Data[index];
+      return (int) value;
     }
     catch (InvalidCastException ice)
     {
       Debug.LogException(ice);
-      return ErrVal;
-    }
-    catch (KeyNotFoundException aoore)
-    {
-      Debug.LogException(aoore);
       return ErrVal;
     }
   }

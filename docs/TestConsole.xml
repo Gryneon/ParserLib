@@ -45,6 +45,11 @@
               Looks up a localized string similar to C:\Users\Johntay4\source\repos\Git\ParserLib\Parser\Samples\label.ipl.
             </summary>
         </member>
+        <member name="P:TestConsole.Paths.json_launch">
+            <summary>
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
+            </summary>
+        </member>
         <member name="P:TestConsole.Paths.mapinfo_common">
             <summary>
               Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
@@ -60,9 +65,19 @@
               Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt.
             </summary>
         </member>
+        <member name="P:TestConsole.Paths.udmf_map00">
+            <summary>
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
+            </summary>
+        </member>
         <member name="P:TestConsole.Paths.xsd_specification">
             <summary>
               Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
+            </summary>
+        </member>
+        <member name="P:TestConsole.Paths.zs_demon">
+            <summary>
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\TestConsole\Resources\demon.zs.
             </summary>
         </member>
     </members>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -143,5 +143,14 @@
   </data>
   <data name="ipl_label" xml:space="preserve">
     <value>C:\Users\Johntay4\source\repos\Git\ParserLib\Parser\Samples\label.ipl</value>
+  </data>
+  <data name="zs_demon" xml:space="preserve">
+    <value>C:\Users\johntay4\source\repos\Git\ParserLib\TestConsole\Resources\demon.zs</value>
+  </data>
+  <data name="json_launch" xml:space="preserve">
+    <value>C:\Users\johntay4\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json</value>
+  </data>
+  <data name="udmf_map00" xml:space="preserve">
+    <value>C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\map00.udmf</value>
   </data>
 </root>

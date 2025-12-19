@@ -134,6 +134,18 @@ public sealed class OperationAction : IOperation
     }
   }
 
+  public override string ToString () => $"Action {Type} => " + Type switch
+  {
+    OAT.None => "No Type",
+    OAT.ForcePass => "Force Pass",
+    OAT.ForceFail => "Force Fail",
+    OAT.GotoLabel => $"Goto Label '{SData[0]}'",
+    OAT.GotoIndex => $"Goto Index '{IData[0]}'",
+    OAT.GotoFirst => $"Goto First",
+    OAT.CopyKey => $"Key '{SData[0]}' copied to '{SData[1]}'",
+    _ => "No description",
+  };
+
   private string GetMessage () => Type switch
   {
     OAT.BreakLoop => $"Loop break.",

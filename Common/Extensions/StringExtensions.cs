@@ -208,4 +208,17 @@ public static class StringExtensions
     if (text.IsEmpty())
       throw new ANEx(nameof(text));
   }
+  public static bool TryMatchAt (this string rx, RegexOptions options, int index, string input, [NotNullWhen(true)] out MatchDataSet? match)
+  {
+    match = null;
+    Match attempt = SysRegex.Match(input, rx, options);
+
+    if (attempt.Success && attempt.Index == index)
+    {
+      match = attempt.ToMatchData();
+      return true;
+    }
+
+    return false;
+  }
 }

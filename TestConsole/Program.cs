@@ -1,10 +1,37 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 
-using Common;
-
 using Parser;
+using Parser.Tokens.Raw;
+
+using Specification.UDMF;
+
+using CK = System.ConsoleKey;
 
 namespace TestConsole;
+
+internal sealed class TestAction : MenuAction
+{
+  public override void Execute ()
+  {
+    Execute(out _);
+  }
+  public void Execute (out object? data_return)
+  {
+    string? specname = Library.CheckFile(Data);
+    Spec spec = Library.Lookup(specname) ?? Spec.Unknown;
+    string content = File.ReadAllText(Data);
+    Program.Parser = new(spec);
+    IEnumerator<OpStatus> en = Program.Parser.StepInit(content).GetEnumerator();
+    while (en.MoveNext())
+      Debug.Log("Program", $"{en.Current}");
+
+    Program.Status = Program.Parser.Parse(content);
+    Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Program.Status}.");
+    data_return = Program.Parser;
+  }
+}
 
 internal sealed class Program
 {
@@ -13,10 +40,21 @@ internal sealed class Program
   internal const int LogLine = 10;
   #endregion
   #region Fields
-  internal static string TestPath1 = Paths.ipl_label;
-  internal static string TestPath2 = Paths.ini_vncdefault;
+  internal static Dictionary<string, string> TestPath = new()
+  {
+    ["ipl"] = Paths.ipl_label,
+    ["vnc"] = Paths.ini_vncdefault,
+    ["ipl2"] = Paths.ipl_batch6456,
+    ["sndinfo"] = Paths.sndinfo_test,
+    ["reg"] = Paths.reg_iplfile,
+    ["html"] = Paths.html_processfile,
+    ["acs"] = Paths.acs_testscript,
+    ["mapinfo"] = Paths.mapinfo_common,
+    ["json"] = "TODO: Add path",
+    ["menu"] = "TODO: Add path"
+  };
   internal static string? UserInput;
-  internal static IParser Parser = new XParser();
+  internal static XParser Parser = new();
   internal static OpStatus Status = OpStatus.AtStart;
   #endregion
   #region Basic Methods
@@ -24,45 +62,41 @@ internal sealed class Program
   internal static void UserLine () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
   internal static string UserLineReturn () => Console.ReadLine() ?? SE;
   #endregion
+  #region Menu Definition
+  internal static Action<IList<object>> DoTest => item => _ = item[0] is string s && item[1] is Spec sp ? TestTextParser(s, sp) : throw new InvalidOperationException("Invalid data passed to TestTextParser");
+  // MenuItem 2 "Quit"
+  internal static MenuItem Exit = new(2, "Quit", [new MenuQuitAction() { Key = CK.Enter }]);
+  internal static MenuItem LoadItem = new(0, "Load", []);
+  internal static MenuItem Test = new(1, "Test", [new TestAction() { Key = CK.Enter }]);
+  internal static MenuBase InitialMenu = new BasicMenu()
+  {
+    Name = "main",
+    Items = [Exit, Test],
+    CommonActions = { }
+  };
+  #endregion
 
   [STAThread]
   internal static int Main (string[] args)
   {
-    string[] items = ["Load", "Test", "Raw Test", "Exit"];
-    int index = 0;
-
-    void draw ()
-    {
-      Console.SetCursorPosition(0, 0);
-      Console.WriteLine("Select a function");
-      Console.WriteLine(); // spacing
-
-      for (int i = 0; i < items.Length; i++)
-      {
-        Console.Write(new string(' ', Console.WindowWidth));
-        Console.SetCursorPosition(0, Console.CursorTop);
-
-        if (i == index)
-        {
-          Console.BackgroundColor = ConsoleColor.Gray;
-          Console.ForegroundColor = ConsoleColor.Black;
-          Console.WriteLine($"> {items[i]}");
-          Console.ResetColor();
-        }
-        else
-        {
-          Console.WriteLine($"  {items[i]}");
-        }
-      }
-    }
-
     Console.Clear();
-    draw();
-
     Debug.Verbose = true;
+
+    //MenuController.StartMenu(InitialMenu);
+
     Debug.Log("Program", "Main", "Program Start");
 
-    args = [.. args, TestPath1];
+    string file = "C:\\Users\\johntay4\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf";
+    //Load Data
+    string input = File.ReadAllText(file);
+    TokenFactory<UDMFTokenType> factory = new(RawTokenSamples.UDMFRuleSet);
+    Collection<IToken<UDMFTokenType>> result = [.. factory.Produce(input)];
+    Debug.Log(result.ToString2());
+    TokenAssembler<UDMFTokenType> assembler = new(RawTokenSamples.UDMFGroupRuleSet);
+    List<IToken<UDMFTokenType>> tokens = [.. result];
+    assembler.Execute(tokens);
+    Debug.Log(tokens.ToString2());
+    //args = [.. args, TestPath["ipl"]];
 
     foreach (string path in args)
     {
@@ -85,72 +119,33 @@ internal sealed class Program
         Debug.Log("Program.Main", $"{item}");
       }
     }
-
-  UserLoop:
-
-    Debug.Log("Program.Main", "Input a command.");
-
-    UserLine();
-
-    bool doOpen = UserInput.Like(["PARSE", "OPEN"]);
-    bool doTest = UserInput.StartsWith("test", SCOIC);
-    bool doExit = UserInput.Like(["exit", "quit"]);
-    bool doRawTest = UserInput.StartsWithAny(["C:", "\\", "/"]);
-
-    if (doOpen)
-      goto OpenFile;
-    else if (doTest)
-      goto Test;
-    else if (doExit)
-      goto Exit;
-    else if (doRawTest)
-      _ = TestTextParser(UserInput, Library.Lookup<ISpec>(Library.CheckFile(UserInput)) ?? Spec.TextByLines);
-
-    Debug.Log("Program.Main", "Bad command given.");
-    goto UserLoop;
-
-  OpenFile:
-    Load();
-    goto UserLoop;
-
-  Test:
-    string type = UserInput[4..].Trim().ToUpperInvariant();
-    IParser? parser = type switch
-    {
-      string when type.Like("mapinfo") => TestTextParser(SamplePath + "mapinfo.lmp", Specification.MapInfo.Definition.Spec),
-      string when type.Like("json") => TestTextParser(SamplePath + "launchSettings.json", Specification.JSON.Definition.Spec),
-      string when type.Like("xml") => TestTextParser(SamplePath + "ipl.xml", Specification.XML.Definition.Spec),
-      string when type.Like("ipl") => TestTextParser(SamplePath + "label.ipl", Specification.IPL.Definition.Spec),
-      string when type.Like("ini") => TestTextParser(SamplePath + "default.ini", Specification.INI.Definition.Spec),
-      string when type.Like("udmf") => TestTextParser(SamplePath + "map.udmf", Specification.UDMF.Definition.Spec),
-      string when type.Like("decorate") => TestTextParser(SamplePath + "Weapon_MkII.dec", Specification.Decorate.Definition.Spec),
-      _ => null
-    };
-    Debug.Log("Parser Operation Order:");
-    foreach (IOperation op in parser?.Operations ?? [])
-    {
-      Debug.Log(op.ToString() ?? "Error: Bad Op");
-    }
-
-    goto UserLoop;
-  Exit:
-    Debug.Log("Program.Main", "Press any key to exit.");
-    _ = Console.ReadKey();
+    _ = Console.ReadLine();
     return 0;
   }
-
-  internal static IParser TestTextParser (string path, ISpec spec)
+  internal static XParser TestTextParser (string path, Spec spec)
   {
     string content = File.ReadAllText(path);
-    Parser = new XParser(spec);
+    Parser = new(spec);
+    IEnumerator<OpStatus> en = Parser.StepInit(content).GetEnumerator();
+
+    while (en.MoveNext())
+      Debug.Log("Program", $"{en.Current}");
+
     Status = Parser.Parse(content);
     Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
     return Parser;
   }
-
+  internal static void DisplayOpOrder ()
+  {
+    Debug.Log("Parser Operation Order:");
+    foreach (IOperation op in Parser?.Operations ?? [])
+    {
+      Debug.Log(op.ToString() ?? "Error: Bad Op");
+    }
+  }
   internal static void Load ()
   {
-    ISpec userSpec;
+    Spec userSpec;
     string userPath;
     string? specName;
     string fileContent;
@@ -170,7 +165,7 @@ internal sealed class Program
     fileContent = File.ReadAllText(userPath);
     byteContent = File.ReadAllBytes(userPath);
     specName = Library.CheckFile(userPath);
-    userSpec = specName is not null ? Library.Lookup<ISpec>(specName) ?? Spec.Unknown : Spec.Unknown;
+    userSpec = specName is not null ? Library.Lookup(specName) ?? Spec.Unknown : Spec.Unknown;
     Debug.Log("Program.Load", $"Spec Chosen is {userSpec.Name}");
 
   GetSpec:
@@ -180,14 +175,14 @@ internal sealed class Program
     if (UserInput.IsEmpty())
       goto ParseFile;
 
-    else if (Library.Lookup<ISpec>(UserInput) is not null)
+    else if (Library.Lookup(UserInput) is not null)
     {
       Debug.Log("Program.Load", $"Invalid Spec {UserInput}");
       goto GetSpec;
     }
     else
     {
-      userSpec = Library.Lookup<ISpec>(UserInput)!;
+      userSpec = Library.Lookup(UserInput)!;
     }
   ParseFile:
     if (userSpec.IsTextFile)

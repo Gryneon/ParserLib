@@ -7,7 +7,8 @@ internal enum DebugMsg
   DM_None,
   Tokenize_Ignore_Token,
   Tokenize_Wrong_Type,
-  Debug_Log_Extra_Values
+  Debug_Log_Extra_Values,
+  Tokenize_Token_Added,
 }
 
 internal enum ExceptionMsg
@@ -65,6 +66,7 @@ internal static class Debug
     (DM_None, static (_, __) => SE),
     (Tokenize_Wrong_Type, static (type, _) => $"TokenizeOperation:Execute(): My type is wrong! I am a {type}"),
     (Tokenize_Ignore_Token, static (mdd, _) => $"TokenizeOperation.Execute(): Token is whitespace or ignored \"{mdd}\""),
+    (Tokenize_Token_Added, static (type, content) => $"TokenizeOperation.Execute(): Token type \"{type}\" added. ({content})")
   };
   private static readonly Dictionary<ExceptionMsg, Func<string, string, string>> XMsgFormats = new()
   {
@@ -114,18 +116,32 @@ internal static class Debug
   /// </summary>
   /// <param name="src">The orignating class.</param>
   /// <param name="msg">The message to log.</param>
-  public static void Log (string src, string msg) =>
+  /// <param name="back">The background color.</param>
+  /// <param name="text">The foreground color.</param>
+  public static void Log (string src, string msg, ConsoleColor back = ConsoleColor.Black, ConsoleColor text = ConsoleColor.White)
+  {
+    Console.BackgroundColor = back;
+    Console.ForegroundColor = text;
     DoLog($"{src} : {msg}");
-  public static void Log (string src, string proc, string msg) => DoLog($"{src}.{proc} : {msg}");
-  public static void LogException (Exception e) =>
-    LogFrom(e?.Source, e?.TargetSite?.Name, e?.Message);
+    Console.BackgroundColor = ConsoleColor.Black;
+    Console.ForegroundColor = ConsoleColor.White;
+  }
   /// <summary>
   /// Logs a message to the output stream.
   /// </summary>
   /// <param name="src">The orignating class.</param>
   /// <param name="target">The originating method.</param>
   /// <param name="msg">The message to log.</param>
-  private static void LogFrom (string? src, string? target, string? msg) =>
+  /// <param name="back">The background color.</param>
+  /// <param name="text">The foreground color.</param>
+  public static void Log (string? src, string? target, string? msg, ConsoleColor back = ConsoleColor.Black, ConsoleColor text = ConsoleColor.White)
+  {
+    Console.BackgroundColor = back;
+    Console.ForegroundColor = text;
     DoLog($"{src}.{target} : {msg}");
-
+    Console.BackgroundColor = ConsoleColor.Black;
+    Console.ForegroundColor = ConsoleColor.White;
+  }
+  public static void LogException (Exception e) =>
+    Log(e?.Source, e?.TargetSite?.Name, e?.Message);
 }

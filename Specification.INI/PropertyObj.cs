@@ -1,21 +1,13 @@
 namespace Specification.INI;
 
-/// <summary>
-/// A key and value pair in an INI file.
-/// </summary>
+/// <summary>A key and value pair in an INI file.</summary>
 public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<string>, ITextSerializer, IEquatable<IProperty<string>>
 {
-  /// <summary>
-  /// The key name.
-  /// </summary>
+  /// <summary>The key name.</summary>
   public string Key { get; set; } = SE;
-  /// <summary>
-  /// The value assigned to the key.
-  /// </summary>
+  /// <summary>The value assigned to the key.</summary>
   public string? Value { get; set; } = SE;
-  /// <summary>
-  /// Creates an empty <see cref="PropertyObj"/>.
-  /// </summary>
+  /// <summary>Creates an empty <see cref="PropertyObj"/>.</summary>
   public PropertyObj () { }
   /// <summary>
   /// Creates a property from a key and value
@@ -79,23 +71,18 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
     };
     return result;
   }
-  /// <inheritdoc/>
   public bool Equals (IProperty<string>? other) =>
     Key.Equals(other?.Key, SCOIC) && (Value?.Equals(other.Value, SCO) ?? false);
-  /// <inheritdoc/>
   public int CompareTo (IProperty<string>? other) =>
     Key.CompareTo(other?.Key, SCOIC);
-  /// <inheritdoc/>
   public override bool Equals (object? obj) =>
     obj is IProperty<string> prop && Equals(prop);
-  /// <inheritdoc/>
   public override int GetHashCode () => HashCode.Combine(Key, Value);
   /// <summary>
   /// Gets the <see langword="string"/> representation of the object for serialization.
   /// </summary>
   /// <returns>The <see langword="string"/> representation of the object.</returns>
   public string Serialize () => $"  {Key}={Value}";
-  /// <inheritdoc/>
   public bool Equals (PropertyObj? other) => throw new NotImplementedException();
   public static implicit operator KeyValuePair<string, PropertyObj> (PropertyObj from)
   {
@@ -103,9 +90,7 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
     return new(from.Key, new(from.Key, from?.Value ?? SE));
   }
 
-  /// <summary>
-  /// Determines whether two <see cref="PropertyObj"/> instances are equal.
-  /// </summary>
+  /// <summary>Determines whether two <see cref="PropertyObj"/> instances are equal.</summary>
   /// <param name="left">The first <see cref="PropertyObj"/> to compare.</param>
   /// <param name="right">The second <see cref="PropertyObj"/> to compare.</param>
   /// <returns><see langword="true"/> if the two <see cref="PropertyObj"/> instances are equal; otherwise, <see

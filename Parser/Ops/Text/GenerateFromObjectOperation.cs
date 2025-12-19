@@ -55,6 +55,18 @@ public class GenerateFromObjectOperation<TOutput> (string input_key, string outp
         }
       }
     }
+    else if (CheckInput(out IEnumerable<IToken>? tokens))
+    {
+      Collection<IToken> iterator = [.. tokens];
+      for (int index = 0; index < iterator.Count; index++)
+      {
+        IToken token = iterator[index];
+        if (TOutput.TryGenerate(token, out TOutput? result))
+        {
+          output_items.Add(index, result);
+        }
+      }
+    }
     else
     {
       Status = OpStatus.FailBadInputType;

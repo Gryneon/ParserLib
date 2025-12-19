@@ -25,11 +25,11 @@ public class GroupDataSet : CaptureData, IReadOnlyCollection<CaptureData>, IEqua
   /// <summary>
   /// Manual Constructor.
   /// </summary>
-  /// <param name="name"></param>
-  /// <param name="content"></param>
-  /// <param name="pos"></param>
-  /// <param name="len"></param>
-  /// <param name="index"></param>
+  /// <param name="name">Group name.</param>
+  /// <param name="content">Group content.</param>
+  /// <param name="pos">Position in text.</param>
+  /// <param name="len">Length of group.</param>
+  /// <param name="index">TODO: Identify what i meant to do with this.</param>
   protected GroupDataSet (string name, string content, int pos, int len, int index = -1) : base(content, pos, len, name, index) =>
     Captures = [];
   /// <summary>
@@ -42,10 +42,13 @@ public class GroupDataSet : CaptureData, IReadOnlyCollection<CaptureData>, IEqua
   public IEnumerator<CaptureData> GetEnumerator () => Captures.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 
-  /// <summary>
-  /// Whether the group is to be removed or not.
-  /// </summary>
-  public bool IsRemoveGroup => Name.StartsWith("rem", SCO) && Content.Length > 0;
+  public int IndexOfLastUnderscore => Name.LastIndexOf('_');
+  public string NiceName => Name[(IndexOfLastUnderscore + 1)..];
+  public bool IsRemoveGroup => Name.StartsWith("x_", SCO) && Content.Length > 0;
+  public bool IsMatchProperty => Name.StartsWith("m_prop_", SCOIC);
+  public bool IsToken => Name.StartsWith("t_", SCOIC);
+  public bool IsMatchPropertyKey => Name.StartsWith("m_prop_key_", SCOIC);
+  public bool IsMatchPropertyValue => Name.StartsWith("m_prop_value_", SCOIC);
   /// <summary>
   /// Whether the group is a named group or not.
   /// </summary>

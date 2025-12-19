@@ -4,7 +4,7 @@ using Parser.Inference;
 
 namespace Parser;
 
-public class Library : KeyedCollection<string, ISpec>
+public class Library : KeyedCollection<string, Spec>
 {
   /// <summary>
   /// The singleton instance of this object.
@@ -16,22 +16,22 @@ public class Library : KeyedCollection<string, ISpec>
 
   protected Library ()
   {
-    IReadOnlyList<(Type Type, PropertyInfo Property)> matches = ReflectionHelper.GetTypesWithAttributeAndProperties<DefinitionExportAttribute>(typeof(ISpec));
+    IReadOnlyList<(Type Type, PropertyInfo Property)> matches = ReflectionHelper.GetTypesWithAttributeAndProperties<DefinitionExportAttribute>(typeof(Spec));
 
     foreach ((Type? type, PropertyInfo? prop) in matches)
     {
       Console.WriteLine($"Type: {type.FullName}, Property: {prop.Name}");
     }
   }
-  protected override string GetKeyForItem (ISpec item) => item?.Name ?? SE;
+  protected override string GetKeyForItem (Spec item) => item?.Name ?? SE;
 
-  public static void AddToLibrary (ISpec spec) => Instance.Add(spec);
-  public static void AddToLibrary (IEnumerable<ISpec> specs) => Instance.AddRange(specs);
-  public static void AddToLibrary (params Collection<ISpec> speclist) => Instance.AddRange(speclist);
-  public static TSpec? Lookup<TSpec> (string? name) where TSpec : class, ISpec => (name is not null && Instance.Contains(name) ? Instance[name] : null) as TSpec;
-  public static bool TryLookup<TSpec> (string name, [NotNullWhen(true)][MaybeNullWhen(false)] out TSpec spec) where TSpec : Spec
+  public static void AddToLibrary (Spec spec) => Instance.Add(spec);
+  public static void AddToLibrary (IEnumerable<Spec> specs) => Instance.AddRange(specs);
+  public static void AddToLibrary (params Collection<Spec> speclist) => Instance.AddRange(speclist);
+  public static Spec? Lookup (string? name) => name is not null && Instance.Contains(name) ? Instance[name] : null;
+  public static bool TryLookup (string name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
   {
-    if (Instance.Contains(name) && Instance[name] is TSpec s)
+    if (Instance.Contains(name) && Instance[name] is Spec s)
     {
       spec = s;
       return true;
@@ -61,5 +61,5 @@ public class Library : KeyedCollection<string, ISpec>
     }
     return null;
   }
-  public static IEnumerable<ISpec> SpecList => Instance.ToCollection();
+  public static IEnumerable<Spec> SpecList => Instance.ToCollection();
 }

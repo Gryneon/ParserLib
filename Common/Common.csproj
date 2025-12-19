@@ -19,9 +19,9 @@
     <Nullable>enable</Nullable>
     <RepositoryType>git</RepositoryType>
     <TargetFramework>net10.0</TargetFramework>
-    
     <Title>Common Library</Title>
     <WarningLevel>9999</WarningLevel>
+    <Platforms>AnyCPU;x86;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,13 +9,13 @@ namespace Parser;
 /// <summary>
 /// A class containing the operations, requirements, and instructions for reading a file.
 /// </summary>
-public class Spec : ISpec
+public class Spec // : Spec
 {
   #region Static Members
   /// <summary>
   /// The currently active specififcation. Used for objects that cannot see the parser.
   /// </summary>
-  public static ISpec Active
+  public static Spec Active
   {
     get => field ?? Unknown;
     protected set;
@@ -23,7 +23,7 @@ public class Spec : ISpec
   /// <summary>
   /// The default spec.
   /// </summary>
-  public static ISpec Unknown { get; } = new Spec()
+  public static Spec Unknown { get; } = new()
   {
     Name = "unknown",
     FileInferences = [],
@@ -32,14 +32,14 @@ public class Spec : ISpec
   /// <summary>
   /// The spec assigned if the parser gets a binary file.
   /// </summary>
-  public static ISpec Binary { get; } = new Spec()
+  public static Spec Binary { get; } = new()
   {
     Name = "binary",
     FileInferences = [],
     Operations = [ByteReadOperation.ReadRemainingBin("result", "bytes")]
   };
   /// <summary>Splits a string on newlines into a <see cref="Collection{T}"/> of <see langword="string"/> objects.</summary>
-  public static ISpec TextByLines { get; } = new Spec()
+  public static Spec TextByLines { get; } = new()
   {
     FileInferences = [],
     Name = "textbylines",

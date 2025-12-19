@@ -1,8 +1,17 @@
+using Common.Extensions;
+
 using Parser.Ops;
 
 using OS = Parser.OpStatus;
 
 namespace Specification.XML;
+
+public sealed class XMLDocument : IXMLObject
+{
+  public string Tag { get; set; } = SE;
+  public Collection<IXMLObject> Content { get; } = [];
+  public XMLDocument (IEnumerable<IXMLObject> objects) => Content = [.. objects];
+}
 
 /// <summary>
 /// Operation to stack the nodes inside each other.
@@ -27,7 +36,9 @@ public class XMLStackOperation (string input_key, string output_key) : Operation
     foreach (IXMLObject item in items)
     {
       if (item is XMLHeader)
+      {
         tree.Add(item);
+      }
       else if (item is XMLElementOpen open)
       {
         if (depth == 0)
@@ -39,16 +50,21 @@ public class XMLStackOperation (string input_key, string output_key) : Operation
         depth++;
       }
       else if (item is XMLContent content)
+      {
         if (depth == 0)
           tree.Add(content);
         else
           parentNodes[depth - 1].Children.Add(content);
+      }
       else if (item is XMLElementSingle single)
+      {
         if (depth == 0)
           tree.Add(single);
         else
           parentNodes[depth - 1].Children.Add(single);
+      }
       else if (item is XMLElementClose close)
+      {
         if (depth == 0)
         {
           result = OS.FailBadOpResult;
@@ -56,21 +72,28 @@ public class XMLStackOperation (string input_key, string output_key) : Operation
         }
         else
         {
-          if (!close.Tag.Equals(nodeNames.Last(), SCO))
+          if (!close.Tag.Equals(nodeNames.Pop(), SCO))
           {
             result = OS.FailBadOpResult;
             goto Finish;
           }
 
           depth--;
-          nodeNames.RemoveAt(depth);
-          parentNodes.RemoveAt(depth);
+          parentNodes.Drop();
         }
+      }
+      else if (item is XMLComment comment)
+      {
+        if (depth == 0)
+          tree.Add(comment);
+        else
+          parentNodes[depth - 1].Children.Add(comment);
+      }
     }
     result = OS.Pass;
 
   Finish:
-    WorkToReturn = tree;
+    WorkToReturn = new XMLDocument(tree);
     Status = result;
   }
 }

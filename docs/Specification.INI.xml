@@ -5,14 +5,10 @@
     </assembly>
     <members>
         <member name="T:Specification.INI.Definition">
-            <summary>
-            Defines the INI spec.
-            </summary>
+            <summary>Defines the INI spec.</summary>
         </member>
         <member name="P:Specification.INI.Definition.Spec">
-            <summary>
-            The INI Spec
-            </summary>
+            <summary>The INI Spec</summary>
         </member>
         <member name="T:Specification.INI.INIDocument">
             <summary>
@@ -34,52 +30,36 @@
             <returns>The newly created document.</returns>
         </member>
         <member name="M:Specification.INI.INIDocument.#ctor">
-            <summary>
-            Creates an empty <see cref="T:Specification.INI.INIDocument"/>.
-            </summary>
+            <summary>Creates an empty <see cref="T:Specification.INI.INIDocument"/>.</summary>
         </member>
         <member name="M:Specification.INI.INIDocument.#ctor(System.Collections.Generic.IEnumerable{Specification.INI.Section})">
-            <summary>
-            Creates a <see cref="T:Specification.INI.INIDocument"/> with the provided <see cref="T:Specification.INI.Section"/> objects in it.
-            </summary>
+            <summary>Creates a <see cref="T:Specification.INI.INIDocument"/> with the provided <see cref="T:Specification.INI.Section"/> objects in it.</summary>
         </member>
         <member name="M:Specification.INI.INIDocument.#ctor(Specification.INI.INIDocument)">
-            <summary>
-            Creates a deep copy of the passed document.
-            </summary>
+            <summary>Creates a deep copy of the passed document.</summary>
             <param name="other">The document to copy.</param>
         </member>
         <member name="P:Specification.INI.INIDocument.Name">
-            <summary>
-            The name of the document.
-            </summary>
+            <summary>The name of the document.</summary>
         </member>
         <member name="P:Specification.INI.INIDocument.Sections">
-            <summary>
-            A <see cref="T:System.Collections.ObjectModel.Collection`1">Collection&lt;Section></see> object stored in this <see cref="T:Specification.INI.INIDocument"/>.
-            </summary>
+            <summary>A <see cref="T:System.Collections.ObjectModel.Collection`1">Collection&lt;Section></see> object stored in this <see cref="T:Specification.INI.INIDocument"/>.</summary>
         </member>
         <member name="P:Specification.INI.INIDocument.Count">
             <inheritdoc/>
         </member>
         <member name="P:Specification.INI.INIDocument.Item(System.Int32)">
-            <summary>
-            Gets the (nth) Section.
-            </summary>
+            <summary>Gets the (nth) Section.</summary>
             <param name="index">The index.</param>
             <returns>The Section at that index.</returns>
         </member>
         <member name="P:Specification.INI.INIDocument.Item(System.String)">
-            <summary>
-            Gets the section named 'name'.
-            </summary>
+            <summary>Gets the section named 'name'.</summary>
             <param name="name">The name to identtiry it,</param>
             <returns>The section starting with that name.</returns>
         </member>
         <member name="M:Specification.INI.INIDocument.Contains(System.String)">
-            <summary>
-            Checks if the document contains a section with the provided name.
-            </summary>
+            <summary>Checks if the document contains a section with the provided name.</summary>
             <param name="name">The name to check for.</param>
             <returns><see langword="true"/> if the document contains a section with the given name, <see langword="false"/> otherwise.</returns>
         </member>
@@ -88,59 +68,32 @@
             If it does exist, it adds or updates all the values contained in the provided <see cref="T:Specification.INI.Section"/>.</summary>
             <param name="section">The section to add.</param>
         </member>
+        <member name="M:Specification.INI.INIDocument.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.Section})">
+            <summary>Adds a collection of child sections to the current document.</summary>
+            <param name="children">An enumerable collection of <see cref="T:Specification.INI.Section"/> objects to add as children. Cannot be null.</param>
+        </member>
         <member name="M:Specification.INI.INIDocument.Add(System.String)">
             <summary>Adds a section with the specified name if it does not exist.</summary>
             <param name="section_name">The name of the section to add.</param>
         </member>
-        <member name="M:Specification.INI.INIDocument.Ensure(Specification.INI.Section)">
-            <summary>Adds a section if it does not exist.</summary>
-            <param name="section">The section to add.</param>
-        </member>
         <member name="M:Specification.INI.INIDocument.Update(Specification.INI.INIDocument)">
-            <summary>
-            Merges 2 Sections, Favoring the parameter 'other'.
-            </summary>
+            <summary>Merges 2 Sections, Favoring the other.</summary>
             <param name="other">The other document.</param>
         </member>
-        <member name="M:Specification.INI.INIDocument.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.INIDocument.Serialize">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.INIDocument.ToString">
-            <inheritdoc/>
-        </member>
         <member name="M:Specification.INI.INIDocument.Clear">
-            <summary>
-            Clears and removes all sections.
-            </summary>
-        </member>
-        <member name="M:Specification.INI.INIDocument.Clone">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.INIDocument.System#Collections#IEnumerable#GetEnumerator">
-            <inheritdoc/>
+            <summary>Clears and removes all sections.</summary>
         </member>
         <member name="T:Specification.INI.PropertyObj">
-            <summary>
-            A key and value pair in an INI file.
-            </summary>
+            <summary>A key and value pair in an INI file.</summary>
         </member>
         <member name="P:Specification.INI.PropertyObj.Key">
-            <summary>
-            The key name.
-            </summary>
+            <summary>The key name.</summary>
         </member>
         <member name="P:Specification.INI.PropertyObj.Value">
-            <summary>
-            The value assigned to the key.
-            </summary>
+            <summary>The value assigned to the key.</summary>
         </member>
         <member name="M:Specification.INI.PropertyObj.#ctor">
-            <summary>
-            Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.
-            </summary>
+            <summary>Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.</summary>
         </member>
         <member name="M:Specification.INI.PropertyObj.#ctor(System.String,System.String)">
             <summary>
@@ -171,31 +124,14 @@
             </list>
             </remarks>
         </member>
-        <member name="M:Specification.INI.PropertyObj.Equals(Common.IProperty{System.String})">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.CompareTo(Common.IProperty{System.String})">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.Equals(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.GetHashCode">
-            <inheritdoc/>
-        </member>
         <member name="M:Specification.INI.PropertyObj.Serialize">
             <summary>
             Gets the <see langword="string"/> representation of the object for serialization.
             </summary>
             <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
-        <member name="M:Specification.INI.PropertyObj.Equals(Specification.INI.PropertyObj)">
-            <inheritdoc/>
-        </member>
         <member name="M:Specification.INI.PropertyObj.op_Equality(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
-            <summary>
-            Determines whether two <see cref="T:Specification.INI.PropertyObj"/> instances are equal.
-            </summary>
+            <summary>Determines whether two <see cref="T:Specification.INI.PropertyObj"/> instances are equal.</summary>
             <param name="left">The first <see cref="T:Specification.INI.PropertyObj"/> to compare.</param>
             <param name="right">The second <see cref="T:Specification.INI.PropertyObj"/> to compare.</param>
             <returns><see langword="true"/> if the two <see cref="T:Specification.INI.PropertyObj"/> instances are equal; otherwise, <see

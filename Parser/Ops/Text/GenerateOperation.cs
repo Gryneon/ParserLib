@@ -3,15 +3,31 @@ using OS = Parser.OpStatus;
 namespace Parser.Ops.Text;
 
 /// <summary>
-/// Text Parser Operation
-/// <para>Performs a conditional conversion on an object, which is a <see cref="MatchDataSet"/>.</para>
+/// Takes an input as a collection of <see cref="MatchDataSet"/> objects,
+/// and generates a <see cref="Dictionary{TKey, TValue}"/> of items from it,
+/// provided that the specified group (or groups) are present.
 /// </summary>
-/// <typeparam name="TOut">The end result of generation.</typeparam>
-public class GenerateOperation<TOut> : Operation
+/// <typeparam name="TIn">The accepted input.</typeparam>
+/// <typeparam name="TOut">The type of object to create.</typeparam>
+/// <remarks><code>
+/// Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
+/// Output: <see cref="Dictionary{TKey,TValue}">Dictionary&lt;int, TOutput></see></code>
+/// <br/>
+/// Statuses:
+/// <code>
+/// <see cref="OpStatus.Pass"/>: Operation completed successfully.
+/// <see cref="OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
+/// <see cref="OpStatus.FailOverride"/>: Operation failed, but is allowed to continue.
+/// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+/// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataDictionary"/>.
+/// </code>
+/// </remarks>
+public class GenerateOperation<TIn, TOut> : Operation
 {
   protected Dictionary<int, TOut> Results { get; } = [];
-  protected Func<MatchDataSet, bool> Predicate { get; }
-  protected Func<MatchDataSet, TOut> Function { get; }
+  protected Func<TIn, bool> Predicate { get; }
+  protected Func<TIn, TOut> Function { get; }
   /// <summary>
   /// TODO: Document this operation.
   /// </summary>
@@ -19,12 +35,12 @@ public class GenerateOperation<TOut> : Operation
   /// <param name="func">The generation function.</param>
   /// <param name="predicate">The condition that the generation function requires.</param>
   /// <param name="input_key">The key to pull data from.</param>
-  public GenerateOperation (Func<MatchDataSet, TOut> func, Func<MatchDataSet, bool> predicate, string input_key, string output_key) : base(input_key, output_key)
+  public GenerateOperation (Func<TIn, TOut> func, Func<TIn, bool> predicate, string input_key, string output_key) : base(input_key, output_key)
   {
     Predicate = predicate;
     Function = func;
   }
-  public GenerateOperation (Func<MatchDataSet, TOut> func, string input_key, string output_key) : base(input_key, output_key)
+  public GenerateOperation (Func<TIn, TOut> func, string input_key, string output_key) : base(input_key, output_key)
   {
     Predicate = item => true;
     Function = func;
@@ -33,12 +49,12 @@ public class GenerateOperation<TOut> : Operation
   /// <inheritdoc/>
   protected override void Execute ()
   {
-    if (CheckInput(out IEnumerable<MatchDataSet>? mdds))
+    if (CheckInput(out IEnumerable<TIn>? mdds))
     {
-      Collection<MatchDataSet> mddList = mdds.ToCollection();
+      Collection<TIn> mddList = mdds.ToCollection();
       for (int i = 0; i < mddList.Count; i++)
       {
-        MatchDataSet mdd = mddList[i];
+        TIn mdd = mddList[i];
 
         if (Predicate(mdd))
         {
@@ -49,7 +65,7 @@ public class GenerateOperation<TOut> : Operation
       WorkToReturn = Results;
       Status = OS.Pass;
     }
-    else if (CheckInput(out MatchDataSet? mdd))
+    else if (CheckInput(out TIn? mdd))
     {
       if (Predicate(mdd))
       {

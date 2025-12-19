@@ -52,7 +52,7 @@ public interface IParser
   /// The data that the operations use.
   /// </summary>
   [NotNull] DataDictionary? Data { get; }
-  ISpec Spec { get; }
+  Spec Spec { get; }
   #region Methods
   /// <summary>
   /// Counts the objects in this key.

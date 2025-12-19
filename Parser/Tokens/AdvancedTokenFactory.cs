@@ -72,7 +72,7 @@ public static class AdvancedTokenFactory
       }
       // Only add found tokens.
       if (found is null) continue;
-      else result.Add(new Token(matchDataSet, found.Value.TypeToAssign));
+      else result.Add(Token.Generate((matchDataSet, found.Value.TypeToAssign)));
     }
     return result;
   }

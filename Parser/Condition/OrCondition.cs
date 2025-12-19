@@ -1,6 +1,6 @@
 namespace Parser.Condition;
 
-public abstract class OrCondition (OperationConditionType type, params Collection<ICondition> conditions) : ICondition, IHasChildren<ICondition>
+public abstract class OrCondition (OperationConditionType type, params Collection<ICondition> conditions) : ICondition, ICanAddChildren<ICondition>
 {
   public Collection<ICondition> Conditions { get; private set; } = conditions;
 
@@ -9,6 +9,14 @@ public abstract class OrCondition (OperationConditionType type, params Collectio
   public int Count => Conditions.Count;
 
   public void Add (ICondition child) => Conditions.Add(child);
+  public void AddRange (IEnumerable<ICondition> children)
+  {
+    children.ThrowIfNull();
+    foreach (ICondition child in children)
+    {
+      Add(child);
+    }
+  }
 
   /// <inheritdoc/>
   public bool Evaluate () => Conditions.Any(item => item.Evaluate());

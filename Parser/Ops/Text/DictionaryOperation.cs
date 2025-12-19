@@ -10,7 +10,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
   {
     if (InputKey is null) throw new InvalidOperationException();
     if (Parser.Data.TryGetValue(InputKey, out object? input))
-      Debug.Log("DictionaryOperation", $"Input is {input?.GetType()}.");
+      Log("DictionaryOperation", $"Input is {input?.GetType()}.");
     else
     {
       Status = OpStatus.FailBadInputNull;
@@ -27,7 +27,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
       Collection<MatchDataSet> result = [];
       foreach (string part in list)
       {
-        Collection<MatchDataSet> mdds = OpRegex.Matches(part).ToMDDCollection();
+        MatchDataCollection mdds = OpRegex.Matches(part).ToMDDCollection();
         if (fullMatchText && mdds.Count > 1)
         {
           Match m = OpRegexFail.Match(part);
@@ -39,7 +39,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
       }
       if (result.Count != list.Count() && fullMatchText)
       {
-        Debug.Log("DictionaryOperation", "Execute()", $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
+        Log("DictionaryOperation", "Execute()", $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
       }
 
       Status = OpStatus.Pass;
@@ -55,7 +55,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
   {
     string result = SE;
 
-    result += $"DictionaryOperation: {list.Combined}";
+    result += $"DictionaryOperation: {list.Count} Regexes";
 
     return result;
   }

@@ -140,20 +140,24 @@
             </summary>
             <param name="msg">The message to log.</param>
         </member>
-        <member name="M:Parser.Debug.Log(System.String,System.String)">
+        <member name="M:Parser.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
             <summary>
             Logs a message to the output stream.
             </summary>
             <param name="src">The orignating class.</param>
             <param name="msg">The message to log.</param>
+            <param name="back">The background color.</param>
+            <param name="text">The foreground color.</param>
         </member>
-        <member name="M:Parser.Debug.LogFrom(System.String,System.String,System.String)">
+        <member name="M:Parser.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
             <summary>
             Logs a message to the output stream.
             </summary>
             <param name="src">The orignating class.</param>
             <param name="target">The originating method.</param>
             <param name="msg">The message to log.</param>
+            <param name="back">The background color.</param>
+            <param name="text">The foreground color.</param>
         </member>
         <member name="T:Parser.DefinitionStaticFunctions">
             <summary>
@@ -297,46 +301,6 @@
             Creates a new cursor on the given key.
             </summary>
             <param name="key">The key to iterate through.</param>
-        </member>
-        <member name="T:Parser.ISpec">
-            <summary>
-            An interface representing a specification that allows a parser to parser a type of file.
-            </summary>
-        </member>
-        <member name="P:Parser.ISpec.Name">
-            <summary>
-            The name of the specification.
-            </summary>
-        </member>
-        <member name="P:Parser.ISpec.IsTextFile">
-            <summary>
-            Whether or not this is describing a text file or not.
-            </summary>
-        </member>
-        <member name="P:Parser.ISpec.Operations">
-            <summary>
-            The initial operations list.
-            </summary>
-        </member>
-        <member name="M:Parser.ISpec.SetAsActive">
-            <summary>
-            Sets the static active spec property to this spec.
-            </summary>
-        </member>
-        <member name="P:Parser.ISpec.RegexBasicTokens">
-            <summary>
-            Token types that are basic building blocks.
-            </summary>
-        </member>
-        <member name="P:Parser.ISpec.WhitespaceTokens">
-            <summary>
-            Token types to ignore.
-            </summary>
-        </member>
-        <member name="P:Parser.ISpec.AllTokens">
-            <summary>
-            All tokens that can be used.
-            </summary>
         </member>
         <member name="T:Parser.Language.TokenNodePiece">
             <summary>
@@ -850,6 +814,23 @@
             </summary>
             <param name="key">The key to wait for.</param>
         </member>
+        <member name="T:Parser.Ops.Text.DepthOperation">
+            <summary>
+            Takes an input as a collection of tokens,
+            and assigns a depth value to them. 
+            </summary>
+            <remarks><code>
+            Inputs: <see langword="string"/>, <see cref="T:System.Collections.Generic.IEnumerable`1"/>(<see langword="string"/>)<br/>
+            Output: <c>Same as input</c>
+            </code><br/>
+            Statuses:
+            <code>
+            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
+            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+            </code>
+            </remarks>
+        </member>
         <member name="T:Parser.Ops.Text.ExternalOperation`2">
             <summary>
             Takes an input as a <typeparamref name="TIn"/> object,
@@ -957,14 +938,30 @@
         <member name="M:Parser.Ops.Text.GenerateFromObjectOperation`1.Execute">
             <inheritdoc/>
         </member>
-        <member name="T:Parser.Ops.Text.GenerateOperation`1">
+        <member name="T:Parser.Ops.Text.GenerateOperation`2">
             <summary>
-            Text Parser Operation
-            <para>Performs a conditional conversion on an object, which is a <see cref="T:Common.Regex.MatchDataSet"/>.</para>
+            Takes an input as a collection of <see cref="T:Common.Regex.MatchDataSet"/> objects,
+            and generates a <see cref="T:System.Collections.Generic.Dictionary`2"/> of items from it,
+            provided that the specified group (or groups) are present.
             </summary>
-            <typeparam name="TOut">The end result of generation.</typeparam>
+            <typeparam name="TIn">The accepted input.</typeparam>
+            <typeparam name="TOut">The type of object to create.</typeparam>
+            <remarks><code>
+            Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
+            Output: <see cref="T:System.Collections.Generic.Dictionary`2">Dictionary&lt;int, TOutput></see></code>
+            <br/>
+            Statuses:
+            <code>
+            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
+            <see cref="F:Parser.OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
+            <see cref="F:Parser.OpStatus.FailOverride"/>: Operation failed, but is allowed to continue.
+            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="T:Parser.DataDictionary"/>.
+            </code>
+            </remarks>
         </member>
-        <member name="M:Parser.Ops.Text.GenerateOperation`1.#ctor(System.Func{Common.Regex.MatchDataSet,`0},System.Func{Common.Regex.MatchDataSet,System.Boolean},System.String,System.String)">
+        <member name="M:Parser.Ops.Text.GenerateOperation`2.#ctor(System.Func{`0,`1},System.Func{`0,System.Boolean},System.String,System.String)">
             <summary>
             TODO: Document this operation.
             </summary>
@@ -973,7 +970,7 @@
             <param name="predicate">The condition that the generation function requires.</param>
             <param name="input_key">The key to pull data from.</param>
         </member>
-        <member name="M:Parser.Ops.Text.GenerateOperation`1.Execute">
+        <member name="M:Parser.Ops.Text.GenerateOperation`2.Execute">
             <inheritdoc/>
         </member>
         <member name="T:Parser.Ops.Text.LoadOperation">
@@ -1044,23 +1041,6 @@
             <summary>
             Tokenizes a collection of
             </summary>
-        </member>
-        <member name="T:Parser.Ops.Text.DepthOperation">
-            <summary>
-            Takes an input as a collection of tokens,
-            and assigns a depth value to them. 
-            </summary>
-            <remarks><code>
-            Inputs: <see langword="string"/>, <see cref="T:System.Collections.Generic.IEnumerable`1"/>(<see langword="string"/>)<br/>
-            Output: <c>Same as input</c>
-            </code><br/>
-            Statuses:
-            <code>
-            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
-            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
-            </code>
-            </remarks>
         </member>
         <member name="T:Parser.Ops.Text.TokenTemplateOperation">
             <summary>
@@ -1248,8 +1228,43 @@
             <remarks>Subsequent operations that depend on the active object will reference this instance after calling
             this method. If another instance was previously active, it will be replaced.</remarks>
         </member>
+        <member name="M:Parser.Tokens.Chunk.TokenExtensions.GetProperty(System.String)">
+            <summary>
+            Removes the prefix from the group name.
+            </summary>
+            <param name="groupName"></param>
+            <returns>The cleaned group name.</returns>
+        </member>
+        <member name="T:Parser.Tokens.CToken">
+            <summary>A rule defining how to match 1 token in a rule group.</summary>
+        </member>
         <member name="P:Parser.Tokens.CToken.Type">
             <summary>The token type required. If the type matches any of these, it passes this check.</summary>
+            <remarks>An empty list bypasses the check.</remarks>
+        </member>
+        <member name="P:Parser.Tokens.CToken.Content">
+            <summary>The content of the token to match. If the content matches any of these, it passes this check.</summary>
+            <remarks>An empty list bypasses the check.</remarks>
+        </member>
+        <member name="P:Parser.Tokens.CToken.Depth">
+            <summary>The required depth value to match.</summary>
+            <remarks>A null value bypasses this check.</remarks>
+        </member>
+        <member name="P:Parser.Tokens.CToken.IsOptional">
+            <summary>Whether or not the token rule is optional or not.</summary>
+        </member>
+        <member name="P:Parser.Tokens.CToken.IsOneOrMany">
+            <summary>Whether or not the token rule can consume multiple tokens.</summary>
+        </member>
+        <member name="M:Parser.Tokens.CToken.MkDepth(System.Int32)">
+            <summary>Creates a new depth CToken.</summary>
+            <param name="depth">The depth to look for.</param>
+            <returns>A <see cref="T:Parser.Tokens.CToken"/> that checks for a specific depth.</returns>
+        </member>
+        <member name="M:Parser.Tokens.CToken.Parse(System.String)">
+            <summary>Parses the string passed as a required parameter to the rule into a Collection of <see cref="T:Parser.Tokens.CToken"/> objects.</summary>
+            <param name="input">The string input to parse.</param>
+            <returns>A Collection of <see cref="T:Parser.Tokens.CToken"/> objects.</returns>
         </member>
         <member name="P:Parser.Tokens.IRegexToken.Children">
             <summary>The child tokens within this token. If the token is made of multiple tokens, this will be utilized.</summary>
@@ -1266,6 +1281,9 @@
             Base interface for tokens.
             Reference this and not <see cref="T:Parser.Tokens.Token"/> unless defining a class.
             </summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken.IsIgnored">
+            <summary>Whether or not the token is ignored by further operations.</summary>
         </member>
         <member name="P:Parser.Tokens.IToken.Content">
             <summary>The content of this token.</summary>
@@ -1301,10 +1319,223 @@
         <member name="P:Parser.Tokens.IToken.Node">
             <summary>The <see cref="T:Parser.Tokens.CToken"/> that matched this token.</summary>
         </member>
-        <member name="T:Parser.Tokens.Template">
+        <member name="T:Parser.Tokens.IToken`1">
+            <summary>
+            Base interface for tokens.
+            Reference this and not <see cref="T:Parser.Tokens.Token"/> unless defining a class.
+            </summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.IsIgnored">
+            <summary>Whether or not the token is ignored by further operations.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.Content">
+            <summary>The content of this token.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.HasProperties">
+            <summary>Gets a value indicating whether the current object contains any properties.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.Length">
+            <summary>The length of the text of this token.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.Depth">
+            <summary>The depth of this token.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.Position">
+            <summary>The position of this token in the original text.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.EndPos">
+            <summary>The last position this token holds.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.Type">
+            <summary>Type of token.</summary>
+        </member>
+        <member name="M:Parser.Tokens.IToken`1.ToString">
+            <summary>Displays the text content of this token.</summary>
+            <returns>A <see langword="string"/> representing the token.</returns>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.FromNode">
+            <summary>The node structure that this token was created from.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.LinkNode">
+            <summary>The specific node item that represents this child token.</summary>
+        </member>
+        <member name="P:Parser.Tokens.IToken`1.Node">
+            <summary>The <see cref="T:Parser.Tokens.CToken"/> that matched this token.</summary>
+        </member>
+        <member name="M:Parser.Tokens.Node.TokenNode.Consume">
+            <summary>
+            Sets <c>Consumed</c> and honors <c>IsOptional</c> and <c>IsOneOrMany</c> node options.
+            </summary>
+        </member>
+        <member name="T:Parser.Tokens.Node.TokenNodeBasic">
+            <summary>
+            A simple token node.
+            </summary>
+        </member>
+        <member name="T:Parser.Tokens.Node.TokenNodeCommand">
+            <summary>
+            A simple token node.
+            </summary>
+        </member>
+        <member name="T:Parser.Tokens.Node.TokenNodeFactory">
+            <summary>A factory that produces <see cref="T:Parser.Tokens.Node.TokenNode"/> objects.</summary>
+        </member>
+        <member name="T:Parser.Tokens.Node.TokenNodeGroup">
+            <summary>
+            A group of token nodes.
+            </summary>
+        </member>
+        <member name="T:Parser.Tokens.Node.TokenNodeType">
+            <summary>
+            The type of token node.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.None">
+            <summary>
+            No type, this is not valid.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.GroupSt">
+            <summary>
+            Group start '('.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.GroupEn">
+            <summary>
+            Group end ')'.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Or">
+            <summary>
+            Alternative '|'.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Command">
+            <summary>
+            A command modifying the previous item.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Any">
+            <summary>
+            Any (Opt &amp; More) '*'.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.More">
+            <summary>
+            One or many '+'.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Opt">
+            <summary>
+            Optional '?'.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Literal">
+            <summary>
+            Literal text or characters.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Ref">
+            <summary>
+            Reference to another template group that this group contains.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Base">
+            <summary>
+            Reference to a basic regex group that this group contains.
+            </summary>
+        </member>
+        <member name="F:Parser.Tokens.Node.TokenNodeType.Group">
+            <summary>
+            A fully formed and stackable group.
+            </summary>
+        </member>
+        <member name="M:Parser.Tokens.Raw.TokenExt.RemoveTokens``1(System.Collections.Generic.IList{Parser.Tokens.Raw.IToken{``0}},System.Collections.Generic.IList{Parser.Tokens.Raw.IToken{``0}})">
+            <summary>Removes <paramref name="tokens_to_remove"/> from <paramref name="tokens"/>.</summary>
+            <typeparam name="T">The Token Type enum or string identifier.</typeparam>
+            <param name="tokens">The initial list of tokens.</param>
+            <param name="tokens_to_remove">The list of tokens to remove.</param>
+            <returns>The index of the first token removed from <paramref name="tokens"/>.<br/>
+            This is not the character index in the string, but the token index within <paramref name="tokens"/>.</returns>
+        </member>
+        <member name="T:Parser.Tokens.Raw.TokenRuleType">
+            <summary>The type of rule to enforce.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.None">
+            <summary>No type, Rule will be ignored.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.TokenExact">
+            <summary>This Token Rule will exactly match the string provided.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.TokenMatch">
+            <summary>This Token Rule will match to the regex provided.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.SplitMatch">
+            <summary>This Token Rule will split the input at the regex provided, limiting future matches.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.SplitExact">
+            <summary>This Token Rule will split the input at the exact string provided, limiting future matches.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.StoreExtra">
+            <summary>This Token Rule will store the unmatched data parts that match the regex provided as tokens with this type.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.StoreOther">
+            <summary>This Token Rule will store the unmatched data parts as tokens with this type.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.BuildProperty">
+            <summary>This Token Group Rule will assemble a <see cref="T:Parser.Tokens.Raw.TokenProperty`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.BuildArray">
+            <summary>This Token Group Rule will assemble a <see cref="T:Parser.Tokens.Raw.TokenArray`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.BuildObject">
+            <summary>This Token Group Rule will assemble a <see cref="T:Parser.Tokens.Raw.TokenObject`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.AssignValue">
+            <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="T:Parser.Tokens.Raw.TokenProperty`1"/> or <see cref="T:Parser.Tokens.Raw.TokenArray`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.AssignName">
+            <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="T:Parser.Tokens.Raw.TokenProperty`1"/> or <see cref="T:Parser.Tokens.Raw.TokenObject`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.AssignType">
+            <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="T:Parser.Tokens.Raw.TokenObject`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.AddProperty">
+            <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="T:Parser.Tokens.Raw.TokenObject`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.FromTokens">
+            <summary>This Token Rule will only match from existing tokens.</summary>
+            <remarks>This is useful for special keywords.</remarks>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.ExemptAllWithin">
+            <summary>This Token Rule will exempt all matches from being checked.</summary>
+            <remarks>This is useful for strings, comments, and quoted or escaped items.</remarks>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.IgnoredToken">
+            <summary>Flags the created token as ignored.</summary>
+            <remarks>This is useful for whitespace and comments.</remarks>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.IgnoreCase">
+            <summary>Exact matches and regex will ignore case.</summary>
+            <remarks>This is useful for languages that are not case sensitive.</remarks>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.Competitive">
+            <summary>All Token Match Rules with this flag will run concurrently and exclusively.</summary>
+            <remarks>This is useful for strings and comments.</remarks>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.Recursive">
+            <summary>The rule will execute until no matches occur.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.Opt">
+            <summary>This token sequence entry is not required, but will be consumed if present.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.Mult">
+            <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
+        </member>
+        <member name="T:Parser.Tokens.TemplateSet">
             <summary>A token template, for assembling tokens.</summary>
         </member>
-        <member name="P:Parser.Tokens.Template.Type">
+        <member name="P:Parser.Tokens.TemplateSet.Type">
             <summary>The type of token to be assembled.</summary>
         </member>
         <member name="T:Parser.Tokens.Token">
@@ -1343,105 +1574,10 @@
         <member name="M:Parser.Tokens.Token.Clone">
             <inheritdoc/>
         </member>
-        <member name="M:Parser.Tokens.Token.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Parser.Tokens.Token.Generate(System.ValueTuple{Common.Regex.MatchDataSet,System.String})">
             <summary>Creates a <see cref="T:Parser.Tokens.Token"/> from a <see cref="T:Common.Regex.MatchDataSet"/> object.</summary>
-            <param name="mdd">The originating object.</param>
+            <param name="data">The originating object, as a <see cref="T:Common.Regex.MatchDataSet"/> paired with a string</param>
             <returns>A token that represents the contents of the <see cref="T:Common.Regex.MatchDataSet"/> object.</returns>
-        </member>
-        <member name="M:Parser.Tokens.TokenExtensions.GetProperty(System.String)">
-            <summary>
-            Removes the prefix from the group name.
-            </summary>
-            <param name="groupName"></param>
-            <returns>The cleaned group name.</returns>
-        </member>
-        <member name="M:Parser.Tokens.TokenNode.Consume">
-            <summary>
-            Sets <c>Consumed</c> and honors <c>IsOptional</c> and <c>IsOneOrMany</c> node options.
-            </summary>
-        </member>
-        <member name="T:Parser.Tokens.TokenNodeBasic">
-            <summary>
-            A simple token node.
-            </summary>
-        </member>
-        <member name="T:Parser.Tokens.TokenNodeCommand">
-            <summary>
-            A simple token node.
-            </summary>
-        </member>
-        <member name="T:Parser.Tokens.TokenNodeFactory">
-            <summary>A factory that produces <see cref="T:Parser.Tokens.TokenNode"/> objects.</summary>
-        </member>
-        <member name="T:Parser.Tokens.TokenNodeGroup">
-            <summary>
-            A group of token nodes.
-            </summary>
-        </member>
-        <member name="T:Parser.Tokens.TokenNodeType">
-            <summary>
-            The type of token node.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.None">
-            <summary>
-            No type, this is not valid.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.GroupSt">
-            <summary>
-            Group start '('.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.GroupEn">
-            <summary>
-            Group end ')'.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Or">
-            <summary>
-            Alternative '|'.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Command">
-            <summary>
-            A command modifying the previous item.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Any">
-            <summary>
-            Any (Opt &amp; More) '*'.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.More">
-            <summary>
-            One or many '+'.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Opt">
-            <summary>
-            Optional '?'.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Literal">
-            <summary>
-            Literal text or characters.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Ref">
-            <summary>
-            Reference to another template group that this group contains.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Base">
-            <summary>
-            Reference to a basic regex group that this group contains.
-            </summary>
-        </member>
-        <member name="F:Parser.Tokens.TokenNodeType.Group">
-            <summary>
-            A fully formed and stackable group.
-            </summary>
         </member>
         <member name="M:Parser.Tokens.TokenStaticFunctions.MarkAs(System.String,System.String)">
             <summary>Adds a marker to the <see cref="T:Common.Regex.MatchDataSet"/>.</summary>
@@ -1505,11 +1641,9 @@
             <inheritdoc/>
         </member>
         <member name="M:Parser.XParser.OperationLoad">
-            <summary>
-            Loads the operations into a flat pattern.
-            </summary>
+            <summary>Loads the operations into a flat pattern.</summary>
         </member>
-        <member name="M:Parser.XParser.InitializeParser(Parser.ISpec)">
+        <member name="M:Parser.XParser.InitializeParser(Parser.Spec)">
             <summary>
             Sets up the Specification and DataDictionary for the parser.
             </summary>

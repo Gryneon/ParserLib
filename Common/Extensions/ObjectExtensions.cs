@@ -36,7 +36,8 @@ public static class ObjectExtensions
     char c => c.ToString(),
     ITextSerializer t => t.Serialize(),
     IConvertible ic => ic.ToString(CIIC),
-    ICollection<object> col => col.TextJoin("\n"),
+    IEnumerable<object> col => col.TextJoin("\n"),
+    IReadOnlyProperty<string> prp => $"IProperty \"{prp.Key}\" : \"{prp.Value}\"",
     _ => obj.ToString(),
   } ?? SE;
   public static void ThrowIfNull ([NotNull] this object? obj, string? msg = null)
@@ -45,4 +46,25 @@ public static class ObjectExtensions
       throw new InvalidOperationException(msg);
     ANEx.ThrowIfNull(obj);
   }
+  public static T ThrowIfInvalid<T> (bool condition, string? msg = null)
+  {
+    if (msg is not null)
+      throw new InvalidOperationException(msg);
+    throw new InvalidOperationException();
+  }
+  [DoesNotReturn]
+  public static T NotSupported<T> ([NotNull] this object? obj, string? msg = null)
+  {
+    if (msg is not null)
+      throw new NotSupportedException(msg);
+    throw new NotSupportedException();
+  }
+  [DoesNotReturn]
+  public static T NotImplemented<T> ([NotNull] this object? obj, string? msg = null)
+  {
+    if (msg is not null)
+      throw new NotImplementedException(msg);
+    throw new NotImplementedException();
+  }
+  public static void DoNothing (this object? obj) { }
 }

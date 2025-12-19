@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Terminal.Menu</name>
+    </assembly>
+    <members>
+        <member name="P:Terminal.Menu.MenuAction.Action">
+            <summary>For external actions, this is a method that takes an <see cref="T:System.Collections.Generic.IList`1"/> of parameters.</summary>
+        </member>
+        <member name="P:Terminal.Menu.MenuAction.KeyName">
+            <summary>A key to identify this item.</summary>
+        </member>
+        <member name="P:Terminal.Menu.MenuAction.NextMenuName">
+            <summary>The name of the next menu.</summary>
+        </member>
+        <member name="T:Terminal.Menu.MenuController">
+            <summary>The menu controller. Can be static since there is only one console.</summary>
+        </member>
+    </members>
+</doc>

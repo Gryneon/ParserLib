@@ -71,7 +71,7 @@ public static class PrevDefinition
     _n_cls
   ];
   [Export("zdoom.zscript")]
-  public static ISpec Spec => new Spec()
+  public static Spec Spec => new()
   {
     FileInferences = [],
     RxOpt = ROML | ROIPW | ROIC | ROEC,

@@ -31,8 +31,6 @@ public class SplitOperation : Operation
     Regex = 1,
     Delim = 2
   }
-
-  private Func<string, IEnumerable<string>> Split { get => x => field is not null ? field(x).Where(IsNotEmpty).ToCollection() : [x]; set; }
   #endregion
   #region Constructors
   public SplitOperation (string delimeter, string input_key = "text", string output_key = "textparts") : base(input_key, output_key)
@@ -62,8 +60,6 @@ public class SplitOperation : Operation
     _type = Type.None;
   }
   #endregion
-  private static bool IsNotEmpty (string s) => s.IsNotEmpty();
-
   /// <inheritdoc/>>
   protected override void Execute ()
   {
@@ -80,28 +76,23 @@ public class SplitOperation : Operation
         WorkToReturn = RX.LineEnd.Split(str);
         goto Pass;
       case Type.Delim when CheckInput(out str):
-        Split = delimSplit;
-        WorkToReturn = Split(str);
+        WorkToReturn = delimSplit(str);
         goto Pass;
       case Type.Delim when CheckInput(out str):
-        Split = delimSplit;
-        WorkToReturn = Split(str);
+        WorkToReturn = delimSplit(str);
         goto Pass;
       case Type.Delim when CheckInput(out list):
-        Split = delimSplit;
-        WorkToReturn = list.SelectMany(str => Split(str));
+        WorkToReturn = list.SelectMany(delimSplit);
         goto Pass;
       case Type.Regex when CheckInput(out str):
         rx = (_items ?? []).TextJoin("|");
         regex = new(rx, _options);
-        Split = regex.Split;
-        WorkToReturn = Split(str);
+        WorkToReturn = regex.Split(str);
         goto Pass;
       case Type.Regex when CheckInput(out list):
         rx = (_items ?? []).TextJoin("|");
         regex = new(rx, _options);
-        Split = regex.Split;
-        WorkToReturn = list.SelectMany(str => Split(str));
+        WorkToReturn = list.SelectMany(str => regex.Split(str));
         goto Pass;
       default:
         Status = OpStatus.FailBadInputType;

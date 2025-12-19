@@ -20,54 +20,53 @@
             </summary>
         </member>
         <member name="T:Specification.JSON.IJSONNode">
-            <summary>
-            Basic interface for JSON parts.
-            </summary>
+            <summary>Basic interface for JSON parts.</summary>
+        </member>
+        <member name="P:Specification.JSON.IJSONNode.Type">
+            <summary>The type of node this is.</summary>
         </member>
         <member name="P:Specification.JSON.IJSONNode.Value">
-            <summary>
-            The value stored in this node.
-            </summary>
+            <summary>The value stored in this node.</summary>
         </member>
-        <member name="M:Specification.JSON.IJSONNode.ToString">
-            <summary>
-            Gets the JSON of this node.
-            </summary>
+        <member name="M:Specification.JSON.JSONArray.ToString">
+            <summary>Gets the JSON of this node.</summary>
             <returns>The JSON as a string.</returns>
         </member>
-        <member name="T:Specification.JSON.JSONProperty">
-            <summary>
-            A JSON keyed property.
-            </summary>
-            <param name="key">The key name.</param>
-            <param name="value">The value stored.</param>
+        <member name="T:Specification.JSON.JSONBoolValue">
+            <summary>A JSON boolean value.</summary>
+            <param name="value">The boolean value to assign.</param>
         </member>
-        <member name="M:Specification.JSON.JSONProperty.#ctor(System.String,System.Object)">
-            <summary>
-            A JSON keyed property.
-            </summary>
-            <param name="key">The key name.</param>
-            <param name="value">The value stored.</param>
+        <member name="M:Specification.JSON.JSONBoolValue.#ctor(System.Boolean)">
+            <summary>A JSON boolean value.</summary>
+            <param name="value">The boolean value to assign.</param>
         </member>
-        <member name="P:Specification.JSON.JSONProperty.Key">
-            <summary>
-            Gets the property key name.
-            </summary>
+        <member name="T:Specification.JSON.JSONNullValue">
+            <summary>A JSON null value.</summary>
         </member>
-        <member name="T:Specification.JSON.JSONValue">
-            <summary>
-            A JSON value.
-            </summary>
-            <param name="value"></param>
+        <member name="M:Specification.JSON.JSONNullValue.#ctor">
+            <summary>A JSON null value.</summary>
         </member>
-        <member name="M:Specification.JSON.JSONValue.#ctor(System.Object)">
-            <summary>
-            A JSON value.
-            </summary>
-            <param name="value"></param>
+        <member name="T:Specification.JSON.JSONNumberValue">
+            <summary>A JSON numeric value.</summary>
+            <param name="value">The numeric value to assign.</param>
         </member>
-        <member name="P:Specification.JSON.JSONValue.Value">
-            <inheritdoc/>
+        <member name="M:Specification.JSON.JSONNumberValue.#ctor(System.Decimal)">
+            <summary>A JSON numeric value.</summary>
+            <param name="value">The numeric value to assign.</param>
+        </member>
+        <member name="T:Specification.JSON.JSONStringValue">
+            <summary>A JSON text value.</summary>
+            <param name="value">The textual value to assign.</param>
+        </member>
+        <member name="M:Specification.JSON.JSONStringValue.#ctor(System.String)">
+            <summary>A JSON text value.</summary>
+            <param name="value">The textual value to assign.</param>
+        </member>
+        <member name="T:Specification.JSON.JSONUndefValue">
+            <summary>A JSON undefined value.</summary>
+        </member>
+        <member name="M:Specification.JSON.JSONUndefValue.#ctor">
+            <summary>A JSON undefined value.</summary>
         </member>
     </members>
 </doc>

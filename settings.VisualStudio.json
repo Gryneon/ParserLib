@@ -1,0 +1,5 @@
+/* Visual Studio Settings File */
+{
+  "copilot.general.editor.enhanceNonChat": false,
+  "copilot.general.editor.enableFixWithCopilot": false
+}

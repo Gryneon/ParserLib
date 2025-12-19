@@ -5,9 +5,9 @@ namespace Parser.Ops.Text;
 public class DebugToStringOperation : Operation
 {
   private static string GetCaller (object? type) =>
-    $"DebugToStringOperation.Execute()<{type?.GetType()}>";
+    $"DebugToStringOperation.Execute<{type?.GetType()}>";
   private static string GetCaller (string? type) =>
-    $"DebugToStringOperation.Execute()<{type}>";
+    $"DebugToStringOperation.Execute<{type}>";
   /// <summary>
   /// Constructs an operation that logs the contents of the provided key.
   /// </summary>
@@ -29,15 +29,17 @@ public class DebugToStringOperation : Operation
         break;
       case IEnumerable<MatchDataSet> mdds:
         foreach (MatchDataSet mdd in mdds)
-          Log(GetCaller(mdds), mdd.ToString());
+          Log(GetCaller(mdds), mdd.ToString2());
         break;
       case IEnumerable<IToken> itokens:
         foreach (IToken it in itokens)
-          Log(GetCaller("Token"), it.ToString() ?? "<null data>");
+          Log(GetCaller("Token"), it.ToString2() ?? "<null data>");
         break;
       default:
-        Log(GetCaller(WorkToReturn), WorkToReturn?.ToString() ?? "<null data>");
+        Log(GetCaller(WorkToReturn), WorkToReturn?.ToString2() ?? "<null data>");
         break;
     }
   }
+
+  public override string ToString () => $"DebugToStringOperation Key = \"{InputKey}\"";
 }

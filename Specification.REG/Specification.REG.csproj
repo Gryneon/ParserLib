@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
@@ -11,10 +11,10 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
     <TargetFramework>net10.0</TargetFramework>
-    
     <NoWarn>ENC0097;0097;</NoWarn>
     <WarningLevel>9999</WarningLevel>
     <LangVersion>preview</LangVersion>
+    <Platforms>AnyCPU;x86;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

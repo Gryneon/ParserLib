@@ -324,7 +324,7 @@ public abstract class Operation : IOperation
   /// <summary>
   /// The reference to the specification.
   /// </summary>
-  [AllowNull] protected ISpec Spec { get; set; }
+  [AllowNull] protected Spec Spec { get; set; }
   #endregion
   #region State Properties
   /// <summary>

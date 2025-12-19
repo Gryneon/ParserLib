@@ -6,7 +6,7 @@
     <members>
         <member name="F:Specification.MapInfo.Definition.Spec">
             <summary>
-            https://regex101.com/r/iWWPub/1
+            Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see>
             </summary>
         </member>
     </members>

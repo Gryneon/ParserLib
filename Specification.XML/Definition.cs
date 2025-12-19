@@ -31,7 +31,7 @@ public static class Definition
   /// The attribute regular expression.
   /// </summary>
   private static readonly RxS
-    Attribute = Rx(@"(?'m_prop_key_attrtag'\w+)\s*=\s*""(?'m_prop_value_attrval'.*?)"""),
+    Attribute = Rx(@"(?'m_prop_key_1'\w+)\s*=\s*""(?'m_prop_value_1'.*?)"""),
     TagName = Nm("m_prop_tagname", "[A-Za-z][a-zA-Z0-9]+"),
     WS = RX.WS;
 
@@ -39,7 +39,7 @@ public static class Definition
   /// The XML specification.
   /// </summary>
   [Export("xml")]
-  public static ISpec Spec => new Spec()
+  public static Spec Spec => new()
   {
     FileInferences = [
 
@@ -50,7 +50,7 @@ public static class Definition
     Name = "xml",
     RxOpt = ROML | ROEC,
     Operations = [
-      new DictionaryOperation(Regex, ROML | ROEC, false),
+      new DictionaryOperation(Regex, ROML | ROEC | ROIPW, false),
       new TokenizeOperation(),
       new OperationCollection([
         new GenerateFromObjectOperation<XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
@@ -58,9 +58,11 @@ public static class Definition
         new GenerateFromObjectOperation<XMLElementOpen>("tokens", "xml_open", "tagname"),
         new GenerateFromObjectOperation<XMLContent>("tokens", "xml_content", "content"),
         new GenerateFromObjectOperation<XMLHeader>("tokens", "xml_header", "header"),
-        new ConsolidateOperation<IXMLObject>(["xml_single", "xml_close", "xml_open", "xml_content", "xml_header"], "xml"),
+        new GenerateFromObjectOperation<XMLComment>("tokens", "xml_comment", "header"),
+        new ConsolidateOperation<IXMLObject>(["xml_single", "xml_close", "xml_open", "xml_content", "xml_header", "xml_comment"], "xml"),
       ]),
-      new XMLStackOperation("objects", "xml"),
+      new XMLStackOperation("xml", "xml"),
+      Operation.CopyKey("xml", "result"),
       Operation.End,
     ],
     RegexBasicTokens = {

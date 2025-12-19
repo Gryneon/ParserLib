@@ -1,6 +1,6 @@
 namespace Parser.Ops.Text;
 
-public class EncapsulateOperation<TParent, TChild> (string input_key, string output_key) : Operation(input_key, output_key) where TParent : class, IHasChildren<TChild>, new()
+public class EncapsulateOperation<TParent, TChild> (string input_key, string output_key) : Operation(input_key, output_key) where TParent : class, ICanAddChildren<TChild>, new()
 {
   protected override void Execute ()
   {

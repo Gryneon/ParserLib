@@ -1,5 +1,7 @@
 #pragma warning disable IDE1006 // Naming Styles
 
+using Parser.Tokens.Node;
+
 namespace Parser.Ops.Text;
 
 /// <summary>
@@ -12,7 +14,7 @@ public class TokenTemplateOperation : Operation
   //Collections
   protected Dictionary<string, TokenNodeGroup> RefGroups { get; } = [];
 
-  public TokenTemplateOperation (Dictionary<string, string> template_definitions, string input_key = "tokens", string output_key = "tokens_templated") : base(input_key, output_key)
+  public TokenTemplateOperation (Dictionary<string, string> template_definitions, string input_key = "tokens", string output_key = "tokens") : base(input_key, output_key)
   {
     template_definitions.ThrowIfNull();
     foreach (KeyValuePair<string, string> kvp in template_definitions)

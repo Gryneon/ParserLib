@@ -50,10 +50,11 @@ public sealed class MatchDataSet : GroupDataSet,
   /// <summary>
   /// Empty constructor for serialization purposes only.</summary>
   public MatchDataSet () { }
+  public bool UsesGroupDefinitions => HasGroupStartingWithAny("m_", "t_");
   /// <summary>Determines if a <see cref="MatchDataSet"/> has a certain marker.</summary>
   /// <param name="markerName">The marker <b><i>without</i></b> the prefix. Use <see langword="null"/> to </param>
   /// <returns><see langword="true"/> if the marker is present, <see langword="false"/> otherwise.</returns>
-  public bool HasMarker (string markerName) => HasGroup($"m_{markerName}");
+  public bool HasMarker (string? markerName) => markerName is null ? HasGroupStartingWith("m_") : HasGroup($"m_{markerName}");
   public bool HasProperty (string propName) => HasGroup($"m_prop_{propName}");
   public bool HasListProperty (string propName) => HasGroup($"m_prop_list_{propName}");
   public bool HasKVProperty (int index) => HasGroup($"m_prop_key_{index}") && HasGroup($"m_prop_value_{index}");
@@ -80,6 +81,7 @@ public sealed class MatchDataSet : GroupDataSet,
   /// <param name="groups">A collection of group names to check for existence.</param>
   /// <returns><see langword="true"/> if all specified group names exist in the collection; otherwise, <see langword="false"/>.</returns>
   public bool HasGroups (IEnumerable<string> groups) => groups.All(HasGroup);
+  public bool HasAnyGroup () => Groups.Any(item => item.Key != "0");
   /// <summary>Determines whether the current instance contains any of the specified group names.</summary>
   /// <param name="groups">A collection of group names to check for existence.</param>
   /// <returns><see langword="true"/> if at least one of the specified group names exists in the current instance;  otherwise,
@@ -92,6 +94,7 @@ public sealed class MatchDataSet : GroupDataSet,
   /// <returns><see langword="true"/> if at least one group name starts with the specified prefix; otherwise, <see
   /// langword="false"/>.</returns>
   public bool HasGroupStartingWith (string namePart) => Groups.Keys.Any(item => item.StartsWith(namePart, SCOIC));
+  public bool HasGroupStartingWithAny (params Collection<string> nameParts) => Groups.Keys.Any(item => item.StartsWithAny(nameParts, SCOIC));
   /// <inheritdoc/>
   public new IEnumerator<GroupDataSet> GetEnumerator () => Groups.Values.GetEnumerator();
   /// <summary>
@@ -211,4 +214,66 @@ public sealed class MatchDataSet : GroupDataSet,
   public override bool Equals (object? obj) => Equals(obj as MatchDataSet);
   public override int GetHashCode () => Content.GetHashCode(SCO);
   public bool Equals (string? other) => Content.Equals(other, SCO);
+}
+
+public class LangSpec
+{
+  // actor n:class : n:parent replaces n:replace i:doomednum { r:inside_actor }
+  // actor n:class : n:parent replaces n:replace { r:inside_actor }
+  // actor n:class : n:parent i:doomednum { r:inside_actor }
+  // actor n:class : n:parent { r:inside_actor }
+  // actor n:class replaces n:replace i:doomednum { r:inside_actor }
+  // actor n:class replaces n:replace { r:inside_actor }
+  // actor n:class i:doomednum { r:inside_actor }
+  // actor n:class { r:inside_actor }
+
+  // inside_actor
+  // 
+  // property => n:prop a:value
+  // addflag => + n:flagname
+  // remflag => - n:flagname
+  // dropitem => n:prop n:item, i:chance
+  // states => states { r:inside states }
+  // combo => monster
+  // combo => projectile
+
+  // inside_states
+  //
+  // label => n:label :
+  // goto => goto n:state + i:offset
+  // goto => goto n:state
+  // wait => wait
+  // fail => fail
+  // loop => loop
+  // stop => stop
+  // frame => n:frame n:letter i:tics n:command ( r:inside_params )
+  // frame => n:frame n:letter i:tics n:command
+  // frame => n:frame n:letter i:tics
+  // frame => " n:frame " n:letter i:tics n:command ( r:inside_params )
+  // frame => " n:frame " n:letter i:tics n:command
+  // frame => " n:frame " n:letter i:tics
+
+  // inside_params
+  //
+  // expr => 
+  public Collection<object> Rules { get; } = [
+    new StringDef(@""".*?"""),
+    new CommentDef(@"\/\/.*?$"),
+    new CommentDef(@"\/\*.*?\*\/"),
+    new TokenDef(@"(?i:\bactor\b)", "keyword"),
+    new TokenDef(@"(?i:\+[a-z._0-9]+)", "addflag"),
+    new TokenDef(@"(?i:\-[a-z._0-9]+)", "remflag"),
+    new InsideTokenDef(@"\{", "actor_def"),
+  ];
+}
+public record InsideTokenDef ([SS("regex")] string Regex, string ObjectType);
+public record TokenDef ([SS("regex")] string Regex, string Type);
+public record StringDef ([SS("regex")] string Regex);
+public record CommentDef ([SS("regex")] string Regex);
+
+public class MatchInfo
+{
+  public Dictionary<string, string> Properties { get; } = [];
+  public required string Content { get; init; }
+  public int Position { get; init; }
 }

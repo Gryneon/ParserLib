@@ -2,7 +2,7 @@
 
 namespace Parser.Ops.Text;
 
-public class StackPropertyOperation<TParent, TChild> (bool ignoreOrphans, string input_key, string output_key) : Operation(input_key, output_key) where TParent : class, IHasChildren<TChild>
+public class StackPropertyOperation<TParent, TChild> (bool ignoreOrphans, string input_key, string output_key) : Operation(input_key, output_key) where TParent : class, ICanAddChildren<TChild>
 {
   protected override void Execute ()
   {

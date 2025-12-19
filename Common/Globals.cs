@@ -20,8 +20,8 @@ global using StringTuple = (string Key, string Value);
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0")]
-[assembly: AssemblyProduct("VNCChecker")]
-[assembly: AssemblyTitle("VNCChecker")]
+[assembly: AssemblyProduct("CommonLibrary")]
+[assembly: AssemblyTitle("Common")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]
 

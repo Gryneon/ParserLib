@@ -1,12 +1,20 @@
 namespace Parser.Tokens;
 
+/// <summary>A rule defining how to match 1 token in a rule group.</summary>
 public class CToken
 {
   /// <summary>The token type required. If the type matches any of these, it passes this check.</summary>
+  /// <remarks>An empty list bypasses the check.</remarks>
   public IEnumerable<string> Type { get; init; } = [];
+  /// <summary>The content of the token to match. If the content matches any of these, it passes this check.</summary>
+  /// <remarks>An empty list bypasses the check.</remarks>
   public IEnumerable<string> Content { get; init; } = [];
+  /// <summary>The required depth value to match.</summary>
+  /// <remarks>A null value bypasses this check.</remarks>
   public int? Depth { get; set; }
+  /// <summary>Whether or not the token rule is optional or not.</summary>
   public bool IsOptional { get; internal set; }
+  /// <summary>Whether or not the token rule can consume multiple tokens.</summary>
   public bool IsOneOrMany { get; internal set; }
 
   public CToken () { }
@@ -23,7 +31,13 @@ public class CToken
 
   public static CToken MkType (params string[] type) => new() { Type = type };
   public static CToken MkContent (params string[] content) => new() { Content = content };
+  /// <summary>Creates a new depth CToken.</summary>
+  /// <param name="depth">The depth to look for.</param>
+  /// <returns>A <see cref="CToken"/> that checks for a specific depth.</returns>
   public static CToken MkDepth (int depth) => new() { Depth = depth };
+  /// <summary>Parses the string passed as a required parameter to the rule into a Collection of <see cref="CToken"/> objects.</summary>
+  /// <param name="input">The string input to parse.</param>
+  /// <returns>A Collection of <see cref="CToken"/> objects.</returns>
   public static Collection<CToken> Parse (string input)
   {
     if (input is null)

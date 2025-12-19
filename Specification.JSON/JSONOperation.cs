@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Specification.JSON;
 
 public class JSONOperation (string input_key, string output_key) : Operation(input_key, output_key)
@@ -18,20 +20,75 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
     Init(tokens);
 
     int depth = 0;
-    _ = new
-    Stack<string>();
-    Collection<Collection<IToken>> assembly = [];
+    Collection<Collection<IJSONNode>> assembly = [];
     assembly.Add([]);
     for (Index = 0; Index < Tokens.Count; Index++)
     {
-      Stack<string> order = [];
-      void pushClosingChar (string open) => order.Push(open.Like("{") ? "}" : "]");
-      void callOpenFunction (string open)
+      Collection<string> order = [];
+      void addContainer (string open)
       {
-        if (open.Like("{"))
-          innerObject();
-        else
-          innerArray(false);
+        Action inner = innerArrayHelper;
+        string close = "]";
+        IJSONNode container = new JSONArray();
+        if (open is "{")
+        {
+          inner = innerObject;
+          close = "}";
+          container = new JSONObject();
+        }
+        assembly[depth].Add(container);
+        depth++;
+        if (assembly.Count <= depth)
+          assembly.Add([]);
+        order.Add(close);
+        Index++;
+        inner();
+      }
+      void closeContainer (string close)
+      {
+        depth--;
+        order.Drop();
+        if (close is "}" && assembly[depth].Last() is JSONObject obj)
+        {
+          string? key = null;
+          foreach (IJSONNode item in assembly[depth + 1])
+          {
+            if (key is null)
+            {
+              key = item.Value?.ToString();
+            }
+            else
+            {
+              obj.Add(key, item);
+            }
+          }
+        }
+        else if (close is "]" && assembly[depth].Last() is JSONArray arr)
+        {
+          foreach (IJSONNode item in assembly[depth + 1])
+          {
+            arr.Add(item);
+          }
+        }
+        assembly.RemoveAt(depth + 1);
+        Index++;
+      }
+      void innerArrayHelper ()
+      {
+        innerArray(false);
+      }
+      void addValueToAssembly ()
+      {
+        assembly[depth].Add(TCurrent?.Type switch
+        {
+          _ when TCurrent?.Content is null => new JSONUndefValue(),
+          "string" => new JSONStringValue(TCurrent.Content),
+          "int" or "dec" => new JSONNumberValue(TCurrent.Content.ToDecimal() ?? 0),
+          "bool" => new JSONBoolValue(TCurrent.Content.ToBool() ?? false),
+          "null" => new JSONNullValue(),
+          _ => new JSONUndefValue(),
+        });
+        Index++;
       }
       void innerArray (bool initial)
       {
@@ -49,17 +106,8 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
           {
             ThrowIf(sequence != 0, $"Sequence was not correct, {sequence} needs to be 0.");
             Log($"{Index} : Opener '{tContent}'");
-            assembly[depth].Add(TCurrent);
-            depth++;
-
-            pushClosingChar(tContent);
-
-            Index++;
-            assembly.Add([]);
-
-            callOpenFunction(tContent);
+            addContainer(tContent);
             sequence++;
-
             continue;
           }
           else if (tContent is "}" or "]")
@@ -68,12 +116,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             ThrowIf(depth != exit_depth, $"Depth was not correct, {depth} needs to be {exit_depth}.");
             ThrowIf(sequence != 1, $"Sequence was not correct, {sequence} needs to be 1.");
             Log($"{Index} : Closer '{tContent}'");
-            depth--;
-            _ = order.Pop();
-            assembly[depth].Add(new ParentToken(assembly[depth + 1], "object"));
-            assembly.RemoveAt(depth + 1);
-            assembly[depth].Add(TCurrent);
-            Index++;
+            closeContainer(tContent);
             return;
           }
           else if (tContent == ",")
@@ -87,8 +130,9 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
           }
           else if (tContent is "=" or ":")
           {
+            // No property keys in an array.
             ThrowIf(true, $"Invalid token '='. Expected {(sequence == 0 ? "value" : $", OR {order.Peek()}")}.");
-            Log($"{Index} : op '{tContent}'");
+            Log($"{Index} : op '{tContent}' [ERROR]");
             sequence = 0;
             Index++;
             continue;
@@ -98,8 +142,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             ThrowIf(sequence != 0, $"Sequence was not correct, {sequence} needs to be 0.");
             Log($"{Index} : primitive '{tType}'");
             sequence++;
-            assembly[depth].Add(TCurrent);
-            Index++;
+            addValueToAssembly();
             continue;
           }
           else
@@ -114,7 +157,6 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
         int start_point = Index;
         int exit_depth = depth;
         int sequence = 0;
-        IToken key, value;
         while (depth >= exit_depth)
         {
           if (TCurrent is null)
@@ -126,43 +168,28 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
           {
             ThrowIf(sequence != 2, $"Sequence was not correct, {sequence} needs to be 2.");
             Log($"{Index} : op '{tContent}'");
-            assembly[depth].Add(TCurrent);
-            depth++;
-
-            pushClosingChar(tContent);
-
-            Index++;
-            assembly.Add([]);
-
-            callOpenFunction(tContent);
+            addContainer(tContent);
             sequence++;
-
             continue;
           }
-          if (tContent is ",")
+          else if (tContent is ",")
           {
             ThrowIf(sequence != 3, $"Sequence was not correct, {sequence} needs to be 3.");
             Log($"{Index} : op '{tContent}'");
             sequence = 0;
-            assembly[depth].Add(TCurrent);
             Index++;
             continue;
           }
-          if (tContent is "}" or "]")
+          else if (tContent is "}" or "]")
           {
             ThrowIf(order.Peek() != tContent, $"Expected to close a {order.Peek()}, but got a {tContent}.");
             ThrowIf(depth != exit_depth, $"Depth was not correct, {depth} needs to be {exit_depth}.");
             ThrowIf(sequence != 3, $"Sequence was not correct, {sequence} needs to be 3.");
             Log($"{Index} : op '{tContent}'");
-            depth--;
-            _ = order.Pop();
-            assembly[depth].Add(new ParentToken(assembly[depth + 1], "object"));
-            assembly.RemoveAt(depth + 1);
-            assembly[depth].Add(TCurrent);
-            Index++;
+            closeContainer(tContent);
             return;
           }
-          if (tContent is "=" or ":")
+          else if (tContent is "=" or ":")
           {
             ThrowIf(sequence != 1, $"Sequence was not correct, {sequence} needs to be 1.");
             Log($"{Index} : op '{tContent}'");
@@ -170,25 +197,26 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             Index++;
             continue;
           }
-          if (tType is "int" or "dec" or "null" or "bool")
+          else if (tType is "int" or "dec" or "null" or "bool")
           {
             ThrowIf(sequence != 2, $"Sequence was not correct, {sequence} needs to be 2.");
             Log($"{Index} : primitive '{tType}'");
             sequence++;
-            assembly[depth].Add(TCurrent);
-            Index++;
-            value = TCurrent;
+            addValueToAssembly();
             continue;
           }
-          if (tType is "string")
+          else if (tType is "string")
           {
             ThrowIf(sequence is not 0 and not 2, $"Sequence was not correct, {sequence} needs to be 0 or 2.");
             Log($"{Index} : primitive '{tType}'");
             sequence++;
-            assembly[depth].Add(TCurrent);
-            Index++;
-            key = TCurrent;
+            addValueToAssembly();
             continue;
+          }
+          else
+          {
+            Log($"{Index} : unknown type '{tContent}'");
+            return;
           }
         }
       }

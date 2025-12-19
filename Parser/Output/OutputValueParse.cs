@@ -1,4 +1,6 @@
 
+using Parser.Tokens.Node;
+
 namespace Parser.Output;
 
 public struct OutputValueParse (string varName, string groupName, string value) : IOutputValue, IEquatable<IOutputValue>, IEquatable<OutputValueParse>
@@ -149,6 +151,7 @@ public class Statement : IParseItem, IToken
   public TokenNodeGroup? FromNode { get; init; }
   public int EndPos { get; }
   CToken? IToken.Node { get; set; }
+  public bool IsIgnored { get; }
 
   [SetsRequiredMembers]
   public Statement (IToken token, IParseNode node)

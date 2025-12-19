@@ -1,3 +1,5 @@
+using Parser.Ops.Binary;
+
 namespace Specification.JSON;
 
 /// <summary>
@@ -26,7 +28,7 @@ public static class Definition
     TT("bool", Rx(@"\b(true|false)\b")),
     TT("null", Rx(@"\bnull\b"))
   ];
-  private static readonly RxSCollection Reader = [.. ReaderBase.Values];
+  internal static readonly RxSCollection Reader = [.. ReaderBase.Values];
   /*private static readonly Collection<string> BaseTokenList = [.. ReaderBase.Keys];
    *  json_object - '{' ( #json_property^import^ ( ',' #json_property^import^ )* )? '}'
    *  json_array - '[' ( #json_value ( ',' #json_value )* )? ']'
@@ -43,19 +45,17 @@ public static class Definition
   /// The JSON Spec.
   /// </summary>
   [Export("json")]
-  public static ISpec Spec => new Spec()
+  public static Spec Spec => new()
   {
     Name = "json",
     FileInferences = [IfN(ExtIs, "json")],
     Operations = [
-        new DictionaryOperation(Reader, ROML | ROIPW | ROEC | ROIC, false),
-        new DebugToStringOperation("matches"),
-        new TokenizeOperation(),
-        new DebugToStringOperation("tokens"),
-        //new TokenTemplateOperation(TokenFormats) {ContinueOnFail=true},
-        new JSONOperation("tokens", "json"),
-        new DebugToStringOperation("json"),
-        Operation.SetResultKey("json")
+        Operation.CreateCursor("json_cursor", 0),
+        ByteReadOperation.ReadRemainingBin("json_utf8", "json_cursor"),
+        //TODO: Feed to JSON Reader
+        Operation.CopyKey("json_object", "result"),
+        //TODO: Enhance Spec to analyse content.
+        //TODO: Validate?
       ],
     WhitespaceTokens = ["ws"],
     RegexBasicTokens = ["string", "dec", "int", "op", "bool", "null"],

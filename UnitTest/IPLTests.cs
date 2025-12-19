@@ -6,7 +6,6 @@ using Common.Regex;
 
 using Parser;
 using Parser.Ops;
-using Parser.Ops.Text;
 
 using Specification.IPL;
 
@@ -62,7 +61,7 @@ public class IPLTests
   [InlineData("blah")]
   public void IPL_ParseNoVarName (string initial_string)
   {
-    IOperation testOp = new CopyOperation("not_a_key", "unused");
+    IOperation testOp = Operation.CopyKey("not_a_key", "unused");
     Spec spec = new()
     {
       FileInferences = [],

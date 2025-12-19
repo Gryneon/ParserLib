@@ -24,7 +24,7 @@ public static class Definition
   /// <summary>
   /// Defines the Registry spec.
   /// </summary>
-  public static ISpec Spec => new Spec()
+  public static Spec Spec => new()
   {
     Name = "reg",
     FileInferences = [IfN(ExtIs, "reg")],

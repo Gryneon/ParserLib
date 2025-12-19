@@ -106,6 +106,15 @@ namespace TestConsole {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
+        /// </summary>
+        internal static string json_launch {
+            get {
+                return ResourceManager.GetString("json_launch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
         /// </summary>
         internal static string mapinfo_common {
@@ -133,11 +142,29 @@ namespace TestConsole {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
+        /// </summary>
+        internal static string udmf_map00 {
+            get {
+                return ResourceManager.GetString("udmf_map00", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
         /// </summary>
         internal static string xsd_specification {
             get {
                 return ResourceManager.GetString("xsd_specification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\TestConsole\Resources\demon.zs.
+        /// </summary>
+        internal static string zs_demon {
+            get {
+                return ResourceManager.GetString("zs_demon", resourceCulture);
             }
         }
     }

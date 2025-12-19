@@ -1,9 +1,12 @@
+
+using Common.Extensions;
+
 namespace Specification.REG;
 
 /// <summary>
 /// A registry key.
 /// </summary>
-public class RegSection : IHasChildren<RegProperty>
+public class RegSection : ICanAddChildren<RegProperty>
 {
   /// <summary>
   /// Signifies that this key is to be deleted, not added.
@@ -47,5 +50,13 @@ public class RegSection : IHasChildren<RegProperty>
     if (child is null)
       return;
     Properties.Add(child.Key, child);
+  }
+  public void AddRange (IEnumerable<RegProperty> children)
+  {
+    children.ThrowIfNull();
+    foreach (RegProperty child in children)
+    {
+      Add(child);
+    }
   }
 }
