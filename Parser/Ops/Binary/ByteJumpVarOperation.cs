@@ -4,7 +4,7 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops.Binary;
 
-public class ByteJumpVarOperation (string input_key) : ByteOperation(input_key, EmptyString)
+public class ByteJumpVarOperation (string input_key) : Operation(input_key, EmptyString)
 {
   protected override void Execute ()
   {

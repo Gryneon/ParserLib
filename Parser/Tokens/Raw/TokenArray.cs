@@ -5,18 +5,18 @@ namespace Parser.Tokens.Raw;
 public sealed class TokenArray<T> : IToken<T>, IReadOnlyCollection<IToken<T>> where T : notnull
 {
   // Tokens Kept
-  public required IList<IToken<T>> Items { get; init; }
+  public required TokenCollection<T> Items { get; init; }
 
   // Needed for sorting and classification
   public required T Type { get; set; }
-  public int Index { get; set; }
+  public required int Index { get; set; }
+  public bool Exempt { get; set; }
   public bool HasType => true;
 
   public int Count => Items.Count;
 
-  public IList<IToken<T>> Children { get; init; } = [];
+  public TokenCollection<T> Children { get; init; } = [];
 
-  internal int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
   public int CompareTo (IToken<T>? other) => Index.CompareTo(other?.Index);
   public bool Equals (IReadOnlyCollection<IToken<T>>? other) => other is not null && Items.SequenceEqual(other);
 

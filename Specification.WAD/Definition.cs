@@ -1,9 +1,8 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using Parser.Ops.Binary;
-
 using static Parser.DefinitionStaticFunctions;
 using static Parser.Ops.Binary.ByteReadOperation;
+using static Parser.Ops.Operation;
 
 namespace Specification.WAD;
 /// <summary>
@@ -21,12 +20,12 @@ public static class Definition
       IfN(HeadSt, "PWAD")
     ],
     Operations = [
-      Operation.CreateCursor("bytes", 0),
+      CreateCursor("bytes", 0),
       ReadString("identification", 4),
       ReadInt("numlumps"),
       ReadInt("diroffset"),
       new ByteJumpVarOperation("diroffset"),
-      Operation.ForCount([
+      ForCount([
         ReadInt("filepos"),
         ReadInt("size"),
         ReadString("name", 8),
@@ -45,13 +44,13 @@ public static class Definition
       IfN(HeadSt, "PACK")
     ],
     Operations = [
-      Operation.CreateCursor("bytes", 0),
+      CreateCursor("bytes", 0),
       ReadString("identification", 4),
       ReadInt("diroffset"),
       ReadInt("dirsize"),
       new ByteDivideOperation(64, "dirsize", "entrycount"),
       new ByteJumpVarOperation("diroffset"),
-      Operation.ForCount( [
+      ForCount( [
         ReadString("name", 50),
         ReadInt("offset"),
         ReadInt("size"),
@@ -70,12 +69,12 @@ public static class Definition
       IfN(HeadSt, "WAD2")
     ],
     Operations = [
-      Operation.CreateCursor("bytes", 0),
+      CreateCursor("bytes", 0),
       ReadString("identification", 4),
       ReadInt("numlumps"),
       ReadInt("diroffset"),
       new ByteJumpVarOperation("diroffset"),
-      Operation.ForCount([
+      ForCount([
         ReadInt("filepos"),
         ReadInt("dsize"),
         ReadInt("size"),

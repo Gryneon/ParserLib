@@ -5,7 +5,7 @@ using Parser.Tokens.Node;
 
 namespace UnitTest;
 
-public class JSON_Tests
+public class JSONTests
 {
   [Theory]
   [InlineData("$int | $dec | $null | $bool | $string | #json_object | #json_array")]

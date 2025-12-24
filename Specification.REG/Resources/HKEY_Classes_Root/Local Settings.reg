@@ -1,4 +1,4 @@
-﻿[HKEY_CLASSES_ROOT\Local Settings\ImmutableMuiCache]
+[HKEY_CLASSES_ROOT\Local Settings\ImmutableMuiCache]
 
 [HKEY_CLASSES_ROOT\Local Settings\ImmutableMuiCache\Strings]
 
@@ -497,26 +497,20 @@
 "@{Microsoft.WindowsStore_22404.1401.2.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.WindowsStore/Files/Assets/AppTiles/StoreAppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.WindowsStore_22404.1401.2.0_x64__8wekyb3d8bbwe\\Assets\\AppTiles\\contrast-standard\\theme-dark\\StoreAppList.scale-100.png"
 
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe%5Cresources.pri]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe%5Cresources.pri\1dac37d878f3805]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe%5Cresources.pri\1dac37d878f3805\dbf1b25e]
 "@{Microsoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.WindowsStore/Resources/StoreDescription}"="This is the description of Microsoft Store."
 "@{Microsoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.WindowsStore/Files/Assets\\AppTiles\\StoreAppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe\\Assets\\AppTiles\\contrast-standard\\theme-dark\\StoreAppList.scale-100.png"
 "@{Microsoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.WindowsStore/Files/Assets/AppTiles/StoreAppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.WindowsStore_22405.1401.5.0_x64__8wekyb3d8bbwe\\Assets\\AppTiles\\contrast-standard\\theme-dark\\StoreAppList.scale-100.png"
 
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.WindowsStore_22406.1401.5.0_x64__8wekyb3d8bbwe%5Cresources.pri]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.WindowsStore_22406.1401.5.0_x64__8wekyb3d8bbwe%5Cresources.pri\1dad97b5ba39b1]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.WindowsStore_22406.1401.5.0_x64__8wekyb3d8bbwe%5Cresources.pri\1dad97b5ba39b1\dbf1b25e]
 "@{Microsoft.WindowsStore_22406.1401.5.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.WindowsStore/Resources/StoreDescription}"="This is the description of Microsoft Store."
 "@{Microsoft.WindowsStore_22406.1401.5.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.WindowsStore/Files/Assets\\AppTiles\\StoreAppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.WindowsStore_22406.1401.5.0_x64__8wekyb3d8bbwe\\Assets\\AppTiles\\contrast-standard\\theme-dark\\StoreAppList.scale-100.png"
 
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe%5Cresources.pri]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe%5Cresources.pri\1d97f7fd34eef37]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe%5Cresources.pri\1d97f7fd34eef37\c7ed5f0f]
 "@{Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.Xbox.TCUI/Files/Assets\\AppIcon.png}"="C:\\Program Files\\WindowsApps\\Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe\\Assets\\AppIcon.png"
 "@{Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.Xbox.TCUI/Resources/DisplayName}"="Xbox Live"
@@ -526,42 +520,28 @@
 "@{Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.Xbox.TCUI/Files/Assets\\AppIcon.png}"="C:\\Program Files\\WindowsApps\\Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe\\Assets\\AppIcon.png"
 "@{Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.Xbox.TCUI/Resources/DisplayName}"="Xbox Live"
 "@{Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.Xbox.TCUI/Files/Assets/AppIcon.png}"="C:\\Program Files\\WindowsApps\\Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe\\Assets\\AppIcon.png"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe%5Cresources.pri\1d97f7fd34eef37\fae8ab0e]
 "@{Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.Xbox.TCUI/Resources/DisplayName}"="Xbox Live"
 "@{Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.Xbox.TCUI/Files/Assets/AppIcon.png}"="C:\\Program Files\\WindowsApps\\Microsoft.Xbox.TCUI_1.24.10001.0_x64__8wekyb3d8bbwe\\Assets\\AppIcon.png"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri\1d97f7fd125dcdd]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri\1d97f7fd125dcdd\c7ed5f0f]
 "@{Microsoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxGameOverlay/Files/Assets\\GamesXboxHubAppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe\\Assets\\GamesXboxHubAppList.scale-200.png"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri\1d97f7fd125dcdd\dbf1b25e]
 "@{Microsoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxGameOverlay/Files/Assets\\GamesXboxHubAppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.XboxGameOverlay_1.54.4001.0_neutral_split.scale-100_8wekyb3d8bbwe\\Assets\\GamesXboxHubAppList.scale-100.png"
 "@{Microsoft.XboxGameOverlay_1.54.4001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxGameOverlay/Files/Assets/GamesXboxHubAppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.XboxGameOverlay_1.54.4001.0_neutral_split.scale-100_8wekyb3d8bbwe\\Assets\\GamesXboxHubAppList.scale-100.png"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-1.pri]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-1.pri\1da277c35bc0418]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-1.pri\1da277c35bc0418\c7ed5f0f]
 "@{Microsoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxGamingOverlay/Files/Assets\\GameBar_AppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.XboxGamingOverlay_6.123.11012.0_neutral_split.scale-125_8wekyb3d8bbwe\\Assets\\GameBar_AppList.scale-125.png"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-1.pri\1da277c35bc0418\dbf1b25e]
 "@{Microsoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxGamingOverlay/Files/Assets\\GameBar_AppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.XboxGamingOverlay_6.123.11012.0_neutral_split.scale-100_8wekyb3d8bbwe\\Assets\\GameBar_AppList.scale-100.png"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-1.pri\1da277c35bc0418\fae8ab0e]
 "@{Microsoft.XboxGamingOverlay_6.123.11012.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxGamingOverlay/Files/Assets/GameBar_AppList.png}"="C:\\Program Files\\WindowsApps\\Microsoft.XboxGamingOverlay_6.123.11012.0_neutral_split.scale-100_8wekyb3d8bbwe\\Assets\\GameBar_AppList.scale-100.png"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxIdentityProvider_12.115.1001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxIdentityProvider_12.115.1001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri\1dad9bd62b97ab2]
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxIdentityProvider_12.115.1001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri\1dad9bd62b97ab2\dbf1b25e]
 "@{Microsoft.XboxIdentityProvider_12.115.1001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxIdentityProvider/Resources/DisplayName}"="Xbox Identity Provider"
-
 [HKEY_CLASSES_ROOT\Local Settings\MrtCache\C:%5CProgram Files%5CWindowsApps%5CMicrosoft.XboxIdentityProvider_12.115.1001.0_x64__8wekyb3d8bbwe%5Cmicrosoft.system.package.metadata%5CS-1-5-21-1591436961-3927856366-2354756760-1653499-MergedResources-0.pri\1dad9bd62b97ab2\fae8ab0e]
 "@{Microsoft.XboxIdentityProvider_12.115.1001.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.XboxIdentityProvider/Resources/DisplayName}"="Xbox Identity Provider"
 

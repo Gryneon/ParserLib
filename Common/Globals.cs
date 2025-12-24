@@ -21,7 +21,7 @@ global using StringTuple = (string Key, string Value);
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0")]
 [assembly: AssemblyProduct("CommonLibrary")]
-[assembly: AssemblyTitle("Common")]
+[assembly: AssemblyTitle("Common Library")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]
 

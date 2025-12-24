@@ -36,7 +36,7 @@ public static class Definition
     Operations = [
       new SplitOperation(),
       new DictionaryOperation(Reader, RxOpt, false, "textparts"),
-      new TokenizeOperation(),
+      new TokenizeOperation<string>(),
       new TokenTemplateOperation([]),
       //TemplateToObjectOperation
       Operation.End

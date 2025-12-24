@@ -51,7 +51,7 @@ public static class Definition
     RxOpt = ROML | ROEC,
     Operations = [
       new DictionaryOperation(Regex, ROML | ROEC | ROIPW, false),
-      new TokenizeOperation(),
+      new TokenizeOperation<string>(),
       new OperationCollection([
         new GenerateFromObjectOperation<XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
         new GenerateFromObjectOperation<XMLElementClose>("tokens", "xml_close", "endtag"),

@@ -24,7 +24,7 @@ public sealed class ConditionalAction : IOperation
     Action = action;
   }
 
-  public OpStatus DoOperation (IParser parser_ref)
+  public OpStatus DoOperation (XParser parser_ref)
   {
     return !Condition.Evaluate() ? OpStatus.Skipped : Action.DoOperation(parser_ref);
   }

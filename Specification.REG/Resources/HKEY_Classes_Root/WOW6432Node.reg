@@ -11134,7 +11134,7 @@
 "ThreadingModel"="Both"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{1185714C-D492-34D5-AA9F-B7DCD67860C2}]
-@="Gecko.nsIParserUtilsConsts"
+@="Gecko.nsXParserUtilsConsts"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{1185714C-D492-34D5-AA9F-B7DCD67860C2}\Implemented Categories]
 
@@ -11144,19 +11144,19 @@
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{1185714C-D492-34D5-AA9F-B7DCD67860C2}\InprocServer32]
 @="mscoree.dll"
 "ThreadingModel"="Both"
-"Class"="Gecko.nsIParserUtilsConsts"
+"Class"="Gecko.nsXParserUtilsConsts"
 "Assembly"="Geckofx-Core, Version=45.0.32.0, Culture=neutral, PublicKeyToken=3209ac31600d1857"
 "RuntimeVersion"="v4.0.30319"
 "CodeBase"="file:///C:\\Program Files (x86)\\mRemoteNG\\Geckofx-Core.dll"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{1185714C-D492-34D5-AA9F-B7DCD67860C2}\InprocServer32\45.0.32.0]
-"Class"="Gecko.nsIParserUtilsConsts"
+"Class"="Gecko.nsXParserUtilsConsts"
 "Assembly"="Geckofx-Core, Version=45.0.32.0, Culture=neutral, PublicKeyToken=3209ac31600d1857"
 "RuntimeVersion"="v4.0.30319"
 "CodeBase"="file:///C:\\Program Files (x86)\\mRemoteNG\\Geckofx-Core.dll"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{1185714C-D492-34D5-AA9F-B7DCD67860C2}\ProgID]
-@="Gecko.nsIParserUtilsConsts"
+@="Gecko.nsXParserUtilsConsts"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{119817C9-666D-4053-AEDA-627D0E25CCEF}]
 @="IIS W3 Control"
@@ -70900,7 +70900,7 @@
 @="qedit.DxtCompositor"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{BB522DF3-CC8A-3272-ACEB-D8A89AC84A9A}]
-@="Gecko.nsIINIParserWriterConsts"
+@="Gecko.nsIINXParserWriterConsts"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{BB522DF3-CC8A-3272-ACEB-D8A89AC84A9A}\Implemented Categories]
 
@@ -70910,19 +70910,19 @@
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{BB522DF3-CC8A-3272-ACEB-D8A89AC84A9A}\InprocServer32]
 @="mscoree.dll"
 "ThreadingModel"="Both"
-"Class"="Gecko.nsIINIParserWriterConsts"
+"Class"="Gecko.nsIINXParserWriterConsts"
 "Assembly"="Geckofx-Core, Version=45.0.32.0, Culture=neutral, PublicKeyToken=3209ac31600d1857"
 "RuntimeVersion"="v4.0.30319"
 "CodeBase"="file:///C:\\Program Files (x86)\\mRemoteNG\\Geckofx-Core.dll"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{BB522DF3-CC8A-3272-ACEB-D8A89AC84A9A}\InprocServer32\45.0.32.0]
-"Class"="Gecko.nsIINIParserWriterConsts"
+"Class"="Gecko.nsIINXParserWriterConsts"
 "Assembly"="Geckofx-Core, Version=45.0.32.0, Culture=neutral, PublicKeyToken=3209ac31600d1857"
 "RuntimeVersion"="v4.0.30319"
 "CodeBase"="file:///C:\\Program Files (x86)\\mRemoteNG\\Geckofx-Core.dll"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{BB522DF3-CC8A-3272-ACEB-D8A89AC84A9A}\ProgID]
-@="Gecko.nsIINIParserWriterConsts"
+@="Gecko.nsIINXParserWriterConsts"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{BB530C63-D9DF-4B49-9439-63453962E598}]
 @="Encoder Feature Segment"
@@ -92891,14 +92891,14 @@
 "ThreadingModel"="Both"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{F6B96EDA-1A94-4476-A85F-4D3DC7B39C3F}]
-@="DvbSiParser Class"
+@="DvbSXParser Class"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{F6B96EDA-1A94-4476-A85F-4D3DC7B39C3F}\InprocServer32]
 @="C:\\Windows\\SysWOW64\\psisdecd.dll"
 "ThreadingModel"="Both"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{F6B96EDA-1A94-4476-A85F-4D3DC7B39C3F}\ProgID]
-@="Psisdecd.DvbSiParser.1"
+@="Psisdecd.DvbSXParser.1"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{F6B96EDA-1A94-4476-A85F-4D3DC7B39C3F}\TypeLib]
 @="{92F94BE2-8C2E-4cd6-88ED-774A5DF42AD3}"
@@ -92907,7 +92907,7 @@
 @="1.0"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{F6B96EDA-1A94-4476-A85F-4D3DC7B39C3F}\VersionIndependentProgID]
-@="Psisdecd.DvbSiParser"
+@="Psisdecd.DvbSXParser"
 
 [HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{F6C0F4F0-834F-3CAF-9B1D-FD3083DC87F5}]
 @="Gecko.nsIDocShellTreeItemConsts"

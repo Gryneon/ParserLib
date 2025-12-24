@@ -20,14 +20,14 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:TestConsole.Paths.acs_testscript">
+        <member name="P:TestConsole.Paths.acs_rpgmfunc">
             <summary>
-              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
             </summary>
         </member>
-        <member name="P:TestConsole.Paths.html_processfile">
+        <member name="P:TestConsole.Paths.acs_sample">
             <summary>
-              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\UnitTests\process.html.
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ini_vncdefault">
@@ -38,6 +38,11 @@
         <member name="P:TestConsole.Paths.ipl_batch6456">
             <summary>
               Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt.
+            </summary>
+        </member>
+        <member name="P:TestConsole.Paths.ipl_batch6458">
+            <summary>
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ipl_label">
@@ -77,7 +82,7 @@
         </member>
         <member name="P:TestConsole.Paths.zs_demon">
             <summary>
-              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\TestConsole\Resources\demon.zs.
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
             </summary>
         </member>
     </members>

@@ -15,6 +15,7 @@ using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.MapInfo;
 
+[DefinitionExport]
 public static class Definition
 {
   // <summary>
@@ -111,9 +112,10 @@ public static class Definition
   /// <summary>
   /// Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see>
   /// </summary>
-  public static readonly Spec Spec = new()
+  [Export("zdoom.mapinfo")]
+  public static Spec Spec { get; } = new()
   {
-    Name = "mapinfo",
+    Name = "zdoom.mapinfo",
     FileInferences = [
       IfN(ExtIs, "mapinfo"),
       IfN(FName |Is, "mapinfo")],
@@ -132,7 +134,7 @@ public static class Definition
         Nm("lncomment", @"//.*?$"),
         Nm("blkcomment", @"/\*.*?\*/"),
       ]),
-      new TokenizeOperation(),
+      new TokenizeOperation<string>(),
       new TokenTemplateOperation(new Dictionary<string, string>() {
         ("numprop1",   "$int ^key^ '=' ($name  (',' $int)? (',' '+')?) ^value^"),
         ("numprop2",   "$int '=' $str (',' $int)?")

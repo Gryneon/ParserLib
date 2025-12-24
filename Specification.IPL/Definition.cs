@@ -1,7 +1,5 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System.Diagnostics.CodeAnalysis;
-
 using Parser.Inference;
 using Parser.Ops;
 using Parser.Ops.Text;
@@ -10,6 +8,31 @@ using static Common.Chars;
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.IPL;
+
+public enum IPLTokenType
+{
+  None,
+  Letter,     // [A-Za-z]
+  Value,      // \d+
+  Cm,         // ,
+  Sc,         // ;
+  Cr,         // <CR>
+  Lf,         // <LF>
+  Stx,        // <STX>
+  Etx,        // <ETX>
+  Esc,        // <ESC>
+  Can,        // <CAN>
+  Nul,        // <NUL>
+  Etb,        // <ETB>
+  Fs,         // <FS>
+  Gs,         // <GS>
+  Us,         // <US>
+  Si,         // <SI>
+  TextProp,   // d3,[^;<\n]*
+  Ignored,    // 
+  FieldText,  // 
+  Text,       //
+}
 
 [DefinitionExport]
 public static class Definition
@@ -52,10 +75,10 @@ public static class Definition
     ALetter = Letter();//,
                        //WS = Gp(@"\s*");
 
-  private static RxS Letter (string c = "[a-zA-Z]") => Nm("letter", Gp(c));
-  private static RxS Value ([StringSyntax("regex")] string c = "[-0-9.]+") => Nm("value", Gp(c));
-  private static RxS Cmd (string name, [StringSyntax("regex")] string c) => Nm(name, $"^{c}$");
-  private static RxS Qt ([StringSyntax("regex")] string s) => QT + s + QT;
+  private static RxS Letter (string c = "[a-zA-Z]") => Nm("t_letter", Gp(c));
+  private static RxS Value ([SS("regex")] string c = "[-0-9.]+") => Nm("value", Gp(c));
+  private static RxS Cmd (string name, [SS("regex")] string c) => Nm($"m_{name}", $"^{c}$");
+  private static RxS Qt ([SS("regex")] string s) => QT + s + QT;
 
   /// <summary>
   /// <para>Command Reader Regex</para>
@@ -80,15 +103,12 @@ public static class Definition
       new DebugToStringOperation("textparts"),
       new DictionaryOperation(Regex, ROML | ROIPW | ROEC | ROSL, false, "textparts", "matches"),
       new GenerateOperation<MatchDataSet, CommandDataSet>(CommandDataSet.Generate, item => item.Len > 0, "matches", "commands"),
-      new IPLCommandOperation("commands", "commands"),
-      Operation.CopyKey("commands", "result"),
-      //new ValidateOperation<CommandData>(false)
-    ],
+      new IPLCommandOperation("commands", "commands2"),
+      Operation.CopyKey("commands2", "result"),],
     FileInferences = [
       IfN(ExtIs, "ipl"),
       IfN(ExtIs, "pr1"),
-      IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")
-      ],
+      IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
     RegexBasicTokens = [
       "qty",
@@ -97,7 +117,13 @@ public static class Definition
       "field",
       "d3",
       "standard",
-      "fieldtext",
-    ]
+      "fieldtext",],
+    TokenRules = [
+      new(RT.TokenMatch | RT.IgnoredToken, ITT.Ignored, $"(?<={Etx}).*?(?={Stx})"),
+      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Stx, $"{Stx}"),
+      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Etx, $"{Etx}"),
+      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Esc, $"{Esc}"),
+      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Si, $"{Si}"),
+    ],
   };
 }

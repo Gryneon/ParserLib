@@ -4,7 +4,7 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops.Binary;
 
-public class ByteSavePosOperation (string cursor_key, string output_key = "recall_pos") : ByteOperation(cursor_key, output_key)
+public class ByteSavePosOperation (string cursor_key, string output_key = "recall_pos") : Operation(cursor_key, output_key)
 {
   protected override void Execute ()
   {

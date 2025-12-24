@@ -10,6 +10,7 @@ using static Parser.RX;
 
 namespace Specification.SndInfo;
 
+[DefinitionExport]
 public static class Definition
 {
   private static readonly RxS Ws = Rx(@"\s*");
@@ -39,9 +40,10 @@ public static class Definition
     Cmd("playersound") + @"(?:dup)?" + WS + Wd("player") + WS + Wd("gender") + WS + Act + WS + Sndref
   ];
 
-  public static readonly Spec Spec = new()
+  [Export("zdoom.sndinfo")]
+  public static Spec Spec => new()
   {
-    Name = "sndinfo",
+    Name = "zdoom.sndinfo",
     RxOpt = ROML | ROIPW | ROIC | ROEC,
     FileInferences = [
       new InferenceNodeOr([

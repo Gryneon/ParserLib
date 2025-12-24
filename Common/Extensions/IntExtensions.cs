@@ -7,6 +7,15 @@ namespace Common.Extensions;
 /// </summary>
 public static class IntExtensions
 {
+  /// <summary>Throws an exception if the value is below 0.</summary>
+  /// <param name="value">The value to check.</param>
+  /// <param name="message">The message for the exception.</param>
+  /// <exception cref="ArgumentOutOfRangeException"/>
+  public static void ThrowIfNegative (this int value, string message)
+  {
+    if (value < 0)
+      throw new ArgumentOutOfRangeException(nameof(value), message);
+  }
   /// <summary>Checks if a specific flag is set in the integer value.</summary>
   /// <param name="value">The integer value to look in.</param>
   /// <param name="flag">The flag to look for.</param>

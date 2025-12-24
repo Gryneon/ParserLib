@@ -11,35 +11,6 @@ namespace Specification.UDMF;
 
 public static class RawTokenSamples
 {
-  // Flags
-  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
-  internal const RT RT_String = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
-  internal const RT RT_IgnoreCase = RT.TokenMatch | RT.IgnoreCase;
-  internal const RT RT_Keyword = RT.TokenMatch | RT.IgnoreCase | RT.FromTokens;
-
-  public static Collection<TokenRule<UTT>> UDMFRuleSet { get; } = [
-    new(RT_String,  Str,     Rx(@"""(?:[^\""\\\n\r]|\\.)*""")),
-    new(RT_Comment, Comment, Rx(@"//[^\n\r]*")),
-    new(RT_Comment, Comment, Rx(@"/\*.*?\*/")),
-    new(RT.TokenExact, Bo, "{"),
-    new(RT.TokenExact, Bc, "}"),
-    new(RT.TokenExact, Eq, "="),
-    new(RT.TokenExact, Sc, ";"),
-    new(RT.TokenExact | RT.IgnoreCase, True,  "true"),
-    new(RT.TokenExact | RT.IgnoreCase, False, "false"),
-    new(RT.TokenMatch, Dec,  Rx(@"-?(?:\d+\.\d+|\.\d+)")),
-    new(RT.TokenMatch, AInt, Rx(@"-\d+")),
-    new(RT.TokenMatch, PInt, Rx(@"\b\d+\b")),
-    new(RT_IgnoreCase, Name, Rx(@"\b[a-z]\w*\b")),
-    new(RT_Keyword, Namespace, "\bnamespace\b"),
-    new(RT_Keyword, Vertex,    "\bvertex\b"),
-    new(RT_Keyword, Thing,     "\bthing\b"),
-    new(RT_Keyword, SideDef,   "\bsidedef\b"),
-    new(RT_Keyword, LineDef,   "\blinedef\b"),
-    new(RT_Keyword, Sector,    "\bsector\b"),
-    new(RT.StoreExtra | RT.IgnoredToken, Ws,   Rx(@"\s+")),
-    new(RT.StoreOther, None)];
-
   public static Dictionary<string, UTT> TokenTypeLookup { get; } = new()
   {
     ["None"] = None,
@@ -79,12 +50,12 @@ public static class RawTokenSamples
   };
 
   public static Collection<TokenGroupRule<UTT>> UDMFGroupRuleSet { get; } = [
-    new(RT.BuildProperty, Property, "n:Name i:Eq v:AInt i:Sc"),
-    new(RT.None, Property, "n:Name i:Eq v:Str i:Sc"),
+    new(RT.BuildProperty, Property, "n:Name i:Eq v:(AInt Str Dec True False) i:Sc"),
+    new(RT.BuildProperty, Property, "n:Name i:Eq v:Str i:Sc"),
     new(RT.None, Property, "n:Name i:Eq v:Dec i:Sc"),
     new(RT.None, Property, "n:Name i:Eq v:True i:Sc"),
     new(RT.None, Property, "n:Name i:Eq v:False i:Sc"),
-    new(RT.Recursive, Property, "p:Property p:Property"),
+    new(RT.BuildObject, AObject, "n:Vertex t:Bo pm:Property t:Bc"),
     new(RT.None, Vertex, "i:Vertex i:Bo p:Property i:Bc"),
   ];
 

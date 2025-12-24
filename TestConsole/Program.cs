@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Parser;
 using Parser.Tokens.Raw;
 
 using Specification.UDMF;
@@ -20,7 +18,7 @@ internal sealed class TestAction : MenuAction
   public void Execute (out object? data_return)
   {
     string? specname = Library.CheckFile(Data);
-    Spec spec = Library.Lookup(specname) ?? Spec.Unknown;
+    Spec spec = Library.Lookup(specname) ?? DefaultSpec.Unknown;
     string content = File.ReadAllText(Data);
     Program.Parser = new(spec);
     IEnumerator<OpStatus> en = Program.Parser.StepInit(content).GetEnumerator();
@@ -47,8 +45,7 @@ internal sealed class Program
     ["ipl2"] = Paths.ipl_batch6456,
     ["sndinfo"] = Paths.sndinfo_test,
     ["reg"] = Paths.reg_iplfile,
-    ["html"] = Paths.html_processfile,
-    ["acs"] = Paths.acs_testscript,
+    ["acs"] = Paths.acs_sample,
     ["mapinfo"] = Paths.mapinfo_common,
     ["json"] = "TODO: Add path",
     ["menu"] = "TODO: Add path"
@@ -80,20 +77,21 @@ internal sealed class Program
   internal static int Main (string[] args)
   {
     Console.Clear();
+#if DEBUG
     Debug.Verbose = true;
-
+#endif
     //MenuController.StartMenu(InitialMenu);
 
     Debug.Log("Program", "Main", "Program Start");
 
-    string file = "C:\\Users\\johntay4\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf";
+    string file = $"{SamplePath}\\map00.udmf";
     //Load Data
     string input = File.ReadAllText(file);
-    TokenFactory<UDMFTokenType> factory = new(RawTokenSamples.UDMFRuleSet);
-    Collection<IToken<UDMFTokenType>> result = [.. factory.Produce(input)];
+    TokenFactory<UDMFTokenType> factory = new(Definition.Spec.FromDynamic<dynamic>());
+    TokenCollection<UDMFTokenType> result = [.. factory.Produce(input)];
     Debug.Log(result.ToString2());
     TokenAssembler<UDMFTokenType> assembler = new(RawTokenSamples.UDMFGroupRuleSet);
-    List<IToken<UDMFTokenType>> tokens = [.. result];
+    TokenCollection<UDMFTokenType> tokens = [.. result];
     assembler.Execute(tokens);
     Debug.Log(tokens.ToString2());
     //args = [.. args, TestPath["ipl"]];
@@ -165,7 +163,7 @@ internal sealed class Program
     fileContent = File.ReadAllText(userPath);
     byteContent = File.ReadAllBytes(userPath);
     specName = Library.CheckFile(userPath);
-    userSpec = specName is not null ? Library.Lookup(specName) ?? Spec.Unknown : Spec.Unknown;
+    userSpec = Library.LookupOrDefault(specName);
     Debug.Log("Program.Load", $"Spec Chosen is {userSpec.Name}");
 
   GetSpec:

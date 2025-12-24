@@ -57,29 +57,25 @@
             </summary>
         </member>
         <member name="M:Parser.CursorData.#ctor(System.Int32,System.String,Parser.DataDictionary)">
+            <summary>Creates a new cursor and sets itself as the last accessed.</summary>
             <param name="index">The index of the cursor.</param>
             <param name="key">The key to iterate through.</param>
             <param name="data">The reference to the <see cref="T:Parser.DataDictionary"/> where the keyed data is stored.</param>
         </member>
         <member name="P:Parser.CursorData.Index">
-            <summary>
-            The index of the cursor.
-            </summary>
+            <summary>The index of the cursor.</summary>
         </member>
         <member name="P:Parser.CursorData.Key">
-            <summary>
-            The key the cursor is operating on.
-            </summary>
+            <summary>The key the cursor is operating on.</summary>
         </member>
         <member name="P:Parser.CursorData.Data">
-            <summary>
-            A reference to the data dictionary the parser is using.
-            </summary>
+            <summary>A reference to the data dictionary the parser is using.</summary>
         </member>
         <member name="P:Parser.CursorData.Cursor">
-            <summary>
-            The object referenced.
-            </summary>
+            <summary>The object referenced.</summary>
+        </member>
+        <member name="P:Parser.CursorData.Last">
+            <summary>The last accessed cursor.</summary>
         </member>
         <member name="T:Parser.DataDictionary">
             <summary>
@@ -108,56 +104,55 @@
             <returns>The data assigned to the given key, or <see langword="null"/> if the key is not present.</returns>
             <exception cref="T:System.ArgumentException"/>
         </member>
+        <member name="T:Parser.DebugMsg">
+            <summary>A predefined debug message.</summary>
+        </member>
+        <member name="T:Parser.ExceptionMsg">
+            <summary>A predefined exception message.</summary>
+        </member>
         <member name="T:Parser.Debug">
-            <summary>
-            Static class containing debugging logs.
-            </summary>
+            <summary>Static class containing debugging logs.</summary>
         </member>
         <member name="P:Parser.Debug.Verbose">
-            <summary>
-            Set to <see langword="true"/> to output debugging information to the output stream.
-            </summary>
+            <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
         </member>
         <member name="P:Parser.Debug.LineStart">
-            <summary>
-            Set to the line you must go to when making logs.
-            </summary>
+            <summary>Set to the line you must go to when making logs.</summary>
         </member>
         <member name="P:Parser.Debug.LineCount">
-            <summary>
-            This increments when a log is written. Set to 0 to reset to top.
-            </summary>
+            <summary>This increments when a log is written. Set to 0 to reset to top.</summary>
         </member>
         <member name="M:Parser.Debug.SetStream(System.IO.TextWriter)">
-            <summary>
-            Sets the output stream.
-            </summary>
+            <summary>Sets the output stream.</summary>
             <param name="stream">The stream to output to.</param>
         </member>
         <member name="M:Parser.Debug.Log(System.String)">
-            <summary>
-            Logs a message to the output stream.
-            </summary>
+            <summary>Logs a message to the output stream.</summary>
             <param name="msg">The message to log.</param>
         </member>
         <member name="M:Parser.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
-            <summary>
-            Logs a message to the output stream.
-            </summary>
+            <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="msg">The message to log.</param>
             <param name="back">The background color.</param>
             <param name="text">The foreground color.</param>
         </member>
         <member name="M:Parser.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
-            <summary>
-            Logs a message to the output stream.
-            </summary>
+            <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="target">The originating method.</param>
             <param name="msg">The message to log.</param>
             <param name="back">The background color.</param>
             <param name="text">The foreground color.</param>
+        </member>
+        <member name="P:Parser.DefaultSpec.Unknown">
+            <summary>The default spec.</summary>
+        </member>
+        <member name="P:Parser.DefaultSpec.Binary">
+            <summary>The spec assigned if the parser gets a binary file.</summary>
+        </member>
+        <member name="P:Parser.DefaultSpec.TextByLines">
+            <summary>Splits a string on newlines into a <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see langword="string"/> objects.</summary>
         </member>
         <member name="T:Parser.DefinitionStaticFunctions">
             <summary>
@@ -219,103 +214,16 @@
             Represents an exception that is thrown when an invalid parse type is passed to a generate operation.
             </summary>
         </member>
-        <member name="T:Parser.IParser">
-            <summary>A basic interface for a parser.</summary>
-        </member>
-        <member name="P:Parser.IParser.OpIndex">
-            <summary>
-            The current operation index.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.NextOpIndex">
-            <summary>
-            The next operation index.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.Cursors">
-            <summary>
-            The stack of cursors. This is for if you have 2 cursors at once or nested loops.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.CurrentOp">
-            <summary>
-            The current operation.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.NextOp">
-            <summary>
-            The next operation.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.Operations">
-            <summary>
-            All of the operations.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.Labels">
-            <summary>
-            The state labels for jump targets.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.HasResult">
-            <summary>
-            Whether the parser has a result stored or not.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.Result">
-            <summary>
-            The result of the parser if it passed.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.LastStatus">
-            <summary>
-            The last operation status.
-            </summary>
-        </member>
-        <member name="P:Parser.IParser.Data">
-            <summary>
-            The data that the operations use.
-            </summary>
-        </member>
-        <member name="M:Parser.IParser.CountOfKey(System.String)">
-            <summary>
-            Counts the objects in this key.
-            </summary>
-            <param name="key">The key to get the count of.</param>
-            <returns>
-            -1 if the key does not exist. <br/>
-            0 if the key exists but is null, or is a collection of 0. <br/>
-            1 if the key is not a collection or is a collection of 1. <br/>
-            The count if the key is a collection. <br/>
-            </returns>
-        </member>
-        <member name="M:Parser.IParser.GetCursorByKey(System.String)">
-            <summary>
-            Gets the cursor that is operating on the given key.
-            </summary>
-            <param name="key">The key to look for.</param>
-            <returns>The cursor data.</returns>
-        </member>
-        <member name="M:Parser.IParser.AddCursor(System.String)">
-            <summary>
-            Creates a new cursor on the given key.
-            </summary>
-            <param name="key">The key to iterate through.</param>
-        </member>
         <member name="T:Parser.Language.TokenNodePiece">
             <summary>
             Defines a chunk of a language token.
             </summary>
         </member>
         <member name="P:Parser.Library.Instance">
-            <summary>
-            The singleton instance of this object.
-            </summary>
+            <summary>The singleton instance of this object.</summary>
         </member>
         <member name="M:Parser.Library.CheckFile(System.String)">
-            <summary>
-            Provides the <see cref="T:Parser.Spec"/> for the provided file path.
-            </summary>
+            <summary>Provides the <see cref="T:Parser.Spec"/> for the provided file path.</summary>
         </member>
         <member name="T:Parser.OpStatus">
             <summary>
@@ -454,39 +362,6 @@
             <param name="continueOnFail">The continue on fail value.</param>
             <returns></returns>
         </member>
-        <member name="T:Parser.Ops.Binary.ByteOperation">
-            <summary>
-            Base class for all byte operations. must expose parser, do not use other methods.
-            </summary>
-        </member>
-        <member name="M:Parser.Ops.Binary.ByteOperation.#ctor(System.String,System.String)">
-            <summary>
-            Base class for all byte operations. must expose parser, do not use other methods.
-            </summary>
-        </member>
-        <member name="M:Parser.Ops.Binary.ByteOperation.DoOperation(Parser.XParser)">
-            <summary>
-            Performs an operation that uses and may alter or reassign the data.
-            </summary>
-            <returns>
-            <see cref="F:Parser.OpStatus.Error"/> : The operation encountered a fatal error.<br/>
-            <see cref="F:Parser.OpStatus.Pass"/> : The operation completed.<br/>
-            <see cref="F:Parser.OpStatus.Skipped"/> : The operation was skipped or not executed. <br/>
-            <c>Unused: </c><see cref="F:Parser.OpStatus.FailBadInputNull"/> : The operation was given a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBadInputType"/> : The operation was given an incompatible object as input. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpDefinition"/> : The operation or specification definition has an error or is not valid. <br/>
-            <see cref="F:Parser.OpStatus.FailBadOpImpossible"/> : The operation reached an impossible statement. <br/>
-            <see cref="F:Parser.OpStatus.FailNullOpResult"/> : The operation resulted in a null value. <br/>
-            <see cref="F:Parser.OpStatus.FailBufferOverflow"/> : The operation advanced beyond the EOL of the input. <br/>
-            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/> : The operation was supplied an invalid key.<br/>
-            <see cref="F:Parser.OpStatus.FailNoSpec"/> : The operation does not have a valid <see cref="T:Parser.Spec"/>.<br/>
-            <see cref="F:Parser.OpStatus.EndCommand"/> : The operation completed and was the final operation. <br/>
-            </returns>
-            <exception cref="T:Parser.UnknownOperationException"></exception>
-        </member>
-        <member name="M:Parser.Ops.Binary.ByteOperation.Execute">
-            <inheritdoc/>
-        </member>
         <member name="T:Parser.Ops.IOperation">
             <summary>
             The interface for all operations in the parser.
@@ -509,7 +384,7 @@
         </member>
         <member name="P:Parser.Ops.IOperation.NeverExecutes">
             <summary>
-            Set this in a child operation if the <see cref="M:Parser.Ops.IOperation.DoOperation(Parser.IParser)"/> method should never execute.
+            Set this in a child operation if the <see cref="M:Parser.Ops.IOperation.DoOperation(Parser.XParser)"/> method should never execute.
             </summary>
         </member>
         <member name="P:Parser.Ops.IOperation.LoopBreak">
@@ -522,7 +397,7 @@
             Specifies the beginning of the loop. This is the position it will start the next iteration at.
             </summary>
         </member>
-        <member name="M:Parser.Ops.IOperation.DoOperation(Parser.IParser)">
+        <member name="M:Parser.Ops.IOperation.DoOperation(Parser.XParser)">
             <summary>
             Calls the operation with the parser provided.
             </summary>
@@ -717,7 +592,7 @@
             Use <see cref="M:Parser.Ops.Operation.CheckInputs``1(System.Collections.ObjectModel.Collection{``0}@)"/> to validate mulitple.
             </summary>
         </member>
-        <member name="M:Parser.Ops.Operation.Initialize(Parser.IParser)">
+        <member name="M:Parser.Ops.Operation.Initialize(Parser.XParser)">
             <summary>
             Assigns the <c><see cref="T:Parser.XParser"/></c> to this operation and loads the data for the operation to work on.
             </summary>
@@ -1037,9 +912,10 @@
         <member name="M:Parser.Ops.Text.SplitOperation.Execute">
             <inheritdoc/>>
         </member>
-        <member name="T:Parser.Ops.Text.TokenizeOperation">
+        <member name="T:Parser.Ops.Text.TokenizeOperation`1">
             <summary>
-            Tokenizes a collection of
+            Tokenizes a string or list of strings.
+            <typeparamref name="T">The token type identifier. Enums and strings are supported.</typeparamref>
             </summary>
         </member>
         <member name="T:Parser.Ops.Text.TokenTemplateOperation">
@@ -1167,55 +1043,46 @@
             </remarks>
         </member>
         <member name="T:Parser.Spec">
-            <summary>
-            A class containing the operations, requirements, and instructions for reading a file.
-            </summary>
+            <summary>A class containing the operations, requirements, and instructions for reading a file.</summary>
         </member>
         <member name="P:Parser.Spec.Active">
-            <summary>
-            The currently active specififcation. Used for objects that cannot see the parser.
-            </summary>
+            <summary>The currently active specififcation. Used for objects that cannot see the parser.</summary>
         </member>
-        <member name="P:Parser.Spec.Unknown">
-            <summary>
-            The default spec.
-            </summary>
+        <member name="F:Parser.Spec.LoadFromSpec">
+            <summary>Use this in operations that support it to load the values defined in the <see cref="T:Parser.Spec"/>.</summary>
         </member>
-        <member name="P:Parser.Spec.Binary">
-            <summary>
-            The spec assigned if the parser gets a binary file.
-            </summary>
-        </member>
-        <member name="P:Parser.Spec.TextByLines">
-            <summary>Splits a string on newlines into a <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see langword="string"/> objects.</summary>
+        <member name="P:Parser.Spec.Name">
+            <summary>The name of this Spec.</summary>
         </member>
         <member name="P:Parser.Spec.Operations">
             <summary>A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Ops.Operation"/> objects that are executed in order to produce the result.</summary>
         </member>
         <member name="P:Parser.Spec.FileInferences">
-            <summary>
-            A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Inference.InferenceNode"/> objects that specify what files use this specification.
-            </summary>
+            <summary>A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Inference.InferenceNode"/> objects that specify what files use this specification.</summary>
         </member>
         <member name="P:Parser.Spec.IsTextFile">
-            <summary>
-            Determines whether to use a byte parser or a text one.
-            </summary>
+            <summary>Determines whether to use a byte parser or a text one.</summary>
         </member>
         <member name="P:Parser.Spec.RxOpt">
-            <summary>
-            The default regex options to use.
-            </summary>
+            <summary>The default regex options to use.</summary>
         </member>
         <member name="P:Parser.Spec.SC">
-            <summary>
-            The default string comparison type to use.
-            </summary>
+            <summary>The default string comparison type to use.</summary>
+        </member>
+        <member name="P:Parser.Spec.TokenTypeLookup">
+            <summary>Define the names for tranlating the string based rules.</summary>
+        </member>
+        <member name="P:Parser.Spec.TokenCompatLookup">
+            <summary>Define the names of equilivent groups of tokens.</summary>
+        </member>
+        <member name="P:Parser.Spec.TokenRules">
+            <summary>Token rules for the tokenize operration..</summary>
+        </member>
+        <member name="P:Parser.Spec.GroupTokenRules">
+            <summary>Group token rules for the tokenize operration..</summary>
         </member>
         <member name="P:Parser.Spec.RegexBasicTokens">
-            <summary>
-            Token types that are basic building blocks.
-            </summary>
+            <summary>Token types that are basic building blocks.</summary>
         </member>
         <member name="P:Parser.Spec.WhitespaceTokens">
             <summary>Token types to ignore.</summary>
@@ -1227,6 +1094,11 @@
             <summary>Marks this instance as the active specification.</summary>
             <remarks>Subsequent operations that depend on the active object will reference this instance after calling
             this method. If another instance was previously active, it will be replaced.</remarks>
+        </member>
+        <member name="M:Parser.Spec.FromDynamic``1">
+            <summary>This casts the TokenRules to a specific TokenType.</summary>
+            <typeparam name="T">The Token Type to cast the rules to. This must be a string or an enum.</typeparam>
+            <returns>The casted rule collection.</returns>
         </member>
         <member name="M:Parser.Tokens.Chunk.TokenExtensions.GetProperty(System.String)">
             <summary>
@@ -1450,13 +1322,75 @@
             A fully formed and stackable group.
             </summary>
         </member>
-        <member name="M:Parser.Tokens.Raw.TokenExt.RemoveTokens``1(System.Collections.Generic.IList{Parser.Tokens.Raw.IToken{``0}},System.Collections.Generic.IList{Parser.Tokens.Raw.IToken{``0}})">
-            <summary>Removes <paramref name="tokens_to_remove"/> from <paramref name="tokens"/>.</summary>
-            <typeparam name="T">The Token Type enum or string identifier.</typeparam>
-            <param name="tokens">The initial list of tokens.</param>
-            <param name="tokens_to_remove">The list of tokens to remove.</param>
-            <returns>The index of the first token removed from <paramref name="tokens"/>.<br/>
-            This is not the character index in the string, but the token index within <paramref name="tokens"/>.</returns>
+        <member name="M:Parser.Tokens.Raw.ChkToken`1.#ctor(System.String)">
+            <summary>Builds a <see cref="T:Parser.Tokens.Raw.ChkToken`1"/> from a <see langword="string"/>.<br/>
+            <list type="bullet">
+            <listheader>Syntax</listheader>
+            <item><c>prefix:value</c></item>
+            <item><c>prefix:(value1|value2|value3...)</c></item>
+            </list>
+            </summary>
+            <param name="data_string">The individual token defintion.</param>
+            <remarks>
+            <list type="table">
+            <listheader>Specifications</listheader>
+            <item>t</item>
+            </list>
+            <list type="table">
+            <listheader>Examples</listheader>
+            <item><c>tn:Name</c> - Token Type 'Name', Store as a Name.</item>
+            <item><c>tv:Dec</c> - Token Type 'Dec', store as a Value.</item>
+            <item><c>cyi:Script</c> - Content 'Script', Case insensitive, store as a Type.</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Parser.Tokens.Raw.Section.CompareTo(Parser.Tokens.Raw.Section)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Parser.Tokens.Raw.TokenCollection`1">
+            <summary>A collection of tokens, use this to keep token operations consistent.</summary>
+            <typeparam name="T">The type of token type object used.</typeparam>
+        </member>
+        <member name="M:Parser.Tokens.Raw.TokenCollection`1.#ctor">
+            <summary>A collection of tokens, use this to keep token operations consistent.</summary>
+            <typeparam name="T">The type of token type object used.</typeparam>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenCollection`1._tokens">
+            <summary>The internal token list.</summary>
+        </member>
+        <member name="M:Parser.Tokens.Raw.TokenCollection`1.#ctor(System.Collections.Generic.IEnumerable{Parser.Tokens.Raw.IToken{`0}})">
+            <summary>Creates the collection from a collection of tokens.</summary>
+            <param name="tokens">The tokens to add to the list.</param>
+        </member>
+        <member name="P:Parser.Tokens.Raw.TokenCollection`1.Item(System.Int32)">
+            <summary>Gets or sets the token at a given index.</summary>
+            <param name="index">The index to modify or retrieve.</param>
+            <returns>A token at the specified index.</returns>
+        </member>
+        <member name="M:Parser.Tokens.Raw.TokenCollection`1.Remove(System.Int32,System.Int32)">
+            <summary>Removes <paramref name="count"/> from the collection starting at <paramref name="first"/>.</summary>
+            <param name="first">The first token to remove.</param>
+            <param name="count">The number of tokens to remove.</param>
+        </member>
+        <member name="T:Parser.Tokens.Raw.TokenCollection`2">
+            <summary>A collection of tokens of a specific type, use this to keep token operations consistent, and specific.</summary>
+            <typeparam name="TClass">The token class to utilize.</typeparam>
+            <typeparam name="TTokenType">The token type class.</typeparam>
+            <remarks>This is used for <see cref="T:Parser.Tokens.Raw.TokenObject`1"/> to implement the <see cref="T:Parser.Tokens.Raw.TokenProperty`1"/> collection.</remarks>
+        </member>
+        <member name="M:Parser.Tokens.Raw.TokenCollection`2.#ctor">
+            <summary>A collection of tokens of a specific type, use this to keep token operations consistent, and specific.</summary>
+            <typeparam name="TClass">The token class to utilize.</typeparam>
+            <typeparam name="TTokenType">The token type class.</typeparam>
+            <remarks>This is used for <see cref="T:Parser.Tokens.Raw.TokenObject`1"/> to implement the <see cref="T:Parser.Tokens.Raw.TokenProperty`1"/> collection.</remarks>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenCollection`2._tokens">
+            <summary>The internal token list.</summary>
+        </member>
+        <member name="M:Parser.Tokens.Raw.TokenCollection`2.Remove(System.Int32,System.Int32)">
+            <summary>Removes <paramref name="count"/> from the collection starting at <paramref name="first"/>.</summary>
+            <param name="first">The first token to remove.</param>
+            <param name="count">The number of tokens to remove.</param>
         </member>
         <member name="T:Parser.Tokens.Raw.TokenRuleType">
             <summary>The type of rule to enforce.</summary>
@@ -1491,6 +1425,12 @@
         <member name="F:Parser.Tokens.Raw.TokenRuleType.BuildObject">
             <summary>This Token Group Rule will assemble a <see cref="T:Parser.Tokens.Raw.TokenObject`1"/>.</summary>
         </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.BuildFlag">
+            <summary>This Token Group Rule will assemble a <see cref="T:Parser.Tokens.Raw.TokenFlag`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.BuildTypedValue">
+            <summary>This Token Group Rule will assemble a <see cref="T:Parser.Tokens.Raw.TokenTypedValue`1"/>.</summary>
+        </member>
         <member name="F:Parser.Tokens.Raw.TokenRuleType.AssignValue">
             <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="T:Parser.Tokens.Raw.TokenProperty`1"/> or <see cref="T:Parser.Tokens.Raw.TokenArray`1"/>.</summary>
         </member>
@@ -1502,6 +1442,12 @@
         </member>
         <member name="F:Parser.Tokens.Raw.TokenRuleType.AddProperty">
             <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="T:Parser.Tokens.Raw.TokenObject`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.AddFlag">
+            <summary>This Token Group Token Code will set <see cref="P:Parser.Tokens.Raw.TokenFlag`1.AddFlag"/> to <see langword="true"/> in a <see cref="T:Parser.Tokens.Raw.TokenFlag`1"/>.</summary>
+        </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.RemFlag">
+            <summary>This Token Group Token Code will set <see cref="P:Parser.Tokens.Raw.TokenFlag`1.AddFlag"/> to <see langword="false"/> in a <see cref="T:Parser.Tokens.Raw.TokenFlag`1"/>.</summary>
         </member>
         <member name="F:Parser.Tokens.Raw.TokenRuleType.FromTokens">
             <summary>This Token Rule will only match from existing tokens.</summary>
@@ -1532,6 +1478,9 @@
         <member name="F:Parser.Tokens.Raw.TokenRuleType.Mult">
             <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
         </member>
+        <member name="F:Parser.Tokens.Raw.TokenRuleType.FlagBits">
+            <summary>The bits to remove to get the type correctly.</summary>
+        </member>
         <member name="T:Parser.Tokens.TemplateSet">
             <summary>A token template, for assembling tokens.</summary>
         </member>
@@ -1544,7 +1493,7 @@
             Reference <see cref="T:Parser.Tokens.IToken"/> when creating a field or property, or returning a value from a method.
             </summary>
             <remarks>
-            A basic token object used by the <see cref="T:Parser.IParser"/>.<br/>
+            A basic token object used by the <see cref="T:Parser.XParser"/>.<br/>
             </remarks>
             <seealso cref="T:Parser.Tokens.IToken"/>
         </member>
@@ -1648,9 +1597,6 @@
             Sets up the Specification and DataDictionary for the parser.
             </summary>
             <param name="spec">The specificiation to use.</param>
-        </member>
-        <member name="P:Parser.XParser.DefaultSpec">
-            <inheritdoc/>
         </member>
         <member name="P:Parser.XParser.Spec">
             <summary>

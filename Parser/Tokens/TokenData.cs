@@ -10,10 +10,10 @@ public readonly struct TokenData : IEquatable<TokenData>
   public Collection<string> KeyProperties { get; } = [];
   public bool Ignored { get; init; }
   [SetsRequiredMembers]
-  public TokenData (string requirement, string type)
+  public TokenData (string required_marker, string type_to_assign)
   {
-    RequiredMarker = requirement;
-    TypeToAssign = type;
+    RequiredMarker = required_marker;
+    TypeToAssign = type_to_assign;
   }
 
   public bool CheckMatch (MatchDataSet match) => match?.HasMarker(RequiredMarker) ?? false;

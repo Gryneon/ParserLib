@@ -18,7 +18,7 @@
             https://regex101.com/r/tfW4Sl/1
             <remarks>https://regex101.com/r/deLv0L/2</remarks>
         </member>
-        <member name="P:Specification.ACS.Definition.Spec">
+        <member name="P:Specification.ACS.Definition.ACS">
             <summary>
             Defined Specification
             </summary>

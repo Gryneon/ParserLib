@@ -12,7 +12,7 @@ public class TokenFactory_AI<T> (IEnumerable<TokenRule<T>> rules) where T : notn
     public bool Contains (int start, int length) => Start <= start && start + length <= End;
   }
 
-  public IList<IToken<T>> Produce (string input)
+  public TokenCollection<T> Produce (string input)
   {
     input.ThrowIfNull();
     string working_input = input;
@@ -104,7 +104,7 @@ public class TokenFactory_AI<T> (IEnumerable<TokenRule<T>> rules) where T : notn
       }
     }
 
-    return new Collection<IToken<T>>([.. result.OrderBy(t => t.Position)]);
+    return [.. result.OrderBy(t => t.Position)];
   }
 
   // --- Helpers -------------------------------------------------------------

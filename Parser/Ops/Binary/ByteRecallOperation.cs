@@ -2,7 +2,7 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops.Binary;
 
-public class ByteRecallOperation (string input_key = "recall_pos") : ByteOperation(input_key, SE)
+public class ByteRecallOperation (string input_key = "recall_pos") : Operation(input_key, SE)
 {
   protected override void Execute ()
   {

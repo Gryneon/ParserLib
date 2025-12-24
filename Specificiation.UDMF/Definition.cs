@@ -1,20 +1,33 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 using Parser;
 using Parser.Inference;
 using Parser.Ops.Text;
 
-using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
+using static Specification.UDMF.UDMFTokenType;
+
+using RT = Parser.Tokens.Raw.TokenRuleType;
 
 namespace Specification.UDMF;
 
+[DefinitionExport]
 public static class Definition
 {
+  // Flags
+  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
+  internal const RT RT_String = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
+  internal const RT RT_IgnoreCase = RT.TokenMatch | RT.IgnoreCase;
+  internal const RT RT_Keyword = RT.TokenMatch | RT.IgnoreCase | RT.FromTokens;
+
   private static string WS { get; } = Rx(@"(?:\s|\/\/.*|\/\*[\s\S]*?\*\/)*");
   private static string KW { get; } = Rx(@"(?i:vertex|thing|namespace|sidedef|linedef|sector)");
   private static string KEY { get; } = Nm("m_prop_key_property", @"\w+");
   private static string VAL { get; } = Nm("m_prop_value_property", @"[.\w-]+");
 
-  public static Spec Spec { get; } = new Spec()
+  [Export("zdoom.udmf")]
+  public static Spec Spec => new()
   {
     Name = "zdoom.udmf",
     FileInferences = [IfN(InferenceType.Ext | InferenceType.Like, "udmf")],
@@ -35,7 +48,67 @@ public static class Definition
 
       new DictionaryOperation(Nm("m_sector", @"sector\s*\{(\s*(?'m_prop_key_property'\w+)\s*\=\s*(?'m_prop_value_property'\w+);)*\s*\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "sector_matches"),
       new GenerateOperation<MatchDataSet, ZSector>(ZSector.Generate, ZSector.CanGenerate, "sector_matches", "sector"),
-    ]
+    ],
+    TokenRules = [
+      new(RT_String,  Str,     Rx(@"""(?:[^\""\\\n\r]|\\.)*""")),
+      new(RT_Comment, Comment, Rx(@"//[^\n\r]*")),
+      new(RT_Comment, Comment, Rx(@"/\*.*?\*/")),
+      new(RT.TokenExact, Bo, "{"),
+      new(RT.TokenExact, Bc, "}"),
+      new(RT.TokenExact, Eq, "="),
+      new(RT.TokenExact, Sc, ";"),
+      new(RT.TokenExact | RT.IgnoreCase, True,  "true"),
+      new(RT.TokenExact | RT.IgnoreCase, False, "false"),
+      new(RT.TokenMatch, Dec,  Rx(@"-?(?:\d+\.\d+|\.\d+)")),
+      new(RT.TokenMatch, AInt, Rx(@"-\d+")),
+      new(RT.TokenMatch, PInt, Rx(@"\b\d+\b")),
+      new(RT_IgnoreCase, Name, Rx(@"\b[a-z]\w*\b")),
+      new(RT_Keyword, Namespace, "\bnamespace\b"),
+      new(RT_Keyword, Vertex,    "\bvertex\b"),
+      new(RT_Keyword, Thing,     "\bthing\b"),
+      new(RT_Keyword, SideDef,   "\bsidedef\b"),
+      new(RT_Keyword, LineDef,   "\blinedef\b"),
+      new(RT_Keyword, Sector,    "\bsector\b"),
+      new(RT.StoreExtra | RT.IgnoredToken, Ws,   Rx(@"\s+")),
+      new(RT.StoreOther, None)],
+    SC = SCOIC,
+    IsTextFile = true,
+    TokenTypeLookup = new()
+    {
+      ["None"] = None,
+      ["Vertex"] = Vertex,
+      ["Thing"] = Thing,
+      ["Namespace"] = Namespace,
+      ["SideDef"] = SideDef,
+      ["LineDef"] = LineDef,
+      ["Sector"] = Sector,
+      ["Str"] = Str,
+      ["Name"] = Name,
+      ["PInt"] = PInt,
+      ["AInt"] = AInt,
+      ["True"] = True,
+      ["False"] = False,
+      ["Dec"] = Dec,
+      ["Value"] = Value,
+      ["Comment"] = Comment,
+      ["Ws"] = Ws,
+      ["Eq"] = Eq,
+      ["Sc"] = Sc,
+      ["Bo"] = Bo,
+      ["Bc"] = Bc,
+      ["Property"] = Property,
+    },
+    TokenCompatLookup = new Dictionary<dynamic, Collection<dynamic>>()
+    {
+      [AObject] = [Vertex, Thing, Sector, LineDef, SideDef],
+      [AInt] = [PInt],
+      [Bool] = [True, False],
+      [Op] = [Eq, Sc, Bo, Bc],
+      [Dec] = [AInt, PInt],
+      [Value] = [Bool, Dec, Str, Name],
+      [Comment] = [Ws],
+      [Ws] = [Comment],
+    },
   };
 }
 

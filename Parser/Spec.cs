@@ -1,76 +1,44 @@
 #pragma warning disable CA1822 // Mark members as static
 
 using Parser.Inference;
-using Parser.Ops.Binary;
-using Parser.Ops.Text;
+using Parser.Tokens.Raw;
 
 namespace Parser;
 
-/// <summary>
-/// A class containing the operations, requirements, and instructions for reading a file.
-/// </summary>
-public class Spec // : Spec
+/// <summary>A class containing the operations, requirements, and instructions for reading a file.</summary>
+public class Spec
 {
   #region Static Members
-  /// <summary>
-  /// The currently active specififcation. Used for objects that cannot see the parser.
-  /// </summary>
-  public static Spec Active
-  {
-    get => field ?? Unknown;
-    protected set;
-  }
-  /// <summary>
-  /// The default spec.
-  /// </summary>
-  public static Spec Unknown { get; } = new()
-  {
-    Name = "unknown",
-    FileInferences = [],
-    Operations = [Ops.Operation.End],
-  };
-  /// <summary>
-  /// The spec assigned if the parser gets a binary file.
-  /// </summary>
-  public static Spec Binary { get; } = new()
-  {
-    Name = "binary",
-    FileInferences = [],
-    Operations = [ByteReadOperation.ReadRemainingBin("result", "bytes")]
-  };
-  /// <summary>Splits a string on newlines into a <see cref="Collection{T}"/> of <see langword="string"/> objects.</summary>
-  public static Spec TextByLines { get; } = new()
-  {
-    FileInferences = [],
-    Name = "textbylines",
-    Operations = [
-      new SplitOperation("text", "result"),
-      Ops.Operation.End
-    ]
-  };
+  /// <summary>The currently active specififcation. Used for objects that cannot see the parser.</summary>
+  public static Spec Active { get => field ?? DefaultSpec.Unknown; protected set; }
+  /// <summary>Use this in operations that support it to load the values defined in the <see cref="Spec"/>.</summary>
+  public const int LoadFromSpec = 0x7fffffff;
   #endregion
+  /// <summary>The name of this Spec.</summary>
   public required string Name { get; init; }
   /// <summary>A <see cref="Collection{IOperation}"/> of <see cref="Ops.Operation"/> objects that are executed in order to produce the result.</summary>
   public required Collection<IOperation> Operations { get; init; }
-  /// <summary>
-  /// A <see cref="Collection{IInferenceNode}"/> of <see cref="InferenceNode"/> objects that specify what files use this specification.
-  /// </summary>
+  /// <summary>A <see cref="Collection{IInferenceNode}"/> of <see cref="InferenceNode"/> objects that specify what files use this specification.</summary>
   public required ReadOnlyCollection<IInferenceNode> FileInferences { get; init; }
-  /// <summary>
-  /// Determines whether to use a byte parser or a text one.
-  /// </summary>
-  public bool IsTextFile => true;
-  /// <summary>
-  /// The default regex options to use.
-  /// </summary>
-  public RegexOptions RxOpt { get; init; }
-  /// <summary>
-  /// The default string comparison type to use.
-  /// </summary>
-  public StringComparison SC => RxOpt.HasFlag(RegexOptions.IgnoreCase) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-  /// <summary>
-  /// Token types that are basic building blocks.
-  /// </summary>
+  /// <summary>Determines whether to use a byte parser or a text one.</summary>
+  public bool IsTextFile { get; init; }
+  /// <summary>The default regex options to use.</summary>
+  public RegexOptions RxOpt
+  {
+    get => field | (SC == SCOIC ? ROIC : RON);
+    init;
+  }
+  /// <summary>The default string comparison type to use.</summary>
+  public StringComparison SC { get; init; } = SCO;
+  /// <summary>Define the names for tranlating the string based rules.</summary>
+  public Dictionary<string, dynamic> TokenTypeLookup { get; init; } = [];
+  /// <summary>Define the names of equilivent groups of tokens.</summary>
+  public Dictionary<dynamic, Collection<dynamic>> TokenCompatLookup { get; init; } = [];
+  /// <summary>Token rules for the tokenize operration..</summary>
+  public Collection<TokenRule<dynamic>> TokenRules { get; init; } = [];
+  /// <summary>Group token rules for the tokenize operration..</summary>
+  public Collection<TokenGroupRule<dynamic>> GroupTokenRules { get; init; } = [];
+  /// <summary>Token types that are basic building blocks.</summary>
   public Collection<string> RegexBasicTokens { get; init; } = [];
   /// <summary>Token types to ignore.</summary>
   public Collection<string> WhitespaceTokens { get; init; } = [];
@@ -80,4 +48,13 @@ public class Spec // : Spec
   /// <remarks>Subsequent operations that depend on the active object will reference this instance after calling
   /// this method. If another instance was previously active, it will be replaced.</remarks>
   public void SetAsActive () => Active = this;
+  /// <summary>This casts the TokenRules to a specific TokenType.</summary>
+  /// <typeparam name="T">The Token Type to cast the rules to. This must be a string or an enum.</typeparam>
+  /// <returns>The casted rule collection.</returns>
+  public Collection<TokenRule<T>> FromDynamic<T> () where T : notnull, new() => [.. TokenRules.Select(static rule => new TokenRule<T>()
+  {
+    TypeToAssign = (T) rule.TypeToAssign,
+    Type = rule.Type,
+    RuleStringData = rule.RuleStringData
+  })];
 }

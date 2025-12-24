@@ -38,7 +38,7 @@ public interface IOperation
   /// </summary>
   /// <param name="parser_ref">The parser to pull data from and to store data in.</param>
   /// <returns>An <see cref="OpStatus"/> that represents the result status.</returns>
-  OpStatus DoOperation (IParser parser_ref);
+  OpStatus DoOperation (XParser parser_ref);
 
   IOperation ApplyProperties (bool cont, bool skip)
   {

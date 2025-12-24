@@ -2,7 +2,7 @@ using static Parser.OpStatus;
 
 namespace Parser;
 
-public class XParser : IParser
+public class XParser
 {
   /// <summary>
   /// The class name for debugging.
@@ -18,16 +18,30 @@ public class XParser : IParser
   public IOperation NextOp => Operations[NextOpIndex];
   /// <inheritdoc/>
   public OpStatus LastStatus { get; protected set; } = AtStart;
+  public Spec LocalDefaultSpec
+  {
+    get
+    {
+      if (Data is null || !Data.HasData)
+      {
+        return DefaultSpec.Unknown;
+      }
+      if (Data["initial"] is string)
+        Spec = DefaultSpec.TextByLines;
+      else if (Data["initial"] is IEnumerable<byte>)
+        Spec = DefaultSpec.Binary;
+      return DefaultSpec.Unknown;
+    }
+  }
   public XParser (Spec? spec = null)
   {
-    InitializeParser(spec ?? Parser.Spec.Unknown);
+    InitializeParser(spec ?? LocalDefaultSpec);
   }
 
   /// <summary>Loads the operations into a flat pattern.</summary>
-  [MemberNotNull(nameof(Operations))]
   protected void OperationLoad ()
   {
-    Operations = [.. Spec.Operations];
+    Operations.AddRange(Spec.Operations);
 
     // Unpack all operations in main list
     for (int i = 0; i < Operations.Count; i++)
@@ -41,18 +55,16 @@ public class XParser : IParser
       }
     }
   }
-  [MemberNotNull(nameof(DefaultSpec))]
   protected void InitializeData<T> (T data)
   {
     if (Spec.Name.Like("unknown"))
     {
       if (data is string)
-        Spec = Parser.Spec.TextByLines;
+        Spec = DefaultSpec.TextByLines;
       if (data is IEnumerable<byte>)
-        Spec = Parser.Spec.Binary;
+        Spec = DefaultSpec.Binary;
     }
     OperationLoad();
-    DefaultSpec = data is string ? Parser.Spec.TextByLines : Parser.Spec.Unknown;
     data.ThrowIfNull();
     Data.Initialize(data);
   }
@@ -68,15 +80,13 @@ public class XParser : IParser
     Spec.SetAsActive();
     NextOpIndex = 1;
   }
-  public Collection<CursorData> Cursors { get; set; } = [];
-  /// <inheritdoc/>
-  public Spec? DefaultSpec { get; private set; }
+  public Collection<CursorData> Cursors { get; } = [];
   /// <summary>
   /// The spec to use for this parser.
   /// </summary>
   public Spec Spec { get; set; }
   /// <inheritdoc/>
-  [NotNull] public Collection<IOperation>? Operations { get; set; }
+  [NotNull] public Collection<IOperation>? Operations { get; } = [];
   /// <inheritdoc/>
   public Dictionary<string, int> Labels { get; } = [];
   /// <inheritdoc/>
@@ -118,6 +128,14 @@ public class XParser : IParser
     if (status == Any || status == LastStatus)
       Log(Area, $"{OpIndex}-{LastStatus}: {msg}");
   }
+  public void StepThrough (string input)
+  {
+    foreach (OpStatus op in StepInit(input))
+    {
+      Console.WriteLine(op.ToString());
+      _ = Console.Read();
+    }
+  }
   public IEnumerable<OpStatus> StepInit (string content)
   {
     InitializeData(content);
@@ -128,13 +146,17 @@ public class XParser : IParser
       if (CurrentOp is IfOperation ifop)
       {
         Log(Area, "If Operation Encountered");
-        LastStatus = ifop.Condition.Evaluate() ? ifop.IfTrue.DoOperation(this) : ifop.IfFalse.DoOperation(this);
-        continue;
+        bool condition = ifop.Condition.Evaluate();
+        LastStatus = condition ? ConditionPass : ConditionFail;
+        yield return LastStatus;
+        LastStatus = condition ? ifop.IfTrue.DoOperation(this) : ifop.IfFalse.DoOperation(this);
+        yield return LastStatus;
       }
-      if (CurrentOp.SkipOperation)
+      else if (CurrentOp.SkipOperation)
       {
         Log(Area, "Skip Operation Encountered");
         LastStatus = Skipped;
+        yield return LastStatus;
         AdvanceOperation();
         continue;
       }

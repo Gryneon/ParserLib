@@ -5,9 +5,14 @@ namespace Common.Extensions;
 public static class IListExtensions
 {
   //IList<T>
+  /// <summary>Checks if an <see cref="IList{T}"/> is <see langword="null"/> or empty.</summary>
+  /// <typeparam name="T"></typeparam>
+  /// <param name="list"></param>
+  /// <returns></returns>
   public static bool IsEmpty<T> (this IList<T>? list) => list is null || list.Count == 0;
   public static void AddRange<T> (this IList<T> list, IEnumerable<T> additions)
   {
+    list ??= [];
     ANEx.ThrowIfNull(list);
     if (additions is null)
       return;
@@ -45,6 +50,12 @@ public static class IListExtensions
     ANEx.ThrowIfNull(list);
     while (list.Remove(SE)) { }
   }
+
+  // Stack Functions for IList<T>
+
+  /// <summary>Performs a 'pop' action, but discards the popped item.</summary>
+  /// <typeparam name="T">The type of item.</typeparam>
+  /// <param name="list">The list to perform the action on.</param>
   public static void Drop<T> (this IList<T> list)
   {
     list.ThrowIfNull();
@@ -62,5 +73,24 @@ public static class IListExtensions
   {
     list.ThrowIfNull();
     return list.Last();
+  }
+
+  // Queue Functions for IList<T>
+
+  public static void Enqueue<T> (this IList<T> list, T item)
+  {
+    list.ThrowIfNull();
+    list.Add(item);
+  }
+  public static T Dequeue<T> (this IList<T> list)
+  {
+    list.ThrowIfNull();
+
+    if (list.IsEmpty())
+      throw new ArgumentOutOfRangeException(nameof(list), "Cannot Dequeue, list is empty.");
+
+    T item = list[0];
+    list.RemoveAt(0);
+    return item;
   }
 }

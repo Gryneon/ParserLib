@@ -14,7 +14,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <NuGetAuditLevel>high</NuGetAuditLevel>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>
     <RepositoryType>git</RepositoryType>
@@ -22,6 +22,7 @@
     <Title>Common Library</Title>
     <WarningLevel>9999</WarningLevel>
     <Platforms>AnyCPU;x86;x64</Platforms>
+    <ApplicationIcon>Library.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,6 +36,10 @@
       <EmbedInteropTypes>true</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Library.ico" />
   </ItemGroup>
 
 </Project>

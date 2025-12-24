@@ -5,6 +5,7 @@ namespace Parser;
 /// </summary>
 public class CursorData
 {
+  /// <summary>Creates a new cursor and sets itself as the last accessed.</summary>
   /// <param name="index">The index of the cursor.</param>
   /// <param name="key">The key to iterate through.</param>
   /// <param name="data">The reference to the <see cref="DataDictionary"/> where the keyed data is stored.</param>
@@ -16,21 +17,14 @@ public class CursorData
     Last = this;
   }
 
-  /// <summary>
-  /// The index of the cursor.
-  /// </summary>
+  /// <summary>The index of the cursor.</summary>
   public int Index { get; set; }
-  /// <summary>
-  /// The key the cursor is operating on.
-  /// </summary>
+  /// <summary>The key the cursor is operating on.</summary>
   public string Key { get; set; }
-  /// <summary>
-  /// A reference to the data dictionary the parser is using.
-  /// </summary>
+  /// <summary>A reference to the data dictionary the parser is using.</summary>
   public DataDictionary Data { get; }
-  /// <summary>
-  /// The object referenced.
-  /// </summary>
+  /// <summary>The object referenced.</summary>
   public object Cursor => Data[Key].AsCollection()[Index];
+  /// <summary>The last accessed cursor.</summary>
   public static CursorData? Last { get; private set; }
 }

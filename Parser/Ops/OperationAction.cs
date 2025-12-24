@@ -26,10 +26,10 @@ public sealed class OperationAction : IOperation
   public Collection<string> SData { get; } = [];
   public Collection<decimal> DData { get; } = [];
   public Collection<object> OData { get; } = [];
-  [NotNull] private IParser? Parser { get; set; }
+  [NotNull] private XParser? Parser { get; set; }
   public OAT Type { get; set; }
 
-  public OpStatus DoOperation (IParser parser_ref)
+  public OpStatus DoOperation (XParser parser_ref)
   {
     try
     {
@@ -48,6 +48,8 @@ public sealed class OperationAction : IOperation
           parser_ref.NextOpIndex = parser_ref.Labels[SData[0]];
           goto Pass;
         case OAT.GotoIndex:
+          if (IData[0] >= parser_ref.OpCount)
+            return OpStatus.FailBadOpDefinition;
           parser_ref.NextOpIndex = IData[0];
           goto Pass;
         case OAT.GotoFirst:
@@ -80,9 +82,12 @@ public sealed class OperationAction : IOperation
           Log("\n\n\n");
           goto Pass;
         case OAT.CopyKey:
-          parser_ref.Data[SData[0]] = parser_ref.Data[SData[1]];
-          goto Pass;
-
+          if (parser_ref.Data.ContainsKey(SData[0]))
+          {
+            parser_ref.Data[SData[1]] = parser_ref.Data[SData[0]];
+            goto Pass;
+          }
+          return OpStatus.FailNoSuchVarName;
         // State actions
         case OAT.BreakLoop:
           parser_ref.NextOpIndex = LoopBreak;

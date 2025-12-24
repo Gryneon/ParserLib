@@ -61,20 +61,20 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
         /// </summary>
-        internal static string acs_testscript {
+        internal static string acs_rpgmfunc {
             get {
-                return ResourceManager.GetString("acs_testscript", resourceCulture);
+                return ResourceManager.GetString("acs_rpgmfunc", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\UnitTests\process.html.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
         /// </summary>
-        internal static string html_processfile {
+        internal static string acs_sample {
             get {
-                return ResourceManager.GetString("html_processfile", resourceCulture);
+                return ResourceManager.GetString("acs_sample", resourceCulture);
             }
         }
         
@@ -93,6 +93,15 @@ namespace TestConsole {
         internal static string ipl_batch6456 {
             get {
                 return ResourceManager.GetString("ipl_batch6456", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt.
+        /// </summary>
+        internal static string ipl_batch6458 {
+            get {
+                return ResourceManager.GetString("ipl_batch6458", resourceCulture);
             }
         }
         
@@ -160,7 +169,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\TestConsole\Resources\demon.zs.
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
         /// </summary>
         internal static string zs_demon {
             get {

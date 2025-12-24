@@ -5,14 +5,10 @@
     </assembly>
     <members>
         <member name="T:Specification.REG.Definition">
-            <summary>
-            Defines the Registry spec.
-            </summary>
+            <summary>Defines the registry spec.</summary>
         </member>
         <member name="P:Specification.REG.Definition.Spec">
-            <summary>
-            Defines the Registry spec.
-            </summary>
+            <summary>Defines the Registry spec.</summary>
         </member>
         <member name="T:Specification.REG.EntryNameEqual">
             <summary>

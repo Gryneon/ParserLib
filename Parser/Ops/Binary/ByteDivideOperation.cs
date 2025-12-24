@@ -4,7 +4,7 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops.Binary;
 
-public class ByteDivideOperation : ByteOperation
+public class ByteDivideOperation : Operation
 {
   private readonly int _divisor;
   private bool UseVar => _divisor_key is not null;

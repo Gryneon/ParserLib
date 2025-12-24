@@ -16,6 +16,8 @@
     <TargetFramework>net10.0</TargetFramework>
     
     <Platforms>AnyCPU;x86;x64</Platforms>
+    
+    <StartupObject>TestConsole.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

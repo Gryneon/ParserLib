@@ -28,9 +28,12 @@ public class UDMFTests
     //Load Data
     string input = File.ReadAllText(file);
 
-    TokenFactory<UTT> factory = new(RawTokenSamples.UDMFRuleSet);
+    //Load Spec
+    Spec spec = Definition.Spec;
 
-    Collection<Parser.Tokens.Raw.IToken<UTT>> result = [.. factory.Produce(input)];
+    TokenFactory<UTT> factory = new(new Collection<TokenRule<dynamic>>([.. spec.TokenRules]));
+
+    TokenCollection<UTT> result = [.. factory.Produce(input)];
 
     TokenAssembler<UTT> assembler = new(RawTokenSamples.UDMFGroupRuleSet);
     int count = result.Count;

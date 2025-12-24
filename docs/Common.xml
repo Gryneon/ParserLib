@@ -155,71 +155,47 @@
             </summary>
         </member>
         <member name="T:Common.Debug">
-            <summary>
-            Static class containing debugging logs.
-            </summary>
+            <summary>Static class containing debugging logs.</summary>
         </member>
         <member name="P:Common.Debug.Verbose">
-            <summary>
-            Set to <see langword="true"/> to output debugging information to the output stream.
-            </summary>
+            <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
         </member>
         <member name="P:Common.Debug.LineStart">
-            <summary>
-            Set to the line you must go to when making logs.
-            </summary>
+            <summary>Set to the line you must go to when making logs.</summary>
         </member>
         <member name="P:Common.Debug.LineCount">
-            <summary>
-            This increments when a log is written. Set to 0 to reset to top.
-            </summary>
+            <summary>This increments when a log is written. Set to 0 to reset to top.</summary>
         </member>
         <member name="M:Common.Debug.SetStream(System.IO.TextWriter)">
-            <summary>
-            Sets the output stream.
-            </summary>
+            <summary>Sets the output stream.</summary>
             <param name="stream">The stream to output to.</param>
         </member>
         <member name="M:Common.Debug.Log(System.String)">
-            <summary>
-            Logs a message to the output stream.
-            </summary>
+            <summary>Logs a message to the output stream.</summary>
             <param name="msg">The message to log.</param>
         </member>
         <member name="M:Common.Debug.Log(System.String,System.String)">
-            <summary>
-            Logs a message to the output stream.
-            </summary>
+            <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="msg">The message to log.</param>
         </member>
         <member name="M:Common.Debug.LogFrom(System.String,System.String,System.String)">
-            <summary>
-            Logs a message to the output stream.
-            </summary>
+            <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="target">The originating method.</param>
             <param name="msg">The message to log.</param>
         </member>
         <member name="T:Common.DictionaryMode">
-            <summary>
-            The procedure to follow when writing to a dictionary.
-            </summary>
+            <summary>The procedure to follow when writing to a dictionary.</summary>
         </member>
         <member name="F:Common.DictionaryMode.Overwrite">
-            <summary>
-            Overwrite the previous value (default).
-            </summary>
+            <summary>Overwrite the previous value (default).</summary>
         </member>
         <member name="F:Common.DictionaryMode.Ignore">
-            <summary>
-            Ignore the write if there is already a value stored.
-            </summary>
+            <summary>Ignore the write if there is already a value stored.</summary>
         </member>
         <member name="F:Common.DictionaryMode.MakeList">
-            <summary>
-            Convert the items into a collection, or add the item to the collection.
-            </summary>
+            <summary>Convert the items into a collection, or add the item to the collection.</summary>
         </member>
         <member name="T:Common.Excel.ExcelWorkbook">
             <summary>
@@ -466,10 +442,27 @@
             Extensions for HashCode objects.
             </summary>
         </member>
+        <member name="M:Common.Extensions.IListExtensions.IsEmpty``1(System.Collections.Generic.IList{``0})">
+            <summary>Checks if an <see cref="T:System.Collections.Generic.IList`1"/> is <see langword="null"/> or empty.</summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Extensions.IListExtensions.Drop``1(System.Collections.Generic.IList{``0})">
+            <summary>Performs a 'pop' action, but discards the popped item.</summary>
+            <typeparam name="T">The type of item.</typeparam>
+            <param name="list">The list to perform the action on.</param>
+        </member>
         <member name="T:Common.Extensions.IntExtensions">
             <summary>
             Integer extensions for bitwise operations.
             </summary>
+        </member>
+        <member name="M:Common.Extensions.IntExtensions.ThrowIfNegative(System.Int32,System.String)">
+            <summary>Throws an exception if the value is below 0.</summary>
+            <param name="value">The value to check.</param>
+            <param name="message">The message for the exception.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
         </member>
         <member name="M:Common.Extensions.IntExtensions.HasFlag(System.Int32,System.IConvertible)">
             <summary>Checks if a specific flag is set in the integer value.</summary>
@@ -622,21 +615,24 @@
             </summary>
             <param name="children">The children to add.</param>
         </member>
+        <member name="T:Common.IIndexSortable">
+            <summary>Reresents an object sortable by its index.</summary>
+        </member>
+        <member name="P:Common.IIndexSortable.Index">
+            <summary>The index of this object.</summary>
+        </member>
+        <member name="P:Common.IIndexSortable.IsValidIndex">
+            <summary>Checks if the index is valid.</summary>
+        </member>
         <member name="T:Common.IProperty`1">
-            <summary>
-            Represents a key and value pair.
-            </summary>
+            <summary>Represents a key and value pair.</summary>
             <typeparam name="TValue">The type of value.</typeparam>
         </member>
         <member name="P:Common.IProperty`1.Key">
-            <summary>
-            The key name.
-            </summary>
+            <summary>The key name.</summary>
         </member>
         <member name="P:Common.IProperty`1.Value">
-            <summary>
-            The value assigned to the key.
-            </summary>
+            <summary>The value assigned to the key.</summary>
         </member>
         <member name="T:Common.IReadOnlyProperty`1">
             <summary>
@@ -690,19 +686,58 @@
             <returns>A reference to the origin object, casted to <typeparamref name="T"/>.</returns>
         </member>
         <member name="T:Common.Names">
-            <summary>
-            Common enums 
-            </summary>
+            <summary>Shorthand for common enum names.</summary>
+        </member>
+        <member name="F:Common.Names.SSON">
+            <summary>No split alterations.</summary>
+        </member>
+        <member name="F:Common.Names.SSORT">
+            <summary>Trim and remove empty splits.</summary>
+        </member>
+        <member name="F:Common.Names.SCO">
+            <summary>Ordinal (Case-Sensitive).</summary>
+        </member>
+        <member name="F:Common.Names.SCOIC">
+            <summary>Ordinal (Case-Insensitive).</summary>
+        </member>
+        <member name="F:Common.Names.RON">
+            <summary>No regular expression options.</summary>
+        </member>
+        <member name="F:Common.Names.ROSL">
+            <summary>Dot matches newline.</summary>
+        </member>
+        <member name="F:Common.Names.ROML">
+            <summary>Caret and dollar tokens match beginning and end of lines, not just the string end.</summary>
+        </member>
+        <member name="F:Common.Names.ROIC">
+            <summary>Case Insensitive.</summary>
+        </member>
+        <member name="F:Common.Names.RONB">
+            <summary>Alternate model, does not catostrphically backtrack.</summary>
+        </member>
+        <member name="F:Common.Names.ROIPW">
+            <summary>Ignore pattern whitespace.</summary>
+        </member>
+        <member name="F:Common.Names.ROR2L">
+            <summary>Right to left, executes regular expression backwards.</summary>
+        </member>
+        <member name="F:Common.Names.ROEC">
+            <summary>Explicit capture, only stores named groups.</summary>
+        </member>
+        <member name="F:Common.Names.ErrVal">
+            <summary>Readable name for the '-1' not found indicator.</summary>
+        </member>
+        <member name="F:Common.Names.NotFound">
+            <summary>Readable name for the '-1' not found indicator.</summary>
+        </member>
+        <member name="F:Common.Names.DNE">
+            <summary>Readable name for the '-1' not found indicator.</summary>
         </member>
         <member name="F:Common.Names.SE">
-            <summary>
-            String empty reference
-            </summary>
+            <summary>String empty reference</summary>
         </member>
         <member name="F:Common.Names.EmptyString">
-            <summary>
-            Const empty string for compile time availability
-            </summary>
+            <summary>Const empty string for compile time availability</summary>
         </member>
         <member name="T:Common.Regex.AbsentGroupException">
             <summary>

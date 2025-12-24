@@ -117,17 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="acs_testscript" xml:space="preserve">
+  <data name="acs_sample" xml:space="preserve">
     <value>C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.acs</value>
   </data>
-  <data name="html_processfile" xml:space="preserve">
-    <value>C:\Users\johntay4\source\repos\Git\ParserLib\UnitTests\process.html</value>
+  <data name="acs_rpgmfunc" xml:space="preserve">
+    <value>C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs</value>
   </data>
   <data name="ini_vncdefault" xml:space="preserve">
     <value>C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\default.ini</value>
   </data>
   <data name="ipl_batch6456" xml:space="preserve">
     <value>C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt</value>
+  </data>
+  <data name="ipl_batch6458" xml:space="preserve">
+    <value>C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt</value>
   </data>
   <data name="mapinfo_common" xml:space="preserve">
     <value>C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp</value>
@@ -145,7 +148,7 @@
     <value>C:\Users\Johntay4\source\repos\Git\ParserLib\Parser\Samples\label.ipl</value>
   </data>
   <data name="zs_demon" xml:space="preserve">
-    <value>C:\Users\johntay4\source\repos\Git\ParserLib\TestConsole\Resources\demon.zs</value>
+    <value>C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs</value>
   </data>
   <data name="json_launch" xml:space="preserve">
     <value>C:\Users\johntay4\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json</value>

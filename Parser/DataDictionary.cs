@@ -15,7 +15,7 @@ public sealed class DataDictionary : IDictionary<string, object>
 {
   private const string Area = "DataDictionary";
   private readonly Dictionary<string, object> _dict = [];
-  public required IParser Parser { get; init; }
+  public required XParser Parser { get; init; }
   public bool HasData => Count > 0;
   public ICollection<string> Keys => _dict.Keys;
   public ICollection<object> Values => _dict.Values;

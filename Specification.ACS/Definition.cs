@@ -3,6 +3,7 @@
 
 using System.Text.RegularExpressions;
 
+using static Parser.DefinitionStaticFunctions;
 using static Parser.RX;
 using static Parser.Tokens.TokenStaticFunctions;
 
@@ -33,7 +34,7 @@ public static class Definition
   /// </summary>
 
   [Export("zdoom.acs")]
-  public static Spec Spec => new()
+  public static Spec ACS => new()
   {
     FileInferences = [IfN(ExtIs, "acs")],
     Name = "zdoom.acs",
@@ -62,7 +63,7 @@ public static class Definition
       new DictionaryOperation([], RxOptions),
       new DebugToStringOperation("matches"),
       new DebugWaitForInputOperation(),
-      new TokenizeOperation(),
+      new TokenizeOperation<string>(),
       new DebugToStringOperation("tokens"),
       new DebugWaitForInputOperation(),
     ]

@@ -12,15 +12,16 @@ public sealed class TokenObject<T> : IToken<T>, IReadOnlyCollection<IReadOnlyPro
   public required Token<T> NameToken { get; init; }
   public IToken<T>? TypeToken { get; init; }
 
-  public IList<TokenProperty<T>> Properties { get; init; } = [];
-  public IList<TokenFlag<T>> Flags { get; init; } = [];
+  public TokenCollection<TokenProperty<T>, T> Properties { get; init; } = [];
+  public TokenCollection<TokenFlag<T>, T> Flags { get; init; } = [];
 
   // Needed for sorting and classification
   public required T Type { get; set; }
   public int Index { get; set; }
+  public bool Exempt { get; set; }
   public bool HasType => true;
 
-  public IList<IToken<T>> Children { get; init; } = [];
+  public TokenCollection<T> Children { get; init; } = [];
   public int Count => Children.Count;
 
   public int CompareTo (IToken<T>? other) => Index.CompareTo(other?.Index);

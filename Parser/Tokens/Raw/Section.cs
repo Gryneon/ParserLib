@@ -4,12 +4,12 @@ using System.Data;
 
 namespace Parser.Tokens.Raw;
 
-public struct Section : IEquatable<Section>
+public struct Section : IEquatable<Section>, IComparable<Section>
 {
   private int _length;
   private int _end;
 
-  public int Start { get; set; }
+  public readonly int Start { get; init; }
   public int Length
   {
     readonly get => _length;
@@ -40,12 +40,12 @@ public struct Section : IEquatable<Section>
     Length = length
   };
 
-  public readonly bool IsWithin (int point) => point < End && point > Start;
+  public readonly bool IsWithin (int point) => point <= End && point >= Start;
   public readonly bool Overlaps (Section other) => End >= other.Start && Start <= other.End;
   public readonly bool Overlaps (IEnumerable<Section> others)
   {
     Section temp = ByLength(Start, Length);
-    return others.Any(s => temp.Overlaps(s));
+    return others.Any(temp.Overlaps);
   }
   public override readonly bool Equals (object? obj) => obj is Section s && Equals(s);
   public override readonly int GetHashCode () => HashCode.Combine(Start, Length);
@@ -69,7 +69,7 @@ public struct Section : IEquatable<Section>
       }
       else if (sections.Any(s => s.IsWithin(i)) && start != -1)
       {
-        result.Add(Section.ByEnd(start, i));
+        result.Add(ByEnd(start, i));
         start = -1;
       }
       i++;
@@ -77,4 +77,26 @@ public struct Section : IEquatable<Section>
     return result;
   }
   public readonly string Content (string original_string) => original_string[Start..End];
+  /// <inheritdoc/>
+  public readonly int CompareTo (Section other) => Start.CompareTo(other.Start);
+
+  public static bool operator < (Section left, Section right)
+  {
+    return left.CompareTo(right) < 0;
+  }
+
+  public static bool operator <= (Section left, Section right)
+  {
+    return left.CompareTo(right) <= 0;
+  }
+
+  public static bool operator > (Section left, Section right)
+  {
+    return left.CompareTo(right) > 0;
+  }
+
+  public static bool operator >= (Section left, Section right)
+  {
+    return left.CompareTo(right) >= 0;
+  }
 }

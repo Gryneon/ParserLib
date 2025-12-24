@@ -101,6 +101,9 @@ public abstract class Operation : IOperation
     Count = count
   };
 
+  public const int SC_LoadFromSpec = 0x7fffffff;
+  public const int SC_Standard = 0;
+
   /// <summary>
   /// A built in operation that ends the operation sequence.
   /// </summary>
@@ -316,7 +319,7 @@ public abstract class Operation : IOperation
   /// <summary>
   /// The reference to the parser.
   /// </summary>
-  [AllowNull] protected IParser Parser { get; set; }
+  [AllowNull] protected XParser Parser { get; set; }
   /// <summary>
   /// The reference to the <see cref="DataDictionary"/>.
   /// </summary>
@@ -365,7 +368,7 @@ public abstract class Operation : IOperation
     OutputKey = output_key;
   }
   #endregion
-  public OpStatus DoOperation (IParser parser_ref)
+  public OpStatus DoOperation (XParser parser_ref)
   {
     if (SkipOperation)
       return OpStatus.Skipped;
@@ -401,7 +404,7 @@ public abstract class Operation : IOperation
   /// Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.
   /// </summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
-  protected void Initialize (IParser parser)
+  protected void Initialize (XParser parser)
   {
     parser.ThrowIfNull();
     Parser = parser;

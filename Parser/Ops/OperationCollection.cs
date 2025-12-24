@@ -19,7 +19,7 @@ public sealed class OperationCollection : IOperation, IReadOnlyCollection<IOpera
   public int LoopStart { get; set; }
   bool IOperation.IgnoreAllLoads => true;
 
-  public int Unpack ([NotNull] Collection<IOperation> operations, int index, IParser? parser_ref = null)
+  public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     int nextOrEnd = index + 1 >= operations.Count ? -1 : index + 1;
     int first = operations.Count;
@@ -34,7 +34,7 @@ public sealed class OperationCollection : IOperation, IReadOnlyCollection<IOpera
     ops = ops.Select(item => item.ApplyProperties(ContinueOnFail, SkipOperation));
     Operations = [.. ops];
   }
-  OpStatus IOperation.DoOperation (IParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
+  OpStatus IOperation.DoOperation (XParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
   public IEnumerator<IOperation> GetEnumerator () => Operations.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }

@@ -1,39 +1,54 @@
-using System.Reflection;
+#pragma warning disable CA1710 // Rename Parser.Library to end in either 'Dictionary' or 'Collection'
 
 using Parser.Inference;
 
 namespace Parser;
 
-public class Library : KeyedCollection<string, Spec>
+public sealed class Library : IReadOnlyDictionary<string, Spec>
 {
-  /// <summary>
-  /// The singleton instance of this object.
-  /// </summary>
-  protected static Library Instance { get; } = [Spec.Unknown];
-  protected static Dictionary<string, ReadOnlyCollection<IInferenceNode>> SpecInferences =>
+  private readonly Dictionary<string, Spec> _specs = [];
+  /// <summary>The singleton instance of this object.</summary>
+  private static Library Instance { get; } = [];
+  private static Dictionary<string, ReadOnlyCollection<IInferenceNode>> SpecInferences =>
     [.. Instance.Select(
-      item => new KeyValuePair<string, ReadOnlyCollection<IInferenceNode>>(item.Name, item.FileInferences))];
+      item => new KeyValuePair<string, ReadOnlyCollection<IInferenceNode>>(item.Key, item.Value.FileInferences))];
 
-  protected Library ()
+  private Library ()
   {
-    IReadOnlyList<(Type Type, PropertyInfo Property)> matches = ReflectionHelper.GetTypesWithAttributeAndProperties<DefinitionExportAttribute>(typeof(Spec));
-
-    foreach ((Type? type, PropertyInfo? prop) in matches)
+    Collection<AttributeLinkedType<DefinitionExportAttribute>> types = ReflectionHelper.GetAttributedClasses<DefinitionExportAttribute>(BFS | BFP);
+    foreach (AttributeLinkedType<DefinitionExportAttribute> type in types)
     {
-      Console.WriteLine($"Type: {type.FullName}, Property: {prop.Name}");
+      if (type.Attribute.Multiple)
+      {
+        Collection<(Spec? Data, ExportAttribute? Attribute)> specdatas = ReflectionHelper.GetStaticPropertiesByAttribute<Spec, ExportAttribute>(type.Type);
+
+        foreach ((Spec? Data, ExportAttribute? Attribute) specdata in specdatas)
+        {
+          if (specdata.Data is not null)
+          {
+            string name = specdata.Attribute!.FormatName;
+            Spec spec = specdata.Data;
+            _specs.Add(name, spec);
+          }
+        }
+      }
+      else
+      {
+        (Spec? spec, ExportAttribute? attribute) = ReflectionHelper.GetStaticPropertyByAttribute<Spec, ExportAttribute>(type.Type);
+        if (spec is not null)
+        {
+          _specs.Add(attribute!.FormatName, spec);
+        }
+      }
     }
   }
-  protected override string GetKeyForItem (Spec item) => item?.Name ?? SE;
 
-  public static void AddToLibrary (Spec spec) => Instance.Add(spec);
-  public static void AddToLibrary (IEnumerable<Spec> specs) => Instance.AddRange(specs);
-  public static void AddToLibrary (params Collection<Spec> speclist) => Instance.AddRange(speclist);
-  public static Spec? Lookup (string? name) => name is not null && Instance.Contains(name) ? Instance[name] : null;
+  public static Spec? Lookup (string? name) => name is not null && Instance.ContainsKey(name) ? Instance[name] : null;
   public static bool TryLookup (string name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
   {
-    if (Instance.Contains(name) && Instance[name] is Spec s)
+    if (Instance.ContainsKey(name))
     {
-      spec = s;
+      spec = Instance[name];
       return true;
     }
     else
@@ -42,10 +57,9 @@ public class Library : KeyedCollection<string, Spec>
       return false;
     }
   }
-  public static new int Count => Instance.Count();
-  /// <summary>
-  /// Provides the <see cref="Spec"/> for the provided file path.
-  /// </summary>
+  public static Spec LookupOrDefault (string? name) => (name is null || !TryLookup(name, out Spec? spec)) ? DefaultSpec.Unknown : spec;
+  public int Count => _specs.Count;
+  /// <summary>Provides the <see cref="Spec"/> for the provided file path.</summary>
   public static string? CheckFile (string path)
   {
     foreach (KeyValuePair<string, ReadOnlyCollection<IInferenceNode>> fi in SpecInferences)
@@ -61,5 +75,18 @@ public class Library : KeyedCollection<string, Spec>
     }
     return null;
   }
-  public static IEnumerable<Spec> SpecList => Instance.ToCollection();
+
+  public void Add (string key, Spec value) => _specs.Add(key, value);
+  public void AddRange (IEnumerable<KeyValuePair<string, Spec>> list) => _specs.AddRange(list);
+  public bool ContainsKey (string key) => _specs.ContainsKey(key);
+  public bool TryGetValue (string key, [MaybeNullWhen(false)] out Spec value) => _specs.TryGetValue(key, out value);
+  public void Add (KeyValuePair<string, Spec> item) => _specs.Add(item);
+  public IEnumerator<KeyValuePair<string, Spec>> GetEnumerator () => _specs.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator () => _specs.GetEnumerator();
+  public static ReadOnlyCollection<Spec> SpecList => [.. Instance._specs.Values];
+
+  IEnumerable<string> IReadOnlyDictionary<string, Spec>.Keys => _specs.Keys;
+  IEnumerable<Spec> IReadOnlyDictionary<string, Spec>.Values => _specs.Values;
+
+  public Spec this[string key] { get => _specs[key]; set => _specs[key] = value; }
 }

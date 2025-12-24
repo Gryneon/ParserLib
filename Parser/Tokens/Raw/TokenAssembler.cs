@@ -1,17 +1,14 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-
 namespace Parser.Tokens.Raw;
 
-public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : notnull
+public sealed class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : notnull
 {
   private static readonly string Area = "TokenAssembler<" + typeof(T) + ">";
   private readonly List<TokenGroupRule<T>> _rules = rules?.ToList() ?? throw new ArgumentNullException(nameof(rules));
 
   // Temp fields
-  private IList<IToken<T>>? _tokens;
+  private TokenCollection<T>? _tokens;
   private TokenGroupRule<T>? _rule;
   private int _constructed_items;
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
@@ -21,11 +18,11 @@ public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : 
     _rule.ThrowIfNull();
     Log(Area, "Validation Passed");
   }
-  internal void Construct (IList<IToken<T>> tokens_to_assemble, IList<int> sequence_ids)
+  internal void Construct (int first_token_index, TokenCollection<T> tokens_to_assemble, IList<int> sequence_ids)
   {
     Log(Area, "Calling Construct with tokens { " + tokens_to_assemble.TextJoin(" ") + " }");
     Validate();
-    int token_list_index = _tokens.RemoveTokens(tokens_to_assemble);
+    _tokens.Remove(first_token_index, tokens_to_assemble.Count);
 
     TToken getToken<TToken> (RT flag)
     {
@@ -33,7 +30,7 @@ public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : 
       for (int i = 0; i < _tokens.Count; i++)
       {
         IToken<T> token = _tokens[i];
-        if (_rule.Sequence[sequence_ids[i]].Flag.HasFlag(flag))
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
         {
           return (TToken) token;
         }
@@ -46,28 +43,39 @@ public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : 
       for (int i = 0; i < _tokens.Count; i++)
       {
         IToken<T> token = _tokens[i];
-        if (_rule.Sequence[sequence_ids[i]].Flag.HasFlag(flag))
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
         {
           return (TToken) token;
         }
       }
       return default;
     }
-    IList<TToken> getTokens<TToken> (RT flag)
+    TokenCollection<TToken, T> getTokens<TToken> (RT flag) where TToken : IToken<T>
     {
       Validate();
-      Collection<TToken> token_result = [];
+      TokenCollection<T> token_result = [];
       for (int i = 0; i < _tokens.Count; i++)
       {
         TToken token = (TToken) _tokens[i];
-        if (_rule.Sequence[sequence_ids[i]].Flag.HasFlag(flag))
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
         {
           token_result.Add(token);
         }
       }
-      return token_result;
+      return [.. token_result.OfType<TToken>()];
     }
-
+    bool hasToken (RT flag)
+    {
+      Validate();
+      for (int i = 0; i < _tokens.Count; i++)
+      {
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
     _constructed_items++;
     IToken<T> constructed_obj = _rule.Type switch
     {
@@ -92,18 +100,26 @@ public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : 
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        Items = getTokens<IToken<T>>(RT.AssignValue),
+        Items = [.. getTokens<IToken<T>>(RT.AssignValue)],
+        Children = tokens_to_assemble
+      },
+      RT.BuildFlag => new TokenFlag<T>()
+      {
+        Type = _rule.TypeToAssign,
+        Index = tokens_to_assemble[0].Index,
+        AddFlag = hasToken(RT.AddFlag),
+        NameToken = getToken<Token<T>>(RT.AssignName),
         Children = tokens_to_assemble
       },
       _ => throw new InvalidOperationException("Unknown rule type"),
     };
-    _tokens.Insert(token_list_index, constructed_obj);
+    _tokens.Insert(first_token_index, constructed_obj);
   }
   internal int ExecRule ()
   {
     Validate();
-    IList<IToken<T>> assembly = [];
-    IList<int> seq_ids = [];
+    TokenCollection<T> assembly = [];
+    Collection<int> seq_ids = [];
     bool isMatching = false;
     int i_matchstart = 0;
     _constructed_items = 0;
@@ -113,9 +129,9 @@ public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : 
     for (; i < _tokens.Count; i++)
     {
       IToken<T> token = _tokens[i];
-      RT rt = _rule.Sequence[s].Flag;
+      RT rt = _rule.Sequence[s].TokenRule;
 
-      while (token.HasType && token.Type.Equals(_rule.Sequence[s].TokenType))
+      while (_rule.Sequence[s].Equals(token))
       {
         if (!isMatching)
         {
@@ -134,14 +150,20 @@ public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : 
         // End of sequence? Pass
         if (s >= _rule.Sequence.Count)
         {
-          Construct(assembly, seq_ids);
+          Construct(i_matchstart, assembly, seq_ids);
           isMatching = false;
           break;
         }
-        // End of Tokens? Fail
+        // End of Tokens and all remaining are optional
+        if (i >= _tokens.Count && _rule.Sequence[i..].AllOptional)
+        {
+          Construct(i_matchstart, assembly, seq_ids);
+          isMatching = false;
+          break;
+        }
+        // End of Tokens
         if (i >= _tokens.Count)
         {
-          // TODO: Check if remaining sequence items are optional.
           i = i_matchstart;
           isMatching = false;
           break;
@@ -151,7 +173,28 @@ public class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : 
     return _constructed_items;
   }
 
-  public void Execute (IList<IToken<T>> tokens)
+  public void BuildAssembly (RT rt, string data)
+  {
+    data.ThrowIfNull();
+    List<string> items = [.. data.Split(' ', '\t', '\n')];
+    List<ChkToken<T>> seq_checks = [];
+    foreach (string item in items)
+    {
+      ChkToken<T> token = new(item);
+      seq_checks.Add(token);
+    }
+  }
+  internal static Collection<(T, RT)> Lookup (IEnumerable<(RT Flag, string Data)> token_def)
+  {
+    Collection<(T, RT)> result = [];
+    foreach ((RT flag, string? data) in token_def)
+    {
+      result.Add((data.ToEnum<T>(), flag));
+    }
+    return result;
+  }
+
+  public void Execute (TokenCollection<T> tokens)
   {
     _tokens = tokens;
 

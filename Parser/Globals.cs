@@ -6,6 +6,8 @@ global using System.Data;
 global using System.Diagnostics.CodeAnalysis;
 global using System.IO;
 global using System.Linq;
+global using System.Reflection;
+global using System.Resources;
 global using System.Text;
 global using System.Text.RegularExpressions;
 
@@ -27,9 +29,6 @@ global using IT = Parser.Inference.InferenceType;
 global using OAT = Parser.OperationActionType;
 global using RT = Parser.Tokens.Raw.TokenRuleType;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
-
-using System.Reflection;
-using System.Resources;
 
 [assembly: AssemblyCompany("Parser")]
 [assembly: AssemblyConfiguration("Debug")]

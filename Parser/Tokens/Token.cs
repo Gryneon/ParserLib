@@ -9,7 +9,7 @@ namespace Parser.Tokens;
 /// Reference <see cref="IToken"/> when creating a field or property, or returning a value from a method.
 /// </summary>
 /// <remarks>
-/// A basic token object used by the <see cref="IParser"/>.<br/>
+/// A basic token object used by the <see cref="XParser"/>.<br/>
 /// </remarks>
 /// <seealso cref="IToken"/>
 public class Token : IToken, ICloneable, IEquatable<CToken>

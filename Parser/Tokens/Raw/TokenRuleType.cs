@@ -26,14 +26,22 @@ public enum TokenRuleType
   BuildArray = 8,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenObject{T}"/>.</summary>
   BuildObject = 9,
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenFlag{T}"/>.</summary>
+  BuildFlag = 10,
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenTypedValue{T}"/>.</summary>
+  BuildTypedValue = 11,
   /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty{T}"/> or <see cref="TokenArray{T}"/>.</summary>
-  AssignValue = 10,
+  AssignValue = 12,
   /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty{T}"/> or <see cref="TokenObject{T}"/>.</summary>
-  AssignName = 11,
+  AssignName = 13,
   /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject{T}"/>.</summary>
-  AssignType = 12,
+  AssignType = 14,
   /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject{T}"/>.</summary>
-  AddProperty = 13,
+  AddProperty = 15,
+  /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag{T}"/>.</summary>
+  AddFlag = 16,
+  /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag{T}"/>.</summary>
+  RemFlag = 17,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>
   FromTokens = 0x10000,
@@ -55,4 +63,6 @@ public enum TokenRuleType
   Opt = 0x2000000,
   /// <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
   Mult = 0x4000000,
+  /// <summary>The bits to remove to get the type correctly.</summary>
+  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens,
 }

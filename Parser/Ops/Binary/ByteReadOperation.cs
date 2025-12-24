@@ -4,7 +4,7 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops.Binary;
 
-public sealed class ByteReadOperation : ByteOperation, IOperation
+public sealed class ByteReadOperation : Operation, IOperation
 {
   [NotNull] public string? CursorKey { get; }
   private int Size { get; set; }

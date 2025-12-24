@@ -11,7 +11,7 @@ public sealed class OperationLabel (string name) : IOperation, IPlaceholderOpera
   public int LoopStart { get; set; }
   public bool NeverExecutes => true;
 
-  public int Unpack ([NotNull] Collection<IOperation> operations, int index, IParser? parser_ref = null)
+  public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     parser_ref?.Labels.Add(Name, index);
     operations.ThrowIfNull();
@@ -19,5 +19,5 @@ public sealed class OperationLabel (string name) : IOperation, IPlaceholderOpera
     return operations.Count;
   }
 
-  OpStatus IOperation.DoOperation (IParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
+  OpStatus IOperation.DoOperation (XParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
 }

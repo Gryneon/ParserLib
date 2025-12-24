@@ -83,7 +83,7 @@ public static class PrevDefinition
     Operations = [
       new SplitOperation(),
       new DictionaryOperation(Reader, ROML | ROIPW | ROIC | ROEC, false, "textparts"),
-      new TokenizeOperation(),
+      new TokenizeOperation<string>(),
       new TokenTemplateOperation([]),
       //TemplateToObjectOperation
       Parser.Ops.Operation.End

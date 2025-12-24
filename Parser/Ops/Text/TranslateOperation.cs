@@ -24,7 +24,7 @@ public class TranslationRule
   public TT Type { get; set; }
   public object? Data { get; init; }
 
-  private Func<IParser, string, object> Task => Type switch
+  private Func<XParser, string, object> Task => Type switch
   {
     TT.None => (p, s) => s,
     TT.Include when Data is string restrict => (parser, s) => new string([.. s.Where(c => restrict.Contains(c, SCO))]),
@@ -34,7 +34,7 @@ public class TranslationRule
     _ => throw new NotImplementedException(),
   };
 
-  public object Execute (IParser parser, string s) => Task(parser, s);
+  public object Execute (XParser parser, string s) => Task(parser, s);
 }
 
 public class TranslationConstruct

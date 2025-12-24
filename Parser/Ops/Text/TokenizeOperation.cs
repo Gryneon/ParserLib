@@ -2,73 +2,44 @@ using Parser.Tokens.Raw;
 
 namespace Parser.Ops.Text;
 
-public class RawTokenizeOperation<T> : Operation where T : notnull
-{
-  private readonly IEnumerable<TokenRule<T>> _rules;
-
-  public RawTokenizeOperation (IEnumerable<TokenRule<T>> rules)
-  {
-    _rules = rules;
-  }
-
-  protected override void Execute ()
-  {
-    TokenFactory<T> raw = new(_rules);
-
-    if (CheckInput<string>(out string? casted))
-    {
-      Collection<Tokens.Raw.IToken<T>> tokens = [.. raw.Produce(casted)];
-      WorkToReturn = tokens;
-      Status = OpStatus.Pass;
-    }
-  }
-}
-
-public class GenericObjCreateOperation<T> : Operation where T : notnull
-{
-  private readonly IEnumerable<TokenGroupRule<T>> _rules;
-
-  public GenericObjCreateOperation (IEnumerable<TokenGroupRule<T>> rules)
-  {
-    _rules = rules;
-  }
-
-  protected override void Execute ()
-  {
-    TokenAssembler<T> raw = new(_rules);
-
-    if (base.CheckInput<IList<Tokens.Raw.IToken<T>>>(out IList<Tokens.Raw.IToken<T>>? list))
-    {
-      raw.Execute(list);
-      WorkToReturn = list;
-      Status = OpStatus.Pass;
-    }
-  }
-}
-
 /// <summary>
-/// Tokenizes a collection of
+/// Tokenizes a string or list of strings.
+/// <typeparamref name="T">The token type identifier. Enums and strings are supported.</typeparamref>
 /// </summary>
-public class TokenizeOperation : Operation
+public class TokenizeOperation<T> : Operation where T : notnull
 {
-  private readonly Collection<TokenData> _types;
+  private const int
+    TM_Marker = 1,
+    TM_Rule = 2,
+    TMF_UseSpec = 1024;
+  private readonly Collection<TokenData> _types = [];
+  private readonly Collection<TokenRule<dynamic>> _rules = [];
+  private readonly int _mode = TM_Marker | TMF_UseSpec;
 
   public TokenizeOperation (IEnumerable<string> types, string input_key = "matches", string output_key = "tokens") : base(input_key, output_key)
   {
     types.ThrowIfNull();
-    _types = [];
     foreach (string type in types)
     {
       _types.Add(new(type, type));
     }
+    _mode = TM_Marker;
   }
-  public TokenizeOperation (string input_key = "matches", string output_key = "tokens") : base(input_key, output_key)
-  {
-    _types = [];
-  }
+  public TokenizeOperation (string input_key = "matches", string output_key = "tokens") : base(input_key, output_key) { }
   public TokenizeOperation (IEnumerable<TokenData> tokenData, string input_key = "matches", string output_key = "tokens") : base(input_key, output_key)
   {
     _types = [.. tokenData];
+    _mode = TM_Marker;
+  }
+  public TokenizeOperation (IEnumerable<TokenRule<dynamic>> rules, string input_key = "text", string output_key = "tokens")
+  {
+    _rules = [.. rules];
+    _mode = TM_Rule;
+  }
+  public TokenizeOperation (int special_case_id, string input_key = "text", string output_key = "tokens")
+  {
+    _rules = [];
+    _mode = TM_Rule | TMF_UseSpec;
   }
 
   internal TokenData? GetTokenData (MatchDataSet mds)
@@ -107,18 +78,23 @@ public class TokenizeOperation : Operation
   }
   protected override void Execute ()
   {
-    if (_types.Count == 0)
+    // Load Tokens if loading from Spec
+    if (_mode.RemoveBit<int>(TMF_UseSpec) is TM_Marker && _mode.HasFlag(TMF_UseSpec))
     {
       foreach (string type in Spec.AllTokens)
       {
         _types.Add(new(type, type));
       }
     }
-
-    Collection<IToken> tokens = [];
-
-    if (CheckInput(out IEnumerable<MatchDataSet>? mdds))
+    else if (_mode.RemoveBit<int>(TMF_UseSpec) is TM_Rule && _mode.HasFlag(TMF_UseSpec))
     {
+      _rules.AddRange(Spec.TokenRules);
+    }
+
+    // Process Tokens with marker method, or rule method.
+    if (_mode.HasFlag(TM_Marker) && CheckInput(out IEnumerable<MatchDataSet>? mdds))
+    {
+      Collection<IToken> tokens = [];
       foreach (MatchDataSet mdd in mdds)
       {
         RegexToken token = new(mdd, GetTokenType(mdd) ?? SE);
@@ -136,22 +112,17 @@ public class TokenizeOperation : Operation
       WorkToReturn = tokens;
       Status = OpStatus.Pass;
     }
+    else if (_mode.HasFlag(TM_Rule) && CheckInput(out string? input))
+    {
+      TokenFactory<T> factory = new(_rules);
+      TokenCollection<T> return_tokens = [.. factory.Produce(input)];
+      WorkToReturn = return_tokens;
+      Status = OpStatus.Pass;
+    }
     else
     {
       Log(Tokenize_Wrong_Type, WorkToReturn?.GetType().Name ?? SE);
       Status = OpStatus.FailBadInputType;
-    }
-  }
-}
-
-public class ValidateOperation (bool abort_on_fail, string key = "result") : Operation(key, SE)
-{
-
-  protected override void Execute ()
-  {
-    if (abort_on_fail)
-    {
-      //abort?
     }
   }
 }

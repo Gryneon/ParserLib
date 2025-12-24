@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens.Raw;
 
-public class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : notnull
+public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) where T : notnull
 {
   internal const string Area = "TokenFactory<T>";
   internal string Input = SE;
@@ -18,7 +18,33 @@ public class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : notnull
   internal RT Type => GetMaskedType(CurrentRule?.Type ?? RT.None);
   internal string RuleData => CurrentRule?.RuleStringData ?? SE;
 
-  internal static RT GetMaskedType (RT type) => type.Mask<RT>(RT.FromTokens | RT.ExemptAllWithin | RT.Competitive | RT.IgnoreCase | RT.IgnoredToken);
+  internal string GetMaskedInput ()
+  {
+    string nInput = Input;
+    foreach (Section s in CannotMatch)
+    {
+      nInput = nInput.ReplaceRange(s.Start, s.Length, '\u2588');
+    }
+    return nInput;
+  }
+
+  public string GetRuleRegex (TokenRule<dynamic> rule, int? index = null)
+  {
+    string regex = rule?.RuleStringData ?? SE;
+
+    if (GetMaskedType(rule?.Type ?? RT.None) == RT.TokenExact)
+    {
+      regex = Regex.Escape(regex);
+    }
+
+    string casemod = rule?.Type.HasFlag(RT.IgnoreCase) ?? false ? "(?i)" : "(?-i)";
+
+    regex = index is not null ? $"{casemod}(?'_R{index}'{regex})" : $"{casemod}{regex}";
+
+    return regex;
+  }
+
+  internal static RT GetMaskedType (RT type) => type.RemoveBit<RT>(RT.FromTokens | RT.ExemptAllWithin | RT.Competitive | RT.IgnoreCase | RT.IgnoredToken);
   internal static int GetRuleGroupIndex (Match match)
   {
     string num = match.Groups.
@@ -26,6 +52,11 @@ public class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : notnull
       First(static g => g.Name.StartsWith("_R", SCO) && g.Value.Length > 0).
       Name[2..];
     return int.TryParse(num, out int value) ? value : ErrVal;
+  }
+  internal static dynamic FixType (object type)
+  {
+    dynamic d = type;
+    return type.GetType().IsAssignableTo(typeof(T)) ? d : throw new ArgumentException("", nameof(type));
   }
 
   internal void Tokens_FromTokens ()
@@ -44,7 +75,7 @@ public class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : notnull
       }
       else if (Type is RT.TokenMatch)
       {
-        if (Regex.Match(tokendata.Token.Content, GetRuleRegex(CurrentRule!)).Length == tokendata.Token.Content.Length)
+        if (Regex.Match(tokendata.Token.Content, GetRuleRegex(CurrentRule!.Dynamic)).Length == tokendata.Token.Content.Length)
         {
           tokendata.Token.Type = CurrentRule!.TypeToAssign;
         }
@@ -123,6 +154,7 @@ public class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : notnull
         else
         {
           cursor = next + 1;
+          next = Input.IndexOf(RuleData, cursor, IC);
           Log("Exact Match Rejected");
         }
       }
@@ -159,97 +191,95 @@ public class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : notnull
     }
   }
 
-  public string GetRuleRegex (TokenRule<T> rule, int? index = null)
+  internal void Tokens_Compete ()
   {
-    string regex = rule?.RuleStringData ?? SE;
+    Collection<(TokenRule<dynamic> Rule, int Index)> contestants = [.. rules.Where(r => r.Type.HasFlag(RT.Competitive) && r.RuleStringData is not null).Select((r, i) => (r, i))];
+    int contestant_count = contestants.Count;
+    string regexPatterns = contestants.Select(r => GetRuleRegex(r.Rule, r.Index)).TextJoin("|");
+    Regex regex = new(regexPatterns, ROEC | ROML);
 
-    if (GetMaskedType(rule?.Type ?? RT.None) == RT.TokenExact)
+    MatchCollection mc = regex.Matches(Input);
+
+    foreach (Match match in mc)
     {
-      regex = Regex.Escape(regex);
+      int index = GetRuleGroupIndex(match);
+
+      if (index == ErrVal)
+      {
+        Log(Area, "GetRuleGroupIndex Returned -1");
+        continue;
+      }
+      TokenRule<dynamic> cRule = contestants[index].Rule;
+      Token<T> token = new()
+      {
+        Content = match.Value,
+        Ignored = cRule.Type.HasFlag(RT.IgnoredToken),
+        Position = match.Index,
+        Type = cRule.TypeToAssign
+      };
+      Result.Add((token, cRule.Type.HasFlag(RT.ExemptAllWithin)));
     }
-
-    string casemod = rule?.Type.HasFlag(RT.IgnoreCase) ?? false ? "(?i)" : "(?-i)";
-
-    regex = index is not null ? $"{casemod}(?'_R{index}'{regex})" : $"{casemod}{regex}";
-
-    return regex;
   }
 
-  public Collection<Token<T>> Produce (string input)
+  public TokenCollection<T> Produce (string input)
   {
     Log(Area, "Produce", "Method Started");
     bool competed = false;
     input.ThrowIfNull();
     Input = input;
     Result = [];
-    foreach (TokenRule<T> rule in rules)
+    foreach (TokenRule<dynamic> rule in rules)
     {
-      CurrentRule = rule;
-      RT masked_type = rule.Type.Mask<RT>(RT.FromTokens | RT.ExemptAllWithin | RT.Competitive | RT.IgnoreCase | RT.IgnoredToken);
+      CurrentRule = new TokenRule<T>(rule.Type, rule.TypeToAssign, rule.RuleStringData);
+      RT masked_type = rule.Type.RemoveBit<RT>(RT.FromTokens | RT.ExemptAllWithin | RT.Competitive | RT.IgnoreCase | RT.IgnoredToken);
 
       if (Competes && !competed)
       {
-        Log("Running Competition");
-        Collection<(TokenRule<T> Rule, int Index)> contestants = [.. rules.Where(r => r.Type.HasFlag(RT.Competitive) && r.RuleStringData is not null).Select((r, i) => (r, i))];
-        int contestant_count = contestants.Count;
-        string regexPatterns = contestants.Select(r => GetRuleRegex(r.Rule, r.Index)).TextJoin("|");
-        Regex regex = new(regexPatterns, ROEC | ROML);
-
-        MatchCollection mc = regex.Matches(input);
-
-        foreach (Match match in mc)
-        {
-          int index = GetRuleGroupIndex(match);
-
-          if (index == ErrVal)
-          {
-            Log("GetRuleGroupIndex Returned -1");
-            continue;
-          }
-          TokenRule<T> cRule = contestants[index].Rule;
-          Token<T> token = new()
-          {
-            Content = match.Value,
-            Ignored = cRule.Type.HasFlag(RT.IgnoredToken),
-            Position = match.Index,
-            Type = cRule.TypeToAssign
-          };
-          Result.Add((token, cRule.Type.HasFlag(RT.ExemptAllWithin)));
-        }
-
+        Log(Area, "Running competition.");
+        Tokens_Compete();
         competed = true;
         continue;
       }
       if (Competes)
       {
-        Log("Already ran competition.");
+        Log(Area, "Already ran competition.");
         continue;
       }
 
       switch (masked_type)
       {
         case RT.None:
+          Log(Area, "Warning: Bad type defined");
           continue;
         case RT.TokenExact or RT.TokenMatch:
           if (FromTokens)
           {
+            Log(Area, "Token matching starting, from Tokens");
             Tokens_FromTokens();
           }
           else
           {
+            Log(Area, "Token matching starting, from input string.");
             Tokens_FromInput(split: false);
           }
           break;
         case RT.SplitMatch or RT.SplitExact:
+          Log(Area, "Token splitting starting, from input string.");
           Tokens_FromInput(split: true);
           break;
         case RT.StoreExtra:
+          Log(Area, $"Storing remaining zones matching {RuleData}");
           Tokens_StoreExtra();
           break;
         case RT.StoreOther:
+          Log(Area, $"Storing remaining zones.");
           Tokens_StoreOther();
           break;
+        default:
+          Log(Area, "Bad rule type, skipping rule.");
+          break;
       }
+      Console.Write(GetMaskedInput());
     }
 
     return [.. Result.Select(t => t.Token)];

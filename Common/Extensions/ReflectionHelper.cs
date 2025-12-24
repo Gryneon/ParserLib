@@ -1,48 +1,37 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using System.Linq;
+
 namespace Common.Extensions;
 
 public static class ReflectionHelper
 {
-  public static IReadOnlyList<(Type Type, PropertyInfo Property)> GetTypesWithAttributeAndProperties<TAttribute> (
-    Type? propertyTypeFilter = null,
-    BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Static)
-    where TAttribute : Attribute
+  public static Collection<AttributeLinkedType<TAttribute>> GetAttributedClasses<TAttribute> (BindingFlags flags = BindingFlags.Default)
+  where TAttribute : Attribute =>
+  [..
+    AppDomain.
+    CurrentDomain.
+    GetAssemblies().
+    SelectMany(assy => assy.GetTypes().
+    Where(type => type.GetCustomAttribute<TAttribute>() is not null).
+    Select(t => new AttributeLinkedType<TAttribute>() { Type = t, Attribute = t.GetCustomAttribute<TAttribute>()! }))
+  ];
+
+  public static (TType? Data, TAttribute? Attribute) GetStaticPropertyByAttribute<TType, TAttribute> (Type? type, BindingFlags flags = BFS)
+  where TAttribute : Attribute
+  where TType : class
   {
-    List<(Type, PropertyInfo)> result = [];
+    if (type is null) return (null, null);
+    PropertyInfo prop = type.GetProperties(flags).First(static prop => prop.GetCustomAttribute<TAttribute>() is not null);
+    return (prop.GetValue(null) as TType, prop.GetCustomAttribute<TAttribute>());
+  }
 
-    foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-    {
-      Type[] types;
-      try
-      {
-        types = assembly.GetTypes();
-      }
-      catch (ReflectionTypeLoadException ex)
-      {
-        types = ex.Types.Where(t => t != null).ToArray()!;
-      }
-
-      foreach (Type type in types)
-      {
-        if (type == null || !type.IsClass) continue;
-
-        if (!Attribute.IsDefined(type, typeof(TAttribute), inherit: true))
-          continue;
-
-        // Get all public static properties
-        PropertyInfo[] properties = type.GetProperties(bindingFlags);
-
-        foreach (PropertyInfo prop in properties)
-        {
-          if (propertyTypeFilter == null || propertyTypeFilter.IsAssignableFrom(prop.PropertyType))
-          {
-            result.Add((type, prop));
-          }
-        }
-      }
-    }
-
-    return result;
+  public static Collection<(TType? Data, TAttribute? Attribute)> GetStaticPropertiesByAttribute<TType, TAttribute> (Type? type, BindingFlags flags = BFS)
+  where TAttribute : Attribute
+  where TType : class
+  {
+    if (type is null) return [];
+    IEnumerable<PropertyInfo> props = type.GetProperties(flags).Where(static prop => prop.GetCustomAttribute<TAttribute>() is not null);
+    return [.. props.Select(p => (p.GetValue(null) as TType, p.GetCustomAttribute<TAttribute>()))];
   }
 }

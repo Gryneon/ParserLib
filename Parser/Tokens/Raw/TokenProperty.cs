@@ -25,11 +25,12 @@ public sealed class TokenProperty<T> : IToken<T>, IReadOnlyProperty<string>, IPr
   // Needed for sorting and classification
   public required T Type { get; set; }
   public int Index { get; set; }
+  public bool Exempt { get; set; }
   public bool HasType => true;
 
   string IReadOnlyProperty<string>.Key => Name;
 
-  public IList<IToken<T>> Children { get; init; } = [];
+  public TokenCollection<T> Children { get; init; } = [];
 
   int IComparable<IProperty<string>>.CompareTo (IProperty<string>? other) => Name.CompareTo(other?.Key, SCO);
   public bool Equals (IProperty<string>? other) => Name.Equals(other?.Key, SCO) && (Value?.Equals(other?.Value, SCO) ?? false);

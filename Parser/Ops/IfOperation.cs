@@ -11,7 +11,7 @@ public sealed class IfOperation (ICondition condition, IOperation ifTrue, IOpera
   bool IOperation.ContinueOnFail { get; set; }
   bool IOperation.SkipOperation { get; set; }
   bool IOperation.IgnoreAllLoads => false;
-  public int Unpack ([NotNull] Collection<IOperation> operations, int index, IParser? parser_ref = null)
+  public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     int nextOrEnd (int i) => i + 1 >= operations.Count ? -1 : i + 1;
 
@@ -25,5 +25,5 @@ public sealed class IfOperation (ICondition condition, IOperation ifTrue, IOpera
     IfFalse = Operation.JumpTo(iffalse);
     return operations.Count;
   }
-  OpStatus IOperation.DoOperation (IParser parser_ref) => OpStatus.Pass;
+  OpStatus IOperation.DoOperation (XParser parser_ref) => OpStatus.Pass;
 }
