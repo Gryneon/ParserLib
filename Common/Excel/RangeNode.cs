@@ -1,3 +1,4 @@
+#if HAS_OFFICE
 using Common.Regex;
 
 using XlRange = Microsoft.Office.Interop.Excel.Range;
@@ -126,3 +127,4 @@ public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGenerat
     left is null ? right is null : left.CompareTo(right) >= 0;
   #endregion
 }
+#endif

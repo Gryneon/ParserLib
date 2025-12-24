@@ -1,3 +1,4 @@
+#if HAS_OFFICE
 using System.Data;
 
 namespace Common.Excel;
@@ -11,3 +12,4 @@ public interface ITableExt
 
   Dictionary<string, string> this[int row] => [.. Data.Select(item => new KeyValuePair<string, string>(item.Key, item.Value[row]))];
 }
+#endif

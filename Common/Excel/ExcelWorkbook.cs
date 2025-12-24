@@ -1,3 +1,4 @@
+#if HAS_OFFICE
 using System.Data;
 
 using DataTable = System.Data.DataTable;
@@ -91,3 +92,4 @@ public sealed class ExcelWorkbook
       Names.Add(nm.Name, nm);
   }
 }
+#endif

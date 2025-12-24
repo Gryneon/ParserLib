@@ -1,3 +1,4 @@
+#if HAS_OFFICE
 using System.Data;
 
 namespace Common.Excel;
@@ -29,3 +30,4 @@ public class ExcelTable : TableExt
     }
   }
 }
+#endif

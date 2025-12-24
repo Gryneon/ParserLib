@@ -1,3 +1,4 @@
+#if HAS_OFFICE
 namespace Common.Excel;
 
 /// <summary>
@@ -11,3 +12,4 @@ public abstract class TableExt : ITableExt
 
   public Dictionary<string, string> this[int row] => ((ITableExt) this)[row];
 }
+#endif

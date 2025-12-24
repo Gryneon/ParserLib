@@ -1,3 +1,4 @@
+#if HAS_OFFICE
 using Microsoft.Office.Interop.Excel;
 
 using XlRange = Microsoft.Office.Interop.Excel.Range;
@@ -25,3 +26,4 @@ public interface ISheetExt
   }
   Range GetRange (Worksheet sheet, string address) => new(address);
 }
+#endif

@@ -1,8 +1,11 @@
+#if HAS_OFFICE
 using Microsoft.Office.Interop.Excel;
 
 namespace Common.Excel;
 
 internal static class App
 {
-  public static Application Instance { get; } = new();
+	public static Application Instance { get; } = new();
 }
+
+#endif

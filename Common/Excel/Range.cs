@@ -1,3 +1,4 @@
+#if HAS_OFFICE
 using Common.Regex;
 
 using static Common.Regex.RegexStaticFunctions;
@@ -125,3 +126,4 @@ public class Range : IEquatable<Range>, IComparable<Range>, IEnumerable<RangeNod
   public static bool operator > (Range left, Range right) => left is not null && left.CompareTo(right) > 0;
   public static bool operator >= (Range left, Range right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }
+#endif
