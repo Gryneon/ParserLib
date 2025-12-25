@@ -4,10 +4,10 @@ namespace Parser.Ops.Text;
 
 public class TokenAssembleOperation<T> : Operation where T : notnull
 {
-  private readonly IEnumerable<TokenGroupRule<dynamic>> _rules;
+  private readonly IEnumerable<TokenGroupRule<T>> _rules;
   private readonly int _specialCode;
 
-  public TokenAssembleOperation (IEnumerable<TokenGroupRule<dynamic>> rules)
+  public TokenAssembleOperation (IEnumerable<TokenGroupRule<T>> rules)
   {
     _rules = [.. rules];
   }
@@ -18,9 +18,9 @@ public class TokenAssembleOperation<T> : Operation where T : notnull
   }
   protected override void Execute ()
   {
-    TokenAssembler<dynamic> raw = new(_rules);
+    TokenAssembler<T> raw = new([.._rules], Spec);
 
-    if (base.CheckInput<TokenCollection<dynamic>>(out TokenCollection<dynamic>? list))
+    if (base.CheckInput<TokenCollection<T>>(out TokenCollection<T>? list))
     {
       raw.Execute(list);
       WorkToReturn = list;

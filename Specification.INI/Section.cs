@@ -1,3 +1,5 @@
+using Parser.Tokens.Raw;
+
 namespace Specification.INI;
 
 /// <summary>
@@ -64,6 +66,18 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
       Properties = [.. props]
     };
     return result;
+  }
+  public static Section Generate (TokenObject<ITT> input)
+  {
+    input.ThrowIfNull();
+
+    IEnumerable<PropertyObj> prop_obj = input.Properties.Select(token_prop => new PropertyObj(token_prop.Name, token_prop.Value ?? SE));
+
+    return new()
+    {
+      Name = input.Name,
+      Properties = [.. prop_obj],
+    };
   }
   /// <summary>
   /// Sets the given property to the given value.

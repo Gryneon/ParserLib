@@ -209,6 +209,7 @@ public static class StringExtensions
       throw new ANEx(nameof(text));
   }
   public static T ToEnum<T> (this string data) where T : notnull => (T) Enum.Parse(typeof(T), data);
+  public static int ToEnum (this string data, Type type) => (int) Enum.Parse(type, data);
   public static bool TryMatchAt (this string rx, RegexOptions options, int index, string input, [NotNullWhen(true)] out MatchDataSet? match)
   {
     match = null;

@@ -12,8 +12,6 @@ public class TokenGroupRule<T> : TokenRule<T> where T : notnull
     Type = type;
     TypeToAssign = typeToAssign;
     RuleStringData = ruleStringData ?? throw new ArgumentNullException(nameof(ruleStringData));
-    Sequence = new ChkSequence<T>(ruleStringData);
   }
-
   public TokenGroupRule () { }
 }

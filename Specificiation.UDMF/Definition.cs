@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Parser;
 using Parser.Inference;
 using Parser.Ops.Text;
+using Parser.Tokens.Raw;
 
 using static Parser.DefinitionStaticFunctions;
 using static Specification.UDMF.UDMFTokenType;
@@ -71,6 +72,9 @@ public static class Definition
       new(RT_Keyword, Sector,    "\bsector\b"),
       new(RT.StoreExtra | RT.IgnoredToken, Ws,   Rx(@"\s+")),
       new(RT.StoreOther, None)],
+    GroupTokenRules = [
+      new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:(AInt|Str|Dec|True|False) tx:Sc"),
+      new(RT.BuildObject, AObject, "tn:Vertex tx:Bo tpm:Property tx:Bc"),],
     SC = SCOIC,
     IsTextFile = true,
     TokenTypeLookup = new()

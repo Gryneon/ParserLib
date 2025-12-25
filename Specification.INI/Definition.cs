@@ -41,14 +41,27 @@ public static class Definition
       IfN(ExtIs, "vnc"),
       IfN(ExtIs, "inf")],
     RxOpt = RXOptions,
+    TokenType = typeof(ITT),
     Operations = [
       //new DictionaryOperation(Regex, RXOptions),
       //new GenerateOperation<MatchDataSet, Section>(Section.Generate, item => item.HasGroup("section"), "matches", "sections"),
       //new ExternalOperation<IEnumerable<Section>, INIDocument>(INIDocument.FromSections, item => true, "sections", "result"),
       //Operation.End],
-      new TokenizeOperation<INITokenType>(Spec.LoadFromSpec, "text", "tokens"),
-
+      new TokenizeOperation<ITT>(Spec.LoadFromSpec, "text", "tokens"),
+      new TokenAssembleOperation<ITT>(Spec.LoadFromSpec, "tokens", "tokens_assembled"),
+      new GenerateOperation<TokenObject<ITT>, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
+      Operation.End
     ],
+    TokenTypeLookup = {
+      ["None"] = ITT.None,
+      ["Comment"] = ITT.Comment,
+      ["Str"] = ITT.Str,
+      ["Bo"] = ITT.Bo,
+      ["Bc"] = ITT.Bc,
+      ["Eq"] = ITT.Eq,
+      ["Section"] = ITT.Section,
+      ["Property"] = ITT.Property,
+      ["Ws"] = ITT.Ws},
     TokenRules = [
       new(TokenMatch | Competitive, ITT.Str, @"""([^\\]|\\.)*"""),
       new(TokenMatch | Competitive | IgnoredToken, ITT.Comment, @";.*?$"),
@@ -58,9 +71,9 @@ public static class Definition
       new(TokenMatch | IgnoredToken, ITT.Ws, @"\s+"),
       new(TokenMatch, ITT.Section, @"(?<=\[).*?(?=\])"),],
     GroupTokenRules = [
-      new(BuildProperty, ITT.Property, "tk:Str tx:Eq tv:(Str|)"),
-      new(BuildProperty, ITT.Section, "tx:Bo tx:Eq tx:Bc"),
-      new(BuildProperty, ITT.Property, "tk:Str tx:Eq tv:Str"),
+      new(BuildProperty, ITT.Property, "tn:Str tx:Eq tv:(Str|)"),
+      new(BuildLabel, ITT.Section, "tx:Bo tx:Section tx:Bc"),
+      new(BuildObject, ITT.Section, "tn:Section tpm:Property"),
     ]
   };
 }

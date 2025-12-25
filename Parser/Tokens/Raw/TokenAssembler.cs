@@ -2,10 +2,11 @@
 
 namespace Parser.Tokens.Raw;
 
-public sealed class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) where T : notnull
+public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec spec) where T : notnull
 {
   private static readonly string Area = "TokenAssembler<" + typeof(T) + ">";
-  private readonly List<TokenGroupRule<T>> _rules = rules?.ToList() ?? throw new ArgumentNullException(nameof(rules));
+  private readonly TokenGroupRuleCollection<T> _rules = rules;
+  private readonly Spec _spec = spec;
 
   // Temp fields
   private TokenCollection<T>? _tokens;
@@ -17,6 +18,100 @@ public sealed class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) whe
     _tokens.ThrowIfNull();
     _rule.ThrowIfNull();
     Log(Area, "Validation Passed");
+    if (_rule.Sequence.IsEmpty())
+    {
+      if(_rule.RuleStringData is null)
+        throw (new InvalidOperationException("No valid data in rule."));
+
+      string data = _rule.RuleStringData;
+      string[] data_strings = data.Split([' ', '\t', '\n'], 255, SSORT);
+      foreach (string item in data_strings)
+      {
+        int colon = item.IndexOf(':', SCO);
+        string pre = item[..(colon)];
+        string post = item[(colon + 1)..];
+
+        RT rule = RT.None;
+        rule |= pre.Contains('x', SCOIC) ? RT.IgnoredToken : RT.None;
+        rule |= pre.Contains('m', SCOIC) ? RT.Mult : RT.None;
+        rule |= pre.Contains('o', SCOIC) ? RT.Opt : RT.None;
+        rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
+        pre = pre.RemoveChars("xmoi");
+
+        bool useLiteral;
+
+        if (!pre.ContainsAny(['t','c']))
+          throw new InvalidOperationException("Prefix does not contain a valueIs identifier 't' or 'c'.");
+
+        useLiteral = pre.Contains('c', SCOIC);
+
+        RT sample = pre.RemoveChars("tc") switch
+        {
+          "y" => RT.AssignType,
+          "v" => RT.AssignValue,
+          "n" => RT.AssignName,
+          "p" => RT.AddProperty,
+          "f" => RT.AddFlag,
+          "r" => RT.RemFlag,
+          "x" => RT.IgnoredToken,
+          _ => throw new InvalidOperationException("Unknown letter encountered.")
+        };
+
+        rule |= sample;
+        Collection<string> allowed = [];
+
+        if (post.StartsWith('(') && post.EndsWith(')'))
+        {
+          post = post[1..^1];
+          IEnumerable<string> strs = post.Split(['-', '|', '+', '&'], 0, SSORT);
+
+          foreach (string s in strs)
+          {
+            allowed.Add(s);
+          }
+        }
+        else
+        {
+          allowed.Add(post);
+        }
+
+        Collection<T> types = [];
+
+        if (!useLiteral)
+        {
+          void addToTypes (T type)
+          {
+            if (types.Contains(type))
+              return;
+
+            types.Add(type);
+            if (_spec.TokenCompatLookup.ContainsKey(type))
+            {
+              foreach (dynamic t in _spec.TokenCompatLookup[type])
+              {
+                addToTypes((T) t);
+              }
+            }
+          }
+
+          foreach (string al in allowed)
+          {
+            T tal = _spec.TokenTypeLookup[al];
+            addToTypes(tal);
+          }
+        }
+
+        ChkToken<T> temp = new(item)
+        {
+          UseAsLiteral = useLiteral,
+          TokenRule = rule,
+          AllowedContents = useLiteral ? allowed : [],
+          AllowedTypes = types
+        };
+
+        _rule.Sequence.Add(temp);
+      }
+    }
   }
   internal void Construct (int first_token_index, TokenCollection<T> tokens_to_assemble, IList<int> sequence_ids)
   {
@@ -111,6 +206,21 @@ public sealed class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) whe
         NameToken = getToken<Token<T>>(RT.AssignName),
         Children = tokens_to_assemble
       },
+      RT.BuildLabel => new TokenLabel<T>()
+      {
+        Type = _rule.TypeToAssign,
+        Index = tokens_to_assemble[0].Index,
+        NameToken = getToken<Token<T>>(RT.AssignName),
+        Children = tokens_to_assemble
+      },
+      RT.BuildTypedValue => new TokenTypedValue<T>()
+      {
+        Type = _rule.TypeToAssign,
+        Index = tokens_to_assemble[0].Index,
+        ValueTypeToken = getToken<Token<T>>(RT.AssignType),
+        ValueToken = getToken<Token<T>>(RT.AssignValue),
+        Children = tokens_to_assemble
+      },
       _ => throw new InvalidOperationException("Unknown rule type"),
     };
     _tokens.Insert(first_token_index, constructed_obj);
@@ -171,18 +281,6 @@ public sealed class TokenAssembler<T> (IEnumerable<TokenGroupRule<T>> rules) whe
       }
     }
     return _constructed_items;
-  }
-
-  public void BuildAssembly (RT rt, string data)
-  {
-    data.ThrowIfNull();
-    List<string> items = [.. data.Split(' ', '\t', '\n')];
-    List<ChkToken<T>> seq_checks = [];
-    foreach (string item in items)
-    {
-      ChkToken<T> token = new(item);
-      seq_checks.Add(token);
-    }
   }
   internal static Collection<(T, RT)> Lookup (IEnumerable<(RT Flag, string Data)> token_def)
   {

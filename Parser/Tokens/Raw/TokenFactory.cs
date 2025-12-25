@@ -214,6 +214,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
       {
         Content = match.Value,
         Ignored = cRule.Type.HasFlag(RT.IgnoredToken),
+        Exempt = cRule.Type.HasFlag(RT.ExemptAllWithin),
         Position = match.Index,
         Type = cRule.TypeToAssign
       };

@@ -5,6 +5,8 @@ using Parser.Tokens.Raw;
 
 namespace Parser;
 
+public record struct EnumOrString (Enum En, string St);
+
 /// <summary>A class containing the operations, requirements, and instructions for reading a file.</summary>
 public class Spec
 {
@@ -28,6 +30,7 @@ public class Spec
     get => field | (SC == SCOIC ? ROIC : RON);
     init;
   }
+  public Type TokenType { get; init; } = typeof(int);
   /// <summary>The default string comparison type to use.</summary>
   public StringComparison SC { get; init; } = SCO;
   /// <summary>Define the names for tranlating the string based rules.</summary>
@@ -35,9 +38,9 @@ public class Spec
   /// <summary>Define the names of equilivent groups of tokens.</summary>
   public Dictionary<dynamic, Collection<dynamic>> TokenCompatLookup { get; init; } = [];
   /// <summary>Token rules for the tokenize operration..</summary>
-  public Collection<TokenRule<dynamic>> TokenRules { get; init; } = [];
+  public TokenRuleCollection<dynamic> TokenRules { get; init; } = [];
   /// <summary>Group token rules for the tokenize operration..</summary>
-  public Collection<TokenGroupRule<dynamic>> GroupTokenRules { get; init; } = [];
+  public TokenGroupRuleCollection<dynamic> GroupTokenRules { get; init; } = [];
   /// <summary>Token types that are basic building blocks.</summary>
   public Collection<string> RegexBasicTokens { get; init; } = [];
   /// <summary>Token types to ignore.</summary>
@@ -51,7 +54,7 @@ public class Spec
   /// <summary>This casts the TokenRules to a specific TokenType.</summary>
   /// <typeparam name="T">The Token Type to cast the rules to. This must be a string or an enum.</typeparam>
   /// <returns>The casted rule collection.</returns>
-  public Collection<TokenRule<T>> FromDynamic<T> () where T : notnull, new() => [.. TokenRules.Select(static rule => new TokenRule<T>()
+  public Collection<TokenRule<T>> FromDynamic<T> () where T : notnull => [.. TokenRules.Select(static rule => new TokenRule<T>()
   {
     TypeToAssign = (T) rule.TypeToAssign,
     Type = rule.Type,

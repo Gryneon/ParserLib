@@ -30,18 +30,20 @@ public enum TokenRuleType
   BuildFlag = 10,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenTypedValue{T}"/>.</summary>
   BuildTypedValue = 11,
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel{T}"/>.</summary>
+  BuildLabel = 12,
   /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty{T}"/> or <see cref="TokenArray{T}"/>.</summary>
-  AssignValue = 12,
+  AssignValue = 13,
   /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty{T}"/> or <see cref="TokenObject{T}"/>.</summary>
-  AssignName = 13,
+  AssignName = 14,
   /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject{T}"/>.</summary>
-  AssignType = 14,
+  AssignType = 15,
   /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject{T}"/>.</summary>
-  AddProperty = 15,
+  AddProperty = 16,
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag{T}"/>.</summary>
-  AddFlag = 16,
+  AddFlag = 17,
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag{T}"/>.</summary>
-  RemFlag = 17,
+  RemFlag = 18,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>
   FromTokens = 0x10000,

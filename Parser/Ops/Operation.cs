@@ -117,7 +117,6 @@ public abstract class Operation : IOperation
   /// <summary>
   /// A collection of all of the input keys. This will only contain one key if only one key is provided.
   /// </summary>
-  [NotNullIfNotNull(nameof(InputKey))]
   protected Collection<string> InputKeys { get; } = [];
   /// <summary>
   /// The input key provided, or the first input key if multiple are provided.

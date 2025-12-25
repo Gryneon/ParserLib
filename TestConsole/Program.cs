@@ -34,7 +34,7 @@ internal sealed class TestAction : MenuAction
 internal sealed class Program
 {
   #region Constants
-  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\";
+  internal const string SamplePath = @"C:\Users\querpus\source\repos\Git\ParserLib\Parser\Samples\";
   internal const int LogLine = 10;
   #endregion
   #region Fields
@@ -84,13 +84,15 @@ internal sealed class Program
 
     Debug.Log("Program", "Main", "Program Start");
 
+    Parser = new(Specification.INI.Definition.Spec);
+
     string file = $"{SamplePath}\\map00.udmf";
     //Load Data
     string input = File.ReadAllText(file);
     TokenFactory<UDMFTokenType> factory = new(Definition.Spec.FromDynamic<dynamic>());
     TokenCollection<UDMFTokenType> result = [.. factory.Produce(input)];
     Debug.Log(result.ToString2());
-    TokenAssembler<UDMFTokenType> assembler = new(RawTokenSamples.UDMFGroupRuleSet);
+    TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Specification.INI.Definition.Spec);
     TokenCollection<UDMFTokenType> tokens = [.. result];
     assembler.Execute(tokens);
     Debug.Log(tokens.ToString2());

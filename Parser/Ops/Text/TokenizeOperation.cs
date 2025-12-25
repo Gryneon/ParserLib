@@ -31,12 +31,12 @@ public class TokenizeOperation<T> : Operation where T : notnull
     _types = [.. tokenData];
     _mode = TM_Marker;
   }
-  public TokenizeOperation (IEnumerable<TokenRule<dynamic>> rules, string input_key = "text", string output_key = "tokens")
+  public TokenizeOperation (IEnumerable<TokenRule<dynamic>> rules, string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
   {
     _rules = [.. rules];
     _mode = TM_Rule;
   }
-  public TokenizeOperation (int special_case_id, string input_key = "text", string output_key = "tokens")
+  public TokenizeOperation (int special_case_id, string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
   {
     _rules = [];
     _mode = TM_Rule | TMF_UseSpec;

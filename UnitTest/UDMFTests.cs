@@ -35,7 +35,7 @@ public class UDMFTests
 
     TokenCollection<UTT> result = [.. factory.Produce(input)];
 
-    TokenAssembler<UTT> assembler = new(RawTokenSamples.UDMFGroupRuleSet);
+    TokenAssembler<UTT> assembler = new(RawTokenSamples.UDMFGroupRuleSet, Definition.Spec);
     int count = result.Count;
     assembler.Execute(result);
     int count2 = result.Count;

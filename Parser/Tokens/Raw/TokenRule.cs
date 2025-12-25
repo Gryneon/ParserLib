@@ -1,5 +1,6 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+
 namespace Parser.Tokens.Raw;
 
 public class TokenRule
@@ -23,12 +24,32 @@ public class TokenRule
   }
   public TokenRule () { }
 }
-
 public class TokenRule<T> where T : notnull
 {
   public required RT Type { get; init; }
   public string? RuleStringData { get; init; }
   public required T TypeToAssign { get; init; }
+
+  public static implicit operator TokenRule<T> (TokenRule rule)
+  {
+    rule.ThrowIfNull();
+    return new()
+    {
+      RuleStringData = rule.RuleStringData,
+      TypeToAssign = rule.TypeToAssign,
+      Type = rule.Type
+    };
+  }
+  public static implicit operator TokenRule (TokenRule<T> rule)
+  {
+    rule.ThrowIfNull();
+    return new()
+    {
+      RuleStringData = rule.RuleStringData,
+      TypeToAssign = rule.TypeToAssign,
+      Type = rule.Type
+    };
+  }
 
   [SetsRequiredMembers]
   public TokenRule (RT type, T typeToAssign, [SS("regex")] string? ruleStringData)
