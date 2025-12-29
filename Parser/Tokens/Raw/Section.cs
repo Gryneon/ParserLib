@@ -1,10 +1,9 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using System.Data;
-
 namespace Parser.Tokens.Raw;
 
-public struct Section : IEquatable<Section>, IComparable<Section>
+[method: SetsRequiredMembers]
+public struct Section (string input) : IEquatable<Section>, IComparable<Section>
 {
   private int _length;
   private int _end;
@@ -29,12 +28,12 @@ public struct Section : IEquatable<Section>, IComparable<Section>
     }
   }
 
-  public static Section ByEnd (int start, int end) => new()
+  public static Section ByEnd (int start, int end, string input) => new(input)
   {
     Start = start,
     End = end
   };
-  public static Section ByLength (int start, int length) => new()
+  public static Section ByLength (int start, int length, string input) => new(input)
   {
     Start = start,
     Length = length
@@ -42,11 +41,7 @@ public struct Section : IEquatable<Section>, IComparable<Section>
 
   public readonly bool IsWithin (int point) => point <= End && point >= Start;
   public readonly bool Overlaps (Section other) => End >= other.Start && Start <= other.End;
-  public readonly bool Overlaps (IEnumerable<Section> others)
-  {
-    Section temp = ByLength(Start, Length);
-    return others.Any(temp.Overlaps);
-  }
+  public readonly bool Overlaps (IEnumerable<Section> others) => others.Any(Overlaps);
   public override readonly bool Equals (object? obj) => obj is Section s && Equals(s);
   public override readonly int GetHashCode () => HashCode.Combine(Start, Length);
   public static bool operator == (Section left, Section right) => left.Equals(right);
@@ -58,45 +53,34 @@ public struct Section : IEquatable<Section>, IComparable<Section>
   {
     sections.ThrowIfNull();
     List<Section> sorted = [.. sections.OrderBy(s => s.Start)];
-    int i = 0;
     int start = -1;
     Collection<Section> result = [];
-    while (i < overall_length)
+    for (int i = 0; i <= overall_length; i++)
     {
-      if (!sections.Any(s => s.IsWithin(i)) && start == -1)
+      var relevant_sections = sorted.Where(s => s.Start <= i && s.End >= i).ToList();
+      if (relevant_sections.Any(s => s.IsWithin(i)))
       {
+        if (start == -1)
+          continue;
+        else
+        {
+          result.Add(new() { Start = start, End = i, FullContent = sorted[0].FullContent });
+          start = -1;
+          continue;
+        }
+      }
+      else if(start == -1)
         start = i;
-      }
-      else if (sections.Any(s => s.IsWithin(i)) && start != -1)
-      {
-        result.Add(ByEnd(start, i));
-        start = -1;
-      }
-      i++;
     }
     return result;
   }
-  public readonly string Content (string original_string) => original_string[Start..End];
+  public readonly required string FullContent { get; init; } = input;
+  public readonly string Content => FullContent[Start..End];
   /// <inheritdoc/>
   public readonly int CompareTo (Section other) => Start.CompareTo(other.Start);
-
-  public static bool operator < (Section left, Section right)
-  {
-    return left.CompareTo(right) < 0;
-  }
-
-  public static bool operator <= (Section left, Section right)
-  {
-    return left.CompareTo(right) <= 0;
-  }
-
-  public static bool operator > (Section left, Section right)
-  {
-    return left.CompareTo(right) > 0;
-  }
-
-  public static bool operator >= (Section left, Section right)
-  {
-    return left.CompareTo(right) >= 0;
-  }
+  public override readonly string ToString () => $"Section-{Start} : {Content}";
+  public static bool operator < (Section left, Section right) => left.CompareTo(right) < 0;
+  public static bool operator <= (Section left, Section right) => left.CompareTo(right) <= 0;
+  public static bool operator > (Section left, Section right) => left.CompareTo(right) > 0;
+  public static bool operator >= (Section left, Section right) => left.CompareTo(right) >= 0;
 }

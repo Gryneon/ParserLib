@@ -197,6 +197,177 @@
         <member name="F:Common.DictionaryMode.MakeList">
             <summary>Convert the items into a collection, or add the item to the collection.</summary>
         </member>
+        <member name="T:Common.Excel.ExcelWorkbook">
+            <summary>
+            Repesents an Excel workbook and provides access to its sheets, tables, queries, styles, and named ranges.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.ExcelWorkbook.Path">
+            <summary>
+            The file path of the workbook, if it was opened from a file.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.ExcelWorkbook.Workbook">
+            <summary>
+            A reference to the underlying Excel Workbook object.
+            </summary>
+        </member>
+        <member name="M:Common.Excel.ExcelWorkbook.#ctor(System.String)">
+            <summary>
+            Creates an <see cref="T:Common.Excel.ExcelWorkbook"/> by opening the specified file path.
+            </summary>
+            <param name="path">The path to the workbook.</param>
+        </member>
+        <member name="T:Common.Excel.Range">
+            <summary>
+            A class representing a range of cells in Excel, which can include standard cell references, table references, and named ranges.
+            </summary>
+        </member>
+        <member name="M:Common.Excel.Range.ColumnRx(System.String)">
+            <summary>
+            <c>[inside]</c>
+            </summary>
+            <param name="inside">Regex inside braces.</param>
+            <returns>A string Regex of a column structure.</returns>
+        </member>
+        <member name="F:Common.Excel.Range.InnerCol">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.NoRangeOp">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableRx">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.CommaSep">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableRef">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableCol">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.TableCell">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="F:Common.Excel.Range.ExcelRef">
+            <summary>
+            <para>Regex Development: <seealso href="https://regex101.com/r/I9S9Yi/7"/></para>
+            <c>NoRangeOp</c> - No colon follows.<br/>
+            <c>TableRx</c> - Table or named range.<br/>
+            <c>CommaSep</c> - Optional comma.<br/>
+            <c>TableRef</c> - Optional comma &amp; table or named range.<br/>
+            <c>TableCol</c> - Optional comma &amp; table or named range &amp; column.<br/>
+            <c>TableCell</c> - Optional comma &amp; table or named range &amp; this row, column.<br/>
+            <c>ExcelRef</c> - A standard excel range reference.<br/>
+            </summary>
+        </member>
+        <member name="T:Common.Excel.RangeNode">
+            <summary>
+            A node within a range.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.Sheet">
+            <summary>
+            The containing worksheet.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.Row">
+            <summary>
+            The row index.
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.Col">
+            <summary>
+            The column index;
+            </summary>
+        </member>
+        <member name="P:Common.Excel.RangeNode.WholeRow">
+            <summary>
+            Whether or not this is the whole row or not.
+            </summary>
+        </member>
+        <member name="M:Common.Excel.RangeNode.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Excel.RangeNode.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Excel.RangeNode.CompareTo(Common.Excel.RangeNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Common.Excel.RangeNode.Equals(Common.Excel.RangeNode)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Common.Excel.TableExt">
+            <summary>
+            An abstract base class that implements the ITableExt interface, providing a foundation for table-like data structures.
+            </summary>
+        </member>
         <member name="T:Common.Extensions.CharExtensions">
             <summary>
             Extension methods for the <see cref="T:System.Char"/> type.

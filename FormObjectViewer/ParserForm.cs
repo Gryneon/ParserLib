@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace FormObjectViewer;
 
-public partial class ParserForm : Form
+internal partial class ParserForm : Form
 {
   protected XParser Parser { get; private set; } = new();
   protected Spec Spec { get; private set; } = DefaultSpec.Unknown;

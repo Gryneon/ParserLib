@@ -89,10 +89,10 @@ internal sealed class Program
     string file = $"{SamplePath}\\map00.udmf";
     //Load Data
     string input = File.ReadAllText(file);
-    TokenFactory<UDMFTokenType> factory = new(Definition.Spec.FromDynamic<dynamic>());
+    TokenFactory<UDMFTokenType> factory = new(Definition.Spec.TokenRules);
     TokenCollection<UDMFTokenType> result = [.. factory.Produce(input)];
     Debug.Log(result.ToString2());
-    TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Specification.INI.Definition.Spec);
+    TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Definition.Spec);
     TokenCollection<UDMFTokenType> tokens = [.. result];
     assembler.Execute(tokens);
     Debug.Log(tokens.ToString2());

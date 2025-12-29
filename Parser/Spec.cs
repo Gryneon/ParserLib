@@ -51,13 +51,4 @@ public class Spec
   /// <remarks>Subsequent operations that depend on the active object will reference this instance after calling
   /// this method. If another instance was previously active, it will be replaced.</remarks>
   public void SetAsActive () => Active = this;
-  /// <summary>This casts the TokenRules to a specific TokenType.</summary>
-  /// <typeparam name="T">The Token Type to cast the rules to. This must be a string or an enum.</typeparam>
-  /// <returns>The casted rule collection.</returns>
-  public Collection<TokenRule<T>> FromDynamic<T> () where T : notnull => [.. TokenRules.Select(static rule => new TokenRule<T>()
-  {
-    TypeToAssign = (T) rule.TypeToAssign,
-    Type = rule.Type,
-    RuleStringData = rule.RuleStringData
-  })];
 }

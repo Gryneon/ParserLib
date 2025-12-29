@@ -156,4 +156,10 @@
   <data name="udmf_map00" xml:space="preserve">
     <value>C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\map00.udmf</value>
   </data>
+  <data name="wad_tnt" xml:space="preserve">
+    <value>C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD</value>
+  </data>
+  <data name="udmf_sample" xml:space="preserve">
+    <value>C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.udmf</value>
+  </data>
 </root>

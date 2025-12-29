@@ -9,6 +9,19 @@ namespace Parser.Tokens.Raw;
 {
   private readonly Collection<TokenGroupRule<T>> _rules = [];
 
+  public static implicit operator TokenGroupRuleCollection<T> (Collection<TokenGroupRule<T>> rules)
+  {
+    rules.ThrowIfNull();
+    TokenGroupRuleCollection<T> collection = [.. rules];
+    return collection;
+  }
+
+  public static implicit operator TokenGroupRuleCollection<T> (TokenGroupRuleCollection<dynamic> rules)
+  {
+    rules.ThrowIfNull();
+    TokenGroupRuleCollection<T> collection = [.. rules.Select(t => new TokenGroupRule<T>(t.Type, t.TypeToAssign, t.RuleStringData))];
+    return collection;
+  }
   public TokenGroupRule<T> this[int index] { get => ( _rules)[index]; set => ( _rules)[index] = value; }
 
   public int Count => ( _rules).Count;
@@ -31,6 +44,14 @@ namespace Parser.Tokens.Raw;
 public class TokenRuleCollection<T> : IList<TokenRule<T>> where T : notnull
 {
   private readonly Collection<TokenRule<T>> _rules = [];
+  /// <summary>This casts the TokenRules to a specific TokenType.</summary>
+  /// <returns>The casted rule collection.</returns>
+  public static implicit operator TokenRuleCollection<T> (TokenRuleCollection<dynamic> d) => [.. d.Select(static rule => new TokenRule<T>()
+  {
+    TypeToAssign = (T) rule.TypeToAssign,
+    Type = rule.Type,
+    RuleStringData = rule.RuleStringData
+  })];
 
   public TokenRule<T> this[int index] { get => _rules[index]; set => _rules[index] = value; }
 

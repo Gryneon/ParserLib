@@ -15,74 +15,32 @@ using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.MapInfo;
 
+public enum MapInfoTokenType
+{
+  Ws,
+  LnComment,
+  BlkComment,
+  Include,
+  Damagetype,
+  Doomednums,
+  Property,
+  Class,
+  AInt,
+  Dec,
+  Str,
+  LangRef,
+  AChar,
+  Op,
+  Bool,
+  BlockKeyword,
+  Keyword,
+  Name,
+}
+
+
 [DefinitionExport]
 public static class Definition
 {
-  // <summary>
-  // https://regex101.com/r/hgS1Zq/5
-  // </summary>
-  //private static readonly TokenFormat GameInfoSingle = new()
-  //{
-  //  Type = "property",
-  //  Template = [
-  //      N("name", ["CheatKey", "EasyKey"], "key"),
-  //      N("equals"),
-  //      N("string", null, "value"),
-  //    ]
-  //};
-  //private static readonly TokenFormat GameInfoParam4 = new()
-  //{
-  //  Type = "property",
-  //  Template = [
-  //    N("name", ["PrecacheSounds"], "key"),
-  //    N("equals"),
-  //    N("string", null, "value1"),
-  //    N("comma"),
-  //    N("string", null, "value2"),
-  //    N("comma"),
-  //    N("string", null, "value3"),
-  //    N("comma"),
-  //    N("string", null, "value4"),
-  //  ]
-  //};
-  //private static TokenTemplate ;
-
-  //private static TokenTemplateNode N (string t, string[]? s = null, string? p = null) => new(t, s, p);
-  //private static TokenTemplateNode N (TokenType t, string s) => new(t, s is null ? null : [s], null);
-  //private static TokenTemplateNode N (TokenType[] t, string[]? s = null, string? p = null) => new(t, s, p);
-  //private static Collection<TokenFormat> Templates { get; } = [
-  //  new() {
-  //    Type = "block",
-  //    Template = [
-  //  //    N("blockstart", ["map"], "definitiontype"),
-  //  //    N("name", null, "definitionname"),
-  //  //    N("string", null, "nicename"),
-  //  //    N("lbracket"),
-  //  //    N("property", null, "properties"), //one or many
-  //  //    N("rbracket"),
-  //    ]
-  //  },
-  //  new() {
-  //    Type = "parameter",
-  //    Template = [
-  //      new(["string", "int", "decimal", "bool", "name"], null, "parameter"),
-  //   //   N("comma") // opt
-  //    ]
-  //  },
-  //  //Gameinfo Properties
-  //  //GameInfoSingle,
-  //  //GameInfoParam4,
-  //  new() {
-  //    Type = "property",
-  //    Template = [
-  //      new("int", null, "key"),
-  //      new("equals"),
-  //      new(["string", "int", "decimal", "bool", "name"], null, "value"),
-  //    ]
-  //  },
-
-  //];
-
   private static readonly RxS
     include = Nm("include", $@"\binclude{ws}""(?'path'[^""]*)"""),
     property = Nm("property", $@"^{wso}(?'key'\w+){eq}(?'value'.*?){wso}$"),
@@ -108,6 +66,8 @@ public static class Definition
     K("c", Nm("char", RX.Chars)),
 
   ];
+
+  private const RT RT_Competes = RT.TokenMatch | RT.Competitive | RT.IgnoreCase | RT.ExemptAllWithin;
 
   /// <summary>
   /// Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see>
@@ -144,5 +104,28 @@ public static class Definition
     WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
     RegexBasicTokens = ["langref", "int", "dec", "op", "str", "bool", "blockkeyword", "name", "keyword"],
     RxOpt = ROIC | ROEC | ROML,
+    IsTextFile = true,
+    TokenType = typeof(MTT),
+    TokenTypeLookup = {
+      ["LangRef"] = MTT.LangRef,
+      ["Str"] = MTT.Str,
+      ["AInt"] = MTT.AInt,
+      ["Dec"] = MTT.Dec,
+      ["AChar"] = MTT.AChar,
+      ["Op"] = MTT.Op,
+      ["Bool"] = MTT.Bool,
+      ["BlockKeyword"] = MTT.BlockKeyword,
+      ["Keyword"] = MTT.Keyword,
+      ["Name"] = MTT.Name,
+    },
+    TokenRules = [
+      new(RT_Competes, MTT.LangRef, @"""\$\w+"""),
+      new(RT_Competes, MTT.Str, @""".+?"""),
+      new(RT_Competes | RT.IgnoredToken, MTT.LnComment, @"\/\/.*?$"),
+      new(RT_Competes | RT.IgnoredToken, MTT.BlkComment, @"\/\*[\s\S]*?\*\/"),],
+    SC = SCOIC,
+    TokenCompatLookup = {
+      [MTT.Property] = [MTT.AInt, MTT.Dec, MTT.Str, MTT.AChar, MTT.Bool],
+    },
   };
 }

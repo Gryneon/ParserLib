@@ -71,7 +71,7 @@ public static class Definition
       new(TokenMatch | IgnoredToken, ITT.Ws, @"\s+"),
       new(TokenMatch, ITT.Section, @"(?<=\[).*?(?=\])"),],
     GroupTokenRules = [
-      new(BuildProperty, ITT.Property, "tn:Str tx:Eq tv:(Str|)"),
+      new(BuildProperty, ITT.Property, "tn:Str tx:Eq tv:Str"),
       new(BuildLabel, ITT.Section, "tx:Bo tx:Section tx:Bc"),
       new(BuildObject, ITT.Section, "tn:Section tpm:Property"),
     ]

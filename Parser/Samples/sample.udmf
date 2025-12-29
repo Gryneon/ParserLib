@@ -1,0 +1,27 @@
+namespace = "zdoom";
+thing // 0
+{
+x = -192.000;
+y = 64.000;
+angle = 90;
+type = 1;
+skill1 = true;
+skill2 = true;
+skill3 = true;
+skill4 = true;
+skill5 = true;
+single = true;
+dm = true;
+coop = true;
+class1 = true;
+class2 = true;
+class3 = true;
+class4 = true;
+class5 = true;
+class6 = true;
+class7 = true;
+class8 = true;
+skill6 = true;
+skill7 = true;
+skill8 = true;
+}

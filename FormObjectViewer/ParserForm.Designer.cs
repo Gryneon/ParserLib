@@ -280,7 +280,6 @@ partial class ParserForm : Form
   private ComboBox SpecComboBox;
   private Label label1;
   public TabPage SpecTab;
-  private BindingSource bindingSource1;
   private DataGridView dataGridView1;
   private DataGridViewCheckBoxColumn continueOnFailDataGridViewCheckBoxColumn;
   private DataGridViewCheckBoxColumn skipOperationDataGridViewCheckBoxColumn;

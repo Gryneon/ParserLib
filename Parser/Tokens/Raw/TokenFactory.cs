@@ -84,14 +84,13 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
   }
   internal void Tokens_StoreOther ()
   {
-    Collection<Section> applicants = Section.Inverse(Input.Length, CannotMatch);
 
-    foreach (Section applicant in applicants)
+    foreach (Section applicant in Section.Inverse(Input.Length, CannotMatch))
     {
       Token<T> token = new()
       {
         Position = applicant.Start,
-        Content = applicant.Content(Input),
+        Content = applicant.Content,
         Ignored = IgnoredToken,
         Type = CurrentRule!.TypeToAssign
       };
@@ -104,15 +103,26 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
 
     foreach (Section applicant in applicants)
     {
-      if (Regex.Count(applicant.Content(Input), RuleData) > 0)
+      if (Regex.Count(applicant.Content, RuleData) > 0)
       {
-        //Add Instances
+        MatchCollection mc = Regex.Matches(applicant.Content, RuleData);
+        mc.ToList().ForEach(m =>
+        {
+          Token<T> token = new()
+          {
+            Position = applicant.Start + m.Index,
+            Content = m.Value,
+            Ignored = IgnoredToken,
+            Type = CurrentRule!.TypeToAssign
+          };
+          Result.Add((token, ExemptAllWithin));
+        });
       }
 
       Token<T> token = new()
       {
         Position = applicant.Start,
-        Content = applicant.Content(Input),
+        Content = applicant.Content,
         Ignored = IgnoredToken,
         Type = CurrentRule!.TypeToAssign
       };
@@ -133,7 +143,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
 
       while (next >= 0 && cursor <= Input.Length)
       {
-        Section match = Section.ByLength(next, length);
+        Section match = Section.ByLength(next, length, Input);
 
         if (!match.Overlaps(CannotMatch))
         {
@@ -167,7 +177,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
 
       foreach (Match match in mc)
       {
-        Section rng = Section.ByLength(match.Index, match.Length);
+        Section rng = Section.ByLength(match.Index, match.Length, Input);
 
         if (!rng.Overlaps(CannotMatch))
         {

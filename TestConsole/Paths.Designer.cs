@@ -160,6 +160,24 @@ namespace TestConsole {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
+        /// </summary>
+        internal static string udmf_sample {
+            get {
+                return ResourceManager.GetString("udmf_sample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD.
+        /// </summary>
+        internal static string wad_tnt {
+            get {
+                return ResourceManager.GetString("wad_tnt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
         /// </summary>
         internal static string xsd_specification {

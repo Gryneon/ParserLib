@@ -54,6 +54,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
           "f" => RT.AddFlag,
           "r" => RT.RemFlag,
           "x" => RT.IgnoredToken,
+          "" => RT.None,
           _ => throw new InvalidOperationException("Unknown letter encountered.")
         };
 

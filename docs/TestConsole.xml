@@ -75,6 +75,16 @@
               Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
             </summary>
         </member>
+        <member name="P:TestConsole.Paths.udmf_sample">
+            <summary>
+              Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
+            </summary>
+        </member>
+        <member name="P:TestConsole.Paths.wad_tnt">
+            <summary>
+              Looks up a localized string similar to C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD.
+            </summary>
+        </member>
         <member name="P:TestConsole.Paths.xsd_specification">
             <summary>
               Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
