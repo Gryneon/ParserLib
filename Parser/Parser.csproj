@@ -33,8 +33,6 @@
     <Content Include="Samples\mapinfo.lmp" />
     <Content Include="Samples\sample.cfg" />
   </ItemGroup>
-
-
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>

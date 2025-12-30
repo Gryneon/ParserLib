@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Common.Extensions;
 
 using Parser;
+using Parser.Ops;
 using Parser.Ops.Text;
 
 using static Common.Names;

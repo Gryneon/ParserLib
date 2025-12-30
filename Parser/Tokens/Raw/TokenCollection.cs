@@ -1,5 +1,3 @@
-using System.Formats.Asn1;
-
 namespace Parser.Tokens.Raw;
 
 /// <summary>A collection of tokens, use this to keep token operations consistent.</summary>

@@ -57,7 +57,7 @@ public struct Section (string input) : IEquatable<Section>, IComparable<Section>
     Collection<Section> result = [];
     for (int i = 0; i <= overall_length; i++)
     {
-      var relevant_sections = sorted.Where(s => s.Start <= i && s.End >= i).ToList();
+      IEnumerable<Section> relevant_sections = [.. sorted.Where(s => s.Start <= i && s.End >= i)];
       if (relevant_sections.Any(s => s.IsWithin(i)))
       {
         if (start == -1)

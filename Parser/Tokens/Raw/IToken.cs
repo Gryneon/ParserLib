@@ -4,7 +4,7 @@ namespace Parser.Tokens.Raw;
 
 public interface IToken<T> : IIndexSortable, IComparable<IToken<T>> where T : notnull
 {
-  T? Type { get; }
+  T? Type { get; set; }
   [MemberNotNullWhen(true, nameof(Type))]
   bool HasType { get; }
   bool Exempt { get; }

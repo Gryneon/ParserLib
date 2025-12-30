@@ -18,6 +18,10 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     _tokens.ThrowIfNull();
     _rule.ThrowIfNull();
     Log(Area, "Validation Passed");
+  }
+  internal void Parse ()
+  {
+    Validate();
     if (_rule.Sequence.IsEmpty())
     {
       if(_rule.RuleStringData is null)
@@ -38,12 +42,10 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
         pre = pre.RemoveChars("xmoi");
 
-        bool useLiteral;
-
         if (!pre.ContainsAny(['t','c']))
           throw new InvalidOperationException("Prefix does not contain a valueIs identifier 't' or 'c'.");
 
-        useLiteral = pre.Contains('c', SCOIC);
+        bool useLiteral = pre.Contains('c', SCOIC);
 
         RT sample = pre.RemoveChars("tc") switch
         {
@@ -181,7 +183,8 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Index = tokens_to_assemble[0].Index,
         NameToken = getToken<Token<T>>(RT.AssignName),
         ValueToken = getTokenOrDefault<IToken<T>>(RT.AssignValue),
-        Children = tokens_to_assemble
+        Children = tokens_to_assemble,
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildObject => new TokenObject<T>()
       {
@@ -190,14 +193,16 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         Properties = getTokens<TokenProperty<T>>(RT.AddProperty),
-        Children = tokens_to_assemble
+        Children = tokens_to_assemble,
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildArray => new TokenArray<T>()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         Items = [.. getTokens<IToken<T>>(RT.AssignValue)],
-        Children = tokens_to_assemble
+        Children = tokens_to_assemble,
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildFlag => new TokenFlag<T>()
       {
@@ -205,14 +210,16 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Index = tokens_to_assemble[0].Index,
         AddFlag = hasToken(RT.AddFlag),
         NameToken = getToken<Token<T>>(RT.AssignName),
-        Children = tokens_to_assemble
+        Children = tokens_to_assemble,
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildLabel => new TokenLabel<T>()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         NameToken = getToken<Token<T>>(RT.AssignName),
-        Children = tokens_to_assemble
+        Children = tokens_to_assemble,
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildTypedValue => new TokenTypedValue<T>()
       {
@@ -220,7 +227,8 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Index = tokens_to_assemble[0].Index,
         ValueTypeToken = getToken<Token<T>>(RT.AssignType),
         ValueToken = getToken<Token<T>>(RT.AssignValue),
-        Children = tokens_to_assemble
+        Children = tokens_to_assemble,
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       _ => throw new InvalidOperationException("Unknown rule type"),
     };
@@ -230,67 +238,80 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
   {
     Validate();
     TokenCollection<T> assembly = [];
-    Collection<int> seq_ids = [];
+    Collection<int> sequence_ids = [];
     bool isMatching = false;
-    int i_matchstart = 0;
+    int first_token_index = 0;
     _constructed_items = 0;
-    int s = 0, i = 0;
+    int rule_index = 0, token_index = 0;
+    bool allow_fail = false;
 
-    IToken<T>? peek () => i < _tokens.Count ? _tokens[i + 1] : null;
-    for (; i < _tokens.Count; i++)
+    for (; token_index < _tokens.Count; token_index++)
     {
-      IToken<T> token = _tokens[i];
-      RT rt = _rule.Sequence[s].TokenRule;
+      ChkToken<T>? this_sequence = rule_index >= _rule.Sequence.Count ? null : _rule.Sequence[rule_index];
+      IToken<T>? token = token_index >= _tokens.Count ? null : _tokens[token_index];
+      bool isMult = this_sequence?.TokenRule.HasFlag(RT.Mult) ?? false;
+      bool isOpt = this_sequence?.TokenRule.HasFlag(RT.Opt) ?? false;
+      allow_fail = isOpt || allow_fail;
 
-      while (_rule.Sequence[s].Equals(token))
+      void reset_match ()
+      {
+        isMatching = false;
+        rule_index = 0;
+        assembly.Clear();
+        sequence_ids.Clear();
+        first_token_index = -1;
+      }
+
+      if (this_sequence is null)
+      {
+        // End of sequence? Pass
+        Construct(first_token_index, assembly, sequence_ids);
+        reset_match();
+        continue;
+      }
+      // End of Tokens and all remaining are optional
+      if (_rule.Sequence[rule_index..].AllOptional)
+      {
+        Construct(first_token_index, assembly, sequence_ids);
+        reset_match();
+        continue;
+      }
+      // End of Tokens
+      if (token is null)
+      {
+        reset_match();
+        break;
+      }
+
+      if (this_sequence.Equals(token))
       {
         if (!isMatching)
         {
-          i_matchstart = i;
+          first_token_index = token_index;
           isMatching = true;
         }
+
         assembly.Add(token);
-        seq_ids.Add(s);
+        sequence_ids.Add(rule_index);
 
-        // If Mult and next matches, then do not increment the rule index. We can match it again.
-        if (!(rt.HasFlag(RT.Mult) && peek() is not null && (peek()?.Type?.Equals(rt) ?? false)))
-          s++;
-
-        i++;
-
-        // End of sequence? Pass
-        if (s >= _rule.Sequence.Count)
-        {
-          Construct(i_matchstart, assembly, seq_ids);
-          isMatching = false;
-          break;
-        }
-        // End of Tokens and all remaining are optional
-        if (i >= _tokens.Count && _rule.Sequence[i..].AllOptional)
-        {
-          Construct(i_matchstart, assembly, seq_ids);
-          isMatching = false;
-          break;
-        }
-        // End of Tokens
-        if (i >= _tokens.Count)
-        {
-          i = i_matchstart;
-          isMatching = false;
-          break;
-        }
+        if (isMult)
+          allow_fail = true;
+        else
+          rule_index++;
+      }
+      else if (allow_fail)
+      {
+        rule_index++;
+        token_index--;
+        allow_fail = false;
+        continue;
+      }
+      else
+      {
+        reset_match();
       }
     }
     return _constructed_items;
-  }
-  internal static Collection<(T, RT)> Lookup (IEnumerable<(RT Flag, string Data)> token_def)
-  {
-    Collection<(T, RT)> result = [];
-    foreach ((RT flag, string? data) in token_def)
-    {
-      result.Add((data.ToEnum<T>(), flag));
-    }
-    return result;
   }
 
   public void Execute (TokenCollection<T> tokens)
@@ -300,6 +321,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     for (int r = 0; r < _rules.Count; r++)
     {
       _rule = _rules[r];
+      Parse();
       int times = ExecRule();
 
       while (_rule.Type.HasFlag(RT.Recursive) && times > 0)
@@ -307,9 +329,12 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         times = ExecRule();
       }
 
-      if (times > 0) { Log(Area, $"Rule {r} Executed {times} Times."); }
+      if (times > 0)
+      {
+        Log(Area, $"Rule {r} Executed {times} Times.");
+      }
     }
 
-    Log(Area, "Tokens ");
+    Log(Area, "Token Assembly Complete");
   }
 }

@@ -2,6 +2,7 @@ using static Parser.DefinitionStaticFunctions;
 
 namespace Parser.Tokens;
 
+/// <summary>Contains commonly used mathods and constants used to tokenize using the marker method.</summary>
 public static class TokenStaticFunctions
 {
   /// <summary>Adds a marker to the <see cref="MatchDataSet"/>.</summary>
@@ -42,7 +43,7 @@ public static class TokenStaticFunctions
   public static RxS DInt => Nm("t_int", @"-?\d+.?(?![0-9])");
   public static RxS DBool => Nm("t_bool", @"\b(true|false)\b");
   public static RxS DDec => Nm("t_dec", @"-?\d+.?(?![0-9])");
-  public static RxS DNull => Nm("t_null", "null");
+  public static RxS DNull => Nm("t_null", @"\bnull\b");
   public static RxS Name => Nm("t_name", @"\b\w+\b");
   public static RxS DString => Nm("t_string", @"""([^\\]|\\.)+""");
   public static RxS Value => Or(DString, DInt, DBool, DDec, DNull);

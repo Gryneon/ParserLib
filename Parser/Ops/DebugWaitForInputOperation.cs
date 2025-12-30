@@ -1,4 +1,4 @@
-namespace Parser.Ops.Text;
+namespace Parser.Ops;
 
 public class DebugWaitForInputOperation : Operation
 {

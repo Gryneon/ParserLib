@@ -312,16 +312,12 @@ SpawnNums
   63 = SGShard0
   130 = Blood
 }
-
-
 Intermission Inter_Titlescreen
 {
   GotoTitle
   {
   }
 }
-
-
 Intermission Inter_Pic1
 {
   Image

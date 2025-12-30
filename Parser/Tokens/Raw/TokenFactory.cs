@@ -7,7 +7,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
   internal const string Area = "TokenFactory<T>";
   internal string Input = SE;
   internal List<Section> CannotMatch = [];
-  internal List<(Token<T> Token, bool Exempt)> Result = [];
+  internal List<IToken<T>> Result = [];
   internal TokenRule<T>? CurrentRule;
   internal bool IgnoreCase => CurrentRule?.Type.HasFlag(RT.IgnoreCase) ?? false;
   internal StringComparison IC => IgnoreCase ? SCOIC : SCO;
@@ -44,7 +44,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
     return regex;
   }
 
-  internal static RT GetMaskedType (RT type) => type.RemoveBit<RT>(RT.FromTokens | RT.ExemptAllWithin | RT.Competitive | RT.IgnoreCase | RT.IgnoredToken);
+  internal static RT GetMaskedType (RT type) => type.RemoveBit<RT>(RT.FlagBits);
   internal static int GetRuleGroupIndex (Match match)
   {
     string num = match.Groups.
@@ -53,80 +53,64 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
       Name[2..];
     return int.TryParse(num, out int value) ? value : ErrVal;
   }
-  internal static dynamic FixType (object type)
-  {
-    dynamic d = type;
-    return type.GetType().IsAssignableTo(typeof(T)) ? d : throw new ArgumentException("", nameof(type));
-  }
-
   internal void Tokens_FromTokens ()
   {
-    foreach ((Token<T> Token, bool Exempt) tokendata in Result)
+    foreach (IToken<T> tokendata in Result)
     {
       if (tokendata.Exempt)
         continue;
 
       if (Type is RT.TokenExact)
       {
-        if (tokendata.Token.Content.Equals(RuleData, IC))
+        if (tokendata.Content.Equals(RuleData, IC))
         {
-          tokendata.Token.Type = CurrentRule!.TypeToAssign;
+          tokendata.Type = CurrentRule!.TypeToAssign;
         }
       }
       else if (Type is RT.TokenMatch)
       {
-        if (Regex.Match(tokendata.Token.Content, GetRuleRegex(CurrentRule!.Dynamic)).Length == tokendata.Token.Content.Length)
+        if (Regex.Match(tokendata.Content, GetRuleRegex(CurrentRule!.Dynamic)).Length == tokendata.Content.Length)
         {
-          tokendata.Token.Type = CurrentRule!.TypeToAssign;
+          tokendata.Type = CurrentRule!.TypeToAssign;
         }
       }
     }
   }
   internal void Tokens_StoreOther ()
   {
-
     foreach (Section applicant in Section.Inverse(Input.Length, CannotMatch))
     {
-      Token<T> token = new()
+      Log(Area, "Tokens_StoreOther", $"Section: {applicant} Found with no token.");
+      Result.Add(new Token<T>()
       {
-        Position = applicant.Start,
-        Content = applicant.Content,
+        Index = applicant.Start,
         Ignored = IgnoredToken,
-        Type = CurrentRule!.TypeToAssign
-      };
-      Result.Add((token, ExemptAllWithin));
+        Type = CurrentRule!.TypeToAssign,
+        Exempt = ExemptAllWithin,
+        Content = applicant.Content
+      });
     }
   }
   internal void Tokens_StoreExtra ()
   {
-    Collection<Section> applicants = Section.Inverse(Input.Length, CannotMatch);
-
-    foreach (Section applicant in applicants)
+    foreach (Section applicant in  Section.Inverse(Input.Length, CannotMatch))
     {
-      if (Regex.Count(applicant.Content, RuleData) > 0)
+      if (Regex.IsMatch(applicant.Content, RuleData))
       {
         MatchCollection mc = Regex.Matches(applicant.Content, RuleData);
-        mc.ToList().ForEach(m =>
+        foreach (Match m in mc)
         {
-          Token<T> token = new()
+          CannotMatch.Add(Section.ByLength(m.Index, m.Length, Input));
+          Result.Add(new Token<T>()
           {
-            Position = applicant.Start + m.Index,
+            Index = applicant.Start + m.Index,
             Content = m.Value,
             Ignored = IgnoredToken,
-            Type = CurrentRule!.TypeToAssign
-          };
-          Result.Add((token, ExemptAllWithin));
-        });
+            Type = CurrentRule!.TypeToAssign,
+            Exempt = ExemptAllWithin
+          });
+        }
       }
-
-      Token<T> token = new()
-      {
-        Position = applicant.Start,
-        Content = applicant.Content,
-        Ignored = IgnoredToken,
-        Type = CurrentRule!.TypeToAssign
-      };
-      Result.Add((token, ExemptAllWithin));
     }
   }
   internal void Tokens_FromInput (bool split)
@@ -150,14 +134,15 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
           string sub = Input.Substring(next, length);
           Token<T> token = new()
           {
-            Position = next,
+            Index = next,
             Content = sub,
             Type = CurrentRule!.TypeToAssign,
-            Ignored = IgnoredToken
+            Ignored = IgnoredToken,
+            Exempt = ExemptAllWithin
           };
           CannotMatch.Add(match);
           if (!split)
-            Result.Add((token, ExemptAllWithin));
+            Result.Add(token);
           cursor = next + length;
           next = Input.IndexOf(RuleData, cursor, IC);
         }
@@ -182,16 +167,17 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
         if (!rng.Overlaps(CannotMatch))
         {
           string sub = match.Value;
-          Token<T> token = new()
-          {
-            Position = match.Index,
-            Content = sub,
-            Type = CurrentRule!.TypeToAssign,
-            Ignored = IgnoredToken
-          };
-          CannotMatch.Add(rng);
+          if (ExemptAllWithin)
+            CannotMatch.Add(rng);
           if (!split)
-            Result.Add((token, ExemptAllWithin));
+            Result.Add(new Token<T>()
+            {
+              Index = match.Index,
+              Content = sub,
+              Type = CurrentRule!.TypeToAssign,
+              Ignored = IgnoredToken,
+              Exempt = ExemptAllWithin
+            });
         }
         else
         {
@@ -225,10 +211,12 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
         Content = match.Value,
         Ignored = cRule.Type.HasFlag(RT.IgnoredToken),
         Exempt = cRule.Type.HasFlag(RT.ExemptAllWithin),
-        Position = match.Index,
+        Index = match.Index,
         Type = cRule.TypeToAssign
       };
-      Result.Add((token, cRule.Type.HasFlag(RT.ExemptAllWithin)));
+      Result.Add(token);
+      if (ExemptAllWithin)
+        CannotMatch.Add(Section.ByLength(match.Index, match.Length, Input));
     }
   }
 
@@ -290,9 +278,10 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<dynamic>> rules) wher
           Log(Area, "Bad rule type, skipping rule.");
           break;
       }
-      Console.Write(GetMaskedInput());
+
+      Result.Sort();
     }
 
-    return [.. Result.Select(t => t.Token)];
+    return [.. Result];
   }
 }

@@ -20,6 +20,7 @@ public static class Definition
   internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
   internal const RT RT_String = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
   internal const RT RT_IgnoreCase = RT.TokenMatch | RT.IgnoreCase | RT.ExemptAllWithin;
+  internal const RT RT_Exact = RT.TokenExact | RT.IgnoreCase | RT.ExemptAllWithin;
 
   private static string WS { get; } = Rx(@"(?:\s|\/\/.*|\/\*[\s\S]*?\*\/)*");
   private static string KEY { get; } = Nm("m_prop_key_property", @"\w+");
@@ -31,7 +32,7 @@ public static class Definition
     Name = "zdoom.udmf",
     FileInferences = [IfN(InferenceType.Ext | InferenceType.Like, "udmf")],
     WhitespaceTokens = ["ws"],
-    RxOpt = ROML | ROIPW | ROIC | ROEC,
+    RxOpt = ROML | ROIPW | ROIC | ROEC | ROSL,
     Operations = [
       new DictionaryOperation(Nm("m_vertex", @"\bvertex" + WS + "\\{" + Gp(WS + KEY + WS + "=" + WS + VAL + ";").Any + WS + "\\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "vertex_matches"),
       new GenerateOperation<MatchDataSet, ZVertex>(ZVertex.Generate, ZVertex.CanGenerate, "vertex_matches", "vertex"),
@@ -49,26 +50,23 @@ public static class Definition
       new GenerateOperation<MatchDataSet, ZSector>(ZSector.Generate, ZSector.CanGenerate, "sector_matches", "sector"),
     ],
     TokenRules = [
-      new(RT_String,  Str,     Rx(@"""(?:[^\""\\\n\r]|\\.)*""")),
+      new(RT_String,  Str,     Rx(@"""(?:[^""\\\n\r]|\\.)*""")),
       new(RT_Comment, Comment, Rx(@"//[^\n\r]*")),
       new(RT_Comment, Comment, Rx(@"/\*.*?\*/")),
-      new(RT.TokenExact, Bo, "{"),
-      new(RT.TokenExact, Bc, "}"),
-      new(RT.TokenExact, Eq, "="),
-      new(RT.TokenExact, Sc, ";"),
-      new(RT.TokenExact | RT.IgnoreCase, True,  "true"),
-      new(RT.TokenExact | RT.IgnoreCase, False, "false"),
+      new(RT_Exact, Bo, "{"),
+      new(RT_Exact, Bc, "}"),
+      new(RT_Exact, Eq, "="),
+      new(RT_Exact, Sc, ";"),
+      new(RT_IgnoreCase, Bool,  @"\b(true|false)\b"),
       new(RT_IgnoreCase, Dec,  Rx(@"-?(\d+\.\d+|\.\d+)")),
-      new(RT_IgnoreCase, AInt, Rx(@"-\d+(?![.\d])")),
-      new(RT_IgnoreCase, PInt, Rx(@"\b\d+(?![.\d])\b")),
-      new(RT_IgnoreCase, Namespace, "\bnamespace\b"),
-      new(RT_IgnoreCase, Vertex,    "\bvertex\b"),
-      new(RT_IgnoreCase, Thing,     "\bthing\b"),
-      new(RT_IgnoreCase, SideDef,   "\bsidedef\b"),
-      new(RT_IgnoreCase, LineDef,   "\blinedef\b"),
-      new(RT_IgnoreCase, Sector,    "\bsector\b"),
+      new(RT_IgnoreCase, Namespace, @"\bnamespace\b"),
+      new(RT_IgnoreCase, Vertex,    @"\bvertex\b"),
+      new(RT_IgnoreCase, Thing,     @"\bthing\b"),
+      new(RT_IgnoreCase, SideDef,   @"\bsidedef\b"),
+      new(RT_IgnoreCase, LineDef,   @"\blinedef\b"),
+      new(RT_IgnoreCase, Sector,    @"\bsector\b"),
       new(RT_IgnoreCase, Name, Rx(@"\b[a-z]\w*\b")),
-      new(RT.StoreExtra | RT.IgnoredToken, Ws,   Rx(@"\s+")),
+      new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+")),
       new(RT.StoreOther, None)],
     GroupTokenRules = [
       new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:Value tx:Sc"),
@@ -86,10 +84,7 @@ public static class Definition
       ["Sector"] = Sector,
       ["Str"] = Str,
       ["Name"] = Name,
-      ["PInt"] = PInt,
-      ["AInt"] = AInt,
-      ["True"] = True,
-      ["False"] = False,
+      ["Bool"] = Bool,
       ["Dec"] = Dec,
       ["Value"] = Value,
       ["Comment"] = Comment,
@@ -103,10 +98,7 @@ public static class Definition
     TokenCompatLookup = new Dictionary<dynamic, Collection<dynamic>>()
     {
       [AObject] = [Vertex, Thing, Sector, LineDef, SideDef],
-      [AInt] = [PInt],
-      [Bool] = [True, False],
       [Op] = [Eq, Sc, Bo, Bc],
-      [Dec] = [AInt, PInt],
       [Value] = [Bool, Dec, Str],
       [Comment] = [Ws],
       [Ws] = [Comment],

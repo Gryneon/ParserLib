@@ -1,9 +1,5 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
-
-
 namespace Parser.Tokens.Raw;
-
-
 
   public class TokenGroupRuleCollection<T> : IList<TokenGroupRule<T>> where T : notnull
 {
@@ -39,8 +35,6 @@ namespace Parser.Tokens.Raw;
   public void RemoveAt (int index) => (_rules).RemoveAt(index);
   IEnumerator IEnumerable.GetEnumerator () => ((IEnumerable) _rules).GetEnumerator();
 }
-
-
 public class TokenRuleCollection<T> : IList<TokenRule<T>> where T : notnull
 {
   private readonly Collection<TokenRule<T>> _rules = [];

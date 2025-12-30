@@ -1,4 +1,4 @@
-namespace Parser.Ops.Text;
+namespace Parser.Ops;
 /// <summary>
 /// An operation that logs the contents of the provided key.
 /// </summary>
@@ -25,7 +25,7 @@ public class DebugToStringOperation : Operation
         break;
       case IEnumerable<string> strs:
         foreach (string str in strs)
-          Log(GetCaller(str), str);
+          Log(GetCaller("string"), str);
         break;
       case IEnumerable<MatchDataSet> mdds:
         foreach (MatchDataSet mdd in mdds)
@@ -33,7 +33,11 @@ public class DebugToStringOperation : Operation
         break;
       case IEnumerable<IToken> itokens:
         foreach (IToken it in itokens)
-          Log(GetCaller("Token"), it.ToString2() ?? "<null data>");
+          Log(GetCaller("IToken"), it.ToString2() ?? "<null data>");
+        break;
+      case IEnumerable<IToken<string>> itokens:
+        foreach (IToken<string> it in itokens)
+          Log(GetCaller("IToken<string>"), it.ToString2() ?? "<null data>");
         break;
       default:
         Log(GetCaller(WorkToReturn), WorkToReturn?.ToString2() ?? "<null data>");

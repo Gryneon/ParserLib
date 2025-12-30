@@ -9,28 +9,6 @@ using CK = System.ConsoleKey;
 
 namespace TestConsole;
 
-internal sealed class TestAction : MenuAction
-{
-  public override void Execute ()
-  {
-    Execute(out _);
-  }
-  public void Execute (out object? data_return)
-  {
-    string? specname = Library.CheckFile(Data);
-    Spec spec = Library.Lookup(specname) ?? DefaultSpec.Unknown;
-    string content = File.ReadAllText(Data);
-    Program.Parser = new(spec);
-    IEnumerator<OpStatus> en = Program.Parser.StepInit(content).GetEnumerator();
-    while (en.MoveNext())
-      Debug.Log("Program", $"{en.Current}");
-
-    Program.Status = Program.Parser.Parse(content);
-    Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Program.Status}.");
-    data_return = Program.Parser;
-  }
-}
-
 internal sealed class Program
 {
   #region Constants
@@ -86,7 +64,7 @@ internal sealed class Program
 
     Parser = new(Specification.INI.Definition.Spec);
 
-    string file = $"{SamplePath}\\map00.udmf";
+    string file = $"{SamplePath}\\sample.udmf";
     //Load Data
     string input = File.ReadAllText(file);
     TokenFactory<UDMFTokenType> factory = new(Definition.Spec.TokenRules);
@@ -97,6 +75,13 @@ internal sealed class Program
     assembler.Execute(tokens);
     Debug.Log(tokens.ToString2());
     //args = [.. args, TestPath["ipl"]];
+
+    if (args.Length == 0)
+    {
+      Debug.Log("Program.Main", "No files specified.");
+
+
+    }
 
     foreach (string path in args)
     {
