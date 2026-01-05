@@ -17,7 +17,6 @@ public class SectionCollection () : ICollection<Section>
 
       if (next is not null && section.End + 1 >= next.Value.Start)
       {
-        Log("Section Merge : " + section + "MERGE" + next);
         section.End = int.Max(next.Value.End, section.End);
         _sections.RemoveAt(i + 1);
         result = true;

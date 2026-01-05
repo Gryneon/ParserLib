@@ -5,7 +5,6 @@ namespace Parser.Tokens.Raw;
 public class Token<T> : TokenBase<T> where T : notnull
 {
   // Required Properties
-  public bool Ignored { get; set; }
   public override string Content
   {
     get => _content;

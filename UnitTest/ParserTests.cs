@@ -1,4 +1,5 @@
 using Parser;
+using Parser.Tokens.Raw;
 
 namespace UnitTest;
 
@@ -9,5 +10,12 @@ public class ParserTests
   {
     Assert.True(Library.SpecList.Count > 3);
     Assert.Equal("ipl", Library.LookupOrDefault("ipl").Name);
+  }
+
+  [Theory]
+  [InlineData("tcf:Dec")]
+  public void ChkTokenParse (string parse)
+  {
+    ChkToken<string> test = new(parse) { TokenRule = TokenRuleType.None };
   }
 }

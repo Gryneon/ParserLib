@@ -71,7 +71,7 @@ internal static class Debug
     (Debug_Unknown_Exception, static (_, __) => "Invalid Exception Parameters, or Unknown Exception Message"),
     (Override_Required, static (_, __) => "This needs to be overridden by the inheriting class."),
   };
-  internal static void Log (DebugMsg msg, params Collection<string> values)
+  public static void Log (DebugMsg msg, params Collection<string> values)
   {
     if (values.Count == 0)
       DoLog(MsgFormats[msg](SE, SE));

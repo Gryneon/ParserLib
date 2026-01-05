@@ -33,7 +33,7 @@ public static class Definition
     FileInferences = [IfN(InferenceType.Ext | InferenceType.Like, "udmf")],
     WhitespaceTokens = ["ws"],
     RxOpt = ROML | ROIPW | ROIC | ROEC | ROSL,
-    Operations =  [
+    Operations = [
       new DictionaryOperation(Nm("m_vertex", @"\bvertex" + WS + "\\{" + Gp(WS + KEY + WS + "=" + WS + VAL + ";").Any + WS + "\\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "vertex_matches"),
       new GenerateOperation<MatchDataSet, ZVertex>(ZVertex.Generate, ZVertex.CanGenerate, "vertex_matches", "vertex"),
 
@@ -66,11 +66,16 @@ public static class Definition
       new(RT_IgnoreCase, LineDef,   @"\blinedef\b"),
       new(RT_IgnoreCase, Sector,    @"\bsector\b"),
       new(RT_IgnoreCase, Name, Rx(@"\b[a-z]\w*\b")),
-      new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+")),
-      new(RT.StoreOther, None)],
+      new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
+    //new(RT.StoreOther, None)],
     GroupTokenRules = [
       new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:Value tx:Sc"),
-      new(RT.BuildObject, AObject, "tn:Vertex tx:Bo tpm:Property tx:Bc"),],
+      new(RT.BuildObject, AObject, "tn:Vertex tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildProperty, AObject, "tn:Namespace tx:Eq tv:Str tx:Sc"),
+      new(RT.BuildObject, AObject, "tn:Thing tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildObject, AObject, "tn:Sector tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildObject, AObject, "tn:LineDef tx:Bo tpm:Property tx:Bc"),
+      ],
     SC = SCOIC,
     IsTextFile = true,
     TokenTypeLookup = new()

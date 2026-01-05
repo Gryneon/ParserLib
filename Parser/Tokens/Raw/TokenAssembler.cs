@@ -24,15 +24,15 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     Validate();
     if (_rule.Sequence.IsEmpty())
     {
-      if(_rule.RuleStringData is null)
-        throw (new InvalidOperationException("No valid data in rule."));
+      if (_rule.RuleStringData is null)
+        throw new InvalidOperationException("No valid data in rule.");
 
       string data = _rule.RuleStringData;
       string[] data_strings = data.Split([' ', '\t', '\n'], 255, SSORT);
       foreach (string item in data_strings)
       {
         int colon = item.IndexOf(':', SCO);
-        string pre = item[..(colon)];
+        string pre = item[..colon];
         string post = item[(colon + 1)..];
 
         RT rule = RT.None;
@@ -42,7 +42,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
         pre = pre.RemoveChars("xmoi");
 
-        if (!pre.ContainsAny(['t','c']))
+        if (!pre.ContainsAny(['t', 'c']))
           throw new InvalidOperationException("Prefix does not contain a valueIs identifier 't' or 'c'.");
 
         bool useLiteral = pre.Contains('c', SCOIC);
@@ -245,7 +245,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     int rule_index = 0, token_index = 0;
     bool allow_fail = false;
 
-    for (; token_index < _tokens.Count; token_index++)
+    for (; token_index < _tokens.Count;)
     {
       ChkToken<T>? this_sequence = rule_index >= _rule.Sequence.Count ? null : _rule.Sequence[rule_index];
       IToken<T>? token = token_index >= _tokens.Count ? null : _tokens[token_index];
@@ -267,13 +267,15 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         // End of sequence? Pass
         Construct(first_token_index, assembly, sequence_ids);
         reset_match();
+        token_index++;
         continue;
       }
       // End of Tokens and all remaining are optional
-      if (_rule.Sequence[rule_index..].AllOptional)
+      if (token is null && _rule.Sequence[rule_index..].AllOptional)
       {
         Construct(first_token_index, assembly, sequence_ids);
         reset_match();
+        token_index++;
         continue;
       }
       // End of Tokens
@@ -281,6 +283,12 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
       {
         reset_match();
         break;
+      }
+
+      if (token.Ignored)
+      {
+        token_index++;
+        continue;
       }
 
       if (this_sequence.Equals(token))
@@ -298,17 +306,26 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
           allow_fail = true;
         else
           rule_index++;
+        token_index++;
+        continue;
       }
       else if (allow_fail)
       {
         rule_index++;
-        token_index--;
         allow_fail = false;
+        continue;
+      }
+      else if (isMatching)
+      {
+        token_index = first_token_index + 1;
+        reset_match();
         continue;
       }
       else
       {
+        token_index++;
         reset_match();
+        continue;
       }
     }
     return _constructed_items;

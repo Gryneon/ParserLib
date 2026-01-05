@@ -68,15 +68,16 @@ internal sealed class Program
     string file = $"{SamplePath}\\sample.udmf";
     //Load Data
     string input = File.ReadAllText(file);
+    //int libcount = Library.SpecList.Count;
     TokenRuleCollection<UDMFTokenType> rules = [];
     rules.AddRange(Definition.Spec.TokenRules);
     TokenFactory<UDMFTokenType> factory = new(rules);
     TokenCollection<UDMFTokenType> result = [.. factory.Produce(input)];
-    Debug.Log(Area, result.ToString2());
+    //Debug.Log(Area, result.ToString2());
     TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Definition.Spec);
     TokenCollection<UDMFTokenType> tokens = [.. result];
     assembler.Execute(tokens);
-    Debug.Log(Area, tokens.ToString2());
+    //Debug.Log(Area, tokens.ToString2());
     //args = [.. args, TestPath["ipl"]];
 
     if (args.Length == 0)

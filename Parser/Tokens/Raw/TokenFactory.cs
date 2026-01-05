@@ -268,7 +268,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : 
           break;
       }
     }
-
+    Result = [.. Result.OrderBy(item => item.Index)];
     return [.. Result];
   }
 }

@@ -8,6 +8,7 @@ public interface IToken<T> : IIndexSortable, IComparable<IToken<T>> where T : no
   [MemberNotNullWhen(true, nameof(Type))]
   bool HasType { get; }
   bool Exempt { get; }
+  bool Ignored { get; }
   TokenCollection<T> Children { get; init; }
   virtual string Content => Children.Select(static t => t.Content).TextJoin();
 }
