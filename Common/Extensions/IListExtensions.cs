@@ -13,7 +13,6 @@ public static class IListExtensions
   public static void AddRange<T> (this IList<T> list, IEnumerable<T> additions)
   {
     list ??= [];
-    ANEx.ThrowIfNull(list);
     if (additions is null)
       return;
     foreach (T item in additions)

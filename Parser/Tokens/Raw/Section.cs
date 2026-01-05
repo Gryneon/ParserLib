@@ -1,5 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using System.Runtime.CompilerServices;
+
 namespace Parser.Tokens.Raw;
 
 [method: SetsRequiredMembers]
@@ -49,31 +51,6 @@ public struct Section (string input) : IEquatable<Section>, IComparable<Section>
 
   public readonly bool Equals (Section other) => Start == other.Start && Length == other.Length;
 
-  public static Collection<Section> Inverse (int overall_length, IList<Section> sections)
-  {
-    sections.ThrowIfNull();
-    List<Section> sorted = [.. sections.OrderBy(s => s.Start)];
-    int start = -1;
-    Collection<Section> result = [];
-    for (int i = 0; i <= overall_length; i++)
-    {
-      IEnumerable<Section> relevant_sections = [.. sorted.Where(s => s.Start <= i && s.End >= i)];
-      if (relevant_sections.Any(s => s.IsWithin(i)))
-      {
-        if (start == -1)
-          continue;
-        else
-        {
-          result.Add(new() { Start = start, End = i, FullContent = sorted[0].FullContent });
-          start = -1;
-          continue;
-        }
-      }
-      else if(start == -1)
-        start = i;
-    }
-    return result;
-  }
   public readonly required string FullContent { get; init; } = input;
   public readonly string Content => FullContent[Start..End];
   /// <inheritdoc/>

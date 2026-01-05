@@ -1,6 +1,31 @@
 using Parser.Ops.Binary;
+using Parser.Tokens.Raw;
+
+using RT = Parser.Tokens.Raw.TokenRuleType;
 
 namespace Specification.JSON;
+
+public enum JSONTokenType
+{
+  None,
+
+  Str,
+  Num,
+  Bool,
+  Null,
+  Cm,
+  Bo,
+  Bc,
+  Co,
+  Ws,
+  Comment,
+  Property,
+  AObject,
+  Array,
+  Value,
+  Bko,
+  Bkc
+}
 
 /// <summary>
 /// Defines a JSON Specification.
@@ -8,6 +33,12 @@ namespace Specification.JSON;
 [DefinitionExport]
 public static class Definition
 {
+  // Flags
+  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
+  internal const RT RT_String = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
+  internal const RT RT_Match = RT.TokenMatch | RT.ExemptAllWithin;
+  internal const RT RT_Exact = RT.TokenExact | RT.ExemptAllWithin;
+
   private static KeyValuePair<string, RxS> TT (string name, RxS content, RxS? prefix = null, RxS? suffix = null)
   {
     RxS pre = Rx(prefix is null ? SE : prefix);
@@ -56,9 +87,35 @@ public static class Definition
         Operation.CopyKey("json_object", "result"),
         //TODO: Enhance Spec to analyse content.
         //TODO: Validate?
+        new TokenizeOperation<JTT>( Spec.LoadFromSpec,"text", "tokens"),
+        new DebugToStringOperation( "tokens"),
       ],
-    WhitespaceTokens = ["ws"],
-    RegexBasicTokens = ["string", "dec", "int", "op", "bool", "null"],
-    RxOpt = ROML | ROIPW | ROEC | ROIC
+    //WhitespaceTokens = ["ws"],
+    //RegexBasicTokens = ["string", "dec", "int", "op", "bool", "null"],
+    RxOpt = ROML | ROIPW | ROEC | ROSL,
+    IsTextFile = true,
+    TokenType = typeof(JTT),
+    TokenRules = [
+      new(RT_String, JTT.Str, $"\"{Gp(@"[^\\]|\\.").Any.Lazy}\""),
+      new(RT_Match, JTT.Bool, @"\b(true|false)\b"),
+      new(RT_Match, JTT.Null, @"\b(null)\b"),
+      new(RT_Match, JTT.Num, @"-?\d+(\.\d*)?"),
+      new(RT_Exact, JTT.Cm, ","),
+      new(RT_Exact, JTT.Bko, "{"),
+      new(RT_Exact, JTT.Bkc, "}"),
+      new(RT_Exact, JTT.Bo, "["),
+      new(RT_Exact, JTT.Bc, "]"),
+      new(RT_Exact, JTT.Co, ":"),
+      new(RT_Match | RT.IgnoredToken, JTT.Ws, @"\s+"),
+      new(RT.StoreOther | RT.ExemptAllWithin, JTT.None)],
+    TokenTypeLookup =
+    {
+      ["Str"] = JTT.Str,
+      ["Num"] = JTT.Num,
+      ["Null"] = JTT.Null,
+      ["Bool"] = JTT.Bool,
+      ["Cm"] = JTT.Cm,
+      ["Bc"] = JTT.Bc,
+    }
   };
 }

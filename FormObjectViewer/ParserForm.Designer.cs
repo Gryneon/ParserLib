@@ -32,17 +32,18 @@ partial class ParserForm : Form
   /// </summary>
   private void InitializeComponent ()
   {
+    DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
     StatusStrip = new StatusStrip();
     ToolStripIcon = new ToolStripStatusLabel();
     ToolStripStatusLabel = new ToolStripStatusLabel();
     MainTabs = new TabControl();
+    SpecTab = new TabPage();
+    SpecComboBox = new ComboBox();
+    label1 = new Label();
     OperationsTab = new TabPage();
     dataGridView1 = new DataGridView();
     DataTab = new TabPage();
     ParserDataGrid = new DataGridView();
-    SpecTab = new TabPage();
-    SpecComboBox = new ComboBox();
-    label1 = new Label();
     OpenParseFileDialog = new OpenFileDialog();
     menuStrip1 = new MenuStrip();
     fileToolStripMenuItem = new ToolStripMenuItem();
@@ -52,18 +53,20 @@ partial class ParserForm : Form
     operationsToolStripMenuItem = new ToolStripMenuItem();
     advanceToolStripMenuItem = new ToolStripMenuItem();
     restartToolStripMenuItem = new ToolStripMenuItem();
+    dataToolStripMenuItem = new ToolStripMenuItem();
     StatusStrip.SuspendLayout();
     MainTabs.SuspendLayout();
+    SpecTab.SuspendLayout();
     OperationsTab.SuspendLayout();
     ((ISupportInitialize) dataGridView1).BeginInit();
     DataTab.SuspendLayout();
     ((ISupportInitialize) ParserDataGrid).BeginInit();
-    SpecTab.SuspendLayout();
     menuStrip1.SuspendLayout();
     SuspendLayout();
     // 
     // StatusStrip
     // 
+    StatusStrip.ImageScalingSize = new Size(20, 20);
     StatusStrip.Items.AddRange(new ToolStripItem[] { ToolStripIcon, ToolStripStatusLabel });
     StatusStrip.Location = new Point(0, 410);
     StatusStrip.Name = "StatusStrip";
@@ -80,14 +83,14 @@ partial class ParserForm : Form
     ToolStripIcon.ImageAlign = ContentAlignment.MiddleLeft;
     ToolStripIcon.ImageScaling = ToolStripItemImageScaling.None;
     ToolStripIcon.Name = "ToolStripIcon";
-    ToolStripIcon.Size = new Size(40, 35);
+    ToolStripIcon.Size = new Size(40, 34);
     ToolStripIcon.Text = "Unloaded";
     // 
     // ToolStripStatusLabel
     // 
     ToolStripStatusLabel.Font = new Font("Cascadia Code", 14.25F, FontStyle.Regular, GraphicsUnit.Point,  0);
     ToolStripStatusLabel.Name = "ToolStripStatusLabel";
-    ToolStripStatusLabel.Size = new Size(199, 35);
+    ToolStripStatusLabel.Size = new Size(252, 34);
     ToolStripStatusLabel.Text = "No Parser Created";
     // 
     // MainTabs
@@ -107,56 +110,15 @@ partial class ParserForm : Form
     MainTabs.SizeMode = TabSizeMode.FillToRight;
     MainTabs.TabIndex = 1;
     // 
-    // OperationsTab
-    // 
-    OperationsTab.Controls.Add(dataGridView1);
-    OperationsTab.Location = new Point(4, 32);
-    OperationsTab.Name = "OperationsTab";
-    OperationsTab.Padding = new Padding(3);
-    OperationsTab.Size = new Size(792, 334);
-    OperationsTab.TabIndex = 0;
-    OperationsTab.Text = "Operate";
-    OperationsTab.UseVisualStyleBackColor = true;
-    // 
-    // dataGridView1
-    // 
-    dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-    dataGridView1.Dock = DockStyle.Bottom;
-    dataGridView1.Location = new Point(3, 155);
-    dataGridView1.Name = "dataGridView1";
-    dataGridView1.Size = new Size(786, 176);
-    dataGridView1.TabIndex = 0;
-    // 
-    // DataTab
-    // 
-    DataTab.Controls.Add(ParserDataGrid);
-    DataTab.Font = new Font("Bahnschrift", 12F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    DataTab.Location = new Point(4, 32);
-    DataTab.Name = "DataTab";
-    DataTab.Padding = new Padding(3);
-    DataTab.Size = new Size(792, 334);
-    DataTab.TabIndex = 1;
-    DataTab.Text = "Data";
-    DataTab.UseVisualStyleBackColor = true;
-    // 
-    // ParserDataGrid
-    // 
-    ParserDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-    ParserDataGrid.Dock = DockStyle.Bottom;
-    ParserDataGrid.Location = new Point(3, 163);
-    ParserDataGrid.Name = "ParserDataGrid";
-    ParserDataGrid.Size = new Size(786, 168);
-    ParserDataGrid.TabIndex = 0;
-    // 
     // SpecTab
     // 
     SpecTab.BorderStyle = BorderStyle.FixedSingle;
     SpecTab.Controls.Add(SpecComboBox);
     SpecTab.Controls.Add(label1);
-    SpecTab.Location = new Point(4, 32);
+    SpecTab.Location = new Point(4, 38);
     SpecTab.Name = "SpecTab";
     SpecTab.Padding = new Padding(3);
-    SpecTab.Size = new Size(792, 334);
+    SpecTab.Size = new Size(792, 328);
     SpecTab.TabIndex = 2;
     SpecTab.Text = "Spec";
     SpecTab.UseVisualStyleBackColor = true;
@@ -166,7 +128,7 @@ partial class ParserForm : Form
     SpecComboBox.FormattingEnabled = true;
     SpecComboBox.Location = new Point(64, 16);
     SpecComboBox.Name = "SpecComboBox";
-    SpecComboBox.Size = new Size(208, 31);
+    SpecComboBox.Size = new Size(208, 37);
     SpecComboBox.TabIndex = 1;
     // 
     // label1
@@ -174,9 +136,56 @@ partial class ParserForm : Form
     label1.AutoSize = true;
     label1.Location = new Point(8, 16);
     label1.Name = "label1";
-    label1.Size = new Size(51, 23);
+    label1.Size = new Size(66, 29);
     label1.TabIndex = 0;
     label1.Text = "Spec";
+    // 
+    // OperationsTab
+    // 
+    OperationsTab.Controls.Add(dataGridView1);
+    OperationsTab.Location = new Point(4, 38);
+    OperationsTab.Name = "OperationsTab";
+    OperationsTab.Padding = new Padding(3);
+    OperationsTab.Size = new Size(792, 328);
+    OperationsTab.TabIndex = 0;
+    OperationsTab.Text = "Operate";
+    OperationsTab.UseVisualStyleBackColor = true;
+    // 
+    // dataGridView1
+    // 
+    dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+    dataGridView1.Dock = DockStyle.Bottom;
+    dataGridView1.Location = new Point(3, 149);
+    dataGridView1.Name = "dataGridView1";
+    dataGridView1.RowHeadersWidth = 51;
+    dataGridView1.Size = new Size(786, 176);
+    dataGridView1.TabIndex = 0;
+    // 
+    // DataTab
+    // 
+    DataTab.Controls.Add(ParserDataGrid);
+    DataTab.Font = new Font("Bahnschrift", 12F, FontStyle.Regular, GraphicsUnit.Point,  0);
+    DataTab.Location = new Point(4, 38);
+    DataTab.Name = "DataTab";
+    DataTab.Padding = new Padding(3);
+    DataTab.Size = new Size(792, 328);
+    DataTab.TabIndex = 1;
+    DataTab.Text = "Data";
+    DataTab.UseVisualStyleBackColor = true;
+    // 
+    // ParserDataGrid
+    // 
+    ParserDataGrid.AllowUserToOrderColumns = true;
+    dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+    dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+    ParserDataGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+    ParserDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+    ParserDataGrid.Dock = DockStyle.Bottom;
+    ParserDataGrid.Location = new Point(3, 157);
+    ParserDataGrid.Name = "ParserDataGrid";
+    ParserDataGrid.RowHeadersWidth = 51;
+    ParserDataGrid.Size = new Size(786, 168);
+    ParserDataGrid.TabIndex = 0;
     // 
     // OpenParseFileDialog
     // 
@@ -189,7 +198,8 @@ partial class ParserForm : Form
     // 
     // menuStrip1
     // 
-    menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, operationsToolStripMenuItem });
+    menuStrip1.ImageScalingSize = new Size(20, 20);
+    menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, operationsToolStripMenuItem, dataToolStripMenuItem });
     menuStrip1.Location = new Point(0, 0);
     menuStrip1.Name = "menuStrip1";
     menuStrip1.Size = new Size(800, 28);
@@ -200,46 +210,52 @@ partial class ParserForm : Form
     // 
     fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
     fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-    fileToolStripMenuItem.Size = new Size(44, 24);
+    fileToolStripMenuItem.Size = new Size(46, 24);
     fileToolStripMenuItem.Text = "File";
     // 
     // openToolStripMenuItem
     // 
     openToolStripMenuItem.Name = "openToolStripMenuItem";
-    openToolStripMenuItem.Size = new Size(180, 24);
+    openToolStripMenuItem.Size = new Size(224, 26);
     openToolStripMenuItem.Text = "&Open...";
     // 
     // toolStripSeparator1
     // 
     toolStripSeparator1.Name = "toolStripSeparator1";
-    toolStripSeparator1.Size = new Size(177, 6);
+    toolStripSeparator1.Size = new Size(221, 6);
     // 
     // exitToolStripMenuItem
     // 
     exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-    exitToolStripMenuItem.Size = new Size(180, 24);
+    exitToolStripMenuItem.Size = new Size(224, 26);
     exitToolStripMenuItem.Text = "Exit";
     // 
     // operationsToolStripMenuItem
     // 
     operationsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { advanceToolStripMenuItem, restartToolStripMenuItem });
     operationsToolStripMenuItem.Name = "operationsToolStripMenuItem";
-    operationsToolStripMenuItem.Size = new Size(94, 24);
+    operationsToolStripMenuItem.Size = new Size(96, 24);
     operationsToolStripMenuItem.Text = "Operations";
     // 
     // advanceToolStripMenuItem
     // 
     advanceToolStripMenuItem.Enabled = false;
     advanceToolStripMenuItem.Name = "advanceToolStripMenuItem";
-    advanceToolStripMenuItem.Size = new Size(180, 24);
+    advanceToolStripMenuItem.Size = new Size(224, 26);
     advanceToolStripMenuItem.Text = "Advance";
     // 
     // restartToolStripMenuItem
     // 
     restartToolStripMenuItem.Enabled = false;
     restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-    restartToolStripMenuItem.Size = new Size(180, 24);
+    restartToolStripMenuItem.Size = new Size(224, 26);
     restartToolStripMenuItem.Text = "Restart";
+    // 
+    // dataToolStripMenuItem
+    // 
+    dataToolStripMenuItem.Name = "dataToolStripMenuItem";
+    dataToolStripMenuItem.Size = new Size(55, 24);
+    dataToolStripMenuItem.Text = "Data";
     // 
     // ParserForm
     // 
@@ -256,12 +272,12 @@ partial class ParserForm : Form
     StatusStrip.ResumeLayout(false);
     StatusStrip.PerformLayout();
     MainTabs.ResumeLayout(false);
+    SpecTab.ResumeLayout(false);
+    SpecTab.PerformLayout();
     OperationsTab.ResumeLayout(false);
     ((ISupportInitialize) dataGridView1).EndInit();
     DataTab.ResumeLayout(false);
     ((ISupportInitialize) ParserDataGrid).EndInit();
-    SpecTab.ResumeLayout(false);
-    SpecTab.PerformLayout();
     menuStrip1.ResumeLayout(false);
     menuStrip1.PerformLayout();
     ResumeLayout(false);
@@ -313,4 +329,5 @@ partial class ParserForm : Form
   private ToolStripMenuItem operationsToolStripMenuItem;
   private ToolStripMenuItem advanceToolStripMenuItem;
   private ToolStripMenuItem restartToolStripMenuItem;
+  private ToolStripMenuItem dataToolStripMenuItem;
 }

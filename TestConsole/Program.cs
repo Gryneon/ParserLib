@@ -14,6 +14,7 @@ internal sealed class Program
   #region Constants
   internal const string SamplePath = @"C:\Users\querpus\source\repos\Git\ParserLib\Parser\Samples\";
   internal const int LogLine = 10;
+  internal const string Area = "Program";
   #endregion
   #region Fields
   internal static Dictionary<string, string> TestPath = new()
@@ -67,13 +68,15 @@ internal sealed class Program
     string file = $"{SamplePath}\\sample.udmf";
     //Load Data
     string input = File.ReadAllText(file);
-    TokenFactory<UDMFTokenType> factory = new(Definition.Spec.TokenRules);
+    TokenRuleCollection<UDMFTokenType> rules = [];
+    rules.AddRange(Definition.Spec.TokenRules);
+    TokenFactory<UDMFTokenType> factory = new(rules);
     TokenCollection<UDMFTokenType> result = [.. factory.Produce(input)];
-    Debug.Log(result.ToString2());
+    Debug.Log(Area, result.ToString2());
     TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Definition.Spec);
     TokenCollection<UDMFTokenType> tokens = [.. result];
     assembler.Execute(tokens);
-    Debug.Log(tokens.ToString2());
+    Debug.Log(Area, tokens.ToString2());
     //args = [.. args, TestPath["ipl"]];
 
     if (args.Length == 0)

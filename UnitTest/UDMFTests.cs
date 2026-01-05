@@ -22,7 +22,7 @@ namespace UnitTest;
 public class UDMFTests
 {
   [Theory]
-  [InlineData("C:\\Users\\johntay4\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf")]
+  [InlineData("C:\\Users\\Querpus\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf")]
   public void UDMF_TokenFactoryTest (string file)
   {
     //Load Data
@@ -30,11 +30,10 @@ public class UDMFTests
 
     //Load Spec
     Spec spec = Definition.Spec;
-
-    TokenFactory<UTT> factory = new(new Collection<TokenRule<dynamic>>([.. spec.TokenRules]));
-
+    TokenRuleCollection<UTT> rules = [];
+    rules.AddRange(spec.TokenRules);
+    TokenFactory<UTT> factory = new(rules);
     TokenCollection<UTT> result = [.. factory.Produce(input)];
-
     TokenAssembler<UTT> assembler = new(spec.GroupTokenRules, Definition.Spec);
     int count = result.Count;
     assembler.Execute(result);
@@ -44,7 +43,7 @@ public class UDMFTests
   }
 
   [Theory]
-  [InlineData("C:\\Users\\johntay4\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf")]
+  [InlineData("C:\\Users\\Querpus\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf")]
   public void UDMF_ATFTest (string file)
   {
     RegexOptions options = ROML | ROIPW | ROSL | ROEC | ROIC;
@@ -66,7 +65,7 @@ public class UDMFTests
     ];
     Collection<TokenData> tdata = [
       new TokenData() { RequiredMarker = "open" },
-      new() { RequiredMarker = "close" },
+      new TokenData() { RequiredMarker = "close" },
       new() { RequiredMarker = "else" },
       new() { RequiredMarker = "op" },
     ];

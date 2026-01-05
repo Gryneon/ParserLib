@@ -1,3 +1,5 @@
+using Common.Extensions;
+
 using Parser.Tokens.Raw;
 
 namespace Parser.Ops.Text;
@@ -13,7 +15,7 @@ public class TokenizeOperation<T> : Operation where T : notnull
     TM_Rule = 2,
     TMF_UseSpec = 1024;
   private readonly Collection<TokenData> _types = [];
-  private readonly Collection<TokenRule<dynamic>> _rules = [];
+  private readonly TokenRuleCollection<T> _rules = [];
   private readonly int _mode = TM_Marker | TMF_UseSpec;
 
   public TokenizeOperation (IEnumerable<string> types, string input_key = "matches", string output_key = "tokens") : base(input_key, output_key)
@@ -31,7 +33,7 @@ public class TokenizeOperation<T> : Operation where T : notnull
     _types = [.. tokenData];
     _mode = TM_Marker;
   }
-  public TokenizeOperation (IEnumerable<TokenRule<dynamic>> rules, string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
+  public TokenizeOperation (IEnumerable<TokenRule<T>> rules, string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
   {
     _rules = [.. rules];
     _mode = TM_Rule;

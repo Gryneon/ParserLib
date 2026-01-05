@@ -11,7 +11,7 @@ public enum INITokenType
   None,
   Comment,
   Section,
-  Property,
+  Property, 
   Str,
   Ws,
   Bo, // [

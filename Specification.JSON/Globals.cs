@@ -14,3 +14,5 @@ global using Parser.Tokens;
 global using static Common.Names;
 global using static Parser.DefinitionStaticFunctions;
 
+global using JTT = Specification.JSON.JSONTokenType;
+
