@@ -17,7 +17,7 @@ public struct Section (string input) : IEquatable<Section>, IComparable<Section>
     set
     {
       _length = value;
-      _end = Start + value;
+      _end = Start + value - 1;
     }
   }
   public int End
@@ -26,7 +26,7 @@ public struct Section (string input) : IEquatable<Section>, IComparable<Section>
     set
     {
       _end = value;
-      _length = value - Start;
+      _length = value - Start + 1;
     }
   }
 
@@ -52,10 +52,10 @@ public struct Section (string input) : IEquatable<Section>, IComparable<Section>
   public readonly bool Equals (Section other) => Start == other.Start && Length == other.Length;
 
   public readonly required string FullContent { get; init; } = input;
-  public readonly string Content => FullContent[Start..End];
+  public readonly string Content => FullContent[Start..(End + 1)];
   /// <inheritdoc/>
   public readonly int CompareTo (Section other) => Start.CompareTo(other.Start);
-  public override readonly string ToString () => $"Section-{Start} : {Content}";
+  public override readonly string ToString () => $"Section-{Start}-{End} : {Content}";
   public static bool operator < (Section left, Section right) => left.CompareTo(right) < 0;
   public static bool operator <= (Section left, Section right) => left.CompareTo(right) <= 0;
   public static bool operator > (Section left, Section right) => left.CompareTo(right) > 0;

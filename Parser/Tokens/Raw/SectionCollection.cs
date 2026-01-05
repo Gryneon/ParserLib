@@ -6,27 +6,35 @@ public class SectionCollection () : ICollection<Section>
 {
   private readonly List<Section> _sections = [];
 
+  internal bool Compress ()
+  {
+    bool result = false;
+
+    for (int i = 0; i < _sections.Count; i++)
+    {
+      Section section = _sections[i];
+      Section? next = i + 1 < _sections.Count ? _sections[i + 1] : null;
+
+      if (next is not null && section.End + 1 >= next.Value.Start)
+      {
+        Log("Section Merge : " + section + "MERGE" + next);
+        section.End = int.Max(next.Value.End, section.End);
+        _sections.RemoveAt(i + 1);
+        result = true;
+      }
+    }
+    return result;
+  }
+
   public int Count => _sections.Count;
   public bool IsReadOnly => false;
   public Section this[int index] => _sections[index];
-  public SectionCollection this[Range rng] => [.. _sections[rng.Start..rng.End]];
-
   public void Add (Section item)
   {
     _sections.Add(item);
     _sections.Sort();
 
-    for (int i = 0; i < _sections.Count; i++)
-    {
-      Section section = _sections[i];
-      Section? next = (i + 1) <_sections.Count ? _sections[i + 1] : null;
-
-      if (next is not null && section.End + 1 >= next.Value.Start)
-      {
-        section.End = next.Value.End;
-        _sections.RemoveAt(i + 1);
-      }
-    }
+    while (Compress()) { }
   }
   public SectionCollection Inverse ()
   {

@@ -12,7 +12,7 @@ namespace TestConsole;
 internal sealed class Program
 {
   #region Constants
-  internal const string SamplePath = @"C:\Users\querpus\source\repos\Git\ParserLib\Parser\Samples\";
+  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\";
   internal const int LogLine = 10;
   internal const string Area = "Program";
   #endregion
@@ -82,7 +82,6 @@ internal sealed class Program
     if (args.Length == 0)
     {
       Debug.Log("Program.Main", "No files specified.");
-
 
     }
 

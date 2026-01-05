@@ -92,7 +92,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : 
         MatchCollection mc = Regex.Matches(applicant.Content, RuleData);
         foreach (Match m in mc)
         {
-          CannotMatch.Add(Section.ByLength(m.Index, m.Length, Input));
+          CannotMatch.Add(Section.ByLength(applicant.Start + m.Index, m.Length, Input));
           Result.Add(new Token<T>()
           {
             Index = applicant.Start + m.Index,
