@@ -2,32 +2,95 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Parser.Library">
     <Position X="0.5" Y="0.5" Width="3.25" />
+    <AssociationLine Name="Instance" Type="Parser.Library" ManuallyRouted="true">
+      <Path>
+        <Point X="1.652" Y="4.555" />
+        <Point X="1.652" Y="6.295" />
+        <Point X="2.62" Y="6.295" />
+        <Point X="2.62" Y="4.555" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.077" Y="1.218" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>CAIAQAAAAACFABAACAAAIgQAAAAAAABEwACAAAAEAAE=</HashCode>
       <FileName>Library.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Instance" />
+      <Property Name="this[System.String]" />
+    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
+      <Field Name="_specs" />
       <Property Name="SpecList" />
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Parser.Spec">
-    <Position X="4.75" Y="0.5" Width="2" />
+    <Position X="5" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAQAIAACAAAAEAAAAABBBAQAAIAAsAAgABAAIAAAAgA=</HashCode>
       <FileName>Spec.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Active" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Operations" />
+      <Property Name="TokenRules" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Parser.Ops.Operation">
-    <Position X="11.5" Y="2.5" Width="1.5" />
+    <Position X="10.75" Y="1" Width="2.25" />
+    <AssociationLine Name="InputKey" Type="System.String">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.213" Y="-0.313" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Spec" Type="Parser.Spec">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.725" Y="0.407" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>QAJgGAAmCAiBiyRgEAACBCgALAQQAJARgAXQQVAjACA=</HashCode>
       <FileName>Ops\Operation.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="End" />
+      <Property Name="InputKey" />
+      <Property Name="Parser" />
+      <Property Name="Spec" />
+      <Property Name="Status" />
+      <Property Name="AdjustedStatus" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="InputKeys" />
+    </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Interface Name="Parser.Ops.IOperation">
-    <Position X="11.75" Y="3.25" Width="1.5" />
+  <Class Name="System.String">
+    <Position X="14.5" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Parser.XParser" Collapsed="true">
+    <Position X="13.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IgAgAAACEIAAAIAgCAAjAKQAIsAAFBAEBQgAYQAAAAA=</HashCode>
+      <FileName>XParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Parser.Tokens.Raw.TokenRule&lt;T&gt;">
+    <Position X="2.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAABAEAAAAAAAAUAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Tokens\Raw\TokenRule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Parser.Ops.IOperation" Collapsed="true">
+    <Position X="6.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAkIAGAAgAgAAAAAAAAAAAAABAAAABAAAAAAAAAAA=</HashCode>
       <FileName>Ops\IOperation.cs</FileName>

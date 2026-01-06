@@ -183,8 +183,8 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Index = tokens_to_assemble[0].Index,
         NameToken = getToken<Token<T>>(RT.AssignName),
         ValueToken = getTokenOrDefault<IToken<T>>(RT.AssignValue),
-        Children = tokens_to_assemble,
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
+        Children = [.. tokens_to_assemble],
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
       },
       RT.BuildObject => new TokenObject<T>()
       {
@@ -193,7 +193,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         Properties = getTokens<TokenProperty<T>>(RT.AddProperty),
-        Children = tokens_to_assemble,
+        Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildArray => new TokenArray<T>()
@@ -201,7 +201,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         Items = [.. getTokens<IToken<T>>(RT.AssignValue)],
-        Children = tokens_to_assemble,
+        Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildFlag => new TokenFlag<T>()
@@ -210,7 +210,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Index = tokens_to_assemble[0].Index,
         AddFlag = hasToken(RT.AddFlag),
         NameToken = getToken<Token<T>>(RT.AssignName),
-        Children = tokens_to_assemble,
+        Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildLabel => new TokenLabel<T>()
@@ -218,7 +218,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         NameToken = getToken<Token<T>>(RT.AssignName),
-        Children = tokens_to_assemble,
+        Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       RT.BuildTypedValue => new TokenTypedValue<T>()
@@ -227,7 +227,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Index = tokens_to_assemble[0].Index,
         ValueTypeToken = getToken<Token<T>>(RT.AssignType),
         ValueToken = getToken<Token<T>>(RT.AssignValue),
-        Children = tokens_to_assemble,
+        Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
       _ => throw new InvalidOperationException("Unknown rule type"),

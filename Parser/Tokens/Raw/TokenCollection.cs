@@ -57,7 +57,7 @@ public class TokenCollection<T> () : IList<IToken<T>> where T : notnull
     _tokens.ThrowIfNull();
     for (int i = first; i < first + count; i++)
     {
-      _tokens.RemoveAt(i);
+      _tokens.RemoveAt(first);
     }
   }
 }

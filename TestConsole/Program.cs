@@ -13,6 +13,7 @@ internal sealed class Program
 {
   #region Constants
   internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\";
+  internal const string SamplePath2 = @"C:\Users\querpus\source\repos\Git\ParserLib\Parser\Samples\";
   internal const int LogLine = 10;
   internal const string Area = "Program";
   #endregion
@@ -65,7 +66,7 @@ internal sealed class Program
 
     Parser = new(Specification.INI.Definition.Spec);
 
-    string file = $"{SamplePath}\\sample.udmf";
+    string file = $"{SamplePath2}\\sample.udmf";
     //Load Data
     string input = File.ReadAllText(file);
     //int libcount = Library.SpecList.Count;

@@ -65,8 +65,8 @@ public static class Definition
       new(RT_IgnoreCase, SideDef,   @"\bsidedef\b"),
       new(RT_IgnoreCase, LineDef,   @"\blinedef\b"),
       new(RT_IgnoreCase, Sector,    @"\bsector\b"),
-      new(RT_IgnoreCase, Name, Rx(@"\b[a-z]\w*\b")),
-      new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
+      new(RT_IgnoreCase, Name, Rx(@"\b[a-z]\w*\b"))],
+     // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
     //new(RT.StoreOther, None)],
     GroupTokenRules = [
       new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:Value tx:Sc"),
