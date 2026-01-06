@@ -65,9 +65,3 @@ public class GenericProperty : IProperty<string>
   public static bool operator > (GenericProperty left, GenericProperty right) => left is not null && left.CompareTo(right) > 0;
   public static bool operator >= (GenericProperty left, GenericProperty right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }
-
-public class NewParser
-{
-  public int Index { get; set; }
-  public string Assembly { get; set; } = SE;
-}

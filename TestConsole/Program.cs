@@ -77,7 +77,7 @@ internal sealed class Program
     TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Definition.Spec);
     TokenCollection<UDMFTokenType> tokens = [.. result];
     assembler.Execute(tokens);
-    //Debug.Log(Area, tokens.ToString2());
+    Debug.Log(Area, tokens.ToString2());
     //args = [.. args, TestPath["ipl"]];
 
     if (args.Length == 0)

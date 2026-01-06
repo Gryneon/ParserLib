@@ -3,6 +3,7 @@
 
 using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
+using static Parser.Tokens.Raw.TokenRuleType;
 
 namespace Specification.ZScript;
 
@@ -11,6 +12,27 @@ namespace Specification.ZScript;
 
 //ZScript Tokenizer
 //https://regex101.com/r/dM72bX/1
+
+public enum ZScriptTokenType
+{
+  None,
+  Class,
+  Include,
+  Num,
+  Str,
+  Name,
+  State,
+  Keyword,
+  Comment,
+  AddFlag,
+  SubFlag,
+  Property,
+  FunctionCall,
+  StateCmd,
+  Value,
+  Array,
+  ClassRef
+}
 
 [DefinitionExport]
 public static class PrevDefinition
@@ -87,6 +109,11 @@ public static class PrevDefinition
       new TokenTemplateOperation([]),
       //TemplateToObjectOperation
       Parser.Ops.Operation.End
+    ],
+    IsTextFile = true,
+    SC = SCOIC,
+    TokenRules = [
+      //new(TokenExact, )
     ]
   };
 }

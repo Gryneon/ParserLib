@@ -5,8 +5,6 @@ using Parser.Tokens.Raw;
 
 namespace Parser;
 
-public record struct EnumOrString (Enum En, string St);
-
 /// <summary>A class containing the operations, requirements, and instructions for reading a file.</summary>
 public class Spec
 {
@@ -30,6 +28,7 @@ public class Spec
     get => field | (SC == SCOIC ? ROIC : RON);
     init;
   }
+  /// <summary>The type of token type to use.</summary>
   public Type TokenType { get; init; } = typeof(int);
   /// <summary>The default string comparison type to use.</summary>
   public StringComparison SC { get; init; } = SCO;

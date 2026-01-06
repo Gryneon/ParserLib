@@ -16,28 +16,6 @@ using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.MapInfo;
 
-public enum MapInfoTokenType
-{
-  Ws,
-  LnComment,
-  BlkComment,
-  Include,
-  Damagetype,
-  Doomednums,
-  Property,
-  Class,
-  AInt,
-  Dec,
-  Str,
-  LangRef,
-  AChar,
-  Op,
-  Bool,
-  BlockKeyword,
-  Keyword,
-  Name,
-}
-
 
 [DefinitionExport]
 public static class Definition
