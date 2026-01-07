@@ -2,9 +2,10 @@
 
 namespace Parser.Tokens.Raw;
 
-public class SectionCollection () : ICollection<Section>
+public sealed class SectionCollection () : ICollection<Section>
 {
   private readonly List<Section> _sections = [];
+  private readonly Dictionary<int, bool> _bit_array = [];
 
   internal bool Compress ()
   {
@@ -24,7 +25,10 @@ public class SectionCollection () : ICollection<Section>
     }
     return result;
   }
-
+  public bool IsWithin (int point) => _sections.Any(item => item.IsWithin(point));
+  public bool Overlaps (Section section) => section.Overlaps(_sections);
+  public string? FullText { get; private set; }
+  public int TextLength => FullText?.Length ?? -1;
   public int Count => _sections.Count;
   public bool IsReadOnly => false;
   public Section this[int index] => _sections[index];
@@ -32,6 +36,13 @@ public class SectionCollection () : ICollection<Section>
   {
     _sections.Add(item);
     _sections.Sort();
+
+    FullText ??= _sections[0].FullContent;
+
+    for (int i = item.Start; i <= item.End; i++)
+    {
+      _bit_array[i] = true;
+    }
 
     while (Compress()) { }
   }
@@ -56,6 +67,13 @@ public class SectionCollection () : ICollection<Section>
       }
       else if (start == -1)
         start = i;
+    }
+
+    foreach (int key in _bit_array.Keys)
+    {
+      // Treat missing as false; invert => true
+      bool original = _bit_array.TryGetValue(key, out bool value) && value;
+      result._bit_array[key] = !original;
     }
     return result;
   }

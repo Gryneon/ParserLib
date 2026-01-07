@@ -1,15 +1,6 @@
-using System.Collections;
-
 namespace Parser.Ops;
 
-public sealed class OperationSequence
-{
-
-}
-
-/// <summary>
-/// A collection of operations that are executed in the given order.
-/// </summary>
+/// <summary>A collection of operations that are executed in the given order.</summary>
 public sealed class OperationCollection : IOperation, IReadOnlyCollection<IOperation>, IPlaceholderOperation
 {
   public Collection<IOperation> Operations { get; init; }

@@ -66,7 +66,7 @@ internal sealed class Program
 
     Parser = new(Specification.INI.Definition.Spec);
 
-    string file = $"{SamplePath2}\\sample.udmf";
+    string file = $"{SamplePath}\\sample.udmf";
     //Load Data
     string input = File.ReadAllText(file);
     //int libcount = Library.SpecList.Count;

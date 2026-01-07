@@ -13,37 +13,37 @@ public enum TokenRuleType
   /// <summary>This Token Rule will match to the regex provided.</summary>
   TokenMatch = 2,
   /// <summary>This Token Rule will split the input at the regex provided, limiting future matches.</summary>
-  SplitMatch = 3,
+  SplitMatch = 4,
   /// <summary>This Token Rule will split the input at the exact string provided, limiting future matches.</summary>
-  SplitExact = 4,
+  SplitExact = 8,
   /// <summary>This Token Rule will store the unmatched data parts that match the regex provided as tokens with this type.</summary>
-  StoreExtra = 5,
+  StoreExtra = 16,
   /// <summary>This Token Rule will store the unmatched data parts as tokens with this type.</summary>
-  StoreOther = 6,
+  StoreOther = 32,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenProperty{T}"/>.</summary>
-  BuildProperty = 7,
+  BuildProperty = 64,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenArray{T}"/>.</summary>
-  BuildArray = 8,
+  BuildArray = 128,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenObject{T}"/>.</summary>
-  BuildObject = 9,
+  BuildObject = 256,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenFlag{T}"/>.</summary>
-  BuildFlag = 10,
+  BuildFlag = 512,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenTypedValue{T}"/>.</summary>
-  BuildTypedValue = 11,
+  BuildTypedValue = 1024,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel{T}"/>.</summary>
-  BuildLabel = 12,
+  BuildLabel = 2048,
   /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty{T}"/> or <see cref="TokenArray{T}"/>.</summary>
-  AssignValue = 13,
+  AssignValue = 4096,
   /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty{T}"/> or <see cref="TokenObject{T}"/>.</summary>
-  AssignName = 14,
+  AssignName = 0x2000,
   /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject{T}"/>.</summary>
-  AssignType = 15,
+  AssignType = 0x4000,
   /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject{T}"/>.</summary>
-  AddProperty = 16,
+  AddProperty = 0x8000,
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag{T}"/>.</summary>
-  AddFlag = 17,
+  AddFlag = 0x200000,
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag{T}"/>.</summary>
-  RemFlag = 18,
+  RemFlag = 0x400000,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>
   FromTokens = 0x10000,

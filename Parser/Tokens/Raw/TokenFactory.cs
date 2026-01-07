@@ -206,7 +206,8 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : 
         Index = match.Index,
         Type = cRule.TypeToAssign
       };
-      Result.Add(token);
+      if (!token.Ignored)
+        Result.Add(token);
       if (ExemptAllWithin)
         CannotMatch.Add(Section.ByLength(match.Index, match.Length, Input));
     }

@@ -17,7 +17,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
   {
     _tokens.ThrowIfNull();
     _rule.ThrowIfNull();
-    Log(Area, "Validation Passed");
+    //Log(Area, "Validation Passed");
   }
   internal void Parse ()
   {
@@ -118,19 +118,19 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
   }
   internal void Construct (int first_token_index, TokenCollection<T> tokens_to_assemble, IList<int> sequence_ids)
   {
-    Log(Area, "Calling Construct with tokens { " + tokens_to_assemble.TextJoin(" ") + " }");
+    //Log(Area, "Calling Construct with tokens { " + tokens_to_assemble.TextJoin(" ") + " }");
     Validate();
     _tokens.Remove(first_token_index, tokens_to_assemble.Count);
 
     TToken getToken<TToken> (RT flag)
     {
       Validate();
-      for (int i = 0; i < _tokens.Count; i++)
+      for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
-        IToken<T> token = _tokens[i];
+        IToken<T> token = tokens_to_assemble[i];
         if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
         {
-          return (TToken) token;
+          return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
         }
       }
       throw new ArgumentException("No data with the specified flag");
@@ -138,12 +138,12 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     TToken? getTokenOrDefault<TToken> (RT flag)
     {
       Validate();
-      for (int i = 0; i < _tokens.Count; i++)
+      for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
-        IToken<T> token = _tokens[i];
+        IToken<T> token = tokens_to_assemble[i];
         if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
         {
-          return (TToken) token;
+          return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
         }
       }
       return default;
@@ -151,16 +151,16 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     TokenCollection<TToken, T> getTokens<TToken> (RT flag) where TToken : IToken<T>
     {
       Validate();
-      TokenCollection<T> token_result = [];
-      for (int i = 0; i < _tokens.Count; i++)
+      TokenCollection<TToken, T> token_result = [];
+      for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
-        TToken token = (TToken) _tokens[i];
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
+        IToken<T> token = tokens_to_assemble[i];
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken ttoken)
         {
-          token_result.Add(token);
+          token_result.Add(ttoken);
         }
       }
-      return [.. token_result.OfType<TToken>()];
+      return token_result;
     }
     bool hasToken (RT flag)
     {
@@ -226,7 +226,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         ValueTypeToken = getToken<Token<T>>(RT.AssignType),
-        ValueToken = getToken<Token<T>>(RT.AssignValue),
+        ValueToken = getToken<IToken<T>>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -242,40 +242,40 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     bool isMatching = false;
     int first_token_index = 0;
     _constructed_items = 0;
-    int rule_index = 0, token_index = 0;
+    int node_index = 0, token_index = 0;
     bool allow_fail = false;
 
-    for (; token_index < _tokens.Count;)
+    for (; ; )
     {
-      ChkToken<T>? this_sequence = rule_index >= _rule.Sequence.Count ? null : _rule.Sequence[rule_index];
+      ChkToken<T>? node = node_index >= _rule.Sequence.Count ? null : _rule.Sequence[node_index];
       IToken<T>? token = token_index >= _tokens.Count ? null : _tokens[token_index];
-      bool isMult = this_sequence?.TokenRule.HasFlag(RT.Mult) ?? false;
-      bool isOpt = this_sequence?.TokenRule.HasFlag(RT.Opt) ?? false;
+      bool isMult = node?.TokenRule.HasFlag(RT.Mult) ?? false;
+      bool isOpt = node?.TokenRule.HasFlag(RT.Opt) ?? false;
       allow_fail = isOpt || allow_fail;
 
       void reset_match ()
       {
         isMatching = false;
-        rule_index = 0;
+        node_index = 0;
         assembly.Clear();
         sequence_ids.Clear();
         first_token_index = -1;
       }
 
-      if (this_sequence is null)
+      if (node is null)
       {
         // End of sequence? Pass
         Construct(first_token_index, assembly, sequence_ids);
+        token_index = first_token_index + 1;
         reset_match();
-        token_index++;
         continue;
       }
       // End of Tokens and all remaining are optional
-      if (token is null && _rule.Sequence[rule_index..].AllOptional)
+      if (token is null && _rule.Sequence[node_index..].AllOptional)
       {
         Construct(first_token_index, assembly, sequence_ids);
+        token_index = first_token_index + 1;
         reset_match();
-        token_index++;
         continue;
       }
       // End of Tokens
@@ -285,13 +285,13 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         break;
       }
 
-      if (token.Ignored)
-      {
-        token_index++;
-        continue;
-      }
+      //if (token.Ignored)
+      //{
+      //  token_index++;
+      //  continue;
+      //}
 
-      if (this_sequence.Equals(token))
+      if (node.Equals(token))
       {
         if (!isMatching)
         {
@@ -300,18 +300,18 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         }
 
         assembly.Add(token);
-        sequence_ids.Add(rule_index);
+        sequence_ids.Add(node_index);
 
         if (isMult)
           allow_fail = true;
         else
-          rule_index++;
+          node_index++;
         token_index++;
         continue;
       }
       else if (allow_fail)
       {
-        rule_index++;
+        node_index++;
         allow_fail = false;
         continue;
       }

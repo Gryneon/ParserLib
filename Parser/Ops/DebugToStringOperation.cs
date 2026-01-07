@@ -1,16 +1,12 @@
 namespace Parser.Ops;
-/// <summary>
-/// An operation that logs the contents of the provided key.
-/// </summary>
+/// <summary>An operation that logs the contents of the provided key.</summary>
 public class DebugToStringOperation : Operation
 {
   private static string GetCaller (object? type) =>
     $"DebugToStringOperation.Execute<{type?.GetType()}>";
   private static string GetCaller (string? type) =>
     $"DebugToStringOperation.Execute<{type}>";
-  /// <summary>
-  /// Constructs an operation that logs the contents of the provided key.
-  /// </summary>
+  /// <summary>Constructs an operation that logs the contents of the provided key.</summary>
   /// <param name="input_key">The key to output the contents of.</param>
   public DebugToStringOperation (string input_key) : base(input_key, EmptyString) { }
 

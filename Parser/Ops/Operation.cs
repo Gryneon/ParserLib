@@ -367,7 +367,7 @@ public abstract class Operation : IOperation
     OutputKey = output_key;
   }
   #endregion
-  public OpStatus DoOperation (XParser parser_ref)
+  public virtual OpStatus DoOperation (XParser parser_ref)
   {
     if (SkipOperation)
       return OpStatus.Skipped;
