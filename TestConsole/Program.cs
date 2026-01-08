@@ -58,7 +58,9 @@ internal sealed class Program
   {
     Console.Clear();
 #if DEBUG
-    Debug.Verbose = true;
+    Debug.Verbosity = LogClass.DebugAll;
+#else
+    Debug.Verbosity = LogClass.Standard;
 #endif
     //MenuController.StartMenu(InitialMenu);
 
@@ -66,7 +68,7 @@ internal sealed class Program
 
     Parser = new(Specification.INI.Definition.Spec);
 
-    string file = $"{SamplePath}\\sample.udmf";
+    string file = $"{SamplePath2}\\map00.udmf";
     //Load Data
     string input = File.ReadAllText(file);
     //int libcount = Library.SpecList.Count;

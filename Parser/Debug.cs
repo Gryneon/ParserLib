@@ -1,5 +1,7 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using ComDebug = Common.Debug;
+
 namespace Parser;
 
 /// <summary>A predefined debug message.</summary>
@@ -25,7 +27,7 @@ internal enum ExceptionMsg
 internal static class Debug
 {
   /// <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
-  public static bool Verbose => Common.Debug.Verbose;
+  public static LogClass Verbosity => ComDebug.Verbosity;
   /// <summary>Set to the line you must go to when making logs.</summary>
   public static int LineStart { get; set; }
   /// <summary>This increments when a log is written. Set to 0 to reset to top.</summary>
@@ -39,7 +41,7 @@ internal static class Debug
     {
       //if (Console.CursorTop < LineStart + LineCount)
       //  Console.SetCursorPosition(0, LineStart + LineCount);
-      if (Verbose)
+      if (Verbosity != LogClass.None)
       {
         if (back is not null) Console.BackgroundColor = back.Value;
         if (text is not null) Console.ForegroundColor = text.Value;

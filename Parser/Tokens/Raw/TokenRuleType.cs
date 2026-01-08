@@ -65,6 +65,8 @@ public enum TokenRuleType
   Opt = 0x2000000,
   /// <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
   Mult = 0x4000000,
+  /// <summary>This token or sequence means the parsed content is not valid.</summary>
+  ErrorMatch = 0x8000000,
   /// <summary>The bits to remove to get the type correctly.</summary>
-  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens,
+  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
 }

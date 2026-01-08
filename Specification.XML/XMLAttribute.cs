@@ -30,7 +30,7 @@ public sealed class XMLProperty () : IXMLObject, IProperty<string>, IEquatable<I
   /// <inheritdoc/>
   public int CompareTo (IProperty<string>? other) => other is null ? -1 : other.CompareTo(this) * -1;
   /// <inheritdoc/>
-  public bool Equals (IProperty<string>? other) => other is not null && other.Equals(this);
+  public bool Equals (IProperty<string>? other) => other is not null && other.Key == Key && other.Value == Value;
   /// <inheritdoc/>
   public override bool Equals (object? obj) => obj is IProperty<string> iprop && Key == iprop.Key && Value == iprop.Value?.ToString();
   /// <inheritdoc/>

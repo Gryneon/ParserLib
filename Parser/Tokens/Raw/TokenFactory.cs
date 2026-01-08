@@ -142,7 +142,6 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : 
         {
           cursor = next + 1;
           next = Input.IndexOf(RuleData, cursor, IC);
-          Log("Exact Match Rejected");
         }
       }
     }
@@ -170,10 +169,6 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : 
               Ignored = IgnoredToken,
               Exempt = ExemptAllWithin
             });
-        }
-        else
-        {
-          Log("Match Rejected");
         }
       }
     }
@@ -215,7 +210,7 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : 
 
   public TokenCollection<T> Produce (string input)
   {
-    Log(Area, "Produce", "Method Started");
+    Log(Area, "Produce", "Method Started", text: ConsoleColor.Blue);
     bool competed = false;
     input.ThrowIfNull();
     Input = input;
@@ -228,14 +223,14 @@ public sealed class TokenFactory<T> (IEnumerable<TokenRule<T>> rules) where T : 
 
       if (Competes && !competed)
       {
-        Log(Area, "Running competition.");
+        Log(Area, "Running competition.", text: ConsoleColor.Cyan);
         Tokens_Compete();
         competed = true;
         continue;
       }
       if (Competes)
       {
-        Log(Area, "Already ran competition.");
+        Log(Area, "Already ran competition.", text: ConsoleColor.Yellow);
         continue;
       }
 

@@ -154,11 +154,17 @@
             Single quote symbol.
             </summary>
         </member>
+        <member name="T:Common.LogClass">
+            <summary>The logging level of the program.</summary>
+        </member>
+        <member name="T:Common.MsgClass">
+            <summary>The log level of the log command.</summary>
+        </member>
         <member name="T:Common.Debug">
             <summary>Static class containing debugging logs.</summary>
         </member>
-        <member name="P:Common.Debug.Verbose">
-            <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
+        <member name="P:Common.Debug.Verbosity">
+            <summary>The level of logs to display.</summary>
         </member>
         <member name="P:Common.Debug.LineStart">
             <summary>Set to the line you must go to when making logs.</summary>
@@ -170,20 +176,28 @@
             <summary>Sets the output stream.</summary>
             <param name="stream">The stream to output to.</param>
         </member>
-        <member name="M:Common.Debug.Log(System.String)">
+        <member name="M:Common.Debug.Log(System.String,Common.MsgClass)">
             <summary>Logs a message to the output stream.</summary>
             <param name="msg">The message to log.</param>
+            <param name="msgClass">The type of message to log.</param>
         </member>
         <member name="M:Common.Debug.Log(System.String,System.String)">
             <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="msg">The message to log.</param>
         </member>
-        <member name="M:Common.Debug.LogFrom(System.String,System.String,System.String)">
+        <member name="M:Common.Debug.Log(System.String,System.String,System.String)">
+            <summary>Logs a message to the output stream.</summary>
+            <param name="src">The orignating class.</param>
+            <param name="msg">The message to log.</param>
+            <param name="proc">The method that called the log command.</param>
+        </member>
+        <member name="M:Common.Debug.LogFrom(System.String,System.String,System.String,Common.MsgClass)">
             <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="target">The originating method.</param>
             <param name="msg">The message to log.</param>
+            <param name="msgClass">The type of message to log.</param>
         </member>
         <member name="T:Common.DictionaryMode">
             <summary>The procedure to follow when writing to a dictionary.</summary>
