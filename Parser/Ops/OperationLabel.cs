@@ -20,34 +20,3 @@ public sealed class OperationLabel (string name) : IOperation, IPlaceholderOpera
 
   OpStatus IOperation.DoOperation (XParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
 }
-
-public sealed class PromptOperation (string message, string output_key, Predicate<string>? validation = null) : Operation
-{
-  public string Message { get; } = message;
-  public Predicate<string>? Validation { get; } = validation;
-
-  public override OpStatus DoOperation (XParser parser_ref)
-  {
-    Console.Write(Message);
-    string? userInput = Console.ReadLine();
-
-    if (userInput is null)
-    {
-      Status = OpStatus.FailBadInputNull;
-      return Status;
-    }
-
-    if (Validation is null || Validation(userInput))
-    {
-      Data[output_key] = userInput;
-      Status = OpStatus.Pass;
-      WorkToReturn = userInput;
-      return Status;
-    }
-    else
-    {
-      Status = OpStatus.FailBadOpResult;
-      return Status;
-    }
-  }
-}

@@ -239,8 +239,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     Validate();
     TokenCollection<T> assembly = [];
     Collection<int> sequence_ids = [];
-    bool isMatching = false;
-    int first_token_index = 0;
+    int first_token_index = -1;
     _constructed_items = 0;
     int node_index = 0, token_index = 0;
     bool allow_fail = false;
@@ -255,7 +254,6 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
 
       void reset_match ()
       {
-        isMatching = false;
         node_index = 0;
         assembly.Clear();
         sequence_ids.Clear();
@@ -285,19 +283,10 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         break;
       }
 
-      //if (token.Ignored)
-      //{
-      //  token_index++;
-      //  continue;
-      //}
-
       if (node.Equals(token))
       {
-        if (!isMatching)
-        {
+        if (first_token_index == -1)
           first_token_index = token_index;
-          isMatching = true;
-        }
 
         assembly.Add(token);
         sequence_ids.Add(node_index);
@@ -315,7 +304,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
         allow_fail = false;
         continue;
       }
-      else if (isMatching)
+      else if (first_token_index != -1)
       {
         token_index = first_token_index + 1;
         reset_match();
