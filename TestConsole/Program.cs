@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 
-using Parser.Tokens.Raw;
+using Parser.Tokens;
 
 using Specification.UDMF;
+
+using static Parser.Debug;
 
 using CK = System.ConsoleKey;
 
@@ -12,8 +14,7 @@ namespace TestConsole;
 internal sealed class Program
 {
   #region Constants
-  internal const string SamplePath = @"C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\";
-  internal const string SamplePath2 = @"C:\Users\querpus\source\repos\Git\ParserLib\Parser\Samples\";
+  internal const string SamplePath = @"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\";
   internal const int LogLine = 10;
   internal const string Area = "Program";
   #endregion
@@ -58,17 +59,17 @@ internal sealed class Program
   {
     Console.Clear();
 #if DEBUG
-    Debug.Verbosity = LogClass.DebugAll;
+    Common.Debug.Verbosity = LogClass.DebugAll;
 #else
     Debug.Verbosity = LogClass.Standard;
 #endif
     //MenuController.StartMenu(InitialMenu);
 
-    Debug.Log("Program", "Main", "Program Start");
+    Log(MsgClass.Informational, "Program", "Main", "Program Start");
 
     Parser = new(Specification.INI.Definition.Spec);
 
-    string file = $"{SamplePath2}\\map00.udmf";
+    string file = $"{SamplePath}\\map00.udmf";
     //Load Data
     string input = File.ReadAllText(file);
     //int libcount = Library.SpecList.Count;
@@ -80,12 +81,12 @@ internal sealed class Program
     TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Definition.Spec);
     TokenCollection<UDMFTokenType> tokens = [.. result];
     assembler.Execute(tokens);
-    Debug.Log(Area, tokens.ToString2());
+    Log(Area, tokens.ToString2());
     //args = [.. args, TestPath["ipl"]];
 
     if (args.Length == 0)
     {
-      Debug.Log("Program.Main", "No files specified.");
+      Log("Program.Main", "No files specified.");
 
     }
 
@@ -95,19 +96,19 @@ internal sealed class Program
       try { content = File.ReadAllText(path); }
       catch (DirectoryNotFoundException) { content = "<STX><ESC>P<ESC>C<ETX>"; }
 
-      Debug.Log("Program", "Main", "Loading File : " + path);
+      Log("Program", "Main", "Loading File : " + path);
 
       Parser = new XParser(Specification.IPL.Definition.Spec);
       Status = Parser.Parse(content);
 
-      Debug.Log("Program.Main", "OpStatus is " + Status);
+      Log("Program.Main", "OpStatus is " + Status);
 
-      Debug.Log("Program.Main", "Result is " + Parser.Result);
+      Log("Program.Main", "Result is " + Parser.Result);
       Collection<Specification.IPL.CommandDataSet> objects = Parser.Result as Collection<Specification.IPL.CommandDataSet> ?? [];
-      Debug.Log("Program.Main", "Result count = " + objects.Count);
+      Log("Program.Main", "Result count = " + objects.Count);
       foreach (object item in objects)
       {
-        Debug.Log("Program.Main", $"{item}");
+        Log("Program.Main", $"{item}");
       }
     }
     _ = Console.ReadLine();
@@ -120,18 +121,18 @@ internal sealed class Program
     IEnumerator<OpStatus> en = Parser.StepInit(content).GetEnumerator();
 
     while (en.MoveNext())
-      Debug.Log("Program", $"{en.Current}");
+      Log("Program", $"{en.Current}");
 
     Status = Parser.Parse(content);
-    Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
+    Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
     return Parser;
   }
   internal static void DisplayOpOrder ()
   {
-    Debug.Log("Parser Operation Order:");
+    Log("Parser Operation Order:");
     foreach (IOperation op in Parser?.Operations ?? [])
     {
-      Debug.Log(op.ToString() ?? "Error: Bad Op");
+      Log(op.ToString() ?? "Error: Bad Op");
     }
   }
   internal static void Load ()
@@ -144,7 +145,7 @@ internal sealed class Program
 
   GetFile:
 
-    Debug.Log("Program", "Load", "Path to file:");
+    Log("Program", "Load", "Path to file:");
     userPath = UserLineReturn();
 
     if (userPath.IsAny(["back", "quit", "exit"]))
@@ -157,10 +158,10 @@ internal sealed class Program
     byteContent = File.ReadAllBytes(userPath);
     specName = Library.CheckFile(userPath);
     userSpec = Library.LookupOrDefault(specName);
-    Debug.Log("Program.Load", $"Spec Chosen is {userSpec.Name}");
+    Log("Program.Load", $"Spec Chosen is {userSpec.Name}");
 
   GetSpec:
-    Debug.Log("Program.Load", $"Input a new spec or press enter to use chosen ({userSpec.Name})");
+    Log("Program.Load", $"Input a new spec or press enter to use chosen ({userSpec.Name})");
     UserInput = UserLineReturn();
 
     if (UserInput.IsEmpty())
@@ -168,7 +169,7 @@ internal sealed class Program
 
     else if (Library.Lookup(UserInput) is not null)
     {
-      Debug.Log("Program.Load", $"Invalid Spec {UserInput}");
+      Log("Program.Load", $"Invalid Spec {UserInput}");
       goto GetSpec;
     }
     else
@@ -182,9 +183,9 @@ internal sealed class Program
       OpStatus status = parser.Parse(fileContent);
 
       if (status.IsFail())
-        Debug.Log("Program.Load", $"Failed, status is {status}");
+        Log("Program.Load", $"Failed, status is {status}");
       else
-        Debug.Log("Program.Load", $"Good, status is {status}");
+        Log("Program.Load", $"Good, status is {status}");
     }
     else
     {
@@ -192,9 +193,9 @@ internal sealed class Program
       OpStatus status = parser.Parse(byteContent);
 
       if (status.IsFail())
-        Debug.Log("Program.Load", $"Failed, status is {status}");
+        Log("Program.Load", $"Failed, status is {status}");
       else
-        Debug.Log("Program.Load", $"Good, status is {status}");
+        Log("Program.Load", $"Good, status is {status}");
     }
   }
 }

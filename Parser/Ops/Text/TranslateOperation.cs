@@ -1,7 +1,5 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System.Collections;
-
 using IndexedConstruct = (int Index, Parser.Ops.Text.TranslationConstruct Construct);
 using TT = Parser.Ops.Text.TranslatorType;
 

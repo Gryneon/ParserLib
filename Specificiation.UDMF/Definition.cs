@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 using Parser;
 using Parser.Inference;
 using Parser.Ops.Text;
-using Parser.Tokens.Raw;
 
 using static Parser.DefinitionStaticFunctions;
 using static Specification.UDMF.UDMFTokenType;
 
-using RT = Parser.Tokens.Raw.TokenRuleType;
+using RT = Parser.Tokens.TokenRuleType;
 
 namespace Specification.UDMF;
 

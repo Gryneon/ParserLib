@@ -3,7 +3,7 @@
 
 using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Tokens.Raw.TokenRuleType;
+using static Parser.Tokens.TokenRuleType;
 
 namespace Specification.ZScript;
 
@@ -106,14 +106,17 @@ public static class PrevDefinition
       new SplitOperation(),
       new DictionaryOperation(Reader, ROML | ROIPW | ROIC | ROEC, false, "textparts"),
       new TokenizeOperation<string>(),
-      new TokenTemplateOperation([]),
-      //TemplateToObjectOperation
       Parser.Ops.Operation.End
     ],
     IsTextFile = true,
     SC = SCOIC,
     TokenRules = [
-      //new(TokenExact, )
+      new(TokenMatch|Competitive|IgnoredToken, "lncomment",@"\/\/[^\n]*"),
+      new(TokenMatch|Competitive|IgnoredToken, "blkcomment",@"\/\*[\s\S]*?\*\/"),
+      new(TokenMatch|Competitive, "string",@"""([^""\\]|\\.)*"""),
+      new(TokenExact, "bk_open","{"),
+      new(TokenExact, "bk_close","}"),
+
     ]
   };
 }

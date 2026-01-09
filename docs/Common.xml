@@ -702,6 +702,27 @@
         <member name="T:Common.Names">
             <summary>Shorthand for common enum names.</summary>
         </member>
+        <member name="F:Common.Names.C_Red">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_Cyan">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_Yellow">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_Blue">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_White">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_DarkRed">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_Black">
+            <summary>Console colors.</summary>
+        </member>
         <member name="F:Common.Names.SSON">
             <summary>No split alterations.</summary>
         </member>

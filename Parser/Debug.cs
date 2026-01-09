@@ -5,7 +5,7 @@ using ComDebug = Common.Debug;
 namespace Parser;
 
 /// <summary>A predefined debug message.</summary>
-internal enum DebugMsg
+public enum DebugMsg
 {
   DM_None,
   Tokenize_Ignore_Token,
@@ -15,7 +15,7 @@ internal enum DebugMsg
 }
 
 /// <summary>A predefined exception message.</summary>
-internal enum ExceptionMsg
+public enum ExceptionMsg
 {
   EM_None,
   Debug_Unknown_Exception,
@@ -24,7 +24,7 @@ internal enum ExceptionMsg
 }
 
 /// <summary>Static class containing debugging logs.</summary>
-internal static class Debug
+public static class Debug
 {
   /// <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
   public static LogClass Verbosity => ComDebug.Verbosity;
@@ -75,12 +75,27 @@ internal static class Debug
   };
   public static void Log (DebugMsg msg, params Collection<string> values)
   {
+    values.ThrowIfNull();
     if (values.Count == 0)
       DoLog(MsgFormats[msg](SE, SE));
     else if (values.Count == 1)
       DoLog(MsgFormats[msg](values[0], SE));
     else if (values.Count == 2)
       DoLog(MsgFormats[msg](values[0], values[1]));
+  }
+  public static void Log (MsgClass msgClass, string className, string methodName, string msg)
+  {
+    if (msgClass is MsgClass.Warning)
+      Log(className, methodName, msg, C_Black, C_Yellow);
+    else if (msgClass is MsgClass.Debug)
+      Log(className, methodName, msg, C_Black, C_Blue);
+    else if (msgClass is MsgClass.Error)
+      Log(className, methodName, msg, C_DarkRed, C_Red);
+    else if (msgClass is MsgClass.Informational)
+      Log(className, methodName, msg, C_Black, C_White);
+    else
+      Log(className, methodName, msg);
+
   }
   [DoesNotReturn]
   internal static void Throw<T> (ExceptionMsg msg, params Collection<string> values) where T : Exception => _ = Throw<T, object>(msg, values);
@@ -123,10 +138,13 @@ internal static class Debug
   /// <param name="msg">The message to log.</param>
   /// <param name="back">The background color.</param>
   /// <param name="text">The foreground color.</param>
-  public static void Log (string src, string target, string msg, ConsoleColor back = ConsoleColor.Black, ConsoleColor text = ConsoleColor.White)
+  public static void Log (string src, string target, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White)
   {
     DoLog($"{src}.{target} : {msg}", back, text);
   }
-  public static void LogException (Exception e) =>
-    DoLog($"{e.Source}.{e.TargetSite?.Name} : {e.Message}", ConsoleColor.DarkRed, ConsoleColor.Red);
+  public static void LogException (Exception e)
+  {
+    e.ThrowIfNull();
+    DoLog($"{e.Source}.{e.TargetSite?.Name} : {e.Message}", C_DarkRed, C_Red);
+  }
 }

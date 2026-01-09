@@ -1,13 +1,43 @@
 #pragma warning disable IDE0051 // Remove unused private members
 #pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable CA1720 // Identifier contains type name
 
 using System.Text.RegularExpressions;
 
 using static Parser.DefinitionStaticFunctions;
 using static Parser.RX;
-using static Parser.Tokens.TokenStaticFunctions;
+
+using ATT = Specification.ACS.ACSTokenType;
 
 namespace Specification.ACS;
+
+public enum ACSTokenType
+{
+  None,
+  Str,
+  Char,
+  Int,
+  Fixed,
+  Bool,
+  Name,
+  FunctionCall,
+  Script,
+  Function,
+  Global,
+  World,
+  ScriptType,
+  Value,
+  Bo, Bc,
+  Po, Pc,
+  Expression,
+  Sc,
+  Op,
+  Ao, Ac,
+  Hash,
+  Eq,
+  DataType,
+}
+
 /// <summary>
 /// ACS Specification Definition <br/>
 /// <see href="https://regex101.com/r/mTwORe/1">Regex</see>
@@ -27,7 +57,7 @@ public static class Definition
   private static RxS Splitter (string keeps) => Rx($@"\s+|(?<!\s)(?=[{keeps}])|(?<=[{keeps}])");
   private static string Ws => Nm("t_ws", @"\s+");
   private static string Wso => Nm("t_ws", @"\s*");
-  private static string ACS_PreProc1 => MarkAs("preproc", @"^\s*\#(library|import|include)\s+");
+  private static string ACS_PreProc1 => Nm("preproc", @"^\s*\#(library|import|include)\s+");
   private const RegexOptions RxOptions = ROML | ROIC | ROIPW | ROEC;
   /// <summary>
   /// Defined Specification
@@ -40,16 +70,18 @@ public static class Definition
     Name = "zdoom.acs",
     RxOpt = RxOptions | ROSL,
     Operations = [
-      new DictionaryOperation([
-        G_CBlkComment,
-        G_CLnComment,
-        G_WS,
-        G_CPreProc,
-        G_Int,
-        G_Name,
-        G_CString,
-      ], RxOptions | ROSL)
-    ]
+      new TokenizeOperation<ATT>(),
+      new TokenAssembleOperation<ATT>(),
+    ],
+    IsTextFile = true,
+    SC = SCOIC,
+    TokenType = typeof(ATT),
+    TokenTypeLookup = [],
+    TokenCompatLookup = [],
+    TokenRules = [
+      new(TokenMatch)
+    ],
+    GroupTokenRules = [],
   };
   [Export("zdoom.modeldef")]
   public static Spec ModelDef => new()

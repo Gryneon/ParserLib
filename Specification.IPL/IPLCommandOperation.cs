@@ -1,5 +1,7 @@
 using Parser.Ops;
 
+using Debug = Parser.Debug;
+
 namespace Specification.IPL;
 
 /// <summary>

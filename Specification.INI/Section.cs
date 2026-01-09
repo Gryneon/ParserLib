@@ -1,4 +1,4 @@
-using Parser.Tokens.Raw;
+using Parser.Tokens;
 
 namespace Specification.INI;
 

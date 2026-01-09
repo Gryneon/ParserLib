@@ -1,8 +1,7 @@
-using Parser.Tokens.Raw;
+using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Tokens.Raw.TokenRuleType;
-using static Parser.Tokens.TokenStaticFunctions;
+using static Parser.Tokens.TokenRuleType;
 
 namespace Specification.INI;
 
@@ -11,7 +10,7 @@ public enum INITokenType
   None,
   Comment,
   Section,
-  Property, 
+  Property,
   Str,
   Ws,
   Bo, // [
@@ -24,12 +23,6 @@ public enum INITokenType
 public static class Definition
 {
   private const RegexOptions RXOptions = ROML | ROIPW | ROEC;
-
-  private static RxSCollection Regex { get; } = [
-    MarkAs("lncomment", Op(";") + LazyOneLn + LnEnd),
-    MarkAs("section", Op("[") + Mp("sectionkey", @"[^\[\]\n\r\0\f\v\a\b\t]") + Op("]")),
-    MarkAs("property", Ws + Kp(1, @"[\w_]") + Ws + Op("=") + Ws + Vp(1, @"[^;\n]+?") + Ws + En),
-  ];
 
   /// <summary>The INI Spec</summary>
   [Export("ini")]
@@ -47,8 +40,8 @@ public static class Definition
       //new GenerateOperation<MatchDataSet, Section>(Section.Generate, item => item.HasGroup("section"), "matches", "sections"),
       //new ExternalOperation<IEnumerable<Section>, INIDocument>(INIDocument.FromSections, item => true, "sections", "result"),
       //Operation.End],
-      new TokenizeOperation<ITT>(Spec.LoadFromSpec, "text", "tokens"),
-      new TokenAssembleOperation<ITT>(Spec.LoadFromSpec, "tokens", "tokens_assembled"),
+      new TokenizeOperation<ITT>(),
+      new TokenAssembleOperation<ITT>("tokens", "tokens_assembled"),
       new GenerateOperation<TokenObject<ITT>, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
       Operation.End
     ],

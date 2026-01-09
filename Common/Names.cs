@@ -2,9 +2,28 @@
 
 namespace Common;
 
+public static class Ext
+{
+  public static string UserDirFix (this string path)
+  {
+    path.ThrowIfNullOrEmpty();
+    return path.Replace("$user$", Environment.MachineName.Like("AIM-JTaylor-L") ? "johntay4" : "querpus", SCOIC);
+  }
+}
+
 /// <summary>Shorthand for common enum names.</summary>
 public static class Names
 {
+  /// <summary>Console colors.</summary>
+  public const ConsoleColor
+    C_Red = ConsoleColor.Red,
+    C_Cyan = ConsoleColor.Cyan,
+    C_Yellow = ConsoleColor.Yellow,
+    C_Blue = ConsoleColor.Blue,
+    C_White = ConsoleColor.White,
+    C_DarkRed = ConsoleColor.DarkRed,
+    C_Black = ConsoleColor.Black;
+
   public const BindingFlags
     BFCI = BindingFlags.CreateInstance,
     BFP = BindingFlags.Public,

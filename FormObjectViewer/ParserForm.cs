@@ -4,10 +4,10 @@ using System.Windows.Forms;
 
 namespace FormObjectViewer;
 
-internal partial class ParserForm : Form
+internal sealed partial class ParserForm : Form
 {
-  protected XParser Parser { get; private set; } = new();
-  protected Spec Spec { get; private set; } = DefaultSpec.Unknown;
+  private XParser Parser { get; set; } = new();
+  private Spec Spec { get; set; } = DefaultSpec.Unknown;
 
   public ParserForm ()
   {

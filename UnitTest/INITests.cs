@@ -1,5 +1,6 @@
 using System.IO;
 
+using Common;
 using Common.Extensions;
 
 using Parser;
@@ -21,10 +22,10 @@ public class INITests
   }
 
   [Theory]
-  [InlineData(@"C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\default.ini")]
+  [InlineData(@"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini")]
   public void ParserInit (string file)
   {
-    string file_text = File.ReadAllText(file);
+    string file_text = File.ReadAllText(file.UserDirFix());
     XParser parser = new(Definition.Spec);
     Assert.Equal(OpStatus.Pass, parser.Parse(file_text));
     Assert.True(parser.Data.ContainsKey("result"));

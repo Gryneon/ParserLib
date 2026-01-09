@@ -1,7 +1,6 @@
 using Parser.Ops.Binary;
-using Parser.Tokens.Raw;
 
-using RT = Parser.Tokens.Raw.TokenRuleType;
+using RT = Parser.Tokens.TokenRuleType;
 
 namespace Specification.JSON;
 
@@ -87,8 +86,8 @@ public static class Definition
         Operation.CopyKey("json_object", "result"),
         //TODO: Enhance Spec to analyse content.
         //TODO: Validate?
-        new TokenizeOperation<JTT>( Spec.LoadFromSpec,"text", "tokens"),
-        new DebugToStringOperation( "tokens"),
+        new TokenizeOperation<JTT>("text", "tokens"),
+        new DebugToStringOperation("tokens"),
       ],
     //WhitespaceTokens = ["ws"],
     //RegexBasicTokens = ["string", "dec", "int", "op", "bool", "null"],

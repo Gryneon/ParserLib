@@ -1,7 +1,3 @@
-using System.ComponentModel.Design;
-
-using Parser;
-
 namespace Terminal.Menu;
 
 public class MenuHandler

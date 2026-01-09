@@ -6,12 +6,15 @@ using Parser.Ops.Text;
 
 using static Common.Chars;
 using static Parser.DefinitionStaticFunctions;
+using static Parser.Tokens.TokenRuleType;
 
 namespace Specification.IPL;
 
 [DefinitionExport]
 public static class Definition
 {
+  #region Old Op Data
+  internal static readonly SplitOperation SplitOp = new(Splits, ROML | ROIPW | ROEC | ROSL, "text", "textparts");
   /// <summary>
   /// <para>Command Splitter Regex</para>
   /// Build from https://regex101.com/r/WJUiK8/2
@@ -25,6 +28,14 @@ public static class Definition
     Nul,
     Lf
   ];
+  internal static Collection<string> Tokens = [
+      "qty",
+      "simple",
+      "adv",
+      "field",
+      "d3",
+      "standard",
+      "fieldtext"];
   private static readonly RxS
     AVal = Gp($",?{Value()}"),
     MVal = AVal.Any,
@@ -69,36 +80,35 @@ public static class Definition
     Cmd("fieldtext", AnyLazy)
   ];
   public static Regex OpRegex => new(Regex, Spec.RxOpt);
+  #endregion
   [Export("ipl")]
   public static Spec Spec => new()
   {
     Name = "ipl",
     Operations = [
-      new SplitOperation(Splits, ROML | ROIPW | ROEC | ROSL, "text", "textparts"),
-      new DebugToStringOperation("textparts"),
-      new DictionaryOperation(Regex, ROML | ROIPW | ROEC | ROSL, false, "textparts", "matches"),
-      new GenerateOperation<MatchDataSet, CommandDataSet>(CommandDataSet.Generate, item => item.Len > 0, "matches", "commands"),
-      new IPLCommandOperation("commands", "commands2"),
-      Operation.CopyKey("commands2", "result"),],
+      new TokenizeOperation<ITT>(),
+      new DebugToStringOperation("tokens"),
+      new DebugWaitForInputOperation(),
+      new TokenAssembleOperation<ITT>(),],
     FileInferences = [
       IfN(ExtIs, "ipl"),
       IfN(ExtIs, "pr1"),
       IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
-    RegexBasicTokens = [
-      "qty",
-      "simple",
-      "adv",
-      "field",
-      "d3",
-      "standard",
-      "fieldtext",],
     TokenRules = [
-      new(RT.TokenMatch | RT.IgnoredToken, ITT.Ignored, $"(?<={Etx}).*?(?={Stx})"),
-      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Stx, $"{Stx}"),
-      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Etx, $"{Etx}"),
-      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Esc, $"{Esc}"),
-      new(RT.TokenMatch | RT.ExemptAllWithin, ITT.Si, $"{Si}"),
+      new(TokenMatch | IgnoredToken, ITT.Ignored, $"(?<={Etx}).*?(?={Stx})"),
+      new(TokenMatch | ExemptAllWithin, ITT.Stx, $"{Stx}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Etx, $"{Etx}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Esc, $"{Esc}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Si, $"{Si}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Sc, $";"),
+      new(TokenMatch | ExemptAllWithin, ITT.Lf, $"{Lf}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Etb, $"{Etb}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Rs, $"{Rs}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Us, $"{Us}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Can, $"{Can}"),
+      new(TokenMatch | ExemptAllWithin, ITT.Fs, $"{FS}|<FS>"),
+      new(TokenMatch | ExemptAllWithin, ITT.TextProp, Rx(@"d3,.*?(?=$|;|{Etx})")),
     ],
   };
 }

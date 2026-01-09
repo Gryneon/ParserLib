@@ -25,4 +25,5 @@ public enum IPLTokenType
   Ignored,    // 
   FieldText,  // 
   Text,       //
+  Rs,
 }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using Debug = Parser.Debug;
+
 namespace TestConsole;
 
 internal sealed class TestAction : MenuAction

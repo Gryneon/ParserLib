@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="1">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="1">
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <Deterministic>true</Deterministic>
@@ -35,6 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tokens\Raw\" />
   </ItemGroup>
 
 </Project>

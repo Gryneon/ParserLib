@@ -6,12 +6,12 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
 {
   protected static void Log (string s) => Debug.Log("JSONOperation", "Execute", s);
   protected int Index { get; set; }
-  protected IToken? TCurrent => Index >= Tokens.Count ? null : Tokens[Index];
-  protected Collection<IToken> Tokens { get; } = [];
-  protected void Init (IEnumerable<IToken> tokens) => Tokens.AddRange([.. tokens]);
+  protected IToken<JTT>? TCurrent => Index >= Tokens.Count ? null : Tokens[Index];
+  protected Collection<IToken<JTT>> Tokens { get; } = [];
+  protected void Init (IEnumerable<IToken<JTT>> tokens) => Tokens.AddRange([.. tokens]);
   protected override void Execute ()
   {
-    if (!CheckInput(out IEnumerable<IToken>? tokens))
+    if (!CheckInput(out IEnumerable<IToken<JTT>>? tokens))
     {
       Status = OpStatus.FailBadInputType;
       return;
@@ -82,10 +82,10 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
         assembly[depth].Add(TCurrent?.Type switch
         {
           _ when TCurrent?.Content is null => new JSONUndefValue(),
-          "string" => new JSONStringValue(TCurrent.Content),
-          "int" or "dec" => new JSONNumberValue(TCurrent.Content.ToDecimal() ?? 0),
-          "bool" => new JSONBoolValue(TCurrent.Content.ToBool() ?? false),
-          "null" => new JSONNullValue(),
+          JTT.Str => new JSONStringValue(TCurrent.Content),
+          JTT.Num => new JSONNumberValue(TCurrent.Content.ToDecimal() ?? 0),
+          JTT.Bool => new JSONBoolValue(TCurrent.Content.ToBool() ?? false),
+          JTT.Null => new JSONNullValue(),
           _ => new JSONUndefValue(),
         });
         Index++;
@@ -101,7 +101,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
           if (TCurrent is null)
             break;
           string? tContent = TCurrent.Content;
-          string tType = TCurrent.Type;
+          JTT tType = TCurrent.Type;
           if (tContent is "{" or "[")
           {
             ThrowIf(sequence != 0, $"Sequence was not correct, {sequence} needs to be 0.");
@@ -137,7 +137,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             Index++;
             continue;
           }
-          else if (tType is "int" or "dec" or "null" or "bool" or "string")
+          else if (tType is JTT.Num or JTT.Null or JTT.Str or JTT.Bool)
           {
             ThrowIf(sequence != 0, $"Sequence was not correct, {sequence} needs to be 0.");
             Log($"{Index} : primitive '{tType}'");
@@ -163,7 +163,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             break;
 
           string? tContent = TCurrent.Content;
-          string tType = TCurrent.Type;
+          JTT tType = TCurrent.Type;
           if (tContent is "{" or "[")
           {
             ThrowIf(sequence != 2, $"Sequence was not correct, {sequence} needs to be 2.");
@@ -197,7 +197,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             Index++;
             continue;
           }
-          else if (tType is "int" or "dec" or "null" or "bool")
+          else if (tType is JTT.Num or JTT.Null or JTT.Bool)
           {
             ThrowIf(sequence != 2, $"Sequence was not correct, {sequence} needs to be 2.");
             Log($"{Index} : primitive '{tType}'");
@@ -205,7 +205,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             addValueToAssembly();
             continue;
           }
-          else if (tType is "string")
+          else if (tType is JTT.Str)
           {
             ThrowIf(sequence is not 0 and not 2, $"Sequence was not correct, {sequence} needs to be 0 or 2.");
             Log($"{Index} : primitive '{tType}'");

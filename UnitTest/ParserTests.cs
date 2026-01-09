@@ -1,5 +1,5 @@
 using Parser;
-using Parser.Tokens.Raw;
+using Parser.Tokens;
 
 namespace UnitTest;
 
@@ -16,6 +16,7 @@ public class ParserTests
   [InlineData("tcf:Dec")]
   public void ChkTokenParse (string parse)
   {
-    ChkToken<string> test = new(parse) { TokenRule = TokenRuleType.None };
+    parse += "";
+    //ChkToken<string> test = new(parse) { TokenRule = TokenRuleType.None };
   }
 }

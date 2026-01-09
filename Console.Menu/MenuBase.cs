@@ -1,5 +1,3 @@
-using Parser;
-
 namespace Terminal.Menu;
 
 public abstract class MenuBase

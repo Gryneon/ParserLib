@@ -1,7 +1,5 @@
 //using Parser.Text.Tokens;
 
-using System.Collections;
-
 namespace Parser.Ops.Text;
 
 /// <summary>

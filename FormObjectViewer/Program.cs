@@ -1,6 +1,5 @@
 #pragma warning disable CA1416 // Validate platform compatibility
 
-using System;
 using System.Windows.Forms;
 
 namespace FormObjectViewer;

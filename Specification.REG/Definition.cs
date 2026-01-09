@@ -70,7 +70,7 @@ public static class Definition
         (@"\s*\=\s*", "="), //Remove ws around eq sign
         (@"\\" + RX.LnEnd, "") //Remove escaped newlines
       ], "text", "text"),
-      new TokenizeOperation<RTT>(Spec.LoadFromSpec, "text", "tokens"),
+      new TokenizeOperation<RTT>("text", "tokens"),
       new TokenAssembleOperation<RTT>(Spec.LoadFromSpec, "tokens", "tokens")
       ],
     TokenRules = [

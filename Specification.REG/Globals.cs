@@ -6,5 +6,5 @@ global using Common.Regex;
 
 global using static Common.Names;
 
-global using RT = Parser.Tokens.Raw.TokenRuleType;
+global using RT = Parser.Tokens.TokenRuleType;
 
