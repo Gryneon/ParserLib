@@ -17,3 +17,19 @@ public class Token<T> : TokenBase<T> where T : notnull
   public override bool Equals (object? obj) => obj is IToken<T> rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
 }
+
+public class Token : TokenBase
+{
+  // Required Properties
+  public override string Content
+  {
+    get => _content;
+    set => _content = value;
+  }
+  // Calculated Properties
+  public int LastPosition => Index + Length - 1;
+  public int Length => Content.Length;
+  public override string ToString () => $"{Index} : {Type} = \"{ContentNoNewLine}\"";
+  public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
+  public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
+}

@@ -2,26 +2,45 @@
 
 namespace Parser.Tokens;
 
-public class ChkSequence<T> : IList<ChkToken<T>> where T : notnull
+public class ChkSequence : IList<ChkToken>
 {
-  private readonly List<ChkToken<T>> _sequence = [];
+  private readonly List<ChkToken> _sequence = [];
   public string? DataString { get; set; }
 
-  public ChkToken<T> this[int index] { get => _sequence[index]; set => _sequence[index] = value; }
-  public ChkSequence<T> this[Range rng] { get => [.. _sequence[rng]]; }
+  public ChkToken this[int index] { get => _sequence[index]; set => _sequence[index] = value; }
+  public ChkSequence this[Range rng] { get => [.. _sequence[rng]]; }
   public int Count => _sequence.Count;
   public bool IsReadOnly => _sequence.Count > 0;
   public bool AllOptional => _sequence.All(item => item.TokenRule.HasFlag(RT.Opt));
-  public void Add (ChkToken<T> item) => _sequence.Add(item);
+  public void Add (ChkToken item) => _sequence.Add(item);
   public void Clear () => _sequence.Clear();
+  public bool Contains (ChkToken item) => _sequence.Contains(item);
+  public void CopyTo (ChkToken[] array, int arrayIndex) => _sequence.CopyTo(array, arrayIndex);
+  public IEnumerator<ChkToken> GetEnumerator () => _sequence.GetEnumerator();
+  public int IndexOf (ChkToken item) => _sequence.IndexOf(item);
+  public void Insert (int index, ChkToken item) => _sequence.Insert(index, item);
+  public bool Remove (ChkToken item) => _sequence.Remove(item);
+  public void RemoveAt (int index) => _sequence.RemoveAt(index);
+  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
+
+  public ChkSequence (IEnumerable<ChkToken<T>> tokens) => _sequence = [.. tokens];
+  public ChkSequence () { }
+}
+
+public class ChkSequence<T> : ChkSequence, IList<ChkToken<T>> where T : struct
+{
+  private readonly List<ChkToken<T>> _sequence = [];
+
+  public new ChkToken<T> this[int index] { get => _sequence[index]; set => _sequence[index] = value; }
+  public new ChkSequence<T> this[Range rng] { get => [.. _sequence[rng]]; }
+  public void Add (ChkToken<T> item) => _sequence.Add(item);
   public bool Contains (ChkToken<T> item) => _sequence.Contains(item);
   public void CopyTo (ChkToken<T>[] array, int arrayIndex) => _sequence.CopyTo(array, arrayIndex);
-  public IEnumerator<ChkToken<T>> GetEnumerator () => _sequence.GetEnumerator();
+  public new IEnumerator<ChkToken<T>> GetEnumerator () => _sequence.GetEnumerator();
   public int IndexOf (ChkToken<T> item) => _sequence.IndexOf(item);
   public void Insert (int index, ChkToken<T> item) => _sequence.Insert(index, item);
   public bool Remove (ChkToken<T> item) => _sequence.Remove(item);
-  public void RemoveAt (int index) => _sequence.RemoveAt(index);
-  IEnumerator IEnumerable.GetEnumerator () => _sequence.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 
   public ChkSequence (IEnumerable<ChkToken<T>> tokens) => _sequence = [.. tokens];
   public ChkSequence () { }

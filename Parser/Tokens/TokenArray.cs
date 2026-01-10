@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenArray<T> : TokenBase<T>, IReadOnlyCollection<IToken<T>> where T : notnull
+public sealed class TokenArray<T> : TokenBase<T>, IReadOnlyCollection<IToken<T>> where T : struct
 {
   // Tokens Kept
   public required TokenCollection<T> Items { get; init; }

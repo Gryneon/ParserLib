@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenLabel<T> : TokenBase<T> where T : notnull
+public sealed class TokenLabel<T> : TokenBase<T> where T : struct
 {
   public string Name => NameToken.Content;
   public required IToken<T> NameToken { get; init; }

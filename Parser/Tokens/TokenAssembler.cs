@@ -148,10 +148,10 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
       }
       return default;
     }
-    TokenCollection<TToken, T> getTokens<TToken> (RT flag) where TToken : IToken<T>
+    LimitedTokenCollection<TToken, T> getTokens<TToken> (RT flag) where TToken : IToken<T>
     {
       Validate();
-      TokenCollection<TToken, T> token_result = [];
+      LimitedTokenCollection<TToken, T> token_result = [];
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken<T> token = tokens_to_assemble[i];

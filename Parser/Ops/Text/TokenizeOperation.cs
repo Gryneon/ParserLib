@@ -63,7 +63,7 @@ public class TokenizeOperation : Operation
     TM_Marker = 1,
     TM_Rule = 2,
     TMF_UseSpec = 1024;
-  private readonly TokenRuleCollection<T> _rules = [];
+  private readonly TokenRuleCollection _rules = [];
   private readonly int _mode = TM_Marker | TMF_UseSpec;
 
   public TokenizeOperation (IEnumerable<TokenRule> rules, string input_key = "text", string output_key = "tokens") : base(input_key, output_key)

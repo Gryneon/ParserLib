@@ -2,13 +2,19 @@
 
 namespace Parser.Tokens;
 
-public interface IToken<T> : IIndexSortable, IComparable<IToken<T>> where T : notnull
+public interface IToken : IIndexSortable, IComparable<IToken>
 {
-  T? Type { get; set; }
+  string Type { get; set; }
   [MemberNotNullWhen(true, nameof(Type))]
   bool HasType { get; }
   bool Exempt { get; }
   bool Ignored { get; }
-  TokenCollection<T> Children { get; init; }
+  TokenCollection Children { get; init; }
   virtual string Content => Children.Select(static t => t.Content).TextJoin();
+}
+
+public interface IToken<T> : IToken, IIndexSortable, IComparable<IToken<T>> where T : struct
+{
+  new T Type { get; set; }
+  new TokenCollection<T> Children { get; init; }
 }

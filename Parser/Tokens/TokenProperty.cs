@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenProperty<T> : TokenBase<T>, IReadOnlyProperty<string>, IProperty<string> where T : notnull
+public sealed class TokenProperty<T> : TokenBase<T>, IReadOnlyProperty<string>, IProperty<string> where T : struct
 {
   // Assigned Properties
   string IProperty<string>.Key { get => Name; set => value.DoNothing(); }

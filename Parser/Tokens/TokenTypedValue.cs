@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenTypedValue<T> : TokenBase<T> where T : notnull
+public sealed class TokenTypedValue<T> : TokenBase<T> where T : struct
 {
   public string ValueType => ValueTypeToken.Content;
   public required IToken<T> ValueTypeToken { get; init; }

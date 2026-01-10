@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenFlag<T> : TokenBase<T> where T : notnull
+public sealed class TokenFlag<T> : TokenBase<T> where T : struct
 {
   private bool _activate = true;
 

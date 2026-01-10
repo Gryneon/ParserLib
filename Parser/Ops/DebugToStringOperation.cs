@@ -27,13 +27,9 @@ public class DebugToStringOperation : Operation
         foreach (MatchDataSet mdd in mdds)
           Log(GetCaller(mdds), mdd.ToString2());
         break;
-      case IEnumerable<IToken<IConvertible>> itokens:
-        foreach (IToken<IConvertible> it in itokens)
-          Log(GetCaller("IToken<Enum>"), it.ToString2() ?? "<null data>");
-        break;
-      case IEnumerable<IToken<string>> itokens:
-        foreach (IToken<string> it in itokens)
-          Log(GetCaller("IToken<string>"), it.ToString2() ?? "<null data>");
+      case IEnumerable<IToken> itokens:
+        foreach (IToken it in itokens)
+          Log(GetCaller("IToken<>"), it.ToString() ?? "<null data>");
         break;
       default:
         Log(GetCaller(WorkToReturn), WorkToReturn?.ToString2() ?? "<null data>");
