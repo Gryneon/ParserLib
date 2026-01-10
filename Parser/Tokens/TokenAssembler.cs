@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec spec) where T : notnull
+public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec spec) where T : struct
 {
   private static readonly string Area = "TokenAssembler<" + typeof(T) + ">";
   private readonly TokenGroupRuleCollection<T> _rules = rules;

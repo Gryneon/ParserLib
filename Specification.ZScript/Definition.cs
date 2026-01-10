@@ -105,7 +105,7 @@ public static class PrevDefinition
     Operations = [
       new SplitOperation(),
       new DictionaryOperation(Reader, ROML | ROIPW | ROIC | ROEC, false, "textparts"),
-      new TokenizeOperation<string>(),
+      new TokenizeOperation(),
       Parser.Ops.Operation.End
     ],
     IsTextFile = true,

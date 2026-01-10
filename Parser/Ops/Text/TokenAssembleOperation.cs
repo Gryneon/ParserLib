@@ -1,6 +1,6 @@
 namespace Parser.Ops.Text;
 
-public class TokenAssembleOperation<T> : Operation where T : notnull
+public class TokenAssembleOperation<T> : Operation where T : struct
 {
   private readonly IEnumerable<TokenGroupRule<T>> _rules;
 

@@ -32,11 +32,11 @@ public enum TokenRuleType
   BuildTypedValue = 1024,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel{T}"/>.</summary>
   BuildLabel = 2048,
-  /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty{T}"/> or <see cref="TokenArray{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty{T}"/>, <see cref="TokenTypedValue{T}"/>, or <see cref="TokenArray{T}"/>.</summary>
   AssignValue = 4096,
   /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty{T}"/> or <see cref="TokenObject{T}"/>.</summary>
   AssignName = 0x2000,
-  /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject{T}"/> or <see cref="TokenTypedValue{T}"/>.</summary>
   AssignType = 0x4000,
   /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject{T}"/>.</summary>
   AddProperty = 0x8000,
@@ -59,7 +59,7 @@ public enum TokenRuleType
   /// <summary>All Token Match Rules with this flag will run concurrently and exclusively.</summary>
   /// <remarks>This is useful for strings and comments.</remarks>
   Competitive = 0x100000,
-  /// <summary>The rule will execute until no matches occur.</summary>
+  /// <summary>The rule will execute until no more matches occur.</summary>
   Recursive = 0x1000000,
   /// <summary>This token sequence entry is not required, but will be consumed if present.</summary>
   Opt = 0x2000000,
@@ -67,6 +67,10 @@ public enum TokenRuleType
   Mult = 0x4000000,
   /// <summary>This token or sequence means the parsed content is not valid.</summary>
   ErrorMatch = 0x8000000,
+  /// <summary>Extracts and uses the value(s) stored in the group named 'keep'.
+  /// If there are multiple captures, they will be stored as additional tokens of this type.</summary>
+  /// <remarks>The entire match is exempted if flagged as exempt, but the value of the created tokens will ONLY be what is in the named matching group 'keep'.</remarks>
+  TokenExtract = 0x10000000,
   /// <summary>The bits to remove to get the type correctly.</summary>
-  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
+  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch | TokenExtract,
 }

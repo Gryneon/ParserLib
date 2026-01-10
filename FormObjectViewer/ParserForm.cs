@@ -1,5 +1,6 @@
 #pragma warning disable CA1416 // Validate platform compatibility
 
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace FormObjectViewer;
@@ -29,5 +30,26 @@ internal sealed partial class ParserForm : Form
     Spec = Library.LookupOrDefault(spec_str);
     Parser = new(Spec);
 
+  }
+
+  private void LoadSpecToolStripMenuItem_Click (object sender, EventArgs e)
+  {
+    //TODO: pull from Library class
+    List<Spec> specs = [
+      Specification.ACS.Definition.ACS,
+      Specification.ACS.Definition.ModelDef,
+      Specification.Decorate.Definition.Spec,
+      Specification.INI.Definition.Spec,
+      Specification.IPL.Definition.Spec,
+      Specification.JSON.Definition.Spec,
+      Specification.MapInfo.Definition.Spec,
+      Specification.REG.Definition.Spec,
+      Specification.SndInfo.Definition.Spec,
+      Specification.UDMF.Definition.Spec,
+      Specification.XML.Definition.Spec,
+      Specification.ZScript.PrevDefinition.Spec,
+    ];
+
+    SpecComboBox.DataSource = specs;
   }
 }

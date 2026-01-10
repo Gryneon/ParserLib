@@ -8,6 +8,7 @@ using static Parser.DefinitionStaticFunctions;
 using static Parser.RX;
 
 using ATT = Specification.ACS.ACSTokenType;
+using RT = Parser.Tokens.TokenRuleType;
 
 namespace Specification.ACS;
 
@@ -79,7 +80,8 @@ public static class Definition
     TokenTypeLookup = [],
     TokenCompatLookup = [],
     TokenRules = [
-      new(TokenMatch)
+      new(RT.TokenMatch, ATT.Ao, "["),
+
     ],
     GroupTokenRules = [],
   };
@@ -95,7 +97,7 @@ public static class Definition
       new DictionaryOperation([], RxOptions),
       new DebugToStringOperation("matches"),
       new DebugWaitForInputOperation(),
-      new TokenizeOperation<string>(),
+      new TokenizeOperation(),
       new DebugToStringOperation("tokens"),
       new DebugWaitForInputOperation(),
     ]

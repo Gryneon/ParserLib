@@ -71,7 +71,7 @@ public static class Definition
         (@"\\" + RX.LnEnd, "") //Remove escaped newlines
       ], "text", "text"),
       new TokenizeOperation<RTT>("text", "tokens"),
-      new TokenAssembleOperation<RTT>(Spec.LoadFromSpec, "tokens", "tokens")
+      new TokenAssembleOperation<RTT>("tokens", "tokens_assembled")
       ],
     TokenRules = [
       new(RT.TokenExact, RTT.Eq, "=")

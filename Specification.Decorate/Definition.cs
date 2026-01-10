@@ -16,17 +16,16 @@ namespace Specification.Decorate;
 [DefinitionExport]
 public static class Definition
 {
-  public const RegexOptions RxOpt = ROML | ROIPW | ROIC | ROEC;
   [Export("zdoom.decorate")]
   public static Spec Spec => new()
   {
     FileInferences = [],
-    RxOpt = RxOpt,
-    RegexBasicTokens = [],
-    WhitespaceTokens = ["ws", "lncomment", "blkcomment"],
+    RxOpt = ROML | ROIPW | ROIC | ROEC,
+    IsTextFile = true,
+    SC = SCOIC,
     Name = "zdoom.decorate",
     Operations = [
-      new TokenizeOperation<string>(),
+      new TokenizeOperation(),
       Operation.End
     ]
   };

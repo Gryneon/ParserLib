@@ -28,10 +28,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="ParserForm.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <COMReference Include="WSHControllerLibrary">
       <WrapperTool>tlbimp</WrapperTool>
       <VersionMinor>0</VersionMinor>

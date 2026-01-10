@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="1">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <Deterministic>true</Deterministic>
@@ -24,20 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Naming Groups.md" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Samples\demon.zs" />
     <Content Include="Samples\label.ipl" />
     <Content Include="Samples\mapinfo.lmp" />
     <Content Include="Samples\sample.cfg" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tokens\Raw\" />
   </ItemGroup>
 
 </Project>

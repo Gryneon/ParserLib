@@ -32,106 +32,39 @@ partial class ParserForm : Form
   /// </summary>
   private void InitializeComponent ()
   {
-    DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+    components = new Container();
     StatusStrip = new StatusStrip();
-    MainTabs = new TabControl();
-    SpecTab = new TabPage();
-    SpecComboBox = new ComboBox();
-    label1 = new Label();
-    OperationsTab = new TabPage();
-    dataGridView1 = new DataGridView();
-    DataTab = new TabPage();
     OpenParseFileDialog = new OpenFileDialog();
     menuStrip1 = new MenuStrip();
-    StatusStrip.SuspendLayout();
-    MainTabs.SuspendLayout();
-    SpecTab.SuspendLayout();
-    OperationsTab.SuspendLayout();
-    DataTab.SuspendLayout();
+    fileToolStripMenuItem = new ToolStripMenuItem();
+    loadSpecToolStripMenuItem = new ToolStripMenuItem();
+    openFileToParseToolStripMenuItem = new ToolStripMenuItem();
+    generateRulesToolStripMenuItem = new ToolStripMenuItem();
+    toolStripSeparator1 = new ToolStripSeparator();
+    exitToolStripMenuItem = new ToolStripMenuItem();
+    SpecComboBox = new ComboBox();
+    label1 = new Label();
+    dataGridView1 = new DataGridView();
+    TypeColumn = new DataGridViewComboBoxColumn();
+    typeToAssignDataGridViewTextBoxColumn = new DataGridViewComboBoxColumn();
+    RuleStringDataColumn = new DataGridViewTextBoxColumn();
+    TokenRuleBindingSource = new BindingSource(components);
+    button1 = new Button();
+    specBindingSource = new BindingSource(components);
     menuStrip1.SuspendLayout();
+    ((ISupportInitialize) dataGridView1).BeginInit();
+    ((ISupportInitialize) TokenRuleBindingSource).BeginInit();
+    ((ISupportInitialize) specBindingSource).BeginInit();
     SuspendLayout();
     // 
     // StatusStrip
     // 
     StatusStrip.ImageScalingSize = new Size(20, 20);
-    StatusStrip.Location = new Point(0, 410);
+    StatusStrip.Location = new Point(0, 481);
     StatusStrip.Name = "StatusStrip";
-    StatusStrip.Size = new Size(800, 40);
+    StatusStrip.Size = new Size(1214, 22);
     StatusStrip.TabIndex = 0;
     StatusStrip.Text = "StatusStrip";
-    // 
-    // MainTabs
-    // 
-    MainTabs.AccessibleRole = AccessibleRole.PageTab;
-    MainTabs.Controls.Add(SpecTab);
-    MainTabs.Controls.Add(OperationsTab);
-    MainTabs.Controls.Add(DataTab);
-    MainTabs.Dock = DockStyle.Bottom;
-    MainTabs.Font = new Font("Bahnschrift", 14.25F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    MainTabs.HotTrack = true;
-    MainTabs.Location = new Point(0, 40);
-    MainTabs.Multiline = true;
-    MainTabs.Name = "MainTabs";
-    MainTabs.SelectedIndex = 0;
-    MainTabs.Size = new Size(800, 370);
-    MainTabs.SizeMode = TabSizeMode.FillToRight;
-    MainTabs.TabIndex = 1;
-    // 
-    // SpecTab
-    // 
-    SpecTab.BorderStyle = BorderStyle.FixedSingle;
-    SpecTab.Controls.Add(SpecComboBox);
-    SpecTab.Controls.Add(label1);
-    SpecTab.Location = new Point(4, 38);
-    SpecTab.Name = "SpecTab";
-    SpecTab.Padding = new Padding(3);
-    SpecTab.Size = new Size(792, 328);
-    SpecTab.TabIndex = 2;
-    SpecTab.Text = "Spec";
-    SpecTab.UseVisualStyleBackColor = true;
-    // 
-    // SpecComboBox
-    // 
-    SpecComboBox.FormattingEnabled = true;
-    SpecComboBox.Location = new Point(64, 16);
-    SpecComboBox.Name = "SpecComboBox";
-    SpecComboBox.Size = new Size(208, 37);
-    SpecComboBox.TabIndex = 1;
-    // 
-    // label1
-    // 
-    label1.AutoSize = true;
-    label1.Location = new Point(8, 16);
-    label1.Name = "label1";
-    label1.Size = new Size(66, 29);
-    label1.TabIndex = 0;
-    label1.Text = "Spec";
-    // 
-    // OperationsTab
-    // 
-    OperationsTab.Location = new Point(4, 38);
-    OperationsTab.Name = "OperationsTab";
-    OperationsTab.Padding = new Padding(3);
-    OperationsTab.Size = new Size(792, 328);
-    OperationsTab.TabIndex = 0;
-    OperationsTab.Text = "Operate";
-    OperationsTab.UseVisualStyleBackColor = true;
-    // 
-    // DataTab
-    // 
-    DataTab.Font = new Font("Bahnschrift", 12F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    DataTab.Location = new Point(4, 38);
-    DataTab.Name = "DataTab";
-    DataTab.Padding = new Padding(3);
-    DataTab.Size = new Size(792, 328);
-    DataTab.TabIndex = 1;
-    DataTab.Text = "Data";
-    DataTab.UseVisualStyleBackColor = true;
-    // 
-    // ParserDataGrid
-    // 
-    dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-    dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
     // 
     // OpenParseFileDialog
     // 
@@ -145,33 +78,141 @@ partial class ParserForm : Form
     // menuStrip1
     // 
     menuStrip1.ImageScalingSize = new Size(20, 20);
+    menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
     menuStrip1.Location = new Point(0, 0);
     menuStrip1.Name = "menuStrip1";
-    menuStrip1.Size = new Size(800, 28);
+    menuStrip1.Size = new Size(1214, 28);
     menuStrip1.TabIndex = 2;
     menuStrip1.Text = "menuStrip1";
+    // 
+    // fileToolStripMenuItem
+    // 
+    fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadSpecToolStripMenuItem, openFileToParseToolStripMenuItem, generateRulesToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+    fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+    fileToolStripMenuItem.Size = new Size(44, 24);
+    fileToolStripMenuItem.Text = "File";
+    // 
+    // loadSpecToolStripMenuItem
+    // 
+    loadSpecToolStripMenuItem.Name = "loadSpecToolStripMenuItem";
+    loadSpecToolStripMenuItem.Size = new Size(197, 24);
+    loadSpecToolStripMenuItem.Text = "Load Specs";
+    loadSpecToolStripMenuItem.Click += LoadSpecToolStripMenuItem_Click;
+    // 
+    // openFileToParseToolStripMenuItem
+    // 
+    openFileToParseToolStripMenuItem.Name = "openFileToParseToolStripMenuItem";
+    openFileToParseToolStripMenuItem.Size = new Size(197, 24);
+    openFileToParseToolStripMenuItem.Text = "Open File to Parse";
+    // 
+    // generateRulesToolStripMenuItem
+    // 
+    generateRulesToolStripMenuItem.Name = "generateRulesToolStripMenuItem";
+    generateRulesToolStripMenuItem.Size = new Size(197, 24);
+    generateRulesToolStripMenuItem.Text = "Generate Rules";
+    // 
+    // toolStripSeparator1
+    // 
+    toolStripSeparator1.Name = "toolStripSeparator1";
+    toolStripSeparator1.Size = new Size(194, 6);
+    // 
+    // exitToolStripMenuItem
+    // 
+    exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+    exitToolStripMenuItem.Size = new Size(197, 24);
+    exitToolStripMenuItem.Text = "Exit";
+    // 
+    // SpecComboBox
+    // 
+    SpecComboBox.AccessibleRole = AccessibleRole.ComboBox;
+    SpecComboBox.DataBindings.Add(new Binding("Text", specBindingSource, "Name", true));
+    SpecComboBox.DataBindings.Add(new Binding("SelectedItem", specBindingSource, "Name", true));
+    SpecComboBox.FormattingEnabled = true;
+    SpecComboBox.Location = new Point(8, 48);
+    SpecComboBox.Name = "SpecComboBox";
+    SpecComboBox.Size = new Size(192, 28);
+    SpecComboBox.TabIndex = 3;
+    // 
+    // label1
+    // 
+    label1.AutoSize = true;
+    label1.Location = new Point(8, 24);
+    label1.Name = "label1";
+    label1.Size = new Size(95, 20);
+    label1.TabIndex = 4;
+    label1.Text = "Specification";
+    // 
+    // dataGridView1
+    // 
+    dataGridView1.AutoGenerateColumns = false;
+    dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+    dataGridView1.Columns.AddRange(new DataGridViewColumn[] { TypeColumn, typeToAssignDataGridViewTextBoxColumn, RuleStringDataColumn });
+    dataGridView1.DataSource = TokenRuleBindingSource;
+    dataGridView1.Location = new Point(552, 32);
+    dataGridView1.Name = "dataGridView1";
+    dataGridView1.Size = new Size(648, 168);
+    dataGridView1.TabIndex = 5;
+    // 
+    // TypeColumn
+    // 
+    TypeColumn.DataPropertyName = "Type";
+    TypeColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox;
+    TypeColumn.HeaderText = "Type";
+    TypeColumn.Name = "TypeColumn";
+    TypeColumn.Resizable = DataGridViewTriState.True;
+    // 
+    // typeToAssignDataGridViewTextBoxColumn
+    // 
+    typeToAssignDataGridViewTextBoxColumn.DataPropertyName = "TypeToAssign";
+    typeToAssignDataGridViewTextBoxColumn.HeaderText = "TypeToAssign";
+    typeToAssignDataGridViewTextBoxColumn.Name = "typeToAssignDataGridViewTextBoxColumn";
+    typeToAssignDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True;
+    typeToAssignDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic;
+    // 
+    // RuleStringDataColumn
+    // 
+    RuleStringDataColumn.DataPropertyName = "RuleStringData";
+    RuleStringDataColumn.HeaderText = "RuleStringData";
+    RuleStringDataColumn.Name = "RuleStringDataColumn";
+    RuleStringDataColumn.Width = 400;
+    // 
+    // TokenRuleBindingSource
+    // 
+    TokenRuleBindingSource.DataSource = typeof(Parser.Tokens.TokenRule);
+    // 
+    // button1
+    // 
+    button1.Location = new Point(1096, 440);
+    button1.Name = "button1";
+    button1.Size = new Size(104, 32);
+    button1.TabIndex = 6;
+    button1.Text = "Parse";
+    button1.UseVisualStyleBackColor = true;
+    // 
+    // specBindingSource
+    // 
+    specBindingSource.DataSource = typeof(Spec);
     // 
     // ParserForm
     // 
     AutoScaleDimensions = new SizeF(8F, 20F);
     AutoScaleMode = AutoScaleMode.Font;
-    ClientSize = new Size(800, 450);
-    Controls.Add(MainTabs);
+    ClientSize = new Size(1214, 503);
+    Controls.Add(button1);
+    Controls.Add(dataGridView1);
+    Controls.Add(label1);
+    Controls.Add(SpecComboBox);
     Controls.Add(StatusStrip);
     Controls.Add(menuStrip1);
     MainMenuStrip = menuStrip1;
     Name = "ParserForm";
     Text = "Parser Form";
     Load += ParserForm_Load;
-    StatusStrip.ResumeLayout(false);
-    StatusStrip.PerformLayout();
-    MainTabs.ResumeLayout(false);
-    SpecTab.ResumeLayout(false);
-    SpecTab.PerformLayout();
-    OperationsTab.ResumeLayout(false);
-    DataTab.ResumeLayout(false);
     menuStrip1.ResumeLayout(false);
     menuStrip1.PerformLayout();
+    ((ISupportInitialize) dataGridView1).EndInit();
+    ((ISupportInitialize) TokenRuleBindingSource).EndInit();
+    ((ISupportInitialize) specBindingSource).EndInit();
     ResumeLayout(false);
     PerformLayout();
   }
@@ -179,12 +220,21 @@ partial class ParserForm : Form
   #endregion
 
   private StatusStrip StatusStrip;
-  private TabControl MainTabs;
-  private TabPage OperationsTab;
-  private TabPage DataTab;
   private OpenFileDialog OpenParseFileDialog;
+  private MenuStrip menuStrip1;
   private ComboBox SpecComboBox;
   private Label label1;
-  public TabPage SpecTab;
-  private MenuStrip menuStrip1;
+  private DataGridView dataGridView1;
+  private BindingSource TokenRuleBindingSource;
+  private DataGridViewComboBoxColumn TypeColumn;
+  private DataGridViewComboBoxColumn typeToAssignDataGridViewTextBoxColumn;
+  private DataGridViewTextBoxColumn RuleStringDataColumn;
+  private Button button1;
+  private ToolStripMenuItem fileToolStripMenuItem;
+  private ToolStripMenuItem loadSpecToolStripMenuItem;
+  private ToolStripMenuItem openFileToParseToolStripMenuItem;
+  private ToolStripSeparator toolStripSeparator1;
+  private ToolStripMenuItem generateRulesToolStripMenuItem;
+  private ToolStripMenuItem exitToolStripMenuItem;
+  private BindingSource specBindingSource;
 }

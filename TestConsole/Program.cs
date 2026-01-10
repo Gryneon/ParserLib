@@ -71,7 +71,7 @@ internal sealed class Program
 
     string file = $"{SamplePath}\\map00.udmf";
     //Load Data
-    string input = File.ReadAllText(file);
+    string input = File.ReadAllText(file.UserDirFix());
     //int libcount = Library.SpecList.Count;
     TokenRuleCollection<UDMFTokenType> rules = [];
     rules.AddRange(Definition.Spec.TokenRules);

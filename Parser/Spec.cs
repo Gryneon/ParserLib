@@ -36,9 +36,9 @@ public class Spec
   /// <summary>Define the names of equilivent groups of tokens.</summary>
   public Dictionary<dynamic, Collection<dynamic>> TokenCompatLookup { get; init; } = [];
   /// <summary>Token rules for the tokenize operration..</summary>
-  public TokenRuleCollection<dynamic> TokenRules { get; init; } = [];
+  public TokenRuleCollection TokenRules { get; init; } = [];
   /// <summary>Group token rules for the tokenize operration..</summary>
-  public TokenGroupRuleCollection<dynamic> GroupTokenRules { get; init; } = [];
+  public TokenGroupRuleCollection GroupTokenRules { get; init; } = [];
   /// <summary>Token types that are basic building blocks.</summary>
   public Collection<string> RegexBasicTokens { get; init; } = [];
   /// <summary>Token types to ignore.</summary>
