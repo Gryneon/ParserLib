@@ -43,11 +43,11 @@ public static class Debug
 
   private static void DoLog (string msg, MsgClass msgClass)
   {
-      //if (Console.CursorTop < LineStart + LineCount)
-      //  Console.SetCursorPosition(0, LineStart + LineCount);
-      if (msgClass is not MsgClass.None)
-        Console.WriteLine(msg);
-      LineCount++;
+    //if (Console.CursorTop < LineStart + LineCount)
+    //  Console.SetCursorPosition(0, LineStart + LineCount);
+    if (msgClass is not MsgClass.None)
+      Console.WriteLine(msg);
+    LineCount++;
   }
   /// <summary>Logs a message to the output stream.</summary>
   /// <param name="msg">The message to log.</param>

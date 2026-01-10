@@ -1,6 +1,4 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
-using System.Data;
-
 namespace Parser.Tokens;
 
 public class TokenRule

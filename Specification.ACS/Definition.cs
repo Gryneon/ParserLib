@@ -2,10 +2,7 @@
 #pragma warning disable IDE0052 // Remove unread private members
 #pragma warning disable CA1720 // Identifier contains type name
 
-using System.Text.RegularExpressions;
-
 using static Parser.DefinitionStaticFunctions;
-using static Parser.RX;
 
 using ATT = Specification.ACS.ACSTokenType;
 using RT = Parser.Tokens.TokenRuleType;

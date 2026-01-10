@@ -1,5 +1,4 @@
 using Parser;
-using Parser.Tokens;
 
 namespace UnitTest;
 

@@ -1,12 +1,6 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 //#pragma warning disable IDE1006 // Naming Rule Violation
 
-using System;
-
-using Common;
-
-using static Parser.DefinitionStaticFunctions;
-
 namespace Specification.Decorate;
 
 //Decorate Prototype

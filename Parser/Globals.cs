@@ -24,7 +24,6 @@ global using static Parser.Debug;
 global using static Parser.DebugMsg;
 global using static Parser.ExceptionMsg;
 
-global using Debug = Parser.Debug;
 global using DM = Common.DictionaryMode;
 global using IT = Parser.Inference.InferenceType;
 global using OAT = Parser.OperationActionType;

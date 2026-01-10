@@ -5,7 +5,7 @@ namespace Common.Excel;
 
 internal static class App
 {
-	public static Application Instance { get; } = new();
+  public static Application Instance { get; } = new();
 }
 
 #endif

@@ -13,6 +13,5 @@ global using static Common.Names;
 
 global using ICT = Specification.IPL.IPLCommandType;
 global using ITT = Specification.IPL.IPLTokenType;
-global using RT = Parser.Tokens.TokenRuleType;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 
