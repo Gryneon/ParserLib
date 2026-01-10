@@ -8,6 +8,7 @@ using static Parser.DefinitionStaticFunctions;
 using static Parser.RX;
 
 using ATT = Specification.ACS.ACSTokenType;
+using RT = Parser.Tokens.TokenRuleType;
 
 namespace Specification.ACS;
 
@@ -30,8 +31,8 @@ public enum ACSTokenType
   Bo, Bc,
   Po, Pc,
   Expression,
-  Sc,
-  Op,
+  Sc, Cm,
+  Op, Co,
   Ao, Ac,
   Hash,
   Eq,
@@ -46,29 +47,20 @@ public enum ACSTokenType
 [DefinitionExport(true)]
 public static class Definition
 {
-  /// <summary>
-  /// https://regex101.com/r/NoIMcf/1 <br/>
-  /// </summary>
-  /// https://regex101.com/r/tfW4Sl/1
-  /// <remarks>https://regex101.com/r/deLv0L/2</remarks>
+  internal static RT Compet = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
+  internal static RT Ignore = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
+  internal static RT TMatch = RT.TokenMatch | RT.ExemptAllWithin | RT.IgnoreCase;
+  internal static RT TExact = RT.TokenExact | RT.ExemptAllWithin | RT.IgnoreCase;
 
-  //Splitter
-  //https://regex101.com/r/yR81eF/1
-  private static RxS Splitter (string keeps) => Rx($@"\s+|(?<!\s)(?=[{keeps}])|(?<=[{keeps}])");
-  private static string Ws => Nm("t_ws", @"\s+");
-  private static string Wso => Nm("t_ws", @"\s*");
-  private static string ACS_PreProc1 => Nm("preproc", @"^\s*\#(library|import|include)\s+");
-  private const RegexOptions RxOptions = ROML | ROIC | ROIPW | ROEC;
   /// <summary>
   /// Defined Specification
   /// </summary>
-
   [Export("zdoom.acs")]
   public static Spec ACS => new()
   {
     FileInferences = [IfN(ExtIs, "acs")],
     Name = "zdoom.acs",
-    RxOpt = RxOptions | ROSL,
+    RxOpt = ROML | ROIC | ROIPW | ROEC | ROSL,
     Operations = [
       new TokenizeOperation<ATT>(),
       new TokenAssembleOperation<ATT>(),
@@ -79,7 +71,27 @@ public static class Definition
     TokenTypeLookup = [],
     TokenCompatLookup = [],
     TokenRules = [
-      new(TokenMatch)
+      new(Compet, ATT.Str, @"""([^\\""]|\\.)*"""),
+      new(Compet, ATT.Char, @"'([^\\']|\\.)*'"),
+      new(Ignore, ATT.None, @"\/\/.*?$"),
+      new(Ignore, ATT.None, @"\/\*.*?\*\/"),
+
+      new(TExact, ATT.Hash, "#"),
+      new(TExact, ATT.Bool, @"\b(true|false|on|off|yes|no)\b"),
+      new(TExact, ATT.Int, @"-?(\d+|0x[a-f0-9]+)(?!\.)"),
+      new(TExact, ATT.Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
+      new(TExact, ATT.Script, @"\bscript\b"),
+
+      new(TExact, ATT.Ao, "["),
+      new(TExact, ATT.Ac, "]"),
+      new(TExact, ATT.Bo, "{"),
+      new(TExact, ATT.Bc, "}"),
+      new(TExact, ATT.Po, "("),
+      new(TExact, ATT.Pc, ")"),
+      new(TExact, ATT.Eq, "="),
+      new(TExact, ATT.Cm, ","),
+      new(TExact, ATT.Co, ":"),
+      new(TExact, ATT.Sc, ";"),
     ],
     GroupTokenRules = [],
   };
@@ -90,9 +102,9 @@ public static class Definition
       IfN(ExtIs, "modeldef"),
       IfN(FName|Is, "modeldef"))],
     Name = "zdoom.modeldef",
-    RxOpt = RxOptions,
+    RxOpt = ROML | ROIC | ROIPW | ROEC,
     Operations = [
-      new DictionaryOperation([], RxOptions),
+      //new DictionaryOperation([], RxOptions),
       new DebugToStringOperation("matches"),
       new DebugWaitForInputOperation(),
       new TokenizeOperation<string>(),
