@@ -1,6 +1,7 @@
 using System.IO;
 
 using Common;
+using Common.Extensions;
 
 using Parser;
 using Parser.Tokens;
@@ -22,7 +23,7 @@ public class UDMFTests
 
     //Load Spec
     Spec spec = Definition.Spec;
-    TokenRuleCollection<UTT> rules = [];
+    TokenRuleCollection rules = [];
     rules.AddRange(spec.TokenRules);
     TokenFactory factory = new(rules);
     TokenCollection result = [.. factory.Produce(input)];

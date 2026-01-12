@@ -67,21 +67,7 @@ internal sealed class Program
 
     Log(MsgClass.Informational, "Program", "Main", "Program Start");
 
-    Parser = new(Specification.INI.Definition.Spec);
-
-    string file = $"{SamplePath}\\map00.udmf";
-    //Load Data
-    string input = File.ReadAllText(file.UserDirFix());
-    //int libcount = Library.SpecList.Count;
-    TokenRuleCollection<UDMFTokenType> rules = [];
-    rules.AddRange(Definition.Spec.TokenRules);
-    TokenFactory factory = new(rules);
-    TokenCollection result = [.. factory.Produce(input)];
-    //Debug.Log(Area, result.ToString2());
-    TokenAssembler assembler = new(Definition.Spec.GroupTokenRules);
-    TokenCollection tokens = [.. result];
-    assembler.Execute(tokens);
-    Log(Area, tokens.ToString2());
+    
     //args = [.. args, TestPath["ipl"]];
 
     if (args.Length == 0)
@@ -114,6 +100,25 @@ internal sealed class Program
     _ = Console.ReadLine();
     return 0;
   }
+
+  internal static void InitialTest ()
+  {
+    Parser = new(Specification.INI.Definition.Spec);
+    string file = $"{SamplePath}\\map00.udmf";
+    //Load Data
+    string input = File.ReadAllText(file.UserDirFix());
+    //int libcount = Library.SpecList.Count;
+    TokenRuleCollection rules = [];
+    rules.AddRange(Definition.Spec.TokenRules);
+    TokenFactory factory = new(rules);
+    TokenCollection result = [.. factory.Produce(input)];
+    //Debug.Log(Area, result.ToString2());
+    TokenAssembler assembler = new(Definition.Spec.GroupTokenRules);
+    TokenCollection tokens = [.. result];
+    assembler.Execute(tokens);
+    Log(Area, tokens.ToString2());
+  }
+
   internal static XParser TestTextParser (string path, Spec spec)
   {
     string content = File.ReadAllText(path);

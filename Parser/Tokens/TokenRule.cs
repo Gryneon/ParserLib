@@ -38,39 +38,3 @@ public class TokenRule
     TypeToAssign = SE;
   }
 }
-public class TokenRule<T> : TokenRule where T : struct
-{
-  public new required T TypeToAssign
-  {
-    get => field;
-    set
-    {
-      field = value;
-      base.TypeToAssign = value.ToString() ?? SE;
-    }
-  }
-
-  [SetsRequiredMembers]
-  public TokenRule (RT type, T typeToAssign, [SS("regex")] string? ruleStringData) : base(type, typeToAssign.ToString() ?? SE, ruleStringData)
-  {
-    TypeToAssign = typeToAssign;
-  }
-  [SetsRequiredMembers]
-  public TokenRule (RT type, string typeToAssign, [SS("regex")] string? ruleStringData) : base(type, typeToAssign?.ToString() ?? "None", ruleStringData)
-  {
-    typeToAssign ??= "None";
-    TypeToAssign = Enum.Parse<T>(typeToAssign);
-  }
-  [SetsRequiredMembers]
-  public TokenRule (RT type, T typeToAssign) : base(type, typeToAssign.ToString() ?? SE)
-  {
-    TypeToAssign = typeToAssign;
-  }
-  [SetsRequiredMembers]
-  public TokenRule (RT type, string typeToAssign) : base(type, typeToAssign?.ToString() ?? SE)
-  {
-    typeToAssign ??= "None";
-    TypeToAssign = Enum.Parse<T>(typeToAssign);
-  }
-  public TokenRule () { }
-}
