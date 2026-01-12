@@ -32,7 +32,7 @@ internal sealed partial class ParserForm : Form
 
   }
 
-  private void LoadSpecToolStripMenuItem_Click (object sender, EventArgs e)
+  private void LoadSpecMenuItem_Click (object sender, EventArgs e)
   {
     //TODO: pull from Library class
     List<Spec> specs = [

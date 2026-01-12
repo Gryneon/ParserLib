@@ -29,6 +29,10 @@
     <Content Include="Samples\mapinfo.lmp" />
     <Content Include="Samples\sample.cfg" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
