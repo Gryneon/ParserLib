@@ -136,10 +136,10 @@ DoomEdNums
   9872 = SpotLightFlickerAttenuated
   9873 = SectorSpotLightAttenuated
   9874 = SpotLightFlickerRandomAttenuated
-  9875 = None	// ZDRay light probe
-  9876 = None	// ZDRay static point light
-  9881 = None	// ZDRay static spotlight
-  9890 = None	// ZDRayInfo
+  9875 = None  // ZDRay light probe
+  9876 = None  // ZDRay static point light
+  9881 = None  // ZDRay static spotlight
+  9890 = None  // ZDRayInfo
   9982 = SecActEyesAboveC
   9983 = SecActEyesBelowC
   9988 = CustomSprite
@@ -326,7 +326,7 @@ Intermission Inter_Pic1
 {
   Image
   {
-    Background = "@1"	// index into finalepic FadeIn gameinfo block
+    Background = "@1"  // index into finalepic FadeIn gameinfo block
   }
 }
 
@@ -563,7 +563,7 @@ Intermission Doom2Cast
     CastName = "$CC_HERO"
     AttackSound = "Missile", 0, "weapons/sshotf"
   }
-  Link = Doom2Cast	// restart cast call
+  Link = Doom2Cast  // restart cast call
 }
 
 Intermission Inter_Chess

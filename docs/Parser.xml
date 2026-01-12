@@ -606,21 +606,21 @@
         <member name="T:Parser.Ops.Text.CombineOperation">
             <summary>
             <summary>
-				Performs an operation that uses and may alter or reassign the data.<br />
-			</summary><returns>
-				<see cref="F:Parser.OpStatus.Error" /> : The operation encountered a fatal error.<br />
-				<see cref="F:Parser.OpStatus.Pass" /> : The operation completed.<br />
-				<see cref="F:Parser.OpStatus.Skipped" /> : The operation was skipped or not executed. <br />
-				<see cref="F:Parser.OpStatus.FailBadInputNull" /> : The operation was given a null value. <br />
-				<see cref="F:Parser.OpStatus.FailBadInputType" /> : The operation was given an incompatible object as input. <br />
-				<see cref="F:Parser.OpStatus.FailBadOpDefinition" /> : The operation or specification definition has an error or is not valid. <br />
-				<see cref="F:Parser.OpStatus.FailBadOpImpossible" /> : The operation reached an impossible statement. <br />
-				<see cref="F:Parser.OpStatus.FailNullOpResult" /> : The operation resulted in a null value. <br />
-				<see cref="F:Parser.OpStatus.FailBufferOverflow" /> : The operation advanced beyond the EOL of the input. <br />
-				<see cref="F:Parser.OpStatus.FailNoSuchVarName" /> : The operation was supplied an invalid key.<br />
-				<see cref="F:Parser.OpStatus.FailNoSpec" /> : The operation does not have a valid <see cref="T:Parser.Spec" />.<br />
-				<see cref="F:Parser.OpStatus.EndCommand" /> : The operation completed and was the final operation. <br />
-			</returns><exception cref="T:Parser.UnknownOperationException" />
+        Performs an operation that uses and may alter or reassign the data.<br />
+      </summary><returns>
+        <see cref="F:Parser.OpStatus.Error" /> : The operation encountered a fatal error.<br />
+        <see cref="F:Parser.OpStatus.Pass" /> : The operation completed.<br />
+        <see cref="F:Parser.OpStatus.Skipped" /> : The operation was skipped or not executed. <br />
+        <see cref="F:Parser.OpStatus.FailBadInputNull" /> : The operation was given a null value. <br />
+        <see cref="F:Parser.OpStatus.FailBadInputType" /> : The operation was given an incompatible object as input. <br />
+        <see cref="F:Parser.OpStatus.FailBadOpDefinition" /> : The operation or specification definition has an error or is not valid. <br />
+        <see cref="F:Parser.OpStatus.FailBadOpImpossible" /> : The operation reached an impossible statement. <br />
+        <see cref="F:Parser.OpStatus.FailNullOpResult" /> : The operation resulted in a null value. <br />
+        <see cref="F:Parser.OpStatus.FailBufferOverflow" /> : The operation advanced beyond the EOL of the input. <br />
+        <see cref="F:Parser.OpStatus.FailNoSuchVarName" /> : The operation was supplied an invalid key.<br />
+        <see cref="F:Parser.OpStatus.FailNoSpec" /> : The operation does not have a valid <see cref="T:Parser.Spec" />.<br />
+        <see cref="F:Parser.OpStatus.EndCommand" /> : The operation completed and was the final operation. <br />
+      </returns><exception cref="T:Parser.UnknownOperationException" />
             </summary>
             <param name="delimiter">What to space the text parts with.</param>
             <param name="input_key">The input key.</param>
@@ -629,21 +629,21 @@
         <member name="M:Parser.Ops.Text.CombineOperation.#ctor(System.String,System.String,System.Object)">
             <summary>
             <summary>
-				Performs an operation that uses and may alter or reassign the data.<br />
-			</summary><returns>
-				<see cref="F:Parser.OpStatus.Error" /> : The operation encountered a fatal error.<br />
-				<see cref="F:Parser.OpStatus.Pass" /> : The operation completed.<br />
-				<see cref="F:Parser.OpStatus.Skipped" /> : The operation was skipped or not executed. <br />
-				<see cref="F:Parser.OpStatus.FailBadInputNull" /> : The operation was given a null value. <br />
-				<see cref="F:Parser.OpStatus.FailBadInputType" /> : The operation was given an incompatible object as input. <br />
-				<see cref="F:Parser.OpStatus.FailBadOpDefinition" /> : The operation or specification definition has an error or is not valid. <br />
-				<see cref="F:Parser.OpStatus.FailBadOpImpossible" /> : The operation reached an impossible statement. <br />
-				<see cref="F:Parser.OpStatus.FailNullOpResult" /> : The operation resulted in a null value. <br />
-				<see cref="F:Parser.OpStatus.FailBufferOverflow" /> : The operation advanced beyond the EOL of the input. <br />
-				<see cref="F:Parser.OpStatus.FailNoSuchVarName" /> : The operation was supplied an invalid key.<br />
-				<see cref="F:Parser.OpStatus.FailNoSpec" /> : The operation does not have a valid <see cref="T:Parser.Spec" />.<br />
-				<see cref="F:Parser.OpStatus.EndCommand" /> : The operation completed and was the final operation. <br />
-			</returns><exception cref="T:Parser.UnknownOperationException" />
+        Performs an operation that uses and may alter or reassign the data.<br />
+      </summary><returns>
+        <see cref="F:Parser.OpStatus.Error" /> : The operation encountered a fatal error.<br />
+        <see cref="F:Parser.OpStatus.Pass" /> : The operation completed.<br />
+        <see cref="F:Parser.OpStatus.Skipped" /> : The operation was skipped or not executed. <br />
+        <see cref="F:Parser.OpStatus.FailBadInputNull" /> : The operation was given a null value. <br />
+        <see cref="F:Parser.OpStatus.FailBadInputType" /> : The operation was given an incompatible object as input. <br />
+        <see cref="F:Parser.OpStatus.FailBadOpDefinition" /> : The operation or specification definition has an error or is not valid. <br />
+        <see cref="F:Parser.OpStatus.FailBadOpImpossible" /> : The operation reached an impossible statement. <br />
+        <see cref="F:Parser.OpStatus.FailNullOpResult" /> : The operation resulted in a null value. <br />
+        <see cref="F:Parser.OpStatus.FailBufferOverflow" /> : The operation advanced beyond the EOL of the input. <br />
+        <see cref="F:Parser.OpStatus.FailNoSuchVarName" /> : The operation was supplied an invalid key.<br />
+        <see cref="F:Parser.OpStatus.FailNoSpec" /> : The operation does not have a valid <see cref="T:Parser.Spec" />.<br />
+        <see cref="F:Parser.OpStatus.EndCommand" /> : The operation completed and was the final operation. <br />
+      </returns><exception cref="T:Parser.UnknownOperationException" />
             </summary>
             <param name="delimiter">What to space the text parts with.</param>
             <param name="input_key">The input key.</param>
