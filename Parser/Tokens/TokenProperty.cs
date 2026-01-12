@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenProperty<T> : TokenBase<T>, IReadOnlyProperty<string>, IProperty<string> where T : struct
+public sealed class TokenProperty : TokenBase, IReadOnlyProperty<string>, IProperty<string>
 {
   // Assigned Properties
   string IProperty<string>.Key { get => Name; set => value.DoNothing(); }
@@ -15,8 +15,8 @@ public sealed class TokenProperty<T> : TokenBase<T>, IReadOnlyProperty<string>, 
   public string? Value => ValueToken?.Content;
 
   // Tokens Kept
-  public required Token<T> NameToken { get; init; }
-  public required IToken<T>? ValueToken { get; init; }
+  public required Token NameToken { get; init; }
+  public required IToken? ValueToken { get; init; }
 
   string IReadOnlyProperty<string>.Key => Name;
   int IComparable<IProperty<string>>.CompareTo (IProperty<string>? other) => Name.CompareTo(other?.Key, SCO);

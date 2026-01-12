@@ -36,26 +36,3 @@ public class TokenGroupRule : TokenRule
     TypeToAssign = SE;
   }
 }
-
-public class TokenGroupRule<T> : TokenGroupRule where T : struct
-{
-  public new required T TypeToAssign
-  {
-    get => field;
-    set
-    {
-      field = value;
-      base.TypeToAssign = value.ToString() ?? SE;
-    }
-  }
-  public new ChkSequence<T> Sequence { get; } = [];
-
-  [SetsRequiredMembers]
-  public TokenGroupRule (RT type, T typeToAssign, string ruleStringData)
-  {
-    Type = type;
-    TypeToAssign = typeToAssign;
-    RuleStringData = ruleStringData ?? throw new ArgumentNullException(nameof(ruleStringData));
-  }
-  public TokenGroupRule () { }
-}

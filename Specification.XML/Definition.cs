@@ -48,34 +48,21 @@ public static class Definition
       IfN(HeadSt, "<?xm")
     ],
     Name = "xml",
-    RxOpt = ROML | ROEC,
+    RxOpt = ROML | ROEC | ROIPW,
+    IsTextFile = true,
+    SC = SCO,
+
     Operations = [
-      new DictionaryOperation(Regex, ROML | ROEC | ROIPW, false),
-      new TokenizeOperation<string>(),
-      new OperationCollection([
-        new GenerateFromObjectOperation<XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
-        new GenerateFromObjectOperation<XMLElementClose>("tokens", "xml_close", "endtag"),
-        new GenerateFromObjectOperation<XMLElementOpen>("tokens", "xml_open", "tagname"),
-        new GenerateFromObjectOperation<XMLContent>("tokens", "xml_content", "content"),
-        new GenerateFromObjectOperation<XMLHeader>("tokens", "xml_header", "header"),
-        new GenerateFromObjectOperation<XMLComment>("tokens", "xml_comment", "header"),
-        new ConsolidateOperation<IXMLObject>(["xml_single", "xml_close", "xml_open", "xml_content", "xml_header", "xml_comment"], "xml"),
-      ]),
-      new XMLStackOperation("xml", "xml"),
-      Operation.CopyKey("xml", "result"),
+      new TokenizeOperation(),
+      new GenerateFromObjectOperation<XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
+      new GenerateFromObjectOperation<XMLElementClose>("tokens", "xml_close", "endtag"),
+      new GenerateFromObjectOperation<XMLElementOpen>("tokens", "xml_open", "tagname"),
+      new GenerateFromObjectOperation<XMLContent>("tokens", "xml_content", "content"),
+      new GenerateFromObjectOperation<XMLHeader>("tokens", "xml_header", "header"),
+      new GenerateFromObjectOperation<XMLComment>("tokens", "xml_comment", "header"),
+      new ConsolidateOperation<IXMLObject>(["xml_single", "xml_close", "xml_open", "xml_content", "xml_header", "xml_comment"], "xml"),
+      new XMLStackOperation("xml", "result"),
       Operation.End,
     ],
-    RegexBasicTokens = {
-      "noinsidetag",
-      "endtag",
-      "header",
-      "element",
-      "content",
-    },
-    WhitespaceTokens =
-    {
-      "ws",
-      "comment"
-    }
   };
 }

@@ -96,7 +96,8 @@ public static class Definition
       IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
     TokenRules = [
-      new(TokenMatch | IgnoredToken, ITT.Ignored, $"(?<={Etx}).*?(?={Stx})"),
+      new(TokenMatch | IgnoredToken, ITT.None, $"(?<={Etx}).*?(?={Stx})"),
+      new(TokenMatch | IgnoredToken, ITT.None, $@"\A.*?(?={Stx})"),
       new(TokenMatch | ExemptAllWithin, ITT.Stx, $"{Stx}"),
       new(TokenMatch | ExemptAllWithin, ITT.Etx, $"{Etx}"),
       new(TokenMatch | ExemptAllWithin, ITT.Esc, $"{Esc}"),

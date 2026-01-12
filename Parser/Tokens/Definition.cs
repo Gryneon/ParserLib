@@ -4,10 +4,12 @@ namespace Parser.Tokens;
 
 internal static class Definition
 {
+  private const RT TExact = RT.TokenExact | RT.ExemptAllWithin | RT.IgnoreCase;
+  private const RT TMatch = RT.TokenMatch | RT.ExemptAllWithin | RT.IgnoreCase;
+
   public enum CTT
   {
     None = 0,
-    Ws,
     Colon,
     Po,
     Pc,
@@ -17,14 +19,12 @@ internal static class Definition
     TokenDef, // Full structure type
   }
 
-  public static TokenFactory<CTT> Factory { get; } = new([
-    new(RT.TokenMatch, CTT.Colon, @"\:"),
-    new(RT.TokenMatch, CTT.Po, @"\("),
-    new(RT.TokenMatch, CTT.Pc, @"\)"),
-    new(RT.TokenMatch, CTT.Prefix, @"\b\w+(?=\:)"),
-    new(RT.TokenMatch, CTT.Content, @"(?<=\bc\:)\w+\b"),
-    new(RT.TokenMatch, CTT.TypeName, @"(?<=\bt\:)\w+\b"),
-    new(RT.StoreExtra | RT.IgnoredToken, CTT.Ws, @"\s+"),
-    new(RT.StoreOther, CTT.None),
+  public static TokenFactory Factory { get; } = new([
+    new(TExact, CTT.Colon, @":"),
+    new(TExact, CTT.Po, @"("),
+    new(TExact, CTT.Pc, @")"),
+    new(TMatch, CTT.Prefix, @"\b\w+(?=\:)"),
+    new(TMatch, CTT.Content, @"(?<=c.*?\:)\w+\b"),
+    new(TMatch, CTT.TypeName, @"(?<=t.*?\:)\w+\b"),
   ]);
 }

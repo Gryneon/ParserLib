@@ -75,11 +75,11 @@ internal sealed class Program
     //int libcount = Library.SpecList.Count;
     TokenRuleCollection<UDMFTokenType> rules = [];
     rules.AddRange(Definition.Spec.TokenRules);
-    TokenFactory<UDMFTokenType> factory = new(rules);
-    TokenCollection<UDMFTokenType> result = [.. factory.Produce(input)];
+    TokenFactory factory = new(rules);
+    TokenCollection result = [.. factory.Produce(input)];
     //Debug.Log(Area, result.ToString2());
-    TokenAssembler<UDMFTokenType> assembler = new(Definition.Spec.GroupTokenRules, Definition.Spec);
-    TokenCollection<UDMFTokenType> tokens = [.. result];
+    TokenAssembler assembler = new(Definition.Spec.GroupTokenRules);
+    TokenCollection tokens = [.. result];
     assembler.Execute(tokens);
     Log(Area, tokens.ToString2());
     //args = [.. args, TestPath["ipl"]];

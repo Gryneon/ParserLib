@@ -49,6 +49,19 @@ public class TokenRuleCollection<T> : TokenRuleCollection, IList<TokenRule<T>> w
       });
     }
   }
+  public void AddRange (IEnumerable<TokenRule> rules)
+  {
+    rules.ThrowIfNull();
+    foreach (TokenRule rule in rules)
+    {
+      _rules.Add(new TokenRule<T>()
+      {
+        Type = rule.Type,
+        TypeToAssign = Enum.Parse<T>(rule.TypeToAssign),
+        RuleStringData = rule.RuleStringData
+      });
+    }
+  }
 
   public int IndexOf (TokenRule<T> item) => ((IList<TokenRule<T>>) _rules).IndexOf(item);
   public void Insert (int index, TokenRule<T> item) => ((IList<TokenRule<T>>) _rules).Insert(index, item);

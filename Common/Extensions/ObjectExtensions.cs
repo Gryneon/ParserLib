@@ -67,4 +67,13 @@ public static class ObjectExtensions
     throw new NotImplementedException();
   }
   public static void DoNothing (this object? obj) { }
+
+  public static string DecodeAsEnum (this object value, Type enumType)
+  {
+    ANEx.ThrowIfNull(enumType);
+    ANEx.ThrowIfNull(value);
+    return !enumType.IsEnum
+      ? throw new ArgumentException("Type must be an enum.", nameof(enumType))
+      : Enum.GetName(enumType, value) ?? value.ToString()!;
+  }
 }

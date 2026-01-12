@@ -5,24 +5,15 @@ using static Parser.Tokens.TokenRuleType;
 
 namespace Specification.INI;
 
-public enum INITokenType
-{
-  None,
-  Comment,
-  Section,
-  Property,
-  Str,
-  Ws,
-  Bo, // [
-  Bc, // ]
-  Eq, // =
-}
-
 /// <summary>Defines the INI spec.</summary>
 [DefinitionExport]
 public static class Definition
 {
   private const RegexOptions RXOptions = ROML | ROIPW | ROEC;
+  private const TokenRuleType Competes = TMatches | Competitive;
+  private const TokenRuleType TMatches = TokenMatch | ExemptAllWithin | IgnoreCase;
+  private const TokenRuleType TExactly = TokenExact | ExemptAllWithin | IgnoreCase;
+  private const TokenRuleType TExtract = TokenExtract | ExemptAllWithin | IgnoreCase;
 
   /// <summary>The INI Spec</summary>
   [Export("ini")]
@@ -41,31 +32,17 @@ public static class Definition
       //new ExternalOperation<IEnumerable<Section>, INIDocument>(INIDocument.FromSections, item => true, "sections", "result"),
       //Operation.End],
       new TokenizeOperation<ITT>(),
-      new TokenAssembleOperation<ITT>("tokens", "tokens_assembled"),
-      new GenerateOperation<TokenObject<ITT>, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
+      new TokenAssembleOperation<ITT>(),
+      new GenerateOperation<TokenObject, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
       Operation.End
     ],
-    TokenTypeLookup = {
-      ["None"] = ITT.None,
-      ["Comment"] = ITT.Comment,
-      ["Str"] = ITT.Str,
-      ["Bo"] = ITT.Bo,
-      ["Bc"] = ITT.Bc,
-      ["Eq"] = ITT.Eq,
-      ["Section"] = ITT.Section,
-      ["Property"] = ITT.Property,
-      ["Ws"] = ITT.Ws},
     TokenRules = [
-      new(TokenMatch | Competitive, ITT.Str, @"""([^\\]|\\.)*"""),
-      new(TokenMatch | Competitive | IgnoredToken, ITT.Comment, @";.*?$"),
-      new(TokenMatch, ITT.Bo, @"\["),
-      new(TokenMatch, ITT.Bc, @"\]"),
-      new(TokenMatch, ITT.Eq, @"\="),
-      new(TokenMatch | IgnoredToken, ITT.Ws, @"\s+"),
-      new(TokenMatch, ITT.Section, @"(?<=\[).*?(?=\])"),],
+      new(Competes, ITT.Str, @"""([^\\]|\\.)*"""),
+      new(Competes | IgnoredToken, ITT.None, @";.*?$"),
+      new(TExactly, ITT.Eq, @"="),
+      new(TExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
       new(BuildProperty, ITT.Property, "tn:Str tx:Eq tv:Str"),
-      new(BuildLabel, ITT.Section, "tx:Bo tx:Section tx:Bc"),
       new(BuildObject, ITT.Section, "tn:Section tpm:Property"),
     ]
   };

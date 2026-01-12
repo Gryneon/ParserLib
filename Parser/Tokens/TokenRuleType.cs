@@ -20,29 +20,29 @@ public enum TokenRuleType
   StoreExtra = 16,
   /// <summary>This Token Rule will store the unmatched data parts as tokens with this type.</summary>
   StoreOther = 32,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenProperty{T}"/>.</summary>
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenProperty"/>.</summary>
   BuildProperty = 64,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenArray{T}"/>.</summary>
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenArray"/>.</summary>
   BuildArray = 128,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenObject{T}"/>.</summary>
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenObject"/>.</summary>
   BuildObject = 256,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenFlag{T}"/>.</summary>
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenFlag"/>.</summary>
   BuildFlag = 512,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenTypedValue{T}"/>.</summary>
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenTypedValue"/>.</summary>
   BuildTypedValue = 1024,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel{T}"/>.</summary>
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel"/>.</summary>
   BuildLabel = 2048,
-  /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty{T}"/>, <see cref="TokenTypedValue{T}"/>, or <see cref="TokenArray{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty"/>, <see cref="TokenTypedValue"/>, or <see cref="TokenArray"/>.</summary>
   AssignValue = 4096,
-  /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty{T}"/> or <see cref="TokenObject{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty"/> or <see cref="TokenObject"/>.</summary>
   AssignName = 0x2000,
-  /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject{T}"/> or <see cref="TokenTypedValue{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject"/> or <see cref="TokenTypedValue"/>.</summary>
   AssignType = 0x4000,
-  /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject"/>.</summary>
   AddProperty = 0x8000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag"/>.</summary>
   AddFlag = 0x200000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenFlag{T}.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag{T}"/>.</summary>
+  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag"/>.</summary>
   RemFlag = 0x400000,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>

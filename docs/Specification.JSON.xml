@@ -9,16 +9,6 @@
             Defines a JSON Specification.
             </summary>
         </member>
-        <member name="F:Specification.JSON.Definition.ReaderBase">
-            <summary>
-            https://regex101.com/r/hgS1Zq/5
-            </summary>
-        </member>
-        <member name="P:Specification.JSON.Definition.Spec">
-            <summary>
-            The JSON Spec.
-            </summary>
-        </member>
         <member name="T:Specification.JSON.IJSONNode">
             <summary>Basic interface for JSON parts.</summary>
         </member>

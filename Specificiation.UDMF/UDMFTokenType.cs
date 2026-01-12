@@ -1,3 +1,5 @@
+#pragma warning disable CA1720 // Identifier contains type name
+
 namespace Specification.UDMF;
 
 /// <summary>Token types for UDMF Spec.</summary>
@@ -23,17 +25,10 @@ public enum UDMFTokenType
   Str,      // Quoted text
   Name,     // Unquoted text
   PInt,     // Positive Integer
-  AInt,     // Any Integer
-  True,     // Boolean Value true
-  False,    // Boolean Value false
+  Int,      // Any Integer
   Dec,      // Decimal Value
   Value,    // Any Data Type
   Bool,
-
-  /// <summary>Comment</summary>
-  Comment,
-  /// <summary>Whitespace</summary>
-  Ws,
 
   /// <summary>Equals sign.</summary>
   Eq,
@@ -46,6 +41,6 @@ public enum UDMFTokenType
   /// <summary>An assembled property definition.</summary>
   Property,
   Op,
-  AObject
+  Object
 }
 

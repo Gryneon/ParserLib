@@ -67,7 +67,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
     };
     return result;
   }
-  public static Section Generate (TokenObject<ITT> input)
+  public static Section Generate (TokenObject input)
   {
     input.ThrowIfNull();
 

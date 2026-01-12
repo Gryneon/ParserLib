@@ -2,7 +2,7 @@ namespace Parser.Ops.Text;
 
 /// <summary>
 /// Tokenizes a string or list of strings.
-/// <typeparamref name="T">The token type identifier. Enums and strings are supported.</typeparamref>
+/// <typeparamref name="T">The token type identifier. Must be a struct (Enum).</typeparamref>
 /// </summary>
 public class TokenizeOperation<T> : Operation where T : struct
 {
@@ -40,8 +40,8 @@ public class TokenizeOperation<T> : Operation where T : struct
     }
     else if (_mode.HasFlag(TM_Rule) && CheckInput(out string? input))
     {
-      TokenFactory<T> factory = new(_rules);
-      TokenCollection<T> return_tokens = [.. factory.Produce(input)];
+      TokenFactory factory = new(_rules);
+      TokenCollection return_tokens = [.. factory.Produce(input)];
       WorkToReturn = return_tokens;
       Status = OpStatus.Pass;
     }
@@ -53,10 +53,7 @@ public class TokenizeOperation<T> : Operation where T : struct
   }
 }
 
-/// <summary>
-/// Tokenizes a string or list of strings.
-/// <typeparamref name="T">The token type identifier. Enums and strings are supported.</typeparamref>
-/// </summary>
+/// <summary>Tokenizes a string or list of strings.</summary>
 public class TokenizeOperation : Operation
 {
   private const int

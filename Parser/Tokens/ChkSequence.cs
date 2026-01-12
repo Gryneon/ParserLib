@@ -23,25 +23,6 @@ public class ChkSequence : IList<ChkToken>
   public void RemoveAt (int index) => _sequence.RemoveAt(index);
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 
-  public ChkSequence (IEnumerable<ChkToken<T>> tokens) => _sequence = [.. tokens];
-  public ChkSequence () { }
-}
-
-public class ChkSequence<T> : ChkSequence, IList<ChkToken<T>> where T : struct
-{
-  private readonly List<ChkToken<T>> _sequence = [];
-
-  public new ChkToken<T> this[int index] { get => _sequence[index]; set => _sequence[index] = value; }
-  public new ChkSequence<T> this[Range rng] { get => [.. _sequence[rng]]; }
-  public void Add (ChkToken<T> item) => _sequence.Add(item);
-  public bool Contains (ChkToken<T> item) => _sequence.Contains(item);
-  public void CopyTo (ChkToken<T>[] array, int arrayIndex) => _sequence.CopyTo(array, arrayIndex);
-  public new IEnumerator<ChkToken<T>> GetEnumerator () => _sequence.GetEnumerator();
-  public int IndexOf (ChkToken<T> item) => _sequence.IndexOf(item);
-  public void Insert (int index, ChkToken<T> item) => _sequence.Insert(index, item);
-  public bool Remove (ChkToken<T> item) => _sequence.Remove(item);
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-
-  public ChkSequence (IEnumerable<ChkToken<T>> tokens) => _sequence = [.. tokens];
+  public ChkSequence (IEnumerable<ChkToken> tokens) => _sequence = [.. tokens];
   public ChkSequence () { }
 }

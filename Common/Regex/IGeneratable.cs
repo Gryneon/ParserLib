@@ -2,30 +2,22 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Common.Regex;
 
-/// <summary>
-/// Represents a type that can be generated from an input object.
-/// </summary>
+/// <summary>Represents a type that can be generated from an input object.</summary>
 public interface IGeneratable
 {
-  /// <summary>
-  /// Throws a <see cref="NotImplementedException"/> to indicate that the method needs to be overridden in the implementing class.
-  /// </summary>
-  /// <typeparam name="T"></typeparam>
+  /// <summary>Throws a <see cref="NotImplementedException"/> to indicate that the method needs to be overridden in the implementing class.</summary>
+  /// <typeparam name="T">The dummy return for in-line use.</typeparam>
   /// <returns>Nothing.</returns>
-  /// <exception cref="NotImplementedException"></exception>
+  /// <exception cref="NotImplementedException"/>
   [DoesNotReturn]
   static T ThrowImplementException<T> () => throw new NotImplementedException("This needs to be overridden in the targeted class.");
 }
 
-/// <summary>
-/// Represents a type that can be generated from an input object.
-/// </summary>
+/// <summary>Represents a type that can be generated from an input object.</summary>
 public interface IGeneratable<TIn, TOut> : IGeneratable
     where TOut : IGeneratable<TIn, TOut>
 {
-  /// <summary>
-  /// Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
-  /// </summary>
+  /// <summary>Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.</summary>
   /// <param name="input">The object to generate from.</param>
   /// <returns>The generated <typeparamref name="TOut"/>.</returns>
   static virtual TOut? Generate (TIn input) => ThrowImplementException<TOut>();

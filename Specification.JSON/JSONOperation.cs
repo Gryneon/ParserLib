@@ -6,12 +6,12 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
 {
   protected static void Log (string s) => Debug.Log("JSONOperation", "Execute", s);
   protected int Index { get; set; }
-  protected IToken<JTT>? TCurrent => Index >= Tokens.Count ? null : Tokens[Index];
-  protected Collection<IToken<JTT>> Tokens { get; } = [];
-  protected void Init (IEnumerable<IToken<JTT>> tokens) => Tokens.AddRange([.. tokens]);
+  protected IToken? TCurrent => Index >= Tokens.Count ? null : Tokens[Index];
+  protected Collection<IToken> Tokens { get; } = [];
+  protected void Init (IEnumerable<IToken> tokens) => Tokens.AddRange([.. tokens]);
   protected override void Execute ()
   {
-    if (!CheckInput(out IEnumerable<IToken<JTT>>? tokens))
+    if (!CheckInput(out IEnumerable<IToken>? tokens))
     {
       Status = OpStatus.FailBadInputType;
       return;
@@ -79,9 +79,9 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
       }
       void addValueToAssembly ()
       {
-        assembly[depth].Add(TCurrent?.Type switch
+        assembly[depth].Add(Spec.GetTokenTypeValue(TCurrent.Type) switch
         {
-          _ when TCurrent?.Content is null => new JSONUndefValue(),
+          _ when TCurrent.Content.IsEmpty() => new JSONUndefValue(),
           JTT.Str => new JSONStringValue(TCurrent.Content),
           JTT.Num => new JSONNumberValue(TCurrent.Content.ToDecimal() ?? 0),
           JTT.Bool => new JSONBoolValue(TCurrent.Content.ToBool() ?? false),
@@ -101,7 +101,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
           if (TCurrent is null)
             break;
           string? tContent = TCurrent.Content;
-          JTT tType = TCurrent.Type;
+          JTT tType = Spec.GetTokenTypeValue(TCurrent.Type);
           if (tContent is "{" or "[")
           {
             ThrowIf(sequence != 0, $"Sequence was not correct, {sequence} needs to be 0.");
@@ -163,7 +163,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
             break;
 
           string? tContent = TCurrent.Content;
-          JTT tType = TCurrent.Type;
+          JTT tType = Spec.GetTokenTypeValue(TCurrent.Type);
           if (tContent is "{" or "[")
           {
             ThrowIf(sequence != 2, $"Sequence was not correct, {sequence} needs to be 2.");
