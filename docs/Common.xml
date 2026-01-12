@@ -917,27 +917,19 @@
             <inheritdoc/>
         </member>
         <member name="T:Common.Regex.IGeneratable">
-            <summary>
-            Represents a type that can be generated from an input object.
-            </summary>
+            <summary>Represents a type that can be generated from an input object.</summary>
         </member>
         <member name="M:Common.Regex.IGeneratable.ThrowImplementException``1">
-            <summary>
-            Throws a <see cref="T:System.NotImplementedException"/> to indicate that the method needs to be overridden in the implementing class.
-            </summary>
-            <typeparam name="T"></typeparam>
+            <summary>Throws a <see cref="T:System.NotImplementedException"/> to indicate that the method needs to be overridden in the implementing class.</summary>
+            <typeparam name="T">The dummy return for in-line use.</typeparam>
             <returns>Nothing.</returns>
-            <exception cref="T:System.NotImplementedException"></exception>
+            <exception cref="T:System.NotImplementedException"/>
         </member>
         <member name="T:Common.Regex.IGeneratable`2">
-            <summary>
-            Represents a type that can be generated from an input object.
-            </summary>
+            <summary>Represents a type that can be generated from an input object.</summary>
         </member>
         <member name="M:Common.Regex.IGeneratable`2.Generate(`0)">
-            <summary>
-            Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
-            </summary>
+            <summary>Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.</summary>
             <param name="input">The object to generate from.</param>
             <returns>The generated <typeparamref name="TOut"/>.</returns>
         </member>

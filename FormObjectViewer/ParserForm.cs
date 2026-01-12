@@ -47,7 +47,7 @@ internal sealed partial class ParserForm : Form
       Specification.SndInfo.Definition.Spec,
       Specification.UDMF.Definition.Spec,
       Specification.XML.Definition.Spec,
-      Specification.ZScript.PrevDefinition.Spec,
+      Specification.ZScript.Definition.Spec,
     ];
 
     SpecComboBox.DataSource = specs;

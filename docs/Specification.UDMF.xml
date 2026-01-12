@@ -28,12 +28,6 @@
         <member name="F:Specification.UDMF.UDMFTokenType.Sector">
             <summary>Sector keyword.</summary>
         </member>
-        <member name="F:Specification.UDMF.UDMFTokenType.Comment">
-            <summary>Comment</summary>
-        </member>
-        <member name="F:Specification.UDMF.UDMFTokenType.Ws">
-            <summary>Whitespace</summary>
-        </member>
         <member name="F:Specification.UDMF.UDMFTokenType.Eq">
             <summary>Equals sign.</summary>
         </member>

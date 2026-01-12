@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenFlag<T> : TokenBase<T> where T : struct
+public sealed class TokenFlag : TokenBase
 {
   private bool _activate = true;
 
@@ -17,7 +17,7 @@ public sealed class TokenFlag<T> : TokenBase<T> where T : struct
     init => _activate = !value;
   }
   public string Name => NameToken.Content;
-  public required IToken<T> NameToken { get; init; }
-  public override bool Equals (object? obj) => obj is TokenFlag<T> flag && Name.Equals(flag.Name, SCO) && AddFlag == flag.AddFlag;
+  public required IToken NameToken { get; init; }
+  public override bool Equals (object? obj) => obj is TokenFlag flag && Name.Equals(flag.Name, SCO) && AddFlag == flag.AddFlag;
   public override int GetHashCode () => HashCode.Combine(Name, AddFlag);
 }

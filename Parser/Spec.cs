@@ -1,5 +1,7 @@
 #pragma warning disable CA1822 // Mark members as static
 
+using System;
+
 using Parser.Inference;
 
 namespace Parser;
@@ -31,8 +33,7 @@ public class Spec
   public Type TokenType { get; init; } = typeof(int);
   /// <summary>The default string comparison type to use.</summary>
   public StringComparison SC { get; init; } = SCO;
-  /// <summary>Define the names for tranlating the string based rules.</summary>
-  public Dictionary<string, dynamic> TokenTypeLookup { get; init; } = [];
+
   /// <summary>Define the names of equilivent groups of tokens.</summary>
   public Dictionary<dynamic, Collection<dynamic>> TokenCompatLookup { get; init; } = [];
   /// <summary>Token rules for the tokenize operration..</summary>
@@ -49,4 +50,23 @@ public class Spec
   /// <remarks>Subsequent operations that depend on the active object will reference this instance after calling
   /// this method. If another instance was previously active, it will be replaced.</remarks>
   public void SetAsActive () => Active = this;
+  /// <summary>Gets the <see cref="Enum"/> or value of the token type.</summary>
+  /// <param name="tokenType">The name of the token type.</param>
+  /// <remarks>This is dependent on defining <see cref="TokenType"/> in the defined <see cref="Spec"/>.</remarks>
+  /// <returns>The value of the token type.</returns>
+  /// <exception cref="ArgumentException"/>
+  /// <exception cref="InvalidOperationException"/>
+  /// <exception cref="ArgumentNullException"/>
+  /// <exception cref="OverflowException"/>
+  public dynamic GetTokenTypeValue (string tokenType) => TokenType == typeof(string) || TokenType is null
+      ? tokenType
+      : (dynamic) (TokenType.IsEnum ? Enum.Parse(TokenType, tokenType) : throw new ArgumentException("TokenType is not valid."));
+  /// <summary>Gets the name of the token type.</summary>
+  /// <param name="tokenType">The value of the token type.</param>
+  /// <returns>The name of the token type.</returns>
+  /// <exception cref="InvalidCastException"/>
+  /// <exception cref="SpecNotDefinedException"/>
+  public string GetTokenTypeString (dynamic tokenType) => TokenType == typeof(string)
+      ? (string) tokenType
+      : TokenType is null ? throw new SpecNotDefinedException("TokenType was not defined in the Spec.") : $"{tokenType}";
 }

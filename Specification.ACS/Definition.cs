@@ -2,10 +2,13 @@
 #pragma warning disable IDE0052 // Remove unread private members
 #pragma warning disable CA1720 // Identifier contains type name
 
+using Parser.Tokens;
+
 using static Parser.DefinitionStaticFunctions;
 
 using ATT = Specification.ACS.ACSTokenType;
 using RT = Parser.Tokens.TokenRuleType;
+using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 
 namespace Specification.ACS;
 
@@ -21,7 +24,7 @@ public enum ACSTokenType
   FunctionCall,
   Script,
   Function,
-  Global,
+  MapVar,
   World,
   ScriptType,
   Value,
@@ -31,9 +34,18 @@ public enum ACSTokenType
   Sc, Cm,
   Op, Co,
   Ao, Ac,
-  Hash,
+  Preprocessor,
   Eq,
   DataType,
+  Condtional,
+  For,
+  IncDec,
+  LogNot,
+  Assign,
+  Minus,
+  Unary,
+  Binary,
+  Net,
 }
 
 /// <summary>
@@ -48,6 +60,9 @@ public static class Definition
   internal static RT Ignore = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
   internal static RT TMatch = RT.TokenMatch | RT.ExemptAllWithin | RT.IgnoreCase;
   internal static RT TExact = RT.TokenExact | RT.ExemptAllWithin | RT.IgnoreCase;
+  internal static TokenRule Tm (ATT tokenType, [SS("regex")] string regex) => new(TMatch, tokenType, regex);
+  internal static TokenRule Op ([SS("regex")] string regex) => Tm(ATT.Op, regex);
+  internal static TokenRule Ex (ATT tokenType, [SS("regex")] string regex) => new(TExact, tokenType, regex);
 
   /// <summary>
   /// Defined Specification
@@ -65,30 +80,50 @@ public static class Definition
     IsTextFile = true,
     SC = SCOIC,
     TokenType = typeof(ATT),
-    TokenTypeLookup = [],
     TokenCompatLookup = [],
     TokenRules = [
+
+      // Data
       new(Compet, ATT.Str, @"""([^\\""]|\\.)*"""),
       new(Compet, ATT.Char, @"'([^\\']|\\.)*'"),
       new(Ignore, ATT.None, @"\/\/.*?$"),
       new(Ignore, ATT.None, @"\/\*.*?\*\/"),
 
-      new(TExact, ATT.Hash, "#"),
-      new(TExact, ATT.Bool, @"\b(true|false|on|off|yes|no)\b"),
-      new(TExact, ATT.Int, @"-?(\d+|0x[a-f0-9]+)(?!\.)"),
-      new(TExact, ATT.Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
-      new(TExact, ATT.Script, @"\bscript\b"),
+      // Preprocessor
+      Ex(ATT.Preprocessor, "# ((lib)?define|)"),
+      Tm(ATT.Bool, @"\b(true|false|on|off|yes|no)\b"),
+      Tm(ATT.Int, @"-?(\d+|0x[a-f0-9]+)(?!\.)"),
+      Tm(ATT.Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
 
-      new(TExact, ATT.Ao, "["),
-      new(TExact, ATT.Ac, "]"),
-      new(TExact, ATT.Bo, "{"),
-      new(TExact, ATT.Bc, "}"),
-      new(TExact, ATT.Po, "("),
-      new(TExact, ATT.Pc, ")"),
-      new(TExact, ATT.Eq, "="),
-      new(TExact, ATT.Cm, ","),
-      new(TExact, ATT.Co, ":"),
-      new(TExact, ATT.Sc, ";"),
+      // Keywords
+      Tm(ATT.Script, @"\bscript\b"),
+      Tm(ATT.ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
+      Tm(ATT.Function, @"\bfunction\b"),
+      Tm(ATT.MapVar, @"\b(global|world)\b"),
+      Tm(ATT.Net, @"\bnet\b"),
+      Tm(ATT.For, @"\bfor\b"),
+      Tm(ATT.Condtional, @"\b(if|until|while)\b"),
+
+      // Operators
+      Tm(ATT.IncDec, @"(\+\+|--)"),
+      Tm(ATT.Unary, @"!(?!=)|~"),
+      Tm(ATT.Minus, @"-"),
+      Tm(ATT.Assign, @"[-+*^/%|&]="),
+      Tm(ATT.Assign, @"(<<|>>| \|\| |&&)="),
+      Tm(ATT.Binary, @"[!<>-]="),
+      Tm(ATT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),
+      Tm(ATT.Binary, @"[+/%|&^*-]"),
+
+      Ex(ATT.Ao, "["),
+      Ex(ATT.Ac, "]"),
+      Ex(ATT.Bo, "{"),
+      Ex(ATT.Bc, "}"),
+      Ex(ATT.Po, "("),
+      Ex(ATT.Pc, ")"),
+      Ex(ATT.Eq, "="),
+      Ex(ATT.Cm, ","),
+      Ex(ATT.Co, ":"),
+      Ex(ATT.Sc, ";"),
     ],
     GroupTokenRules = [],
   };
@@ -101,12 +136,10 @@ public static class Definition
     Name = "zdoom.modeldef",
     RxOpt = ROML | ROIC | ROIPW | ROEC,
     Operations = [
-      //new DictionaryOperation([], RxOptions),
-      new DebugToStringOperation("matches"),
-      new DebugWaitForInputOperation(),
       new TokenizeOperation(),
       new DebugToStringOperation("tokens"),
       new DebugWaitForInputOperation(),
+
     ]
   };
 }

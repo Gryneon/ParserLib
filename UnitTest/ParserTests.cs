@@ -11,11 +11,11 @@ public class ParserTests
     Assert.Equal("ipl", Library.LookupOrDefault("ipl").Name);
   }
 
-  [Theory]
-  [InlineData("tcf:Dec")]
-  public void ChkTokenParse (string parse)
-  {
-    parse += "";
-    //ChkToken<string> test = new(parse) { TokenRule = TokenRuleType.None };
-  }
+  //[Theory]
+  //[InlineData("tcf:Dec")]
+  //public void ChkTokenParse (string parse)
+  //{
+  //  parse += "";
+  //  //ChkToken<string> test = new(parse) { TokenRule = TokenRuleType.None };
+  //}
 }

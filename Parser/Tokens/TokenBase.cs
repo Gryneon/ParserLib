@@ -5,17 +5,16 @@ namespace Parser.Tokens;
 
 public abstract class TokenBase : IToken
 {
-  internal string _content = SE;
   public virtual string Content
   {
     get => Children.Select(static t => t.Content).TextJoin();
-    set => _content = value;
+    set => throw new NotSupportedException("Must override Content to set.");
   }
   public bool Ignored { get; set; }
   public bool Exempt { get; set; }
   public int Index { get; init; }
   public string Type { get; set; } = SE;
-  public TokenCollection Children { get; init; } = [];
+  public IReadOnlyList<IToken> Children { get; init; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
   internal string ContentNoNewLine =>
@@ -23,51 +22,14 @@ public abstract class TokenBase : IToken
     Replace("\n", "<LF>", SCO).
     Replace("\r", "<CR>", SCO);
   public override string ToString () => $"{Index} : {Type} = \"{ContentNoNewLine}\"";
-  public override bool Equals (object? obj) => obj is IToken<T> rt && Equals(rt);
+  public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
-  public virtual int CompareTo (IToken<T>? other) => Index.CompareTo(other?.Index); public static bool operator == (TokenBase<T> left, TokenBase<T> right) => left is null ? right is null : left.Equals(right);
+  public virtual int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public virtual bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
+  public static bool operator == (TokenBase left, TokenBase right) => left is null ? right is null : left.Equals(right);
   public static bool operator != (TokenBase left, TokenBase right) => !(left == right);
   public static bool operator < (TokenBase left, TokenBase right) => left is null ? right is not null : left.CompareTo(right) < 0;
   public static bool operator <= (TokenBase left, TokenBase right) => left is null || left.CompareTo(right) <= 0;
   public static bool operator > (TokenBase left, TokenBase right) => left is not null && left.CompareTo(right) > 0;
   public static bool operator >= (TokenBase left, TokenBase right) => left is null ? right is null : left.CompareTo(right) >= 0;
-}
-
-
-public abstract class TokenBase<T> : IToken<T>, IToken where T : struct
-{
-  internal string _content = SE;
-  public virtual string Content
-  {
-    get => Children.Select(static t => t.Content).TextJoin();
-    set => _content = value;
-  }
-  public bool Ignored { get; set; }
-  public bool Exempt { get; set; }
-  public int Index { get; init; }
-  public T? Type { get; set; }
-  public TokenCollection<T> Children { get; init; } = [];
-  public virtual int Count => Children.Count;
-  public bool HasType => Type is not null;
-  internal string ContentNoNewLine =>
-    Content.
-    Replace("\n", "<LF>", SCO).
-    Replace("\r", "<CR>", SCO);
-
-  string IToken.Type { get; set; }
-  Tokens.TokenCollection IToken.Children { get => Children; init => Children = value; }
-  T IToken<T>.Type { get; set; }
-
-  public override string ToString () => $"{Index} : {Type} = \"{ContentNoNewLine}\"";
-  public override bool Equals (object? obj) => obj is IToken<T> rt && Equals(rt);
-  public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
-  public virtual int CompareTo (IToken<T>? other) => Index.CompareTo(other?.Index);
-  int IComparable<IToken>.CompareTo (IToken? other) => throw new NotImplementedException();
-
-  public static bool operator == (TokenBase<T> left, TokenBase<T> right) => left is null ? right is null : left.Equals(right);
-  public static bool operator != (TokenBase<T> left, TokenBase<T> right) => !(left == right);
-  public static bool operator < (TokenBase<T> left, TokenBase<T> right) => left is null ? right is not null : left.CompareTo(right) < 0;
-  public static bool operator <= (TokenBase<T> left, TokenBase<T> right) => left is null || left.CompareTo(right) <= 0;
-  public static bool operator > (TokenBase<T> left, TokenBase<T> right) => left is not null && left.CompareTo(right) > 0;
-  public static bool operator >= (TokenBase<T> left, TokenBase<T> right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

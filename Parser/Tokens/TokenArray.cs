@@ -2,19 +2,19 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenArray<T> : TokenBase<T>, IReadOnlyCollection<IToken<T>> where T : struct
+public sealed class TokenArray : TokenBase, IReadOnlyCollection<IToken>
 {
   // Tokens Kept
-  public required TokenCollection<T> Items { get; init; }
+  public required TokenCollection Items { get; init; }
   public override int Count => Items.Count;
-  public bool Equals (IReadOnlyCollection<IToken<T>>? other) => other is not null && Items.SequenceEqual(other);
+  public bool Equals (IReadOnlyCollection<IToken>? other) => other is not null && Items.SequenceEqual(other);
   public override bool Equals (object? obj) => obj switch
   {
-    IReadOnlyCollection<IToken<T>> iroc => Equals(iroc),
-    IEnumerable<IToken<T>> ie => ie.SequenceEqual(this.AsEnumerable()),
+    IReadOnlyCollection<IToken> iroc => Equals(iroc),
+    IEnumerable<IToken> ie => ie.SequenceEqual(this.AsEnumerable()),
     _ => false
   };
   public override int GetHashCode () => Items.GetHashCode();
-  public IEnumerator<IToken<T>> GetEnumerator () => Items.GetEnumerator();
+  public IEnumerator<IToken> GetEnumerator () => Items.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }

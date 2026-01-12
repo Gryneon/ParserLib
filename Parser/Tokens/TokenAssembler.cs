@@ -2,16 +2,26 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec spec) where T : struct
+public sealed class TokenAssembler
 {
-  private static readonly string Area = "TokenAssembler<" + typeof(T) + ">";
-  private readonly TokenGroupRuleCollection<T> _rules = rules;
-  private readonly Spec _spec = spec;
+  private const string Area = "TokenAssembler";
+  private readonly TokenGroupRuleCollection _rules;
 
   // Temp fields
-  private TokenCollection<T>? _tokens;
-  private TokenGroupRule<T>? _rule;
+  private TokenCollection? _tokens;
+  private TokenGroupRule? _rule;
   private int _constructed_items;
+
+  public TokenAssembler (TokenGroupRuleCollection rules)
+  {
+    _rules = rules;
+  }
+  public TokenAssembler (Spec spec)
+  {
+    spec.ThrowIfNull();
+    _rules = spec.GroupTokenRules;
+  }
+
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
   internal void Validate ()
   {
@@ -78,45 +88,19 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
           allowed.Add(post);
         }
 
-        Collection<T> types = [];
-
-        if (!useLiteral)
-        {
-          void addToTypes (T type)
-          {
-            if (types.Contains(type))
-              return;
-
-            types.Add(type);
-            if (_spec.TokenCompatLookup.ContainsKey(type))
-            {
-              foreach (dynamic t in _spec.TokenCompatLookup[type])
-              {
-                addToTypes((T) t);
-              }
-            }
-          }
-
-          foreach (string al in allowed)
-          {
-            T tal = _spec.TokenTypeLookup[al];
-            addToTypes(tal);
-          }
-        }
-
-        ChkToken<T> temp = new(item)
+        ChkToken temp = new(item)
         {
           UseAsLiteral = useLiteral,
           TokenRule = rule,
           AllowedContents = useLiteral ? allowed : [],
-          AllowedTypes = types
+          AllowedTypes = useLiteral ? [] : allowed,
         };
 
         _rule.Sequence.Add(temp);
       }
     }
   }
-  internal void Construct (int first_token_index, TokenCollection<T> tokens_to_assemble, IList<int> sequence_ids)
+  internal void Construct (int first_token_index, TokenCollection tokens_to_assemble, IList<int> sequence_ids)
   {
     //Log(Area, "Calling Construct with tokens { " + tokens_to_assemble.TextJoin(" ") + " }");
     Validate();
@@ -127,7 +111,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
       Validate();
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
-        IToken<T> token = tokens_to_assemble[i];
+        IToken token = tokens_to_assemble[i];
         if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
         {
           return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
@@ -140,7 +124,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
       Validate();
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
-        IToken<T> token = tokens_to_assemble[i];
+        IToken token = tokens_to_assemble[i];
         if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
         {
           return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
@@ -148,13 +132,13 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
       }
       return default;
     }
-    LimitedTokenCollection<TToken, T> getTokens<TToken> (RT flag) where TToken : IToken<T>
+    LimitedTokenCollection<TToken> getTokens<TToken> (RT flag) where TToken : IToken
     {
       Validate();
-      LimitedTokenCollection<TToken, T> token_result = [];
+      LimitedTokenCollection<TToken> token_result = [];
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
-        IToken<T> token = tokens_to_assemble[i];
+        IToken token = tokens_to_assemble[i];
         if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken ttoken)
         {
           token_result.Add(ttoken);
@@ -175,58 +159,58 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
       return false;
     }
     _constructed_items++;
-    IToken<T> constructed_obj = _rule.Type switch
+    IToken constructed_obj = _rule.Type switch
     {
-      RT.BuildProperty => new TokenProperty<T>()
+      RT.BuildProperty => new TokenProperty()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        NameToken = getToken<Token<T>>(RT.AssignName),
-        ValueToken = getTokenOrDefault<IToken<T>>(RT.AssignValue),
+        NameToken = getToken<Token>(RT.AssignName),
+        ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
       },
-      RT.BuildObject => new TokenObject<T>()
+      RT.BuildObject => new TokenObject()
       {
-        NameToken = getToken<Token<T>>(RT.AssignName),
-        TypeToken = getTokenOrDefault<Token<T>>(RT.AssignType),
+        NameToken = getToken<Token>(RT.AssignName),
+        TypeToken = getTokenOrDefault<Token>(RT.AssignType),
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        Properties = getTokens<TokenProperty<T>>(RT.AddProperty),
+        Properties = getTokens<TokenProperty>(RT.AddProperty),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
-      RT.BuildArray => new TokenArray<T>()
+      RT.BuildArray => new TokenArray()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        Items = [.. getTokens<IToken<T>>(RT.AssignValue)],
+        Items = [.. getTokens<IToken>(RT.AssignValue)],
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
-      RT.BuildFlag => new TokenFlag<T>()
+      RT.BuildFlag => new TokenFlag()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         AddFlag = hasToken(RT.AddFlag),
-        NameToken = getToken<Token<T>>(RT.AssignName),
+        NameToken = getToken<Token>(RT.AssignName),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
-      RT.BuildLabel => new TokenLabel<T>()
+      RT.BuildLabel => new TokenLabel()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        NameToken = getToken<Token<T>>(RT.AssignName),
+        NameToken = getToken<Token>(RT.AssignName),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
-      RT.BuildTypedValue => new TokenTypedValue<T>()
+      RT.BuildTypedValue => new TokenTypedValue()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        ValueTypeToken = getToken<Token<T>>(RT.AssignType),
-        ValueToken = getToken<IToken<T>>(RT.AssignValue),
+        ValueTypeToken = getToken<Token>(RT.AssignType),
+        ValueToken = getToken<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -237,7 +221,7 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
   internal int ExecRule ()
   {
     Validate();
-    TokenCollection<T> assembly = [];
+    TokenCollection assembly = [];
     Collection<int> sequence_ids = [];
     int first_token_index = -1;
     _constructed_items = 0;
@@ -246,8 +230,8 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
 
     for (; ; )
     {
-      ChkToken<T>? node = node_index >= _rule.Sequence.Count ? null : _rule.Sequence[node_index];
-      IToken<T>? token = token_index >= _tokens.Count ? null : _tokens[token_index];
+      ChkToken? node = node_index >= _rule.Sequence.Count ? null : _rule.Sequence[node_index];
+      IToken? token = token_index >= _tokens.Count ? null : _tokens[token_index];
       bool isMult = node?.TokenRule.HasFlag(RT.Mult) ?? false;
       bool isOpt = node?.TokenRule.HasFlag(RT.Opt) ?? false;
       allow_fail = isOpt || allow_fail;
@@ -320,13 +304,14 @@ public sealed class TokenAssembler<T> (TokenGroupRuleCollection<T> rules, Spec s
     return _constructed_items;
   }
 
-  public void Execute (TokenCollection<T> tokens)
+  public void Execute (TokenCollection tokens)
   {
     _tokens = tokens;
 
     for (int r = 0; r < _rules.Count; r++)
     {
-      _rule = _rules[r];
+      _rule = (TokenGroupRule?) _rules[r];
+      _rule.ThrowIfNull();
       Parse();
       int times = ExecRule();
 

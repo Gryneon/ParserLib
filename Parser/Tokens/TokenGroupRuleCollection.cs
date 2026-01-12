@@ -22,26 +22,3 @@ public class TokenGroupRuleCollection : IList<TokenGroupRule>
   public void RemoveAt (int index) => _rules.RemoveAt(index);
   IEnumerator IEnumerable.GetEnumerator () => _rules.GetEnumerator();
 }
-
-public class TokenGroupRuleCollection<T> : TokenGroupRuleCollection, IList<TokenGroupRule<T>> where T : struct
-{
-  private readonly Collection<TokenGroupRule<T>> _rules = [];
-
-  TokenGroupRule<T> IList<TokenGroupRule<T>>.this[int index] { get => ((IList<TokenGroupRule<T>>) _rules)[index]; set => ((IList<TokenGroupRule<T>>) _rules)[index] = value; }
-
-  public static implicit operator TokenGroupRuleCollection<T> (Collection<TokenGroupRule<T>> rules)
-  {
-    rules.ThrowIfNull();
-    TokenGroupRuleCollection<T> collection = [.. rules];
-    return collection;
-  }
-
-  public void Add (TokenGroupRule<T> item) => _rules.Add(item);
-  public bool Contains (TokenGroupRule<T> item) => _rules.Contains(item);
-  public void CopyTo (TokenGroupRule<T>[] array, int arrayIndex) => _rules.CopyTo(array, arrayIndex);
-  public new IEnumerator<TokenGroupRule<T>> GetEnumerator () => _rules.GetEnumerator();
-  public int IndexOf (TokenGroupRule<T> item) => _rules.IndexOf(item);
-  public void Insert (int index, TokenGroupRule<T> item) => _rules.Insert(index, item);
-  public bool Remove (TokenGroupRule<T> item) => _rules.Remove(item);
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-}

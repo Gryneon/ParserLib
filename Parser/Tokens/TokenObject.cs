@@ -2,27 +2,26 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenObject<T> : TokenBase<T>, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>> where T : struct
+public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>
 {
   // Assigned Properties
   public string Name => NameToken.Content;
-  public string? ObjType => TypeToken is Token<T> t ? t.Content : null;
+  public string? ObjType => TypeToken is Token t ? t.Content : null;
 
   // Tokens Kept
-  public required Token<T> NameToken { get; init; }
-  public IToken<T>? TypeToken { get; init; }
+  public required Token NameToken { get; init; }
+  public IToken? TypeToken { get; init; }
 
-  public LimitedTokenCollection<TokenProperty<T>, T> Properties { get; init; } = [];
-  public LimitedTokenCollection<TokenFlag<T>, T> Flags { get; init; } = [];
+  public LimitedTokenCollection<TokenProperty> Properties { get; init; } = [];
+  public LimitedTokenCollection<TokenFlag> Flags { get; init; } = [];
   public override bool Equals (object? obj) => obj switch
   {
-    TokenObject<T> ips =>
-      typeof(T).IsInstanceOfType(ips.Type) &&
+    TokenObject ips =>
       ObjType == ips.ObjType &&
       Properties.SequenceEqual(ips.Properties) &&
       Flags.SequenceEqual(ips.Flags) &&
       Name == ips.Name &&
-      Type.Equals(ips.Type),
+      Type.Equals(ips.Type, SCOIC),
     _ => false
   };
 

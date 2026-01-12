@@ -28,27 +28,16 @@ public static class Definition
     Name = "zdoom.mapinfo",
     FileInferences = [
       IfN(ExtIs, "mapinfo"),
-      IfN(FName |Is, "mapinfo")],
+      IfN(ExtIs, "zmapinfo"),
+      IfN(FName | Is, "mapinfo"),
+      IfN(FName | Is, "zmapinfo")],
     Operations = [
-
-      new TokenizeOperation<string>(),
-  new DebugToStringOperation ("tokens")
+      new TokenizeOperation(),
+      new DebugToStringOperation ("tokens")
     ],
     RxOpt = ROIC | ROEC | ROML,
     IsTextFile = true,
     TokenType = typeof(MTT),
-    TokenTypeLookup = {
-      ["LangRef"] = MTT.LangRef,
-      ["Str"] = MTT.Str,
-      ["Int"] = MTT.Int,
-      ["Dec"] = MTT.Dec,
-      ["Char"] = MTT.Char,
-      ["Op"] = MTT.Op,
-      ["Bool"] = MTT.Bool,
-      ["BlockKeyword"] = MTT.BlockKeyword,
-      ["Keyword"] = MTT.Keyword,
-      ["Name"] = MTT.Name,
-    },
     TokenRules = [
       new (RT_Compete, MTT.LangRef, @"""\$\w+"""),
       new (RT_Compete, MTT.Str, @""".+?"""),

@@ -2,9 +2,9 @@ namespace Parser.Ops.Text;
 
 public class TokenAssembleOperation<T> : Operation where T : struct
 {
-  private readonly IEnumerable<TokenGroupRule<T>> _rules;
+  private readonly IEnumerable<TokenGroupRule> _rules;
 
-  public TokenAssembleOperation (IEnumerable<TokenGroupRule<T>> rules, string input_key = "tokens", string output_key = "tokens_assembled")
+  public TokenAssembleOperation (IEnumerable<TokenGroupRule> rules, string input_key = "tokens", string output_key = "tokens_assembled")
   {
     _rules = [.. rules];
   }
@@ -14,11 +14,11 @@ public class TokenAssembleOperation<T> : Operation where T : struct
   }
   protected override void Execute ()
   {
-    TokenAssembler<T> assembler = new([.. _rules], Spec);
+    TokenAssembler assembler = new([.. _rules]);
 
-    if (base.CheckInput<TokenCollection<T>>(out TokenCollection<T>? list))
+    if (base.CheckInput<TokenCollection>(out TokenCollection? list))
     {
-      TokenCollection<T> new_list = [.. list];
+      TokenCollection new_list = [.. list];
       assembler.Execute(new_list);
       WorkToReturn = new_list;
       Status = OpStatus.Pass;
