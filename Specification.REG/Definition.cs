@@ -76,7 +76,6 @@ public static class Definition
     TokenRules = [
       new(RT.TokenExact, RTT.Eq, "=")
     ],
-    RegexBasicTokens = ["section", "property", "header"],
     IsTextFile = true,
     RxOpt = ROIPW | ROEC | ROML,
     SC = SCOIC,
