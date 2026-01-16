@@ -122,7 +122,7 @@ public class TokenFactory
   }
   internal void Tokens_FromTokens ()
   {
-    foreach (IToken tokendata in _result.Cast<IToken>())
+    foreach (Token tokendata in _result.Cast<Token>())
     {
       if (tokendata.Exempt)
         continue;
@@ -162,7 +162,7 @@ public class TokenFactory
     foreach (Section applicant in CannotMatch.Inverse())
     {
       Log(Area, "Tokens_StoreOther", $"Section: {applicant} Found with no token.");
-      _result.Add(new IToken()
+      _result.Add(new Token()
       {
         Index = applicant.Start,
         Ignored = IgnoredToken,
@@ -182,7 +182,7 @@ public class TokenFactory
         foreach (Match m in mc)
         {
           CannotMatch.Add(Section.ByLength(applicant.Start + m.Index, m.Length, Input));
-          _result.Add(new IToken()
+          _result.Add(new Token()
           {
             Index = applicant.Start + m.Index,
             Content = m.Value,
@@ -213,7 +213,7 @@ public class TokenFactory
         if (!match.Overlaps(CannotMatch))
         {
           string sub = Input.Substring(next, length);
-          IToken token = new()
+          IToken token = new Token()
           {
             Index = next,
             Content = sub,
@@ -253,7 +253,7 @@ public class TokenFactory
           if (ExemptAllWithin)
             CannotMatch.Add(rng);
           if (!split)
-            _result.Add(new IToken()
+            _result.Add(new Token()
             {
               Index = match.Index,
               Content = sub,
@@ -285,7 +285,7 @@ public class TokenFactory
         continue;
       }
       TokenRule cRule = contestants[index].Rule;
-      IToken token = new()
+      Token token = new()
       {
         Content = match.Value,
         Ignored = cRule.Type.HasFlag(RT.IgnoredToken),
