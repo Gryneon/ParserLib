@@ -1,3 +1,7 @@
+using System.Linq;
+
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 using Parser.Tokens;
 
 namespace Specification.INI;
@@ -5,7 +9,7 @@ namespace Specification.INI;
 /// <summary>
 /// Represents a section heading in an INI formatted file.
 /// </summary>
-public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<PropertyObj>, ITextSerializer, ICloneable
+public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
 {
   /// <summary>
   /// Creates an empty Section.
@@ -28,7 +32,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// <summary>
   /// The properties within the section.
   /// </summary>
-  private Dictionary<string, PropertyObj> Properties { get; init; } = [];
+  private Dictionary<string, string> Properties { get; init; } = [];
   /// <summary>
   /// Gets the value of a property from a given key.
   /// </summary>
@@ -36,7 +40,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// <returns>The value of the property.</returns>
   public string? this[string key]
   {
-    get => Properties[key].Value;
+    get => Properties[key];
     set => Set(key, value ?? SE);
   }
   /// <inheritdoc/>
@@ -86,10 +90,8 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// <param name="value">The value to set it to.</param>
   public void Set (string key, string value)
   {
-    if (!Properties.TryGetValue(key, out PropertyObj? existing))
-      Properties.Add(key, new(key, value));
-    else
-      existing.Value = value;
+    if (!Properties.TryAdd(key, value))
+      Properties[key] = value;
   }
   /// <summary>
   /// Sets the property and value given, or adds the property and value if it does not exist.
@@ -99,10 +101,10 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   {
     if (prop is null)
       return;
-    if (!Properties.TryGetValue(prop.Key, out PropertyObj? value))
+    if (!Properties.TryGetValue(prop.Key, out string? value))
       Properties.Add(prop);
     else
-      value.Value = prop.Value;
+      Properties[prop.Key] = value;
   }
   public void SetRange (IEnumerable<PropertyObj> children)
   {
@@ -123,9 +125,10 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// <param name="children">The properties to add.</param>
   public void AddRange (IEnumerable<PropertyObj> children) => SetRange(children);
   /// <inheritdoc/>
-  IEnumerator<PropertyObj> IEnumerable<PropertyObj>.GetEnumerator () => (IEnumerator<PropertyObj>) GetEnumerator();
+  public IEnumerator<PropertyObj> GetEnumerator () =>
+    (from prop in Properties select new PropertyObj(prop.Key, prop.Value)).GetEnumerator();
   /// <inheritdoc/>
-  public IEnumerator<IProperty<string>> GetEnumerator () => Properties.Values.GetEnumerator();
+  IEnumerator<IProperty<string>> IEnumerable<IProperty<string>>.GetEnumerator () => GetEnumerator();
   /// <inheritdoc/>
   public void Clear () => Properties.Clear();
   /// <inheritdoc/>
@@ -146,9 +149,9 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   {
     Section result = new(Name);
 
-    foreach (KeyValuePair<string, PropertyObj> item in Properties)
+    foreach (KeyValuePair<string, string> item in Properties)
     {
-      result.Properties.Add(item.Key, new PropertyObj(item.Key, item.Value?.Value ?? SE));
+      result.Properties.Add(item.Key, item.Value ?? SE);
     }
     return result;
   }

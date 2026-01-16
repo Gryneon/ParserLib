@@ -130,42 +130,6 @@
             </summary>
             <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
-        <member name="M:Specification.INI.PropertyObj.op_Equality(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
-            <summary>Determines whether two <see cref="T:Specification.INI.PropertyObj"/> instances are equal.</summary>
-            <param name="left">The first <see cref="T:Specification.INI.PropertyObj"/> to compare.</param>
-            <param name="right">The second <see cref="T:Specification.INI.PropertyObj"/> to compare.</param>
-            <returns><see langword="true"/> if the two <see cref="T:Specification.INI.PropertyObj"/> instances are equal; otherwise, <see
-            langword="false"/>.</returns>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.op_Inequality(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
-            <summary>
-            Determines whether two <see cref="T:Specification.INI.PropertyObj"/> instances are not equal.
-            </summary>
-            <param name="left">The first <see cref="T:Specification.INI.PropertyObj"/> to compare.</param>
-            <param name="right">The second <see cref="T:Specification.INI.PropertyObj"/> to compare.</param>
-            <returns><see langword="true"/> if the two <see cref="T:Specification.INI.PropertyObj"/> instances are not equal; otherwise, <see
-            langword="false"/>.</returns>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.op_LessThan(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
-            <summary>
-            TODO: Doc
-            </summary>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.op_LessThanOrEqual(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
-            <summary>
-            TODO: Doc
-            </summary>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.op_GreaterThan(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
-            <summary>
-            TODO: Doc
-            </summary>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.op_GreaterThanOrEqual(Specification.INI.PropertyObj,Specification.INI.PropertyObj)">
-            <summary>
-            TODO: Doc
-            </summary>
-        </member>
         <member name="T:Specification.INI.Section">
             <summary>
             Represents a section heading in an INI formatted file.
@@ -240,10 +204,10 @@
             </summary>
             <param name="children">The properties to add.</param>
         </member>
-        <member name="M:Specification.INI.Section.System#Collections#Generic#IEnumerable{Specification#INI#PropertyObj}#GetEnumerator">
+        <member name="M:Specification.INI.Section.GetEnumerator">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.Section.GetEnumerator">
+        <member name="M:Specification.INI.Section.System#Collections#Generic#IEnumerable{Common#IProperty{System#String}}#GetEnumerator">
             <inheritdoc/>
         </member>
         <member name="M:Specification.INI.Section.Clear">

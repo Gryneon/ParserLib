@@ -18,7 +18,6 @@ public sealed class JSONArray : IJSONNode, IEnumerable<IJSONNode>, ICanAddChildr
     get => Values[index];
     set => Values[index] = value;
   }
-
   public IEnumerator<IJSONNode> GetEnumerator () => Values.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   public void Add (IJSONNode child) => Values.Add(child);

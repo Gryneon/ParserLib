@@ -7,13 +7,6 @@ public class SpecNotDefinedException : Exception
   public SpecNotDefinedException (string? message, Exception? innerException) : base(message, innerException) { }
 }
 
-public abstract class OperationException : Exception
-{
-  protected OperationException () : base("Operation Exception Occurred") { }
-  protected OperationException (string? message) : base(message) { }
-  protected OperationException (string? message, Exception? innerException) : base(message, innerException) { }
-}
-
 public class OperationBadInputTypeException : OperationException
 {
   public OperationBadInputTypeException () : base("Bad input type passed to operation.") { }

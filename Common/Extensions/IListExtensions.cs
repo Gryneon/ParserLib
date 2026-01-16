@@ -92,4 +92,16 @@ public static class IListExtensions
     list.RemoveAt(0);
     return item;
   }
+
+  public static IList<T?> Nullify<T> (this IList<T> list) where T : struct
+  {
+    list.ThrowIfNull();
+    return list.IsEmpty() ? [] : [.. from item in list let item2 = (T?) item select item2];
+  }
+
+  public static IList<T> DeNullify<T> (this IList<T?> list) where T : struct
+  {
+    list.ThrowIfNull();
+    return list.IsEmpty() ? [] : [.. from item in list let item2 = item is null ? default : item.Value select item2];
+  }
 }

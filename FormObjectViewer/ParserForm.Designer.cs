@@ -223,7 +223,6 @@ partial class ParserForm : Form
   private MenuStrip menuStrip1;
   private ComboBox SpecComboBox;
   private Label label1;
-  private DataGridView dataGridView1;
   private BindingSource TokenRuleBindingSource;
   private DataGridViewComboBoxColumn TypeColumn;
   private DataGridViewComboBoxColumn typeToAssignDataGridViewTextBoxColumn;

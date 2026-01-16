@@ -3,6 +3,7 @@ global using System.Collections;
 global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.Globalization;
+global using System.IO;
 global using System.Linq;
 global using System.Reflection;
 global using System.Resources;
@@ -13,6 +14,7 @@ global using Common.Extensions;
 global using static Common.Names;
 
 global using ANEx = System.ArgumentNullException;
+global using DM = Common.DictionaryMode;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 global using StringTuple = (string Key, string Value);
 

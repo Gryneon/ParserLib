@@ -18,32 +18,15 @@ public static class Definition
   internal const RT RT_IgnoreCase = RT.TokenMatch | RT.IgnoreCase | RT.ExemptAllWithin;
   internal const RT RT_Exact = RT.TokenExact | RT.IgnoreCase | RT.ExemptAllWithin;
 
-  private static string WS { get; } = Rx(@"(?:\s|\/\/.*|\/\*[\s\S]*?\*\/)*");
-  private static string KEY { get; } = Nm("m_prop_key_property", @"\w+");
-  private static string VAL { get; } = Nm("m_prop_value_property", @"[.\w-]+");
-
   [Export("zdoom.udmf")]
   public static Spec Spec => new()
   {
     Name = "zdoom.udmf",
     FileInferences = [IfN(InferenceType.Ext | InferenceType.Like, "udmf")],
-    WhitespaceTokens = ["ws"],
     RxOpt = ROML | ROIPW | ROIC | ROEC | ROSL,
     Operations = [
-      new DictionaryOperation(Nm("m_vertex", @"\bvertex" + WS + "\\{" + Gp(WS + KEY + WS + "=" + WS + VAL + ";").Any + WS + "\\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "vertex_matches"),
-      new GenerateOperation<MatchDataSet, ZVertex>(ZVertex.Generate, ZVertex.CanGenerate, "vertex_matches", "vertex"),
-
-      new DictionaryOperation(Nm("m_thing", @"thing\s*\{(\s*(?'prop'\w+)\s*\=\s*(?'value'\w+);)*\s*\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "thing_matches"),
-      new GenerateOperation<MatchDataSet, ZThing>(ZThing.Generate, ZThing.CanGenerate, "thing_matches", "thing"),
-
-      new DictionaryOperation(Nm("m_linedef", @"linedef\s*\{(\s*(?'prop'\w+)\s*\=\s*(?'value'\w+);)*\s*\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "linedef_matches"),
-      new GenerateOperation<MatchDataSet, ZLineDef>(ZLineDef.Generate, ZLineDef.CanGenerate, "linedef_matches", "linedef"),
-
-      new DictionaryOperation(Nm("m_sidedef", @"sidedef\s*\{(\s*(?'prop'\w+)\s*\=\s*(?'value'\w+);)*\s*\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "sidedef_matches"),
-      new GenerateOperation<MatchDataSet, ZSideDef>(ZSideDef.Generate, ZSideDef.CanGenerate, "sidedef_matches", "sidedef"),
-
-      new DictionaryOperation(Nm("m_sector", @"sector\s*\{(\s*(?'m_prop_key_property'\w+)\s*\=\s*(?'m_prop_value_property'\w+);)*\s*\}"), ROML | ROIPW | ROIC | ROEC, false, "text", "sector_matches"),
-      new GenerateOperation<MatchDataSet, ZSector>(ZSector.Generate, ZSector.CanGenerate, "sector_matches", "sector"),
+      new TokenizeOperation(),
+      new TokenAssembleOperation(),
     ],
     TokenRules = [
       new(RT_String,  Str,     Rx(@"""(?:[^""\\\n\r]|\\.)*""")),

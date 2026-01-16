@@ -67,8 +67,8 @@ public abstract class Operation : IOperation
   public static IOperation ContinueLoop (int increment = 1) => new OperationAction(OAT.ContinueLoop, increment);
 
   public static IOperation ClearCursor () => new OperationAction(OAT.ClearCursor);
-  public static IOperation CreateCursor (string key, int start_at) => new OperationAction(OAT.CreateCursor);
-  public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor);
+  public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
+  public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
 
   public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation(operations)
   {

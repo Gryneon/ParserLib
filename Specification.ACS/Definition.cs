@@ -74,8 +74,8 @@ public static class Definition
     Name = "zdoom.acs",
     RxOpt = ROML | ROIC | ROIPW | ROEC | ROSL,
     Operations = [
-      new TokenizeOperation<ATT>(),
-      new TokenAssembleOperation<ATT>(),
+      new TokenizeOperation(),
+      new TokenAssembleOperation(),
     ],
     IsTextFile = true,
     SC = SCOIC,

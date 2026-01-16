@@ -1,7 +1,6 @@
 using System.IO;
 
 using Common;
-using Common.Extensions;
 
 using Parser;
 
@@ -16,7 +15,7 @@ public class INITests
   {
     INIDocument test = new([(Section) "Section1"]);
     test["Section1"].Set("key", "Section1_Value");
-    Assert.Contains(test["Section1"], static item => item.Key.Is("key"));
+    Assert.Equal("Section1_Value", test["Section1"]["key"]);
     int count = test["Section1"].Count;
     Assert.Equal(1, count);
   }
@@ -28,7 +27,27 @@ public class INITests
     string file_text = File.ReadAllText(file.UserDirFix());
     XParser parser = new(Definition.Spec);
     Assert.Equal(OpStatus.Pass, parser.Parse(file_text));
-    Assert.True(parser.Data.ContainsKey("result"));
+    Assert.True(parser.Data.CanLoad("result"));
+  }
 
+  [Theory]
+  [InlineData(@"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini")]
+  public void ParserTypeInit (string file)
+  {
+    string file_text = File.ReadAllText(file.UserDirFix());
+    XParser parser = new(Definition.Spec);
+    Assert.Equal(OpStatus.Pass, parser.Parse(file_text));
+    Assert.True(parser.Data.CanLoad<INIDocument>("result"));
+  }
+
+  [Theory]
+  [InlineData(@"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini")]
+  public void ParserTypeInit_Sections (string file)
+  {
+    string file_text = File.ReadAllText(file.UserDirFix());
+    XParser parser = new(Definition.Spec);
+    Assert.Equal(OpStatus.Pass, parser.Parse(file_text));
+    Assert.True(parser.Data.TryLoad<INIDocument>("result", out INIDocument? doc));
+    Assert.Equal(2, doc.Count);
   }
 }
