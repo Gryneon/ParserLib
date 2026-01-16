@@ -2,8 +2,7 @@
 
 namespace Parser.Tokens;
 
-[method: SetsRequiredMembers]
-public struct Section (string input) : IEquatable<Section>, IComparable<Section>
+public struct Section () : IEquatable<Section>, IComparable<Section>
 {
   private int _length;
   private int _end;
@@ -28,15 +27,17 @@ public struct Section (string input) : IEquatable<Section>, IComparable<Section>
     }
   }
 
-  public static Section ByEnd (int start, int end, string input) => new(input)
+  public static Section ByEnd (int start, int end, string input) => new()
   {
     Start = start,
-    End = end
+    End = end,
+    FullContent = input
   };
-  public static Section ByLength (int start, int length, string input) => new(input)
+  public static Section ByLength (int start, int length, string input) => new()
   {
     Start = start,
-    Length = length
+    Length = length,
+    FullContent = input
   };
 
   public readonly bool IsWithin (int point) => point <= End && point >= Start;
@@ -49,7 +50,7 @@ public struct Section (string input) : IEquatable<Section>, IComparable<Section>
 
   public readonly bool Equals (Section other) => Start == other.Start && Length == other.Length;
 
-  public readonly required string FullContent { get; init; } = input;
+  public readonly required string FullContent { get; init; }
   public readonly string Content => FullContent[Start..(End + 1)];
   /// <inheritdoc/>
   public readonly int CompareTo (Section other) => Start.CompareTo(other.Start);

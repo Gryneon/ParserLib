@@ -6,10 +6,10 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
 {
   // Assigned Properties
   public string Name => NameToken.Content;
-  public string? ObjType => TypeToken is Token t ? t.Content : null;
+  public string? ObjType => TypeToken is IToken t ? t.Content : null;
 
   // Tokens Kept
-  public required Token NameToken { get; init; }
+  public required IToken NameToken { get; init; }
   public IToken? TypeToken { get; init; }
 
   public LimitedTokenCollection<TokenProperty> Properties { get; init; } = [];

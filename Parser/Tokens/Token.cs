@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public class Token : TokenBase
+public class IToken : TokenBase
 {
   public override string Content { get; set; } = SE;
   // Calculated Properties

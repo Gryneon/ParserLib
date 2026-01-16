@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using Parser;
 using Parser.Tokens;
-
-using Specification.UDMF;
 
 using static Parser.Debug;
 
@@ -67,7 +66,13 @@ internal sealed class Program
 
     Log(MsgClass.Informational, "Program", "Main", "Program Start");
 
-    
+    InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
+    InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
+    InitialTest(Specification.ACS.Definition.ACS, Paths.acs_rpgmfunc);
+    InitialTest(Specification.IPL.Definition.Spec, Paths.ipl_batch6458);
+    InitialTest(Specification.XML.Definition.Spec, Paths.xsd_specification);
+    InitialTest(Specification.WAD.Definition.WAD, Paths.wad_tnt);
+
     //args = [.. args, TestPath["ipl"]];
 
     if (args.Length == 0)
@@ -101,22 +106,25 @@ internal sealed class Program
     return 0;
   }
 
-  internal static void InitialTest ()
+  internal static void InitialTest (Spec spec, string file)
   {
-    Parser = new(Specification.INI.Definition.Spec);
-    string file = $"{SamplePath}\\map00.udmf";
+    Log(MsgClass.Warning, Area, "InitialTest", $"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
+    Parser = new(spec);
     //Load Data
     string input = File.ReadAllText(file.UserDirFix());
     //int libcount = Library.SpecList.Count;
-    TokenRuleCollection rules = [];
-    rules.AddRange(Definition.Spec.TokenRules);
-    TokenFactory factory = new(rules);
+    TokenFactory factory = new(spec);
     TokenCollection result = [.. factory.Produce(input)];
+    Log(MsgClass.Warning, Area, "InitialTest", $"Tokens Created : {result.Count}");
     //Debug.Log(Area, result.ToString2());
-    TokenAssembler assembler = new(Definition.Spec.GroupTokenRules);
+    TokenAssembler assembler = new(spec);
     TokenCollection tokens = [.. result];
     assembler.Execute(tokens);
-    Log(Area, tokens.ToString2());
+    Log(MsgClass.Warning, Area, "InitialTest", $"Tokens After Assembly : {tokens.Count}");
+    Log(MsgClass.Debug, Area, "InitialTest",tokens.ToString2());
+    Log(MsgClass.Warning, Area, "InitialTest", $"Token Log Complete");
+    _ = Console.ReadLine();
+    Console.Clear();
   }
 
   internal static XParser TestTextParser (string path, Spec spec)

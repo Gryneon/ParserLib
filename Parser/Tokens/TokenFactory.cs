@@ -2,21 +2,32 @@
 
 namespace Parser.Tokens;
 
-public class TokenFactory (IEnumerable<TokenRule> rules)
+public class TokenFactory
 {
   private const string Area = "TokenFactory";
-  internal string Input = SE;
-  internal SectionCollection CannotMatch = [];
-  internal TokenCollection Result = [];
-  internal TokenRule? CurrentRule;
-  internal bool IgnoreCase => CurrentRule?.Type.HasFlag(RT.IgnoreCase) ?? false;
-  internal StringComparison IC => IgnoreCase ? SCOIC : SCO;
-  internal bool Competes => CurrentRule?.Type.HasFlag(RT.Competitive) ?? false;
-  internal bool IgnoredToken => CurrentRule?.Type.HasFlag(RT.IgnoredToken) ?? false;
-  internal bool FromTokens => CurrentRule?.Type.HasFlag(RT.FromTokens) ?? false;
-  internal bool ExemptAllWithin => CurrentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false;
-  internal RT Type => GetMaskedType(CurrentRule?.Type ?? RT.None);
-  internal string RuleData => CurrentRule?.RuleStringData ?? SE;
+  private readonly IEnumerable<TokenRule> _rules;
+
+  private string Input { get; set; } = SE;
+  private SectionCollection CannotMatch { get; } = [];
+  private TokenCollection _result = [];
+  private TokenRule? _currentRule;
+  private readonly Spec? _spec;
+
+  public TokenFactory (IEnumerable<TokenRule> rules) => _rules = rules;
+  public TokenFactory (Spec spec)
+  {
+    _spec = spec;
+    _rules = spec?.TokenRules ?? [];
+  }
+
+  private bool IgnoreCase => _currentRule?.Type.HasFlag(RT.IgnoreCase) ?? false;
+  private StringComparison IC => IgnoreCase ? SCOIC : SCO;
+  private bool Competes => _currentRule?.Type.HasFlag(RT.Competitive) ?? false;
+  private bool IgnoredToken => _currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false;
+  private bool FromTokens => _currentRule?.Type.HasFlag(RT.FromTokens) ?? false;
+  private bool ExemptAllWithin => _currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false;
+  private RT Type => GetMaskedType(_currentRule?.Type ?? RT.None);
+  private string RuleData => _currentRule?.RuleStringData ?? SE;
 
   public TokenCollection Produce (string input)
   {
@@ -27,11 +38,11 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
     bool competed = false;
     input.ThrowIfNull();
     Input = input;
-    Result = [];
-    foreach (TokenRule rule in rules)
+    _result = [];
+    foreach (TokenRule rule in _rules)
     {
       debug("Rule processing started.");
-      CurrentRule = new TokenRule(rule.Type, rule.TypeToAssign, rule.RuleStringData);
+      _currentRule = rule;
       RT masked_type = rule.Type.RemoveBit<RT>(RT.FlagBits);
 
       if (Competes && !competed)
@@ -52,11 +63,11 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
         case RT.None:
           log(MsgClass.Warning, "Warning: Bad type defined.");
           continue;
-        case RT.TokenExact or RT.TokenMatch when FromTokens:
+        case RT.TokenExact or RT.TokenMatch or RT.TokenExtract when FromTokens:
           Log(Area, "Token matching starting, from Tokens");
           Tokens_FromTokens();
           break;
-        case RT.TokenExact or RT.TokenMatch when !FromTokens:
+        case RT.TokenExact or RT.TokenMatch or RT.TokenExtract when !FromTokens:
           Log(Area, "Token matching starting, from input string.");
           Tokens_FromInput(split: false);
           break;
@@ -73,13 +84,17 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
           Log(Area, $"Storing remaining zones.");
           Tokens_StoreOther();
           break;
+        case RT.ErrorMatch:
+          //TODO: Fix this, very buggy.
+          Log(Area, "Error Matching");
+          break;
         default:
           Log(Area, "Bad rule type, skipping rule.");
           break;
       }
     }
-    Result = [.. Result.OrderBy(item => item.Index)];
-    return [.. Result];
+    _result = [.. _result.OrderBy(item => item.Index)];
+    return [.. _result];
   }
   public static string GetRuleRegex (TokenRule rule, int? index = null)
   {
@@ -107,26 +122,37 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
   }
   internal void Tokens_FromTokens ()
   {
-    foreach (IToken tokendata in Result)
+    foreach (IToken tokendata in _result.Cast<IToken>())
     {
       if (tokendata.Exempt)
         continue;
 
-      if (CurrentRule is null)
+      if (_currentRule is null)
         break;
 
       if (Type is RT.TokenExact)
       {
         if (tokendata.Content.Equals(RuleData, IC))
         {
-          tokendata.Type = CurrentRule!.TypeToAssign;
+          tokendata.Type = _currentRule!.TypeToAssign;
         }
       }
       else if (Type is RT.TokenMatch)
       {
-        if (Regex.Match(tokendata.Content, GetRuleRegex(CurrentRule)).Length == tokendata.Content.Length)
+        if (Regex.Match(tokendata.Content, GetRuleRegex(_currentRule)).Length == tokendata.Content.Length)
         {
-          tokendata.Type = CurrentRule!.TypeToAssign;
+          tokendata.Type = _currentRule!.TypeToAssign;
+          tokendata.Exempt = ExemptAllWithin;
+        }
+      }
+      else if (Type is RT.TokenExtract)
+      {
+        Match m = Regex.Match(tokendata.Content, GetRuleRegex(_currentRule));
+        if (m.Length == tokendata.Content.Length)
+        {
+          tokendata.Type = _currentRule!.TypeToAssign;
+          tokendata.Exempt = ExemptAllWithin;
+          tokendata.Content = m.Groups["keep"].Value;
         }
       }
     }
@@ -136,11 +162,11 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
     foreach (Section applicant in CannotMatch.Inverse())
     {
       Log(Area, "Tokens_StoreOther", $"Section: {applicant} Found with no token.");
-      Result.Add(new Token()
+      _result.Add(new IToken()
       {
         Index = applicant.Start,
         Ignored = IgnoredToken,
-        Type = CurrentRule!.TypeToAssign,
+        Type = _currentRule!.TypeToAssign,
         Exempt = ExemptAllWithin,
         Content = applicant.Content
       });
@@ -156,12 +182,12 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
         foreach (Match m in mc)
         {
           CannotMatch.Add(Section.ByLength(applicant.Start + m.Index, m.Length, Input));
-          Result.Add(new Token()
+          _result.Add(new IToken()
           {
             Index = applicant.Start + m.Index,
             Content = m.Value,
             Ignored = IgnoredToken,
-            Type = CurrentRule!.TypeToAssign,
+            Type = _currentRule!.TypeToAssign,
             Exempt = ExemptAllWithin
           });
         }
@@ -187,17 +213,17 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
         if (!match.Overlaps(CannotMatch))
         {
           string sub = Input.Substring(next, length);
-          Token token = new()
+          IToken token = new()
           {
             Index = next,
             Content = sub,
-            Type = CurrentRule!.TypeToAssign,
+            Type = _currentRule!.TypeToAssign,
             Ignored = IgnoredToken,
             Exempt = ExemptAllWithin
           };
           CannotMatch.Add(match);
           if (!split)
-            Result.Add(token);
+            _result.Add(token);
           cursor = next + length;
           next = Input.IndexOf(RuleData, cursor, IC);
         }
@@ -208,7 +234,7 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
         }
       }
     }
-    else if (Type is RT.TokenMatch or RT.SplitMatch)
+    else if (Type is RT.TokenMatch or RT.SplitMatch or RT.TokenExtract)
     {
       Regex regex = new(RuleData, ROEC | ROML);
 
@@ -221,14 +247,17 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
         if (!rng.Overlaps(CannotMatch))
         {
           string sub = match.Value;
+          //TODO: TokenExtract must save all the captures as tokens.
+          if (Type is RT.TokenExtract)
+            sub = match.Groups["keep"].Value;
           if (ExemptAllWithin)
             CannotMatch.Add(rng);
           if (!split)
-            Result.Add(new Token()
+            _result.Add(new IToken()
             {
               Index = match.Index,
               Content = sub,
-              Type = CurrentRule!.TypeToAssign,
+              Type = _currentRule!.TypeToAssign,
               Ignored = IgnoredToken,
               Exempt = ExemptAllWithin
             });
@@ -239,10 +268,10 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
 
   internal void Tokens_Compete ()
   {
-    Collection<(TokenRule Rule, int Index)> contestants = [.. rules.Where(r => r.Type.HasFlag(RT.Competitive) && r.RuleStringData is not null).Select((r, i) => (r, i))];
+    Collection<(TokenRule Rule, int Index)> contestants = [.. _rules.Where(r => r.Type.HasFlag(RT.Competitive) && r.RuleStringData is not null).Select((r, i) => (r, i))];
     int contestant_count = contestants.Count;
     string regexPatterns = contestants.Select(r => GetRuleRegex(r.Rule, r.Index)).TextJoin("|");
-    Regex regex = new(regexPatterns, ROEC | ROML);
+    Regex regex = new(regexPatterns, ROEC | ROML | ROIPW);
 
     MatchCollection mc = regex.Matches(Input);
 
@@ -256,7 +285,7 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
         continue;
       }
       TokenRule cRule = contestants[index].Rule;
-      Token token = new()
+      IToken token = new()
       {
         Content = match.Value,
         Ignored = cRule.Type.HasFlag(RT.IgnoredToken),
@@ -265,7 +294,7 @@ public class TokenFactory (IEnumerable<TokenRule> rules)
         Type = cRule.TypeToAssign
       };
       if (!token.Ignored)
-        Result.Add(token);
+        _result.Add(token);
       if (ExemptAllWithin)
         CannotMatch.Add(Section.ByLength(match.Index, match.Length, Input));
     }

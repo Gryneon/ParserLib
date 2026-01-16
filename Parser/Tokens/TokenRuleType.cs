@@ -20,6 +20,12 @@ public enum TokenRuleType
   StoreExtra = 16,
   /// <summary>This Token Rule will store the unmatched data parts as tokens with this type.</summary>
   StoreOther = 32,
+  /// <summary>This token or sequence means the parsed content is not valid.</summary>
+  ErrorMatch = 0x8000000,
+  /// <summary>Extracts and uses the value(s) stored in the group named 'keep'.
+  /// If there are multiple captures, they will be stored as additional tokens of this type.</summary>
+  /// <remarks>The entire match is exempted if flagged as exempt, but the value of the created tokens will ONLY be what is in the named matching group 'keep'.</remarks>
+  TokenExtract = 0x10000000,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenProperty"/>.</summary>
   BuildProperty = 64,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenArray"/>.</summary>
@@ -65,12 +71,6 @@ public enum TokenRuleType
   Opt = 0x2000000,
   /// <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
   Mult = 0x4000000,
-  /// <summary>This token or sequence means the parsed content is not valid.</summary>
-  ErrorMatch = 0x8000000,
-  /// <summary>Extracts and uses the value(s) stored in the group named 'keep'.
-  /// If there are multiple captures, they will be stored as additional tokens of this type.</summary>
-  /// <remarks>The entire match is exempted if flagged as exempt, but the value of the created tokens will ONLY be what is in the named matching group 'keep'.</remarks>
-  TokenExtract = 0x10000000,
   /// <summary>The bits to remove to get the type correctly.</summary>
   FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch | TokenExtract,
 }

@@ -61,7 +61,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
         /// </summary>
         internal static string acs_rpgmfunc {
             get {
@@ -70,7 +70,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
         /// </summary>
         internal static string acs_sample {
             get {
@@ -79,7 +79,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\default.ini.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini.
         /// </summary>
         internal static string ini_vncdefault {
             get {
@@ -88,7 +88,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt.
         /// </summary>
         internal static string ipl_batch6456 {
             get {
@@ -97,7 +97,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt.
         /// </summary>
         internal static string ipl_batch6458 {
             get {
@@ -106,7 +106,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\Johntay4\source\repos\Git\ParserLib\Parser\Samples\label.ipl.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\label.ipl.
         /// </summary>
         internal static string ipl_label {
             get {
@@ -115,7 +115,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
         /// </summary>
         internal static string json_launch {
             get {
@@ -124,7 +124,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
         /// </summary>
         internal static string mapinfo_common {
             get {
@@ -133,7 +133,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
         /// </summary>
         internal static string reg_iplfile {
             get {
@@ -142,7 +142,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt.
         /// </summary>
         internal static string sndinfo_test {
             get {
@@ -151,7 +151,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
         /// </summary>
         internal static string udmf_map00 {
             get {
@@ -160,7 +160,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
         /// </summary>
         internal static string udmf_sample {
             get {
@@ -178,7 +178,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
         /// </summary>
         internal static string xsd_specification {
             get {
@@ -187,7 +187,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\johntay4\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
         /// </summary>
         internal static string zs_demon {
             get {

@@ -1,5 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using System.Net;
+
 namespace Parser.Tokens;
 
 public sealed class TokenAssembler
@@ -11,15 +13,18 @@ public sealed class TokenAssembler
   private TokenCollection? _tokens;
   private TokenGroupRule? _rule;
   private int _constructed_items;
+  private readonly Spec _spec;
 
-  public TokenAssembler (TokenGroupRuleCollection rules)
+  public TokenAssembler (TokenGroupRuleCollection rules, Spec spec)
   {
     _rules = rules;
+    _spec = spec;
   }
   public TokenAssembler (Spec spec)
   {
     spec.ThrowIfNull();
     _rules = spec.GroupTokenRules;
+    _spec = spec;
   }
 
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
@@ -165,15 +170,15 @@ public sealed class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        NameToken = getToken<Token>(RT.AssignName),
+        NameToken = getToken<IToken>(RT.AssignName),
         ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
       },
       RT.BuildObject => new TokenObject()
       {
-        NameToken = getToken<Token>(RT.AssignName),
-        TypeToken = getTokenOrDefault<Token>(RT.AssignType),
+        NameToken = getToken<IToken>(RT.AssignName),
+        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         Properties = getTokens<TokenProperty>(RT.AddProperty),
@@ -193,7 +198,7 @@ public sealed class TokenAssembler
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
         AddFlag = hasToken(RT.AddFlag),
-        NameToken = getToken<Token>(RT.AssignName),
+        NameToken = getToken<IToken>(RT.AssignName),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -201,7 +206,7 @@ public sealed class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        NameToken = getToken<Token>(RT.AssignName),
+        NameToken = getToken<IToken>(RT.AssignName),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -209,7 +214,7 @@ public sealed class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        ValueTypeToken = getToken<Token>(RT.AssignType),
+        ValueTypeToken = getToken<IToken>(RT.AssignType),
         ValueToken = getToken<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
@@ -217,6 +222,34 @@ public sealed class TokenAssembler
       _ => throw new InvalidOperationException("Unknown rule type"),
     };
     _tokens.Insert(first_token_index, constructed_obj);
+  }
+  internal Collection<string> AllAllowedTypes (ChkToken node)
+  {
+    Collection<string> all_types_allowed = [.. node.AllowedTypes];
+    for (int i = 0; i < all_types_allowed.Count; i++)
+    {
+      string type = all_types_allowed[i];
+      dynamic value = _spec.GetTokenTypeValue(type);
+      if (_spec.TokenCompatLookup.ContainsKey(value))
+      {
+        dynamic list = _spec.TokenCompatLookup[value];
+        foreach (dynamic item in list)
+        {
+          string back = _spec.GetTokenTypeString(item);
+          all_types_allowed.Add(back);
+        }
+      }
+      else if (_spec.TokenCompatLookup.ContainsKey(type))
+      {
+        dynamic list = _spec.TokenCompatLookup[type];
+        foreach (dynamic item in list)
+        {
+          string back = _spec.GetTokenTypeString(item);
+          all_types_allowed.Add(back);
+        }
+      }
+    }
+    return all_types_allowed;
   }
   internal int ExecRule ()
   {
@@ -228,7 +261,7 @@ public sealed class TokenAssembler
     int node_index = 0, token_index = 0;
     bool allow_fail = false;
 
-    for (; ; )
+    while (true)
     {
       ChkToken? node = node_index >= _rule.Sequence.Count ? null : _rule.Sequence[node_index];
       IToken? token = token_index >= _tokens.Count ? null : _tokens[token_index];
@@ -267,7 +300,7 @@ public sealed class TokenAssembler
         break;
       }
 
-      if (node.Equals(token))
+      if (node.Equals(token) || AllAllowedTypes(node).Any(d => d.Like(node.AllowedTypes)))
       {
         if (first_token_index == -1)
           first_token_index = token_index;

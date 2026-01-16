@@ -6,6 +6,10 @@
       "sqlDebugging": false,
       "jsWebView2Debugging": false,
       "hotReloadEnabled": false
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
     }
   }
 }

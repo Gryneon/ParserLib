@@ -5,7 +5,6 @@ namespace Parser.Tokens;
 public sealed class ChkToken : IEquatable<IToken>
 {
   private readonly string _data_string;
-
   public required RT TokenRule { get; init; } = RT.None;
   public Collection<string> AllowedTypes { get; init; } = [];
   public Collection<string> AllowedContents { get; init; } = [];
@@ -34,9 +33,12 @@ public sealed class ChkToken : IEquatable<IToken>
   /// <item><c>cyi:Script</c> - Content 'Script', Case insensitive, store as a Type.</item>
   /// </list>
   /// </remarks>
-  public ChkToken (string data_string) => _data_string = data_string;
+  public ChkToken (string data_string)
+  {
+    _data_string = data_string;
+  }
 
-  internal bool Check_Type (IToken? token) => token is not null && token.HasType && AllowedTypes.Any(type => Equals(token.Type, type)) || AllowedTypes.Count == 0;
+  internal bool Check_Type (IToken? token) => token is not null && token.HasType && AllowedTypes.Any(type => token.Type.Like(type)) || AllowedTypes.Count == 0;
   internal bool Check_Content (IToken? token) => token is not null && token.Content.Length > 0 && AllowedContents.Any(str => token.Content.Equals(str, SC)) || AllowedContents.Count == 0;
   public bool Equals (IToken? other) =>
     Check_Content(other) && Check_Type(other);
