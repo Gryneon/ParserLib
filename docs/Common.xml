@@ -202,14 +202,23 @@
         <member name="T:Common.DictionaryMode">
             <summary>The procedure to follow when writing to a dictionary.</summary>
         </member>
+        <member name="F:Common.DictionaryMode.None">
+            <summary>Default behavior, normally overwrite.</summary>
+        </member>
         <member name="F:Common.DictionaryMode.Overwrite">
-            <summary>Overwrite the previous value (default).</summary>
+            <summary>Overwrite the previous value.</summary>
         </member>
         <member name="F:Common.DictionaryMode.Ignore">
             <summary>Ignore the write if there is already a value stored.</summary>
         </member>
-        <member name="F:Common.DictionaryMode.MakeList">
-            <summary>Convert the items into a collection, or add the item to the collection.</summary>
+        <member name="F:Common.DictionaryMode.AddToCollection">
+            <summary>If the existing value is a collection of the same type, add it to the collection.</summary>
+        </member>
+        <member name="F:Common.DictionaryMode.MakeCollection">
+            <summary>If the existing value is of the same type, make the value a collection of the type containing both values.</summary>
+        </member>
+        <member name="F:Common.DictionaryMode.MergeCollection">
+            <summary>If the existing value is a collection, and this value is a collection of the same type, merge the two collections.</summary>
         </member>
         <member name="T:Common.Excel.ExcelWorkbook">
             <summary>

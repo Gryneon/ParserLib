@@ -86,10 +86,10 @@ public static class Definition
   {
     Name = "ipl",
     Operations = [
-      new TokenizeOperation<ITT>(),
+      new TokenizeOperation(),
       new DebugToStringOperation("tokens"),
       new DebugWaitForInputOperation(),
-      new TokenAssembleOperation<ITT>(),],
+      new TokenAssembleOperation(),],
     FileInferences = [
       IfN(ExtIs, "ipl"),
       IfN(ExtIs, "pr1"),

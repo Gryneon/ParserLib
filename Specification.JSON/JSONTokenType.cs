@@ -11,8 +11,7 @@ public enum JSONTokenType
   Bool,
   Null,
   Cm,
-  Ao,
-  Ac,
+  Ao, Ac,
   Co,
   Ws,
   Comment,
@@ -20,6 +19,5 @@ public enum JSONTokenType
   Object,
   Array,
   Value,
-  Bo,
-  Bc
+  Bo, Bc
 }

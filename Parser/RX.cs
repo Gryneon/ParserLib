@@ -20,26 +20,7 @@ public static partial class RX
   public const string TokenTemplateDef = @"^(?'ref_name'\w+)\s*\-\s*(?'line''(?'literal'.+?)'|(?'ws_req'\ )|(?'opt_ws_or_comment'\-)|\#(?'ref'\w+)|(?'gp_start'\()|(?'gp_end'\))|(?'opt'\?)|(?'more'\+)|(?'or'\|))*$\s*";
   [GeneratedRegex(TokenTemplateDef)]
   public static partial Regex TokenTemplateDefinition { get; }
-
   #endregion
-
-  // Common Group Types
-  public static Collection<string> CommonIgnores { get; } = [
-    "blkcomment",
-    "lncomment",
-    "comment",
-    "ws",
-    "wso",
-    "nl"
-  ];
-
-  public static Collection<string> ValueTypes { get; } = [
-    "int",
-    "dec",
-    "str",
-    "bool",
-    "char",
-  ];
 
   // Named Groups
   public static RxS G_CLnComment => field = Nm("lncomment", CLnComment);
@@ -53,14 +34,13 @@ public static partial class RX
   // C-Style Common Parts
   public static RxS CLnComment => field = Gp(@"\/\/[^\n\r]*");
   public static RxS CBlkComment => field = Gp(@"\/\*[\s\S]*?\*\/");
-  public static RxS CPreProc => field = Rx(@"^\s*\#.+?\s*$");
-  public static RxS BSEscape => field = Rx(@"\\.");
-  public static RxS CString => field = Rx(@""".*?""") << BSEscape;
+  public static RxS CPreProc => field = Rx(@"^\s*\#.+?$");
+  public static RxS CString => field = Rx(@"(?n:""([^\\""]|\\.)*"")");
 
   // Other Common Parts
-  public static RxS Chars => field = Rx(@"'[^\\]'|'\\[\\abefnr0]'|'\\u\d\d\d\d'");
+  public static RxS Chars => field = $"'{Or(@"[^\\]", @"\\[\\abefnr0]", @"\\u\d\d\d\d")}'";
   public static RxS Name => field = Rx(@"[a-zA-Z_][\w]*");
-  public static RxS WS => field = Nm("ws", @"\s+");
+  public static RxS WS => field = Rx(@"\s+");
   public static RxS WSO => field = Rx(@"\s*");
   public static RxS Integers => field = Rx(@"-?\d+");
   public static RxS Decimals => field = Or(@"-?\d*\.\d+", Integers);

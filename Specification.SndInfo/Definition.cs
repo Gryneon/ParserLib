@@ -1,7 +1,9 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable CA1720 // Identifier contains type name
 
 using Parser;
 using Parser.Inference;
+using Parser.Ops;
 using Parser.Ops.Text;
 
 using static Common.Names;
@@ -23,7 +25,7 @@ public static class Definition
   private static RxS Wd (string word) => Nm(word, @"\w+");
 
   //https://regex101.com/r/syUVmo/3
-  private static RxSCollection Regex { get; } = [
+  internal static RxSCollection Regex { get; } = [
     // Comments and WS
     G_CLnComment,
     G_CBlkComment,
@@ -51,21 +53,14 @@ public static class Definition
         IfN(FName | Is, "sndinfo"),
       ])
     ],
+    IsTextFile = true,
+    TokenType = typeof(SndInfoTokenType),
+    SC = SCOIC,
+    TokenRules = [],
+    GroupTokenRules = [],
     Operations = [
-      new DictionaryOperation(Regex)
+      new TokenizeOperation(),
+      Operation.End
     ],
-    RegexBasicTokens = [
-      "definition",
-      "random",
-      "alias",
-      "rolloff",
-      "archivepath",
-      "playersound"
-    ],
-    WhitespaceTokens = [
-      "ws",
-      "lncomment",
-      "blkcomment"
-    ]
   };
 }

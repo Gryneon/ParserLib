@@ -31,8 +31,8 @@ public static class Definition
       //new GenerateOperation<MatchDataSet, Section>(Section.Generate, item => item.HasGroup("section"), "matches", "sections"),
       //new ExternalOperation<IEnumerable<Section>, INIDocument>(INIDocument.FromSections, item => true, "sections", "result"),
       //Operation.End],
-      new TokenizeOperation<ITT>(),
-      new TokenAssembleOperation<ITT>(),
+      new TokenizeOperation(),
+      new TokenAssembleOperation(),
       new GenerateOperation<TokenObject, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
       Operation.End
     ],

@@ -1,7 +1,5 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System.IO;
-
 namespace Common;
 
 /// <summary>The logging level of the program.</summary>

@@ -1,7 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AnalysisLevel>preview-all</AnalysisLevel>
+    <ApplicationIcon>Icons\ActiveServerApplication.ico</ApplicationIcon>
     <AssemblyVersion>1.0.0</AssemblyVersion>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <Deterministic>True</Deterministic>
+    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <ErrorReport>send</ErrorReport>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -12,19 +20,11 @@
     <Nullable>enable</Nullable>
     <OutputType>WinExe</OutputType>
     <Platforms>AnyCPU;x86;x64</Platforms>
+    <StartupObject>FormObjectViewer.Program</StartupObject>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Title>Form Based Object Browser</Title>
     <UseWindowsForms>true</UseWindowsForms>
     <WarningLevel>9999</WarningLevel>
-    <StartupObject>FormObjectViewer.Program</StartupObject>
-    <ApplicationIcon>Icons\ActiveServerApplication.ico</ApplicationIcon>
-    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
-    <ErrorReport>send</ErrorReport>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <AnalysisLevel>preview-all</AnalysisLevel>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <Deterministic>True</Deterministic>
   </PropertyGroup>
 
   <ItemGroup>

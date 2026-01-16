@@ -70,8 +70,8 @@ public static class Definition
         (@"\s*\=\s*", "="), //Remove ws around eq sign
         (@"\\" + RX.LnEnd, "") //Remove escaped newlines
       ], "text", "text"),
-      new TokenizeOperation<RTT>("text", "tokens"),
-      new TokenAssembleOperation<RTT>("tokens", "tokens_assembled")
+      new TokenizeOperation("text", "tokens"),
+      new TokenAssembleOperation("tokens", "tokens_assembled")
       ],
     TokenRules = [
       new(RT.TokenExact, RTT.Eq, "=")

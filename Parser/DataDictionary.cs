@@ -46,7 +46,7 @@ public sealed class DataDictionary : IDictionary<string, object>
       if (key.StartsWith('+') && hasKey)
       {
         key = key[1..];
-        bool success = DoSave<object>(key, value, DM.MakeList);
+        bool success = DoSave<object>(key, value, DM.Overwrite | DM.AddToCollection | DM.MakeCollection | DM.MergeCollection);
         if (!success)
         {
           Log(Area, $"Accessor tried to make list, but failed. Value:{value} & Key:{key} & Current: {_dict[key]}.");
@@ -65,39 +65,40 @@ public sealed class DataDictionary : IDictionary<string, object>
     if (data is null)
       return false;
 
-    if (data is not T casted)
+    if (data is not T or IEnumerable<T>)
       return false;
 
-    Collection<T> doMakeList (IEnumerable<T>? list = null) => list is null ? [casted] : [.. list, casted];
-
-    switch (mode)
+    if (mode.HasFlag(DM.MergeCollection) && TryLoadArray(key, out IEnumerable<T>? existing_to_merge) && data is IEnumerable<T> new_list)
     {
-      case DM.Overwrite:
-        _dict[key] = casted;
-        goto Success;
-      case DM.Ignore:
-        if (ContainsKey(key))
-          break;
-        _dict[key] = casted;
-        goto Success;
-      case DM.MakeList:
-        if (TryLoad(key, out object? value) && value is T existing)
-          _dict[key] = new Collection<T>() { existing, casted };
-        else if (TryLoad(key, out object? value2) && value2 is IEnumerable<T> existing2)
-          _dict[key] = doMakeList(existing2);
-        else if (CanLoad(key))
-          goto default;
-        else if (!CanLoad(key))
-          _dict[key] = doMakeList();
-        goto Success;
-      Success:
-        DataOrder.Add(key);
-        break;
-      default:
-        return false;
+      Collection<T> big_list = [.. existing_to_merge, .. new_list];
+      _dict[key] = big_list;
+      return true;
     }
-
-    return true;
+    else if (mode.HasFlag(DM.AddToCollection) && TryLoadArray(key, out IEnumerable<T>? existing_to_add) && data is T new_item)
+    {
+      Collection<T> big_list = [.. existing_to_add, new_item];
+      _dict[key] = big_list;
+      return true;
+    }
+    else if (mode.HasFlag(DM.MakeCollection) && TryLoad(key, out T? lonely_item) && data is T friend_item)
+    {
+      _dict[key] = new Collection<T>() { lonely_item, friend_item };
+      return true;
+    }
+    else if (mode.HasFlag(DM.Overwrite) || mode == DM.None)
+    {
+      _dict[key] = data;
+      return true;
+    }
+    else if (mode.HasFlag(DM.Ignore) && !ContainsKey(key))
+    {
+      _dict[key] = data;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
   public void Initialize<T> ([NotNull] T initial)
   {
@@ -123,9 +124,9 @@ public sealed class DataDictionary : IDictionary<string, object>
       _ = Save<int>("list_size", coll.Count);
     }
   }
-  public bool IsArray (string key) =>
+  public bool IsArray ([NotNullWhen(true)] string key) =>
     ContainsKey(key) && _dict[key] is IEnumerable;
-  public bool CanLoad (string key) =>
+  public bool CanLoad ([NotNullWhen(true)] string key) =>
     _dict.ContainsKey(key) && _dict[key] != null;
   public bool TryLoad ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out object data)
   {
@@ -139,7 +140,7 @@ public sealed class DataDictionary : IDictionary<string, object>
   }
   public object Load (string key) => CanLoad(key) ? this[key] : throw new ArgumentException($"Key {key} not found in data dictionary.", nameof(key));
   public bool Save (string key, object data, DM mode = DM.Overwrite) => DoSave<object>(key, data, mode);
-  public bool GetLastSavedKey ([NotNullWhen(true)][MaybeNullWhen(false)] out string key_name, [NotNullWhen(true)][MaybeNullWhen(false)] out object key_value)
+  public bool TryGetLastSavedKey ([NotNullWhen(true)][MaybeNullWhen(false)] out string key_name, [NotNullWhen(true)][MaybeNullWhen(false)] out object key_value)
   {
     key_name = HasData ? LastKeySaved : null;
     key_value = key_name is null ? null : _dict[key_name];
@@ -165,7 +166,7 @@ public sealed class DataDictionary : IDictionary<string, object>
     _dict[key] is IEnumerable<object> list ? list.Count() :
     1;
   // Standard Keys
-  public int FileSize => TryLoad<int>("file_size", out int data) ? data : 0;
+  public int FileSize => TryLoad("file_size", out int data) ? data : 0;
   public object Initial => TryLoad("initial", out object? data) ? data : throw new InvalidOperationException();
   public string Text => TryLoad("text", out string? data) ? data : throw new InvalidOperationException();
   public Span<byte> Bytes => TryLoad("bytes", out Span<byte> data) ? data : throw new InvalidOperationException();

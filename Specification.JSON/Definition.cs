@@ -28,8 +28,10 @@ public static class Definition
         Operation.CopyKey("json_object", "result"),
         //TODO: Enhance Spec to analyse content.
         //TODO: Validate?
-        new TokenizeOperation<JTT>("text", "tokens"),
+        new TokenizeOperation("text", "tokens"),
         new DebugToStringOperation("tokens"),
+        new TokenAssembleOperation(),
+        new DebugToStringOperation("tokens_assembled"),
       ],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
     IsTextFile = true,
@@ -38,7 +40,8 @@ public static class Definition
       new(RT_String, JTT.Str, $"\"{Gp(@"[^\\]|\\.").Any.Lazy}\""),
       new(RT_Match, JTT.Bool, @"\b(true|false)\b"),
       new(RT_Match, JTT.Null, @"\b(null)\b"),
-      new(RT_Match, JTT.Num, @"-?\d+(\.\d*)?"),
+      new(RT_Match, JTT.Undef, @"\b(undefined)\b"),
+      new(RT_Match, JTT.Num, @"-?(\d+(\.\d*)?|\.\d+)"),
       new(RT_Exact, JTT.Cm, ","),
       new(RT_Exact, JTT.Bo, "{"),
       new(RT_Exact, JTT.Bc, "}"),

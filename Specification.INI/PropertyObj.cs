@@ -1,12 +1,12 @@
 namespace Specification.INI;
 
 /// <summary>A key and value pair in an INI file.</summary>
-public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<string>, ITextSerializer, IEquatable<IProperty<string>>
+public class PropertyObj : PropertyBase<string>, IGeneratable<MatchDataSet, PropertyObj>, ITextSerializer
 {
   /// <summary>The key name.</summary>
-  public string Key { get; set; } = SE;
+  public override required string Key { get; set; } = SE;
   /// <summary>The value assigned to the key.</summary>
-  public string? Value { get; set; } = SE;
+  public override string? Value { get; set; } = SE;
   /// <summary>Creates an empty <see cref="PropertyObj"/>.</summary>
   public PropertyObj () { }
   /// <summary>
@@ -14,7 +14,8 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// </summary>
   /// <param name="key">The key of the new property.</param>
   /// <param name="value">The value of the new property.</param>
-  public PropertyObj (string key, string value)
+  [SetsRequiredMembers]
+  public PropertyObj (string key, string value) : this()
   {
     Key = key;
     Value = value;
@@ -23,7 +24,8 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// Creates a property from an IProperty interface
   /// </summary>
   /// <param name="iprop">The other property.</param>
-  public PropertyObj (IProperty<object> iprop)
+  [SetsRequiredMembers]
+  public PropertyObj (IProperty<object> iprop) : this()
   {
     iprop.ThrowIfNull();
     Key = iprop.Key;
@@ -33,7 +35,8 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// Creates a property from an IProperty interface
   /// </summary>
   /// <param name="iprop">The other property.</param>
-  public PropertyObj (IProperty<string> iprop)
+  [SetsRequiredMembers]
+  public PropertyObj (IProperty<string> iprop) : this()
   {
     iprop.ThrowIfNull();
     Key = iprop.Key;
@@ -71,9 +74,9 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
     };
     return result;
   }
-  public bool Equals (IProperty<string>? other) =>
+  public override bool Equals (IProperty<string>? other) =>
     Key.Equals(other?.Key, SCOIC) && (Value?.Equals(other.Value, SCO) ?? false);
-  public int CompareTo (IProperty<string>? other) =>
+  public override int CompareTo (IProperty<string>? other) =>
     Key.CompareTo(other?.Key, SCOIC);
   public override bool Equals (object? obj) =>
     obj is IProperty<string> prop && Equals(prop);
@@ -84,40 +87,9 @@ public class PropertyObj : IGeneratable<MatchDataSet, PropertyObj>, IProperty<st
   /// <returns>The <see langword="string"/> representation of the object.</returns>
   public string Serialize () => $"  {Key}={Value}";
   public bool Equals (PropertyObj? other) => throw new NotImplementedException();
-  public static implicit operator KeyValuePair<string, PropertyObj> (PropertyObj from)
+  public static implicit operator KeyValuePair<string, string> (PropertyObj from)
   {
     from.ThrowIfNull();
-    return new(from.Key, new(from.Key, from?.Value ?? SE));
+    return new(from.Key, from?.Value ?? SE);
   }
-
-  /// <summary>Determines whether two <see cref="PropertyObj"/> instances are equal.</summary>
-  /// <param name="left">The first <see cref="PropertyObj"/> to compare.</param>
-  /// <param name="right">The second <see cref="PropertyObj"/> to compare.</param>
-  /// <returns><see langword="true"/> if the two <see cref="PropertyObj"/> instances are equal; otherwise, <see
-  /// langword="false"/>.</returns>
-  public static bool operator == (PropertyObj left, PropertyObj right) => left is null ? right is null : left.Equals(right);
-  /// <summary>
-  /// Determines whether two <see cref="PropertyObj"/> instances are not equal.
-  /// </summary>
-  /// <param name="left">The first <see cref="PropertyObj"/> to compare.</param>
-  /// <param name="right">The second <see cref="PropertyObj"/> to compare.</param>
-  /// <returns><see langword="true"/> if the two <see cref="PropertyObj"/> instances are not equal; otherwise, <see
-  /// langword="false"/>.</returns>
-  public static bool operator != (PropertyObj left, PropertyObj right) => !(left == right);
-  /// <summary>
-  /// TODO: Doc
-  /// </summary>
-  public static bool operator < (PropertyObj left, PropertyObj right) => left is null ? right is not null : left.CompareTo(right) < 0;
-  /// <summary>
-  /// TODO: Doc
-  /// </summary>
-  public static bool operator <= (PropertyObj left, PropertyObj right) => left is null || left.CompareTo(right) <= 0;
-  /// <summary>
-  /// TODO: Doc
-  /// </summary>
-  public static bool operator > (PropertyObj left, PropertyObj right) => left is not null && left.CompareTo(right) > 0;
-  /// <summary>
-  /// TODO: Doc
-  /// </summary>
-  public static bool operator >= (PropertyObj left, PropertyObj right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

@@ -1,7 +1,5 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using DM = Common.DictionaryMode;
-
 namespace Common.Extensions;
 
 public static class IDictionaryExtensions
@@ -12,7 +10,7 @@ public static class IDictionaryExtensions
     dic is not null && list is not null && list.Any(dic.ContainsKey);
   public static bool ContainsKey<TKey, TValue> (this IDictionary<TKey, TValue> dic, IEnumerable<TKey> list) =>
     dic is not null && list is not null && list.Any(dic.ContainsKey);
-  public static IDictionary<TKey, TValue> Concat<TKey, TValue> (this IDictionary<TKey, TValue> current, IDictionary<TKey, TValue> addition, bool overwrite = false) where TKey : notnull
+  public static IDictionary<TKey, TValue> Concat<TKey, TValue> (this IDictionary<TKey, TValue> current, IDictionary<TKey, TValue> addition, bool overwrite = true) where TKey : notnull
   {
     Dictionary<TKey, TValue> result = [];
 
@@ -26,20 +24,18 @@ public static class IDictionaryExtensions
 
     return result;
   }
-  public static IDictionary<TKey, object> Concat<TKey> (this IDictionary<TKey, object> current, IDictionary<TKey, object> addition, DM mode = DM.Overwrite) where TKey : notnull
+  public static IDictionary<TKey, object> Concat<TKey> (this IDictionary<TKey, object> current, IDictionary<TKey, object> addition, bool overwrite = true) where TKey : notnull
   {
     Dictionary<TKey, object> result = [];
 
-    current ??= new Dictionary<TKey, object>();
-    addition ??= new Dictionary<TKey, object>();
-
-    foreach (KeyValuePair<TKey, object> kvp in current)
-      result[kvp.Key] = kvp.Value;
-    foreach (KeyValuePair<TKey, object> kvp in addition)
-      if (mode is DM.Overwrite || !result.TryGetValue(kvp.Key, out object? value))
+    if (current is not null)
+      foreach (KeyValuePair<TKey, object> kvp in current)
         result[kvp.Key] = kvp.Value;
-      else if (mode is DM.MakeList)
-        result[kvp.Key] = new Collection<object>() { value, kvp.Value };
+    if (addition is not null)
+      foreach (KeyValuePair<TKey, object> kvp in addition)
+        if (overwrite || !result.ContainsKey(kvp.Key))
+          result[kvp.Key] = kvp.Value;
+
     return result;
   }
   public static IDictionary<TKey, object?> Nullify<TKey> (this IDictionary<TKey, object> current) where TKey : notnull
