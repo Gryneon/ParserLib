@@ -80,7 +80,7 @@ Must have only one of these:
 
     x - Ignore Token
     n - Token is 'Name' in object, property, or label
-    y - Token is 'Type' in object or typedvalue
+    y - Token is 'Type' in object, typedvalue, or array
     v - Token is 'Value' in array, property, or typedvalue
     p - Token is 'Property' in object
     f - Token is 'Name' in flag and AddFlag is true.
@@ -109,3 +109,25 @@ Must have only one of these:
 
     * b : Keyword is the token type, and \bscript\b is the regex string to match
     * n : it is stored in the name field
+
+### Constructable Tokens
+
+- <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>
+  - Name
+  - Type
+  - PropertyList
+  - FlagList
+* <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag\<T\></font></b></code>
+  * Name
+  * Value (true/false)
+* <code><b><font name="cascadia code" size=3 color=#5588FF>TokenTypedValue\<T\></font></b></code>
+  * Type
+  * Value
+* <code><b><font name="cascadia code" size=3 color=#5588FF>TokenLabel\<T\></font></b></code>
+  - Name
+* <code><b><font name="cascadia code" size=3 color=#5588FF>TokenArray\<T\></font></b></code>
+  * Type
+  * ValueList
+* <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty\<T\></font></b></code>
+  - Name
+  - Value

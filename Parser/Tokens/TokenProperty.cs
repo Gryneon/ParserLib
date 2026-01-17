@@ -15,7 +15,7 @@ public sealed class TokenProperty : TokenBase, IReadOnlyProperty<string>, IPrope
   public string? Value => ValueToken?.Content;
 
   // Tokens Kept
-  public required Token NameToken { get; init; }
+  public required IToken NameToken { get; init; }
   public required IToken? ValueToken { get; init; }
 
   string IReadOnlyProperty<string>.Key => Name;

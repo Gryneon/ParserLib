@@ -48,8 +48,8 @@ public static class Definition
     // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
     //new(RT.StoreOther, None)],
     GroupTokenRules = [
-      new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:Value tx:Sc"),
       new(RT.BuildProperty, Object, "tn:Namespace tx:Eq tv:Str tx:Sc"),
+      new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:Value tx:Sc"),
       new(RT.BuildObject, Object, "tn:Vertex tx:Bo tpm:Property tx:Bc"),
       new(RT.BuildObject, Object, "tn:Thing tx:Bo tpm:Property tx:Bc"),
       new(RT.BuildObject, Object, "tn:Sector tx:Bo tpm:Property tx:Bc"),
@@ -58,6 +58,7 @@ public static class Definition
       ],
     SC = SCOIC,
     IsTextFile = true,
+    TokenType = typeof(UDMFTokenType),
     TokenCompatLookup = new Dictionary<dynamic, Collection<dynamic>>()
     {
       [Object] = [Vertex, Thing, Sector, LineDef, SideDef],

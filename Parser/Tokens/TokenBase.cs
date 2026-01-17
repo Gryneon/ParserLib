@@ -17,14 +17,13 @@ public abstract class TokenBase : IToken
   public IReadOnlyList<IToken> Children { get; init; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
-  internal string ContentNoNewLine =>
-    Content.
+  internal string ContentNoNewLine => Content.
     Replace("\n", "<LF>", SCO).
     Replace("\r", "<CR>", SCO);
   public override string ToString () => $"{Index} : {Type} = \"{ContentNoNewLine}\"";
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
-  public virtual int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public virtual bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
   public static bool operator == (TokenBase left, TokenBase right) => left is null ? right is null : left.Equals(right);
   public static bool operator != (TokenBase left, TokenBase right) => !(left == right);

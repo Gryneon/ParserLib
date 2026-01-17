@@ -45,6 +45,7 @@ public static class Definition
       new (RT_Comment, MTT.BlkComment, @"\/\*[\s\S]*?\*\/"),
       new (RT_Matches, MTT.Doomednums, @"\bDoomEdNums\b"),
       new (RT_Matches, MTT.AddDefaultMap, @"\bAddDefaultMap\b"),
+      new (RT_Matches, MTT.DefaultMap, @"\bDefaultMap\b"),
     ],
     SC = SCOIC,
     TokenCompatLookup = {

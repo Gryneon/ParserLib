@@ -4,49 +4,10 @@
 
 using Parser.Tokens;
 
+
 using static Parser.DefinitionStaticFunctions;
 
-using ATT = Specification.ACS.ACSTokenType;
-using RT = Parser.Tokens.TokenRuleType;
-using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
-
 namespace Specification.ACS;
-
-public enum ACSTokenType
-{
-  None,
-  Str,
-  Char,
-  Int,
-  Fixed,
-  Bool,
-  Name,
-  FunctionCall,
-  Script,
-  Function,
-  MapVar,
-  World,
-  ScriptType,
-  Value,
-  Bo, Bc,
-  Po, Pc,
-  Expression,
-  Sc, Cm,
-  Op, Co,
-  Ao, Ac,
-  Preprocessor,
-  Eq,
-  DataType,
-  Condtional,
-  For,
-  IncDec,
-  LogNot,
-  Assign,
-  Minus,
-  Unary,
-  Binary,
-  Net,
-}
 
 /// <summary>
 /// ACS Specification Definition <br/>
@@ -80,7 +41,9 @@ public static class Definition
     IsTextFile = true,
     SC = SCOIC,
     TokenType = typeof(ATT),
-    TokenCompatLookup = [],
+    TokenCompatLookup = {
+      [ATT.] = ["", ""]
+    },
     TokenRules = [
 
       // Data

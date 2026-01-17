@@ -40,12 +40,6 @@ public class Spec
   public TokenRuleCollection TokenRules { get; init; } = [];
   /// <summary>Group token rules for the tokenize operration..</summary>
   public TokenGroupRuleCollection GroupTokenRules { get; init; } = [];
-  /// <summary>Token types that are basic building blocks.</summary>
-  public Collection<string> RegexBasicTokens { get; init; } = [];
-  /// <summary>Token types to ignore.</summary>
-  public Collection<string> WhitespaceTokens { get; init; } = [];
-  /// <summary>All token types handled by this specification.</summary>
-  public Collection<string> AllTokens => RegexBasicTokens.Concat(WhitespaceTokens).ToCollection();
   /// <summary>Marks this instance as the active specification.</summary>
   /// <remarks>Subsequent operations that depend on the active object will reference this instance after calling
   /// this method. If another instance was previously active, it will be replaced.</remarks>

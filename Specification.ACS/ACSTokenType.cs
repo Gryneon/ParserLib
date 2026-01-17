@@ -1,0 +1,41 @@
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable CA1720 // Identifier contains type name
+
+namespace Specification.ACS;
+
+public enum ACSTokenType
+{
+  None,
+  Str,
+  Char,
+  Int,
+  Fixed,
+  Bool,
+  Name,
+  FunctionCall,
+  Script,
+  Function,
+  MapVar,
+  World,
+  ScriptType,
+  Value,
+  Bo, Bc,
+  Po, Pc,
+  Expression,
+  Sc, Cm,
+  Op, Co,
+  Ao, Ac,
+  Preprocessor,
+  Eq,
+  DataType,
+  Condtional,
+  For,
+  IncDec,
+  LogNot,
+  Assign,
+  Minus,
+  Unary,
+  Binary,
+  Net,
+}

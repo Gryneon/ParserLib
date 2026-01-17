@@ -14,7 +14,7 @@ public class TokenAssembleOperation : Operation
   }
   protected override void Execute ()
   {
-    TokenAssembler assembler = new([.. _rules]);
+    TokenAssembler assembler = new([.. _rules], Spec);
 
     if (base.CheckInput<TokenCollection>(out TokenCollection? list))
     {

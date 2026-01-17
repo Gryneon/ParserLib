@@ -82,5 +82,5 @@ public sealed class SectionCollection () : ICollection<Section>
   public void CopyTo (Section[] array, int arrayIndex) => _sections.CopyTo(array, arrayIndex);
   public IEnumerator<Section> GetEnumerator () => _sections.GetEnumerator();
   public bool Remove (Section item) => _sections.Remove(item);
-  IEnumerator IEnumerable.GetEnumerator () => _sections.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }
