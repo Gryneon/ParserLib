@@ -55,9 +55,9 @@ public abstract class Operation : IOperation
   public static IOperation Done () => new OperationAction(OAT.ForcePass);
   public static IOperation Prompt () => new OperationAction(OAT.Prompt);
 
-  public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey);
-  public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey);
-  public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey);
+  public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
+  public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey, key);
+  public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey, key);
   public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
   public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
 
@@ -100,9 +100,6 @@ public abstract class Operation : IOperation
     CursorKey = count_key,
     Count = count
   };
-
-  public const int SC_LoadFromSpec = 0x7fffffff;
-  public const int SC_Standard = 0;
 
   /// <summary>
   /// A built in operation that ends the operation sequence.

@@ -73,14 +73,22 @@ internal sealed class Program
     InitialTest(Specification.XML.Definition.Spec, Paths.xsd_specification);
     InitialTest(Specification.WAD.Definition.WAD, Paths.wad_tnt);
 
-    //args = [.. args, TestPath["ipl"]];
-
     if (args.Length == 0)
     {
-      Log("Program.Main", "No files specified.");
-
+      Log(MsgClass.Warning, "Program", "Main", "No files specified.");
+    }
+    else
+    {
+      ProcessArgs(args);
     }
 
+    Log(MsgClass.Critical, "Program", "Main", "Press enter to exit.");
+    _ = Console.ReadLine();
+    return 0;
+  }
+
+  internal static void ProcessArgs (string[] args)
+  {
     foreach (string path in args)
     {
       string content;
@@ -102,8 +110,6 @@ internal sealed class Program
         Log("Program.Main", $"{item}");
       }
     }
-    _ = Console.ReadLine();
-    return 0;
   }
 
   internal static void InitialTest (Spec spec, string file)
@@ -121,7 +127,7 @@ internal sealed class Program
     TokenCollection tokens = [.. result];
     assembler.Execute(tokens);
     Log(MsgClass.Warning, Area, "InitialTest", $"Tokens After Assembly : {tokens.Count}");
-    Log(MsgClass.Debug, Area, "InitialTest",tokens.ToString2());
+    Log(MsgClass.Debug, Area, "InitialTest", tokens.ToString2());
     Log(MsgClass.Warning, Area, "InitialTest", $"Token Log Complete");
     _ = Console.ReadLine();
     Console.Clear();

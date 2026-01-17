@@ -14,6 +14,7 @@ public static class Definition
   [Export("wad")]
   public static Spec WAD => new()
   {
+    IsTextFile = false,
     Name = "wad",
     FileInferences = [
       IfNAnd([IfN(HeadSt, "IWAD"), IfN(ExtIs, "wad") ]),

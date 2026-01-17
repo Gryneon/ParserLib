@@ -18,6 +18,10 @@ public class XParser
   public IOperation NextOp => Operations[NextOpIndex];
   /// <inheritdoc/>
   public OpStatus LastStatus { get; protected set; } = AtStart;
+  /// <summary>
+  /// Gets the file data as a list of bytes.
+  /// </summary>
+  public IList<byte> FileData => [.. Data["bytes"] as IEnumerable<byte> ?? []];
   public Spec LocalDefaultSpec
   {
     get
@@ -191,23 +195,16 @@ public class XParser
   public OpStatus Parse (byte[] bytes)
   {
     InitializeData(bytes);
-
-    while (NextOpIndex >= 0)
-    {
-      if (CurrentOp.SkipOperation)
-      {
-        Log(Area, "Skip Operation Encountered");
-        LastStatus = Skipped;
-        AdvanceOperation();
-        continue;
-      }
-      AdvanceOperation();
-    }
-    return LastStatus;
+    return ParseLoop();
   }
   public OpStatus Parse (string content)
   {
     InitializeData(content);
+    return ParseLoop();
+  }
+
+  public OpStatus ParseLoop ()
+  {
 
     while (NextOpIndex >= 0)
     {
@@ -249,41 +246,20 @@ public class XParser
     Log(Area, "Parse", Data["result"]?.ToString() ?? "<null data>");
     return LastStatus;
   }
-  /// <summary>
-  /// Gets the file data as a list of bytes.
-  /// </summary>
-  public IList<byte> FileData => [.. Data["bytes"] as IEnumerable<byte> ?? []];
-  /// <summary>
-  /// Parses the provided binary data.
-  /// </summary>
-  /// <returns><see cref="Pass"/> if successful, or an error code.</returns>
-  public OpStatus Parse ()
-  {
-    if (Data.FileSize == 0)
-    {
-      return FailNoInput;
-    }
-    OpStatus result = DoByteOperations();
-    return result;
-  }
-  internal OpStatus DoByteOperations ()
-  {
-    LastStatus = AtStart;
-    OpIndex = 0;
 
-    bool cof = false;
-    while (!LastStatus.IsFail(cof) && OpIndex < OpCount)
+  public OpStatus Infer (string path)
+  {
+    if (Spec.IsTextFile)
     {
-      LastStatus = CurrentOp.DoOperation(this);
-      if (LastStatus.IsFail())
-      {
-        Log(Area, "DoByteOperations", $"Failure encountered at operation[{OpIndex}].");
-        break;
-      }
-      cof = CurrentOp.ContinueOnFail;
-      OpIndex++;
+      string text = File.ReadAllText(path);
+      OpStatus result = Parse(text);
+      return result;
     }
-
-    return LastStatus;
+    else
+    {
+      byte[] contents = File.ReadAllBytes(path);
+      OpStatus result = Parse(contents);
+      return result;
+    }
   }
 }

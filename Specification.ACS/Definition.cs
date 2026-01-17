@@ -4,7 +4,6 @@
 
 using Parser.Tokens;
 
-
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.ACS;
@@ -42,7 +41,7 @@ public static class Definition
     SC = SCOIC,
     TokenType = typeof(ATT),
     TokenCompatLookup = {
-      [ATT.] = ["", ""]
+      [ATT.Fixed] = [ATT.Int, ATT.Bool]
     },
     TokenRules = [
 
