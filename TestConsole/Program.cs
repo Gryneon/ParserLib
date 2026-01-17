@@ -67,8 +67,8 @@ internal sealed class Program
 
     Log(MsgClass.Informational, "Program", "Main", "Program Start");
 
-    
-    //args = [.. args, TestPath["ipl"]];
+    InitialTest();
+
 
     if (args.Length == 0)
     {

@@ -9,7 +9,7 @@ namespace Specification.JSON;
 public sealed class JSONObject : IJSONNode, IDictionary<string, IJSONNode>
 {
   public JsonValueKind Type => JsonValueKind.Object;
-  public Dictionary<string, IJSONNode> Properties { get; } = [];
+  public Dictionary<string, IJSONNode> Properties { get; init; } = [];
 
   public ICollection<string> Keys => Properties.Keys;
 

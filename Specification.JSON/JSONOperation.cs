@@ -27,12 +27,12 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
       Collection<string> order = [];
       void addContainer (string open)
       {
-        Action inner = innerArrayHelper;
+        Action go_deeper = innerArrayHelper;
         string close = "]";
         IJSONNode container = new JSONArray();
         if (open is "{")
         {
-          inner = innerObject;
+          go_deeper = innerObject;
           close = "}";
           container = new JSONObject();
         }
@@ -42,7 +42,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
           assembly.Add([]);
         order.Add(close);
         Index++;
-        inner();
+        go_deeper();
       }
       void closeContainer (string close)
       {
