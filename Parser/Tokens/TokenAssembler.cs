@@ -137,10 +137,10 @@ public sealed class TokenAssembler
       }
       return default;
     }
-    LimitedTokenCollection<TToken> getTokens<TToken> (RT flag) where TToken : IToken
+    TokenCollection getTokens<TToken> (RT flag) where TToken : IToken
     {
       Validate();
-      LimitedTokenCollection<TToken> token_result = [];
+      TokenCollection token_result = [];
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];

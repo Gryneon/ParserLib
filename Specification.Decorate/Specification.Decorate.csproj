@@ -2,6 +2,7 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Deterministic>true</Deterministic>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
@@ -10,12 +11,11 @@
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
-    <TargetFramework>net10.0</TargetFramework>
-    <WarningLevel>9999</WarningLevel>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <ProjectGuid>{4EFA0A09-F928-C97B-6CDA-EF3F062FD381}</ProjectGuid>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <WarningLevel>9999</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />

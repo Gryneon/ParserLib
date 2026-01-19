@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="">
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>

@@ -5,12 +5,14 @@ public class TokenCollection () : IList<IToken>
 {
   /// <summary>The internal token list.</summary>
   private readonly List<IToken> _tokens = [];
+  private readonly Type _restrictedTo = typeof(IToken);
 
   /// <summary>Creates the collection from a collection of tokens.</summary>
   /// <param name="tokens">The tokens to add to the list.</param>
   public TokenCollection (IEnumerable<IToken> tokens) : this()
   {
     _tokens = [.. tokens];
+    _restrictedTo = typeof(IToken);
   }
 
   /// <summary>Gets or sets the token at a given index.</summary>
@@ -25,13 +27,27 @@ public class TokenCollection () : IList<IToken>
   public int Count => _tokens.Count;
   public bool IsReadOnly => false;
 
-  public void Add (IToken item) => _tokens.Add(item);
+  public void Add (IToken item)
+  {
+    item.ThrowIfNull();
+    if (item.GetType().IsAssignableTo(_restrictedTo))
+      _tokens.Add(item);
+    else
+      throw new InvalidOperationException("Cannot add token to list.");
+  }
   public void Clear () => _tokens.Clear();
   public bool Contains (IToken item) => _tokens.Contains(item);
   public void CopyTo (IToken[] array, int arrayIndex) => _tokens.CopyTo(array, arrayIndex);
   public IEnumerator<IToken> GetEnumerator () => _tokens.GetEnumerator();
   public int IndexOf (IToken item) => _tokens.IndexOf(item);
-  public void Insert (int index, IToken item) => _tokens.Insert(index, item);
+  public void Insert (int index, IToken item)
+  {
+    item.ThrowIfNull();
+    if (item.GetType().IsAssignableTo(_restrictedTo))
+      _tokens.Insert(index, item);
+    else
+      throw new InvalidOperationException("Cannot add token to list.");
+  }
   public bool Remove (IToken item) => _tokens.Remove(item);
   public void RemoveAt (int index) => _tokens.RemoveAt(index);
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
@@ -45,65 +61,6 @@ public class TokenCollection () : IList<IToken>
     for (int i = first; i < first + count; i++)
     {
       _tokens.RemoveAt(first);
-    }
-  }
-}
-
-/// <summary>A collection of tokens of a specific type, use this to keep token operations consistent, and specific.</summary>
-/// <typeparam name="TClass">The token class to utilize.</typeparam>
-/// <remarks>This is used for <see cref="TokenObject"/> to implement the <see cref="TokenProperty"/> collection.</remarks>
-public class LimitedTokenCollection<TClass> () : IList<TClass>
-  where TClass : notnull, IToken
-{
-  /// <summary>The internal token list.</summary>
-  private readonly List<TClass> _tokens = [];
-
-  public LimitedTokenCollection (IEnumerable<TClass> tokens) : this()
-  {
-    _tokens = [.. tokens];
-  }
-
-  public TClass this[int index]
-  {
-    get => _tokens[index];
-    set => _tokens[index] = value;
-  }
-
-  public static implicit operator TokenCollection (LimitedTokenCollection<TClass>? collection)
-  {
-    TokenCollection result = [];
-    collection ??= [];
-    foreach (TClass token in collection)
-    {
-      result.Add(token);
-    }
-
-    return result;
-  }
-
-  public int Count => _tokens.Count;
-  public bool IsReadOnly => false;
-
-  public void Add (TClass item) => _tokens.Add(item);
-  public void Clear () => _tokens.Clear();
-  public bool Contains (TClass item) => _tokens.Contains(item);
-  public void CopyTo (TClass[] array, int arrayIndex) => _tokens.CopyTo(array, arrayIndex);
-  public IEnumerator<TClass> GetEnumerator () => _tokens.GetEnumerator();
-  public int IndexOf (TClass item) => _tokens.IndexOf(item);
-  public void Insert (int index, TClass item) => _tokens.Insert(index, item);
-  public bool Remove (TClass item) => _tokens.Remove(item);
-  public void RemoveAt (int index) => _tokens.RemoveAt(index);
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-
-  /// <summary>Removes <paramref name="count"/> from the collection starting at <paramref name="first"/>.</summary>
-  /// <param name="first">The first token to remove.</param>
-  /// <param name="count">The number of tokens to remove.</param>
-  public void Remove (int first, int count)
-  {
-    _tokens.ThrowIfNull();
-    for (int i = first; i < first + count; i++)
-    {
-      _tokens.RemoveAt(i);
     }
   }
 }

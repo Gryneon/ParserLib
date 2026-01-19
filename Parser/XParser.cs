@@ -2,6 +2,23 @@ using static Parser.OpStatus;
 
 namespace Parser;
 
+public class FailureEventArgs : EventArgs
+{
+  public OpStatus OperationResult { get; init; }
+  public bool UseExpectedLine { get; set; }
+  public string Message { get; init; } = "Generic Operation Failure";
+  public string Expected { get; init; } = "correct item";
+  public string Recieved { get; init; } = "incorrect item";
+  public override string ToString ()
+  {
+    string result = Message;
+
+    if (UseExpectedLine) result += '\n' + $"Expected {Expected}, got {Recieved}.";
+
+    return result;
+  }
+}
+
 public class XParser
 {
   /// <summary>

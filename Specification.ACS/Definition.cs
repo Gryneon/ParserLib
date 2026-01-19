@@ -1,6 +1,7 @@
 #pragma warning disable IDE0051 // Remove unused private members
 #pragma warning disable IDE0052 // Remove unread private members
 #pragma warning disable CA1720 // Identifier contains type name
+#pragma warning disable RE0001 // Invalid regex pattern
 
 using Parser.Tokens;
 
