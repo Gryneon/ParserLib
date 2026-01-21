@@ -1,5 +1,6 @@
 #pragma warning disable CA1416 // Validate platform compatibility
 
+using System.Collections.ObjectModel;
 using System.Windows.Forms;
 
 namespace FormObjectViewer;
@@ -15,7 +16,8 @@ internal static class Program
     // To customize application configuration such as set high DPI settings or default font,
     // see https://aka.ms/applicationconfiguration.
     ApplicationConfiguration.Initialize();
-    Form start = new ParserForm();
+    Collection<object> t = new Collection<object>() { 54, 345, 87f, 42m, '3', "str", new Collection<object>() };
+    Form start = new ArrayForm(t);
     Application.Run(start);
     start.Dispose();
   }

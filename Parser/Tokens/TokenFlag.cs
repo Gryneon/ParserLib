@@ -2,6 +2,8 @@
 
 namespace Parser.Tokens;
 
+/// <summary>A Token representing a flag.</summary>
+/// <remarks>Contains a boolean and a name, and only the name is token-backed.</remarks>
 public sealed class TokenFlag : TokenBase
 {
   private bool _activate = true;

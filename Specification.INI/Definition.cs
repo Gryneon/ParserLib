@@ -9,7 +9,6 @@ namespace Specification.INI;
 [DefinitionExport]
 public static class Definition
 {
-  private const RegexOptions RXOptions = ROML | ROIPW | ROEC;
   private const TokenRuleType Competes = TMatches | Competitive;
   private const TokenRuleType TMatches = TokenMatch | ExemptAllWithin | IgnoreCase;
   private const TokenRuleType TExactly = TokenExact | ExemptAllWithin | IgnoreCase;
@@ -24,7 +23,7 @@ public static class Definition
       IfN(ExtIs, "ini"),
       IfN(ExtIs, "vnc"),
       IfN(ExtIs, "inf")],
-    RxOpt = RXOptions,
+    RxOpt = ROML | ROIPW | ROEC | ROIC,
     TokenType = typeof(ITT),
     Operations = [
       //new DictionaryOperation(Regex, RXOptions),
@@ -37,13 +36,14 @@ public static class Definition
       Operation.End
     ],
     TokenRules = [
-      new(Competes, ITT.Str, @"""([^\\]|\\.)*"""),
       new(Competes | IgnoredToken, ITT.None, @";.*?$"),
+      new(Competes, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
+      new(Competes, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
       new(TExactly, ITT.Eq, @"="),
       new(TExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
-      new(BuildProperty, ITT.Property, "tn:Str tx:Eq tv:Str"),
-      new(BuildObject, ITT.Section, "tn:Section tpm:Property"),
+      new(BuildProperty, ITT.Property, "tn:Key tx:Eq tv:Value"),
+      new(BuildObject, ITT.SectionWProps, "tn:Section tpm:Property"),
     ]
   };
 }

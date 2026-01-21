@@ -24,7 +24,7 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
       Type.Equals(ips.Type, SCOIC),
     _ => false
   };
-
+  public override string ToString () => $"{Name} {(ObjType is not null ? ": " + ObjType + " " : "")}{{{Properties.ToString2()}}}";
   public override int GetHashCode () => HashCode.Combine(Name, Type, ObjType, Properties, Flags);
   public IEnumerator<IReadOnlyProperty<string>> GetEnumerator () => Properties.OfType<TokenProperty>().GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();

@@ -72,5 +72,5 @@ public enum TokenRuleType
   /// <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
   Mult = 64 * 64 * 64 * 64 * 8,
   /// <summary>The bits to remove to get the type correctly.</summary>
-  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch | TokenExtract,
+  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
 }

@@ -63,4 +63,9 @@ public class TokenCollection () : IList<IToken>
       _tokens.RemoveAt(first);
     }
   }
+
+  public void SortByIndex ()
+  {
+    _tokens.Sort((item, item2) => item.CompareTo(item2));
+  }
 }

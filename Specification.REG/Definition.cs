@@ -32,7 +32,7 @@ public enum RegTokenType
   Pc = 21, // ')'
   At = 22, // '@'
   Mn = 23, // '-'
-  TypeName = 24, // dword, hex, qword
+  TypeName = 24, // dword, hex
   Key = 25,
   AddKey = 27,
   RemKey = 28,
