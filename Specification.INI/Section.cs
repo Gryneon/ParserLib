@@ -1,6 +1,6 @@
 using System.Linq;
 
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+//using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 using Parser.Tokens;
 

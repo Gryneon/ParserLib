@@ -1,0 +1,16 @@
+{
+  "$schema": "token-rule-schema.json",
+  "name": "variable_decl",
+  "tokens":
+  [
+    {
+      "token_type": "data_type"
+    },
+    {
+      "token_type": "scoped_name"
+    },
+    {
+      "token_type": "semicolon"
+    }
+  ]
+}

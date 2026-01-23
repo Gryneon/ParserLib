@@ -1,19 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?><Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <Deterministic>true</Deterministic>
-    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <ErrorReport>send</ErrorReport>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+    <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UserSecretsId>37d036cf-7713-4a90-a266-751a9fd18f93</UserSecretsId>
+    <Version>1.0.0</Version>
     <WarningLevel>9999</WarningLevel>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>

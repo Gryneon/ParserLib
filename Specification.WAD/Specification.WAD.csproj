@@ -11,9 +11,9 @@
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x86;x64</Platforms>
     <TargetFramework>net10.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
-    <Platforms>AnyCPU;x86;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

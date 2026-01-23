@@ -8,12 +8,12 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
     <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x86;x64</Platforms>
     <TargetFramework>net10.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
-    <LangVersion>preview</LangVersion>
-    <Platforms>AnyCPU;x86;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

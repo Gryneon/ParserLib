@@ -53,31 +53,36 @@ partial class ParserForm : Form
     ItemTabs = new TabControl();
     tabPage1 = new TabPage();
     TokenGridView = new DataGridView();
+    contentDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+    ignoredDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
+    exemptDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
+    typeDataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
+    childrenDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+    hasTypeDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
+    tokenBindingSource = new BindingSource(components);
     TokenRuleDataGrid = new DataGridView();
     typeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
     ruleStringDataDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
     typeToAssignDataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
     AssemblerPage = new TabPage();
     LoadRulesButton = new Button();
-    tokenBindingSource = new BindingSource(components);
-    contentDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    lastPositionDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    lengthDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    ignoredDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
-    exemptDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
-    indexDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    typeDataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
-    childrenDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    countDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    hasTypeDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
+    readOnlyDictionaryGrid1 = new Parser.Forms.ReadOnlyDictionaryGrid();
+    DataDictionaryGrid = new Parser.Forms.ReadOnlyDictionaryGrid();
+    checkBox1 = new CheckBox();
+    checkBox2 = new CheckBox();
+    checkBox3 = new CheckBox();
+    SpecLoadedCheck = new CheckBox();
+    button1 = new Button();
+    textBox1 = new TextBox();
     menuStrip1.SuspendLayout();
     ((ISupportInitialize) SpecBindingSource).BeginInit();
     ((ISupportInitialize) TokenRuleBindingSource).BeginInit();
     ItemTabs.SuspendLayout();
     tabPage1.SuspendLayout();
     ((ISupportInitialize) TokenGridView).BeginInit();
-    ((ISupportInitialize) TokenRuleDataGrid).BeginInit();
     ((ISupportInitialize) tokenBindingSource).BeginInit();
+    ((ISupportInitialize) TokenRuleDataGrid).BeginInit();
+    AssemblerPage.SuspendLayout();
     SuspendLayout();
     // 
     // StatusStrip
@@ -112,38 +117,38 @@ partial class ParserForm : Form
     // 
     FileMenu.DropDownItems.AddRange(new ToolStripItem[] { LoadSpecMenuItem, OpenFileMenuItem, generateRulesToolStripMenuItem, toolStripSeparator1, ExitMenuItem });
     FileMenu.Name = "FileMenu";
-    FileMenu.Size = new Size(46, 24);
+    FileMenu.Size = new Size(44, 24);
     FileMenu.Text = "File";
     // 
     // LoadSpecMenuItem
     // 
     LoadSpecMenuItem.Name = "LoadSpecMenuItem";
-    LoadSpecMenuItem.Size = new Size(224, 26);
+    LoadSpecMenuItem.Size = new Size(197, 24);
     LoadSpecMenuItem.Text = "Load Specs";
     LoadSpecMenuItem.Click += LoadSpecMenuItem_Click;
     // 
     // OpenFileMenuItem
     // 
     OpenFileMenuItem.Name = "OpenFileMenuItem";
-    OpenFileMenuItem.Size = new Size(224, 26);
+    OpenFileMenuItem.Size = new Size(197, 24);
     OpenFileMenuItem.Text = "Open File to Parse";
     OpenFileMenuItem.Click += OpenFileMenuItem_Click;
     // 
     // generateRulesToolStripMenuItem
     // 
     generateRulesToolStripMenuItem.Name = "generateRulesToolStripMenuItem";
-    generateRulesToolStripMenuItem.Size = new Size(224, 26);
+    generateRulesToolStripMenuItem.Size = new Size(197, 24);
     generateRulesToolStripMenuItem.Text = "Generate Rules";
     // 
     // toolStripSeparator1
     // 
     toolStripSeparator1.Name = "toolStripSeparator1";
-    toolStripSeparator1.Size = new Size(221, 6);
+    toolStripSeparator1.Size = new Size(194, 6);
     // 
     // ExitMenuItem
     // 
     ExitMenuItem.Name = "ExitMenuItem";
-    ExitMenuItem.Size = new Size(224, 26);
+    ExitMenuItem.Size = new Size(197, 24);
     ExitMenuItem.Text = "Exit";
     ExitMenuItem.Click += ExitMenuItem_Click;
     // 
@@ -240,13 +245,68 @@ partial class ParserForm : Form
     // 
     TokenGridView.AutoGenerateColumns = false;
     TokenGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-    TokenGridView.Columns.AddRange(new DataGridViewColumn[] { contentDataGridViewTextBoxColumn, lastPositionDataGridViewTextBoxColumn, lengthDataGridViewTextBoxColumn, ignoredDataGridViewCheckBoxColumn, exemptDataGridViewCheckBoxColumn, indexDataGridViewTextBoxColumn, typeDataGridViewTextBoxColumn1, childrenDataGridViewTextBoxColumn, countDataGridViewTextBoxColumn, hasTypeDataGridViewCheckBoxColumn });
+    TokenGridView.Columns.AddRange(new DataGridViewColumn[] { contentDataGridViewTextBoxColumn, ignoredDataGridViewCheckBoxColumn, exemptDataGridViewCheckBoxColumn, typeDataGridViewTextBoxColumn1, childrenDataGridViewTextBoxColumn, hasTypeDataGridViewCheckBoxColumn });
     TokenGridView.DataSource = tokenBindingSource;
     TokenGridView.Location = new Point(464, 16);
     TokenGridView.Name = "TokenGridView";
     TokenGridView.RowHeadersWidth = 51;
     TokenGridView.Size = new Size(488, 288);
     TokenGridView.TabIndex = 8;
+    // 
+    // contentDataGridViewTextBoxColumn
+    // 
+    contentDataGridViewTextBoxColumn.DataPropertyName = "Content";
+    contentDataGridViewTextBoxColumn.HeaderText = "Content";
+    contentDataGridViewTextBoxColumn.MinimumWidth = 6;
+    contentDataGridViewTextBoxColumn.Name = "contentDataGridViewTextBoxColumn";
+    contentDataGridViewTextBoxColumn.ReadOnly = true;
+    contentDataGridViewTextBoxColumn.Width = 125;
+    // 
+    // ignoredDataGridViewCheckBoxColumn
+    // 
+    ignoredDataGridViewCheckBoxColumn.DataPropertyName = "Ignored";
+    ignoredDataGridViewCheckBoxColumn.HeaderText = "Ignored";
+    ignoredDataGridViewCheckBoxColumn.MinimumWidth = 6;
+    ignoredDataGridViewCheckBoxColumn.Name = "ignoredDataGridViewCheckBoxColumn";
+    ignoredDataGridViewCheckBoxColumn.ReadOnly = true;
+    ignoredDataGridViewCheckBoxColumn.Width = 125;
+    // 
+    // exemptDataGridViewCheckBoxColumn
+    // 
+    exemptDataGridViewCheckBoxColumn.DataPropertyName = "Exempt";
+    exemptDataGridViewCheckBoxColumn.HeaderText = "Exempt";
+    exemptDataGridViewCheckBoxColumn.MinimumWidth = 6;
+    exemptDataGridViewCheckBoxColumn.Name = "exemptDataGridViewCheckBoxColumn";
+    exemptDataGridViewCheckBoxColumn.Width = 125;
+    // 
+    // typeDataGridViewTextBoxColumn1
+    // 
+    typeDataGridViewTextBoxColumn1.DataPropertyName = "Type";
+    typeDataGridViewTextBoxColumn1.HeaderText = "Type";
+    typeDataGridViewTextBoxColumn1.MinimumWidth = 6;
+    typeDataGridViewTextBoxColumn1.Name = "typeDataGridViewTextBoxColumn1";
+    typeDataGridViewTextBoxColumn1.Width = 125;
+    // 
+    // childrenDataGridViewTextBoxColumn
+    // 
+    childrenDataGridViewTextBoxColumn.DataPropertyName = "Children";
+    childrenDataGridViewTextBoxColumn.HeaderText = "Children";
+    childrenDataGridViewTextBoxColumn.MinimumWidth = 6;
+    childrenDataGridViewTextBoxColumn.Name = "childrenDataGridViewTextBoxColumn";
+    childrenDataGridViewTextBoxColumn.Width = 125;
+    // 
+    // hasTypeDataGridViewCheckBoxColumn
+    // 
+    hasTypeDataGridViewCheckBoxColumn.DataPropertyName = "HasType";
+    hasTypeDataGridViewCheckBoxColumn.HeaderText = "HasType";
+    hasTypeDataGridViewCheckBoxColumn.MinimumWidth = 6;
+    hasTypeDataGridViewCheckBoxColumn.Name = "hasTypeDataGridViewCheckBoxColumn";
+    hasTypeDataGridViewCheckBoxColumn.ReadOnly = true;
+    hasTypeDataGridViewCheckBoxColumn.Width = 125;
+    // 
+    // tokenBindingSource
+    // 
+    tokenBindingSource.DataSource = typeof(Parser.Tokens.IToken);
     // 
     // TokenRuleDataGrid
     // 
@@ -290,6 +350,7 @@ partial class ParserForm : Form
     // 
     // AssemblerPage
     // 
+    AssemblerPage.Controls.Add(DataDictionaryGrid);
     AssemblerPage.Location = new Point(4, 29);
     AssemblerPage.Name = "AssemblerPage";
     AssemblerPage.Padding = new Padding(3);
@@ -300,7 +361,7 @@ partial class ParserForm : Form
     // 
     // LoadRulesButton
     // 
-    LoadRulesButton.Location = new Point(96, 96);
+    LoadRulesButton.Location = new Point(96, 88);
     LoadRulesButton.Name = "LoadRulesButton";
     LoadRulesButton.Size = new Size(104, 32);
     LoadRulesButton.TabIndex = 8;
@@ -308,99 +369,90 @@ partial class ParserForm : Form
     LoadRulesButton.UseVisualStyleBackColor = true;
     LoadRulesButton.Click += LoadRulesButton_Click;
     // 
-    // tokenBindingSource
+    // readOnlyDictionaryGrid1
     // 
-    tokenBindingSource.DataSource = typeof(Parser.Tokens.IToken);
+    readOnlyDictionaryGrid1.Location = new Point(60, 245);
+    readOnlyDictionaryGrid1.Name = "readOnlyDictionaryGrid1";
+    readOnlyDictionaryGrid1.Size = new Size(416, 216);
+    readOnlyDictionaryGrid1.TabIndex = 9;
     // 
-    // contentDataGridViewTextBoxColumn
+    // DataDictionaryGrid
     // 
-    contentDataGridViewTextBoxColumn.DataPropertyName = "Content";
-    contentDataGridViewTextBoxColumn.HeaderText = "Content";
-    contentDataGridViewTextBoxColumn.MinimumWidth = 6;
-    contentDataGridViewTextBoxColumn.Name = "contentDataGridViewTextBoxColumn";
-    contentDataGridViewTextBoxColumn.Width = 125;
+    DataDictionaryGrid.Dock = DockStyle.Fill;
+    DataDictionaryGrid.Location = new Point(3, 3);
+    DataDictionaryGrid.Name = "DataDictionaryGrid";
+    DataDictionaryGrid.Size = new Size(954, 353);
+    DataDictionaryGrid.TabIndex = 0;
     // 
-    // lastPositionDataGridViewTextBoxColumn
+    // checkBox1
     // 
-    lastPositionDataGridViewTextBoxColumn.DataPropertyName = "LastPosition";
-    lastPositionDataGridViewTextBoxColumn.HeaderText = "LastPosition";
-    lastPositionDataGridViewTextBoxColumn.MinimumWidth = 6;
-    lastPositionDataGridViewTextBoxColumn.Name = "lastPositionDataGridViewTextBoxColumn";
-    lastPositionDataGridViewTextBoxColumn.ReadOnly = true;
-    lastPositionDataGridViewTextBoxColumn.Width = 125;
+    checkBox1.AutoSize = true;
+    checkBox1.Location = new Point(16, 392);
+    checkBox1.Name = "checkBox1";
+    checkBox1.Size = new Size(120, 24);
+    checkBox1.TabIndex = 10;
+    checkBox1.Text = "checkBox1";
+    checkBox1.UseVisualStyleBackColor = true;
     // 
-    // lengthDataGridViewTextBoxColumn
+    // checkBox2
     // 
-    lengthDataGridViewTextBoxColumn.DataPropertyName = "Length";
-    lengthDataGridViewTextBoxColumn.HeaderText = "Length";
-    lengthDataGridViewTextBoxColumn.MinimumWidth = 6;
-    lengthDataGridViewTextBoxColumn.Name = "lengthDataGridViewTextBoxColumn";
-    lengthDataGridViewTextBoxColumn.ReadOnly = true;
-    lengthDataGridViewTextBoxColumn.Width = 125;
+    checkBox2.AutoSize = true;
+    checkBox2.Location = new Point(16, 368);
+    checkBox2.Name = "checkBox2";
+    checkBox2.Size = new Size(120, 24);
+    checkBox2.TabIndex = 10;
+    checkBox2.Text = "checkBox1";
+    checkBox2.UseVisualStyleBackColor = true;
     // 
-    // ignoredDataGridViewCheckBoxColumn
+    // checkBox3
     // 
-    ignoredDataGridViewCheckBoxColumn.DataPropertyName = "Ignored";
-    ignoredDataGridViewCheckBoxColumn.HeaderText = "Ignored";
-    ignoredDataGridViewCheckBoxColumn.MinimumWidth = 6;
-    ignoredDataGridViewCheckBoxColumn.Name = "ignoredDataGridViewCheckBoxColumn";
-    ignoredDataGridViewCheckBoxColumn.Width = 125;
+    checkBox3.AutoSize = true;
+    checkBox3.Location = new Point(16, 344);
+    checkBox3.Name = "checkBox3";
+    checkBox3.Size = new Size(130, 24);
+    checkBox3.TabIndex = 10;
+    checkBox3.Text = "Parser Created";
+    checkBox3.UseVisualStyleBackColor = true;
     // 
-    // exemptDataGridViewCheckBoxColumn
+    // SpecLoadedCheck
     // 
-    exemptDataGridViewCheckBoxColumn.DataPropertyName = "Exempt";
-    exemptDataGridViewCheckBoxColumn.HeaderText = "Exempt";
-    exemptDataGridViewCheckBoxColumn.MinimumWidth = 6;
-    exemptDataGridViewCheckBoxColumn.Name = "exemptDataGridViewCheckBoxColumn";
-    exemptDataGridViewCheckBoxColumn.Width = 125;
+    SpecLoadedCheck.AutoSize = true;
+    SpecLoadedCheck.Location = new Point(16, 320);
+    SpecLoadedCheck.Name = "SpecLoadedCheck";
+    SpecLoadedCheck.Size = new Size(120, 24);
+    SpecLoadedCheck.TabIndex = 10;
+    SpecLoadedCheck.Text = "Spec Loaded";
+    SpecLoadedCheck.UseVisualStyleBackColor = true;
     // 
-    // indexDataGridViewTextBoxColumn
+    // button1
     // 
-    indexDataGridViewTextBoxColumn.DataPropertyName = "Index";
-    indexDataGridViewTextBoxColumn.HeaderText = "Index";
-    indexDataGridViewTextBoxColumn.MinimumWidth = 6;
-    indexDataGridViewTextBoxColumn.Name = "indexDataGridViewTextBoxColumn";
-    indexDataGridViewTextBoxColumn.Width = 125;
+    button1.Location = new Point(96, 184);
+    button1.Name = "button1";
+    button1.Size = new Size(104, 32);
+    button1.TabIndex = 8;
+    button1.Text = "Load Input";
+    button1.UseVisualStyleBackColor = true;
+    button1.Click += LoadRulesButton_Click;
     // 
-    // typeDataGridViewTextBoxColumn1
+    // textBox1
     // 
-    typeDataGridViewTextBoxColumn1.DataPropertyName = "Type";
-    typeDataGridViewTextBoxColumn1.HeaderText = "Type";
-    typeDataGridViewTextBoxColumn1.MinimumWidth = 6;
-    typeDataGridViewTextBoxColumn1.Name = "typeDataGridViewTextBoxColumn1";
-    typeDataGridViewTextBoxColumn1.Width = 125;
-    // 
-    // childrenDataGridViewTextBoxColumn
-    // 
-    childrenDataGridViewTextBoxColumn.DataPropertyName = "Children";
-    childrenDataGridViewTextBoxColumn.HeaderText = "Children";
-    childrenDataGridViewTextBoxColumn.MinimumWidth = 6;
-    childrenDataGridViewTextBoxColumn.Name = "childrenDataGridViewTextBoxColumn";
-    childrenDataGridViewTextBoxColumn.Width = 125;
-    // 
-    // countDataGridViewTextBoxColumn
-    // 
-    countDataGridViewTextBoxColumn.DataPropertyName = "Count";
-    countDataGridViewTextBoxColumn.HeaderText = "Count";
-    countDataGridViewTextBoxColumn.MinimumWidth = 6;
-    countDataGridViewTextBoxColumn.Name = "countDataGridViewTextBoxColumn";
-    countDataGridViewTextBoxColumn.ReadOnly = true;
-    countDataGridViewTextBoxColumn.Width = 125;
-    // 
-    // hasTypeDataGridViewCheckBoxColumn
-    // 
-    hasTypeDataGridViewCheckBoxColumn.DataPropertyName = "HasType";
-    hasTypeDataGridViewCheckBoxColumn.HeaderText = "HasType";
-    hasTypeDataGridViewCheckBoxColumn.MinimumWidth = 6;
-    hasTypeDataGridViewCheckBoxColumn.Name = "hasTypeDataGridViewCheckBoxColumn";
-    hasTypeDataGridViewCheckBoxColumn.ReadOnly = true;
-    hasTypeDataGridViewCheckBoxColumn.Width = 125;
+    textBox1.Location = new Point(8, 152);
+    textBox1.Name = "textBox1";
+    textBox1.Size = new Size(192, 27);
+    textBox1.TabIndex = 11;
     // 
     // ParserForm
     // 
     AutoScaleDimensions = new SizeF(8F, 20F);
     AutoScaleMode = AutoScaleMode.Font;
     ClientSize = new Size(1214, 503);
+    Controls.Add(textBox1);
+    Controls.Add(SpecLoadedCheck);
+    Controls.Add(checkBox3);
+    Controls.Add(checkBox2);
+    Controls.Add(checkBox1);
+    Controls.Add(readOnlyDictionaryGrid1);
+    Controls.Add(button1);
     Controls.Add(LoadRulesButton);
     Controls.Add(ItemTabs);
     Controls.Add(label1);
@@ -418,8 +470,9 @@ partial class ParserForm : Form
     ItemTabs.ResumeLayout(false);
     tabPage1.ResumeLayout(false);
     ((ISupportInitialize) TokenGridView).EndInit();
-    ((ISupportInitialize) TokenRuleDataGrid).EndInit();
     ((ISupportInitialize) tokenBindingSource).EndInit();
+    ((ISupportInitialize) TokenRuleDataGrid).EndInit();
+    AssemblerPage.ResumeLayout(false);
     ResumeLayout(false);
     PerformLayout();
   }
@@ -463,4 +516,12 @@ partial class ParserForm : Form
   private DataGridViewTextBoxColumn countDataGridViewTextBoxColumn;
   private DataGridViewCheckBoxColumn hasTypeDataGridViewCheckBoxColumn;
   private BindingSource tokenBindingSource;
+  private Parser.Forms.ReadOnlyDictionaryGrid readOnlyDictionaryGrid1;
+  private Parser.Forms.ReadOnlyDictionaryGrid DataDictionaryGrid;
+  private CheckBox checkBox1;
+  private CheckBox checkBox2;
+  private CheckBox checkBox3;
+  private CheckBox SpecLoadedCheck;
+  private Button button1;
+  private TextBox textBox1;
 }

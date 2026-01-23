@@ -10,6 +10,8 @@ namespace UnitTest;
 
 public class INITests
 {
+  internal const string Default = @"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini";
+
   [Fact]
   public void INI_Constructor ()
   {
@@ -21,7 +23,7 @@ public class INITests
   }
 
   [Theory]
-  [InlineData(@"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini")]
+  [InlineData(Default)]
   public void ParserInit (string file)
   {
     string file_text = File.ReadAllText(file.UserDirFix());
@@ -31,7 +33,7 @@ public class INITests
   }
 
   [Theory]
-  [InlineData(@"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini")]
+  [InlineData(Default)]
   public void ParserTypeInit (string file)
   {
     string file_text = File.ReadAllText(file.UserDirFix());
@@ -41,7 +43,7 @@ public class INITests
   }
 
   [Theory]
-  [InlineData(@"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini")]
+  [InlineData(Default)]
   public void ParserTypeInit_Sections (string file)
   {
     string file_text = File.ReadAllText(file.UserDirFix());

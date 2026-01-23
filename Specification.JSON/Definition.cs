@@ -1,3 +1,5 @@
+#pragma warning disable RE0001 // Invalid regex pattern
+
 using Parser.Ops.Binary;
 
 using RT = Parser.Tokens.TokenRuleType;

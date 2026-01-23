@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for my JSON file format",
+  "type": "object",
+
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of this rule."},
+    "tokens":
+    {
+      "description": "The token sequence to match.",
+      "type": "array",
+      "minItems": 2,
+      "items":
+      [
+        {
+          "type": "object",
+          "description": "The ChkToken sequence",
+          "minProperties": 1,
+          "properties":
+          {
+            "token_type": {
+              "type": "string",
+              "description": "The type of token."
+            },
+            "token_content": {
+              "type": "string",
+              "description": "The content of token."
+            },
+            "token_regex": {
+              "type": "string",
+              "description": "The regex to match the content of the token to."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

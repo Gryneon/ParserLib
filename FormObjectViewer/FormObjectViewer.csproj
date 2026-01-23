@@ -91,6 +91,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Console.Menu\Terminal.Menu.csproj" />
+    <ProjectReference Include="..\Parser.Forms\Parser.Forms.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
     <ProjectReference Include="..\Specification.ACS\Specification.ACS.csproj" />
     <ProjectReference Include="..\Specification.Decorate\Specification.Decorate.csproj" />

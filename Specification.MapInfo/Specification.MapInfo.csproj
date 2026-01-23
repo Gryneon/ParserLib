@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
+    <ProjectReference Include="..\Specification.REG\Specification.REG.csproj" />
   </ItemGroup>
 
 </Project>

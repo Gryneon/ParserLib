@@ -1,4 +1,5 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
+#pragma warning disable RE0001 // Invalid regex pattern
 
 namespace Parser.Tokens;
 
