@@ -27,7 +27,7 @@ public class TokenizeOperation : Operation
 
     if (CheckInput(out string? input))
     {
-      TokenFactory factory = new(Rules);
+      TokenFactory factory = new(Rules, Spec);
       TokenCollection return_tokens = [.. factory.Produce(input)];
       WorkToReturn = return_tokens;
       Status = OpStatus.Pass;

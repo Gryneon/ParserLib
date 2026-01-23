@@ -7,4 +7,7 @@ public enum INITokenType
   Property,
   Str,
   Eq,
+  Key,
+  Value,
+  SectionWProps
 }

@@ -25,7 +25,7 @@ public class UDMFTests
     Spec spec = Definition.Spec;
     TokenRuleCollection rules = [];
     rules.AddRange(spec.TokenRules);
-    TokenFactory factory = new(rules);
+    TokenFactory factory = new(rules, spec);
     TokenCollection result = [.. factory.Produce(input)];
     TokenAssembler assembler = new([.. spec.GroupTokenRules], spec);
     int count = result.Count;

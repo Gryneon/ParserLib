@@ -98,7 +98,7 @@ public sealed class TokenAssembler
           UseAsLiteral = useLiteral,
           TokenRule = rule,
           AllowedContents = useLiteral ? allowed : [],
-          AllowedTypes = useLiteral ? [] : allowed,
+          AllowedTypes = useLiteral ? [] : AllAllowedTypes(allowed),
         };
 
         _rule.Sequence.Add(temp);
@@ -137,10 +137,10 @@ public sealed class TokenAssembler
       }
       return default;
     }
-    LimitedTokenCollection<TToken> getTokens<TToken> (RT flag) where TToken : IToken
+    TokenCollection getTokens<TToken> (RT flag) where TToken : IToken
     {
       Validate();
-      LimitedTokenCollection<TToken> token_result = [];
+      TokenCollection token_result = [];
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];
@@ -223,9 +223,9 @@ public sealed class TokenAssembler
     };
     _tokens.Insert(first_token_index, constructed_obj);
   }
-  internal Collection<string> AllAllowedTypes (ChkToken node)
+  internal Collection<string> AllAllowedTypes (IEnumerable<string> base_types)
   {
-    Collection<string> all_types_allowed = [.. node.AllowedTypes];
+    Collection<string> all_types_allowed = [.. base_types];
     for (int i = 0; i < all_types_allowed.Count; i++)
     {
       string type = all_types_allowed[i];
@@ -300,7 +300,7 @@ public sealed class TokenAssembler
         break;
       }
 
-      if (node.Equals(token) || AllAllowedTypes(node).Any(d => d.Like(node.AllowedTypes)))
+      if (node.Equals(token))
       {
         if (first_token_index == -1)
           first_token_index = token_index;

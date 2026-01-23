@@ -615,6 +615,11 @@
             <returns>The converted object.</returns>
             <exception cref="T:System.NotSupportedException">Conversion failed.</exception>
         </member>
+        <member name="P:Common.ICanAccessChildren`2.Count">
+            <summary>
+            The number of children in this object.
+            </summary>
+        </member>
         <member name="T:Common.ICanAddChildren`1">
             <summary>
             An interface that indicates that an object contains children.

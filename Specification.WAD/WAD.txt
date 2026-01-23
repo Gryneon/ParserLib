@@ -1,0 +1,13 @@
+﻿Read Text (4) : identification
+Read Int : numlumps
+Read Int : diroffset
+Jump : diroffset
+Loop Count : numlumps
+  Read Int : filepos
+  Read Int : size
+  Read Text (8) : name
+  Save Position : savepos
+  Jump : filepos
+  Read Binary [size] : data
+  Jump : savepos
+Loop End

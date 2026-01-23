@@ -83,7 +83,7 @@ internal sealed partial class ParserForm : Form
     if (dialog == DialogResult.OK)
     {
       ParseFile = OpenParseFileDialog.FileName;
-      Factory = new(WorkingRules);
+      Factory = new(WorkingRules, Spec);
     }
   }
 

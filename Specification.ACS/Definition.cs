@@ -53,7 +53,7 @@ public static class Definition
       new(Ignore, ATT.None, @"\/\*.*?\*\/"),
 
       // Preprocessor
-      Ex(ATT.Preprocessor, "# ((lib)?define|)"),
+      Ex(ATT.Preprocessor, @"\# (lib(define|rary)|import|include|define)"),
       Tm(ATT.Bool, @"\b(true|false|on|off|yes|no)\b"),
       Tm(ATT.Int, @"-?(\d+|0x[a-f0-9]+)(?!\.)"),
       Tm(ATT.Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
@@ -65,7 +65,15 @@ public static class Definition
       Tm(ATT.MapVar, @"\b(global|world)\b"),
       Tm(ATT.Net, @"\bnet\b"),
       Tm(ATT.For, @"\bfor\b"),
-      Tm(ATT.Condtional, @"\b(if|until|while)\b"),
+      Tm(ATT.If, @"\bif\b"),
+      Tm(ATT.Loop, @"\b(until|while)\b"),
+      Tm(ATT.Do, @"\bdo\b"),
+      Tm(ATT.Switch, @"\bswitch\b"),
+      Tm(ATT.Case, @"\bcase\b"),
+      Tm(ATT.Default, @"\bdefault\b"),
+      Tm(ATT.Return, @"\breturn\b"),
+      Tm(ATT.SimpleJump, @"\b(break|continue|terminate)\b"),
+
 
       // Operators
       Tm(ATT.IncDec, @"(\+\+|--)"),
@@ -87,6 +95,10 @@ public static class Definition
       Ex(ATT.Cm, ","),
       Ex(ATT.Co, ":"),
       Ex(ATT.Sc, ";"),
+
+      Tm(ATT.Void, @"\bvoid\b"),
+      Tm(ATT.Type, @"\b(int|str|char|bool)\b"),
+      Tm(ATT.Name, @"\b[a-z_][\w]*\b"),
     ],
     GroupTokenRules = [],
   };

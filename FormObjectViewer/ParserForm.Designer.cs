@@ -35,7 +35,7 @@ partial class ParserForm : Form
     components = new Container();
     StatusStrip = new StatusStrip();
     OpenParseFileDialog = new OpenFileDialog();
-    menuStrip1 = new MenuStrip();
+    TheMenuStrip = new MenuStrip();
     FileMenu = new ToolStripMenuItem();
     LoadSpecMenuItem = new ToolStripMenuItem();
     OpenFileMenuItem = new ToolStripMenuItem();
@@ -88,9 +88,10 @@ partial class ParserForm : Form
     // StatusStrip
     // 
     StatusStrip.ImageScalingSize = new Size(20, 20);
-    StatusStrip.Location = new Point(0, 481);
+    StatusStrip.Location = new Point(0, 355);
     StatusStrip.Name = "StatusStrip";
-    StatusStrip.Size = new Size(1214, 22);
+    StatusStrip.Padding = new Padding(1, 0, 12, 0);
+    StatusStrip.Size = new Size(1062, 22);
     StatusStrip.TabIndex = 0;
     StatusStrip.Text = "StatusStrip";
     // 
@@ -103,15 +104,16 @@ partial class ParserForm : Form
     OpenParseFileDialog.Title = "Parser File Selection";
     OpenParseFileDialog.FileOk += OpenParseFileDialog_FileOk;
     // 
-    // menuStrip1
+    // MainMenuStrip
     // 
-    menuStrip1.ImageScalingSize = new Size(20, 20);
-    menuStrip1.Items.AddRange(new ToolStripItem[] { FileMenu });
-    menuStrip1.Location = new Point(0, 0);
-    menuStrip1.Name = "menuStrip1";
-    menuStrip1.Size = new Size(1214, 28);
-    menuStrip1.TabIndex = 2;
-    menuStrip1.Text = "menuStrip1";
+    TheMenuStrip.ImageScalingSize = new Size(20, 20);
+    TheMenuStrip.Items.AddRange(new ToolStripItem[] { FileMenu });
+    TheMenuStrip.Location = new Point(0, 0);
+    TheMenuStrip.Name = "MainMenuStrip";
+    TheMenuStrip.Padding = new Padding(5, 2, 0, 2);
+    TheMenuStrip.Size = new Size(1062, 24);
+    TheMenuStrip.TabIndex = 2;
+    TheMenuStrip.Text = "menuStrip1";
     // 
     // FileMenu
     // 
@@ -158,9 +160,10 @@ partial class ParserForm : Form
     SpecComboBox.DataBindings.Add(new Binding("Text", SpecBindingSource, "Name", true));
     SpecComboBox.DataBindings.Add(new Binding("SelectedItem", SpecBindingSource, "Name", true));
     SpecComboBox.FormattingEnabled = true;
-    SpecComboBox.Location = new Point(8, 56);
+    SpecComboBox.Location = new Point(7, 42);
+    SpecComboBox.Margin = new Padding(3, 2, 3, 2);
     SpecComboBox.Name = "SpecComboBox";
-    SpecComboBox.Size = new Size(192, 28);
+    SpecComboBox.Size = new Size(168, 23);
     SpecComboBox.TabIndex = 3;
     // 
     // SpecBindingSource
@@ -170,9 +173,9 @@ partial class ParserForm : Form
     // label1
     // 
     label1.AutoSize = true;
-    label1.Location = new Point(8, 32);
+    label1.Location = new Point(7, 24);
     label1.Name = "label1";
-    label1.Size = new Size(95, 20);
+    label1.Size = new Size(75, 15);
     label1.TabIndex = 4;
     label1.Text = "Specification";
     // 
@@ -210,9 +213,10 @@ partial class ParserForm : Form
     // 
     // ParseButton
     // 
-    ParseButton.Location = new Point(840, 312);
+    ParseButton.Location = new Point(735, 234);
+    ParseButton.Margin = new Padding(3, 2, 3, 2);
     ParseButton.Name = "ParseButton";
-    ParseButton.Size = new Size(104, 32);
+    ParseButton.Size = new Size(91, 24);
     ParseButton.TabIndex = 6;
     ParseButton.Text = "Parse";
     ParseButton.UseVisualStyleBackColor = true;
@@ -222,10 +226,11 @@ partial class ParserForm : Form
     // 
     ItemTabs.Controls.Add(tabPage1);
     ItemTabs.Controls.Add(AssemblerPage);
-    ItemTabs.Location = new Point(224, 32);
+    ItemTabs.Location = new Point(196, 24);
+    ItemTabs.Margin = new Padding(3, 2, 3, 2);
     ItemTabs.Name = "ItemTabs";
     ItemTabs.SelectedIndex = 0;
-    ItemTabs.Size = new Size(968, 392);
+    ItemTabs.Size = new Size(847, 294);
     ItemTabs.TabIndex = 7;
     // 
     // tabPage1
@@ -233,10 +238,11 @@ partial class ParserForm : Form
     tabPage1.Controls.Add(TokenGridView);
     tabPage1.Controls.Add(TokenRuleDataGrid);
     tabPage1.Controls.Add(ParseButton);
-    tabPage1.Location = new Point(4, 29);
+    tabPage1.Location = new Point(4, 24);
+    tabPage1.Margin = new Padding(3, 2, 3, 2);
     tabPage1.Name = "tabPage1";
-    tabPage1.Padding = new Padding(3);
-    tabPage1.Size = new Size(960, 359);
+    tabPage1.Padding = new Padding(3, 2, 3, 2);
+    tabPage1.Size = new Size(839, 266);
     tabPage1.TabIndex = 0;
     tabPage1.Text = "Tokenizer";
     tabPage1.UseVisualStyleBackColor = true;
@@ -250,7 +256,7 @@ partial class ParserForm : Form
     TokenGridView.Location = new Point(464, 16);
     TokenGridView.Name = "TokenGridView";
     TokenGridView.RowHeadersWidth = 51;
-    TokenGridView.Size = new Size(488, 288);
+    TokenGridView.Size = new Size(427, 216);
     TokenGridView.TabIndex = 8;
     // 
     // contentDataGridViewTextBoxColumn
@@ -315,12 +321,13 @@ partial class ParserForm : Form
     TokenRuleDataGrid.Columns.AddRange(new DataGridViewColumn[] { typeDataGridViewTextBoxColumn, ruleStringDataDataGridViewTextBoxColumn, typeToAssignDataGridViewTextBoxColumn1 });
     TokenRuleDataGrid.DataSource = TokenRuleBindingSource;
     TokenRuleDataGrid.GridColor = SystemColors.MenuText;
-    TokenRuleDataGrid.Location = new Point(8, 16);
+    TokenRuleDataGrid.Location = new Point(7, 12);
+    TokenRuleDataGrid.Margin = new Padding(3, 2, 3, 2);
     TokenRuleDataGrid.MultiSelect = false;
     TokenRuleDataGrid.Name = "TokenRuleDataGrid";
     TokenRuleDataGrid.RowHeadersWidth = 51;
     TokenRuleDataGrid.SelectionMode = DataGridViewSelectionMode.CellSelect;
-    TokenRuleDataGrid.Size = new Size(448, 288);
+    TokenRuleDataGrid.Size = new Size(392, 216);
     TokenRuleDataGrid.TabIndex = 7;
     // 
     // typeDataGridViewTextBoxColumn
@@ -353,8 +360,8 @@ partial class ParserForm : Form
     AssemblerPage.Controls.Add(DataDictionaryGrid);
     AssemblerPage.Location = new Point(4, 29);
     AssemblerPage.Name = "AssemblerPage";
-    AssemblerPage.Padding = new Padding(3);
-    AssemblerPage.Size = new Size(960, 359);
+    AssemblerPage.Padding = new Padding(3, 2, 3, 2);
+    AssemblerPage.Size = new Size(839, 266);
     AssemblerPage.TabIndex = 1;
     AssemblerPage.Text = "Assembler";
     AssemblerPage.UseVisualStyleBackColor = true;
@@ -363,7 +370,7 @@ partial class ParserForm : Form
     // 
     LoadRulesButton.Location = new Point(96, 88);
     LoadRulesButton.Name = "LoadRulesButton";
-    LoadRulesButton.Size = new Size(104, 32);
+    LoadRulesButton.Size = new Size(91, 24);
     LoadRulesButton.TabIndex = 8;
     LoadRulesButton.Text = "Load Rules";
     LoadRulesButton.UseVisualStyleBackColor = true;
@@ -443,7 +450,7 @@ partial class ParserForm : Form
     // 
     // ParserForm
     // 
-    AutoScaleDimensions = new SizeF(8F, 20F);
+    AutoScaleDimensions = new SizeF(7F, 15F);
     AutoScaleMode = AutoScaleMode.Font;
     ClientSize = new Size(1214, 503);
     Controls.Add(textBox1);
@@ -458,13 +465,14 @@ partial class ParserForm : Form
     Controls.Add(label1);
     Controls.Add(SpecComboBox);
     Controls.Add(StatusStrip);
-    Controls.Add(menuStrip1);
-    MainMenuStrip = menuStrip1;
+    Controls.Add(TheMenuStrip);
+    MainMenuStrip = TheMenuStrip;
+    Margin = new Padding(3, 2, 3, 2);
     Name = "ParserForm";
     Text = "Parser Form";
     Load += ParserForm_Load;
-    menuStrip1.ResumeLayout(false);
-    menuStrip1.PerformLayout();
+    TheMenuStrip.ResumeLayout(false);
+    TheMenuStrip.PerformLayout();
     ((ISupportInitialize) SpecBindingSource).EndInit();
     ((ISupportInitialize) TokenRuleBindingSource).EndInit();
     ItemTabs.ResumeLayout(false);
@@ -481,7 +489,7 @@ partial class ParserForm : Form
 
   private StatusStrip StatusStrip;
   private OpenFileDialog OpenParseFileDialog;
-  private MenuStrip menuStrip1;
+  private MenuStrip TheMenuStrip;
   private ComboBox SpecComboBox;
   private Label label1;
   private BindingSource TokenRuleBindingSource;

@@ -1,6 +1,6 @@
 
 
-## Recommended Names
+## Marker Tokenizer Spec (Deprecated)
 
 ### Data Keys
 

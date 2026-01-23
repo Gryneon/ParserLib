@@ -66,12 +66,12 @@ internal sealed class Program
 
     Log(MsgClass.Informational, "Program", "Main", "Program Start");
 
-    InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
-    InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
+    //InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
+    //InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
     InitialTest(Specification.ACS.Definition.ACS, Paths.acs_rpgmfunc);
-    InitialTest(Specification.IPL.Definition.Spec, Paths.ipl_batch6458);
-    InitialTest(Specification.XML.Definition.Spec, Paths.xsd_specification);
-    InitialTest(Specification.WAD.Definition.WAD, Paths.wad_tnt);
+    //InitialTest(Specification.IPL.Definition.Spec, Paths.ipl_batch6458);
+    //InitialTest(Specification.XML.Definition.Spec, Paths.xsd_specification);
+    //InitialTest(Specification.WAD.Definition.WAD, Paths.wad_tnt);
 
     if (args.Length == 0)
     {

@@ -113,21 +113,21 @@ Must have only one of these:
 ### Constructable Tokens
 
 - <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>
-  - Name
-  - Type
-  - PropertyList
-  - FlagList
+  - Name - Required
+  - Type - Optional
+  - PropertyList - Zero or more items
+  - FlagList - Zero or more items
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag\<T\></font></b></code>
-  * Name
-  * Value (true/false)
+  * Name - Required
+  * BooleanValue - Required
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenTypedValue\<T\></font></b></code>
-  * Type
-  * Value
+  * Type - Required
+  * Value - Required
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenLabel\<T\></font></b></code>
-  - Name
+  - Name - Required
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenArray\<T\></font></b></code>
-  * Type
-  * ValueList
+  * Type - Optional
+  * ValueList - Zero or more items
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty\<T\></font></b></code>
-  - Name
-  - Value
+  - Name - Required
+  - Value - Required, may be null or undefined
