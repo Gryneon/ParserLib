@@ -38,7 +38,7 @@ public sealed class ByteReadOperation : Operation, IOperation
     if (CursorKey is null)
       throw new InvalidOperationException();
 
-    Span<byte> result = new((byte[]) Data[CursorKey], Parser.GetCursorByKey(cursorName).Index, count);
+    Span<byte> result = new(Data[CursorKey].AsCollection<byte>().ToArray(), Parser.GetCursorByKey(cursorName).Index, count);
     Parser.GetCursorByKey(cursorName).Index += count;
     return result;
   }

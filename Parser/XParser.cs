@@ -8,12 +8,12 @@ public class FailureEventArgs : EventArgs
   public bool UseExpectedLine { get; set; }
   public string Message { get; init; } = "Generic Operation Failure";
   public string Expected { get; init; } = "correct item";
-  public string Recieved { get; init; } = "incorrect item";
+  public string Received { get; init; } = "incorrect item";
   public override string ToString ()
   {
     string result = Message;
 
-    if (UseExpectedLine) result += '\n' + $"Expected {Expected}, got {Recieved}.";
+    if (UseExpectedLine) result += '\n' + $"Expected {Expected}, got {Received}.";
 
     return result;
   }

@@ -27,8 +27,9 @@ internal sealed class Program
     ["reg"] = Paths.reg_iplfile,
     ["acs"] = Paths.acs_sample,
     ["mapinfo"] = Paths.mapinfo_common,
-    ["json"] = "TODO: Add path",
-    ["menu"] = "TODO: Add path"
+    ["json"] = Paths.json_launch,
+    ["menu"] = "TODO: Add path",
+    ["wad"] = Paths.wad_pl2,
   };
   internal static string? UserInput;
   internal static XParser Parser = new();
@@ -68,10 +69,10 @@ internal sealed class Program
 
     //InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
     //InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
-    InitialTest(Specification.ACS.Definition.ACS, Paths.acs_rpgmfunc);
+    //InitialTest(Specification.ACS.Definition.ACS, Paths.acs_rpgmfunc);
     //InitialTest(Specification.IPL.Definition.Spec, Paths.ipl_batch6458);
     //InitialTest(Specification.XML.Definition.Spec, Paths.xsd_specification);
-    //InitialTest(Specification.WAD.Definition.WAD, Paths.wad_tnt);
+    InitialTest(Specification.WAD.Definition.WAD, Paths.wad_pl2);
 
     if (args.Length == 0)
     {
@@ -116,19 +117,28 @@ internal sealed class Program
   {
     Log(MsgClass.Warning, Area, "InitialTest", $"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
     Parser = new(spec);
-    //Load Data
-    string input = File.ReadAllText(file.UserDirFix());
-    //int libcount = Library.SpecList.Count;
-    TokenFactory factory = new(spec);
-    TokenCollection result = [.. factory.Produce(input)];
-    Log(MsgClass.Warning, Area, "InitialTest", $"Tokens Created : {result.Count}");
-    //Debug.Log(Area, result.ToString2());
-    TokenAssembler assembler = new(spec);
-    TokenCollection tokens = [.. result];
-    assembler.Execute(tokens);
-    Log(MsgClass.Warning, Area, "InitialTest", $"Tokens After Assembly : {tokens.Count}");
-    Log(MsgClass.Debug, Area, "InitialTest", tokens.ToString2());
-    Log(MsgClass.Warning, Area, "InitialTest", $"Token Log Complete");
+    if (spec.IsTextFile)
+    {
+      //Load Data
+      string input = File.ReadAllText(file.UserDirFix());
+      //int libcount = Library.SpecList.Count;
+      TokenFactory factory = new(spec);
+      TokenCollection result = [.. factory.Produce(input)];
+      Log(MsgClass.Warning, Area, "InitialTest", $"Tokens Created : {result.Count}");
+      //Debug.Log(Area, result.ToString2());
+      TokenAssembler assembler = new(spec);
+      TokenCollection tokens = [.. result];
+      assembler.Execute(tokens);
+      Log(MsgClass.Warning, Area, "InitialTest", $"Tokens After Assembly : {tokens.Count}");
+      Log(MsgClass.Debug, Area, "InitialTest", tokens.ToString2());
+      Log(MsgClass.Warning, Area, "InitialTest", $"Token Log Complete");
+    }
+    else
+    {
+      byte[] bytes = File.ReadAllBytes(file.UserDirFix());
+      OpStatus status = Parser.Parse(bytes);
+      Log(MsgClass.Forced, Area, "InitialTest", $"{status}");
+    }
     _ = Console.ReadLine();
     Console.Clear();
   }

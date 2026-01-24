@@ -12,8 +12,8 @@
         <member name="P:Specification.XML.Definition.Regex">
             <summary>
             <para>XML Regex for tokens</para>
-            New: https://regex101.com/r/PTKqnJ/3
-            Old: https://regex101.com/r/jcPotD/4
+            Old: <see href="https://regex101.com/r/PTKqnJ/3"/><br/>
+            New: <see href="https://regex101.com/r/jcPotD/4"/>
             </summary>
         </member>
         <member name="F:Specification.XML.Definition.Attribute">

@@ -158,8 +158,15 @@
   </data>
   <data name="wad_tnt" xml:space="preserve">
     <value>C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD</value>
+    <comment>Requires Final Doom to be installed.</comment>
   </data>
   <data name="udmf_sample" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf</value>
+  </data>
+  <data name="wad_pl2" xml:space="preserve">
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD</value>
+  </data>
+  <data name="binparse_wad" xml:space="preserve">
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\WAD.txt</value>
   </data>
 </root>

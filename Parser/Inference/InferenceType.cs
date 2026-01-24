@@ -5,21 +5,31 @@ public enum InferenceType
 {
   None = 0,
 
-  Ext,
-  FName,
-  FileHeader,
-  FileContent,
-  FileSize,
+  //Property to look at
+  Ext = 0x1,
+  FName = 0x2,
+  FileHeader = 0x4,
+  FileContent = 0x8,
+  FileSize = 0x10,
 
-  And,
-  Or,
+  //Special for alternates
+  And = 0x100,
+  Or = 0x200,
 
+  //Text Comparison
   Is = 0x1000,      // Case sensitive equals
   Like = 0x80000,   // Case insensitive equals
   End = 0x2000,     // EndsWith (case insensitive)
   Start = 0x4000,   // StartsWith (case insensitive)
   Contains = 0x8000,// contatins (case insensitive)
-  Larger = 0x10000, // greater than (numeric
+
+  //Numeric Comparison
+  Larger = 0x10000, // greater than (numeric)
   Smaller = 0x20000,// less than (numeric)
-  Not = 0x40000     // inverse
+  Equal = 0x40000,  // equal to (numeric)
+  LargerOrEqual = Larger | Equal,
+  SmallerOrEqual = Smaller | Equal,
+
+  // Logical
+  Not = 0x100000     // Inverse can be applied to any combination.
 }

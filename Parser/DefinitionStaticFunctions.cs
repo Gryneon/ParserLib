@@ -38,6 +38,7 @@ public static class DefinitionStaticFunctions
     FileHeader = IT.FileHeader,
     FileContent = IT.FileContent,
     FileSize = IT.FileSize,
+
     And = IT.And,
     ITOr = IT.Or,
     Is = IT.Is,

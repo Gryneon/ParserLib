@@ -1,9 +1,7 @@
 #pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1812 // Remove unused classes
 
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows.Forms;
 
 using Parser.Tokens;
 

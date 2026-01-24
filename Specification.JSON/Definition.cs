@@ -1,4 +1,4 @@
-using Parser.Ops.Binary;
+#pragma warning disable RE0001 // Invalid regex pattern
 
 using RT = Parser.Tokens.TokenRuleType;
 

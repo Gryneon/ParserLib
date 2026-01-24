@@ -8,6 +8,30 @@ using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.XML;
 
+public enum XMLTokenType
+{
+  Unknown,
+  Comment,    // <!-- comment -->
+
+  Ao, Ac,     // < >
+  Qm, Sc,     // ? ;
+  An, Co,     // & :
+  Sl, Eq,     // / =
+
+  AttrKey,
+  AttrValue,
+  ElementName,
+  Namespace,
+  Content,
+
+  // Structures
+  Attribute,
+  ElementStart,
+  ElementEnd,
+  ElementSingle,
+  Header
+}
+
 /// <summary>
 /// The XML definition object.
 /// </summary>
@@ -16,8 +40,8 @@ public static class Definition
 {
   /// <summary>
   /// <para>XML Regex for tokens</para>
-  /// New: https://regex101.com/r/PTKqnJ/3
-  /// Old: https://regex101.com/r/jcPotD/4
+  /// Old: <see href="https://regex101.com/r/PTKqnJ/3"/><br/>
+  /// New: <see href="https://regex101.com/r/jcPotD/4"/>
   /// </summary>
   public static RxSCollection Regex => [
     Nm("m_element", $@"<\s*(?'m_endtag'\/)?\s*{TagName}{Gp(WS + Attribute).Any}\s*(?'m_noinsidetag'\/)?\s*>"),
@@ -51,6 +75,7 @@ public static class Definition
     RxOpt = ROML | ROEC | ROIPW,
     IsTextFile = true,
     SC = SCO,
+    TokenType = typeof(XMLTokenType),
 
     Operations = [
       new TokenizeOperation(),

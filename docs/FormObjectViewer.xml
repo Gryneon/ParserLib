@@ -21,6 +21,12 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="M:FormObjectViewer.MainForm.LoadProprietaryImage(System.String)">
+            <summary>
+            Reads a proprietary format and converts it to a Bitmap.
+            Replace the parsing logic with your actual format reader.
+            </summary>
+        </member>
         <member name="F:FormObjectViewer.ParserForm.components">
             <summary>
              Required designer variable.

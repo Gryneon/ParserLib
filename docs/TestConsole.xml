@@ -30,6 +30,11 @@
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
             </summary>
         </member>
+        <member name="P:TestConsole.Paths.binparse_wad">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\WAD.txt.
+            </summary>
+        </member>
         <member name="P:TestConsole.Paths.ini_vncdefault">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini.
@@ -78,6 +83,11 @@
         <member name="P:TestConsole.Paths.udmf_sample">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
+            </summary>
+        </member>
+        <member name="P:TestConsole.Paths.wad_pl2">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.wad_tnt">
