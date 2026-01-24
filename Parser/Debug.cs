@@ -93,6 +93,8 @@ public static class Debug
       Log(className, methodName, msg, C_DarkRed, C_Red);
     else if (msgClass is MsgClass.Informational)
       Log(className, methodName, msg, C_Black, C_White);
+    else if (msgClass is MsgClass.Critical)
+      Log(className, methodName, msg, ConsoleColor.DarkGreen, ConsoleColor.Green);
     else
       Log(className, methodName, msg);
 

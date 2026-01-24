@@ -40,6 +40,14 @@ public struct Section () : IEquatable<Section>, IComparable<Section>
     FullContent = input
   };
 
+  [SetsRequiredMembers]
+  public Section (Match m, string input) : this()
+  {
+    Start = m.Index;
+    Length = m.Length;
+    FullContent = input;
+  }
+
   public readonly bool IsWithin (int point) => point <= End && point >= Start;
   public readonly bool Overlaps (Section other) => End >= other.Start && Start <= other.End;
   public readonly bool Overlaps (IEnumerable<Section> others) => others.Any(Overlaps);

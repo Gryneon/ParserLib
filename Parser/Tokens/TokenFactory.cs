@@ -219,9 +219,9 @@ public class TokenFactory
       }
     }
   }
-  internal void Tokens_FromInput (bool split)
+  internal void Tokens_FromInput ()
   {
-    if (Type is RT.TokenExact or RT.SplitExact)
+    if (Type is RT.TokenExact)
     {
       int length = RuleData.Length;
       int cursor = 0;
@@ -238,17 +238,9 @@ public class TokenFactory
         if (!match.Overlaps(CannotMatch))
         {
           string sub = Input.Substring(next, length);
-          IToken token = new Token()
-          {
-            Index = next,
-            Content = sub,
-            Type = _currentRule!.TypeToAssign,
-            Ignored = IgnoredToken,
-            Exempt = ExemptAllWithin
-          };
+          Token token = MakeToken(sub, next);
           CannotMatch.Add(match);
-          if (!split)
-            _result.Add(token);
+          SaveResult(token);
           cursor = next + length;
           next = Input.IndexOf(RuleData, cursor, IC);
         }
@@ -258,6 +250,10 @@ public class TokenFactory
           next = Input.IndexOf(RuleData, cursor, IC);
         }
       }
+    }
+    else if (Type is RT.SplitExact)
+    {
+
     }
     else if (Type is RT.TokenMatch or RT.SplitMatch or RT.TokenExtract)
     {
