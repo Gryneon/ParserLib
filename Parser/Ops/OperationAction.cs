@@ -108,7 +108,9 @@ public sealed class OperationAction : IOperation
 
         // Cursor actions
         case OAT.CreateCursor:
-          parser_ref.Cursors.Add(new(IData[0], SData[0], parser_ref.Data));
+          if (parser_ref.Cursors.Any(i => i.Key.Like(SData[0])))
+            Log(MsgClass.Warning, Area, "DoOperation", $"Cursor of type {SData[0]} already exists in the parser.")
+          parser_ref.AddCursor(SData[0]);
           goto Pass;
         case OAT.SetCursor:
           CursorData cursor = Parser.GetCursorByKey(SData[0]);

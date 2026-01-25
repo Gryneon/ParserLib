@@ -6,7 +6,7 @@ using Common.Extensions;
 
 namespace FormObjectViewer;
 
-internal partial class ArrayForm : Form
+internal sealed partial class ArrayForm : Form
 {
   [ListBindable(BindableSupport.Yes)]
   [DSVA(DesignerSerializationVisibility.Hidden)]

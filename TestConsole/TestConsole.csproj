@@ -12,7 +12,8 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    
+    <NeutralResourcesLanguage>en-us</NeutralResourcesLanguage>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>net10.0</TargetFramework>
     
     <Platforms>AnyCPU;x86;x64</Platforms>

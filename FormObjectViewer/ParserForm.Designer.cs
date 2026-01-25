@@ -33,6 +33,7 @@ partial class ParserForm : Form
   private void InitializeComponent ()
   {
     components = new Container();
+    DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
     StatusStrip = new StatusStrip();
     OpenParseFileDialog = new OpenFileDialog();
     TheMenuStrip = new MenuStrip();
@@ -44,14 +45,18 @@ partial class ParserForm : Form
     ExitMenuItem = new ToolStripMenuItem();
     SpecComboBox = new ComboBox();
     SpecBindingSource = new BindingSource(components);
-    label1 = new Label();
+    SpecLabel = new Label();
     TypeColumn = new DataGridViewComboBoxColumn();
-    typeToAssignDataGridViewTextBoxColumn = new DataGridViewComboBoxColumn();
+    TypeToAssignColumn = new DataGridViewComboBoxColumn();
     RuleStringDataColumn = new DataGridViewTextBoxColumn();
     TokenRuleBindingSource = new BindingSource(components);
     ParseButton = new Button();
     ItemTabs = new TabControl();
     tabPage1 = new TabPage();
+    label2 = new Label();
+    TokenCountLabel = new Label();
+    TokenRuleCountLabel = new Label();
+    label1 = new Label();
     TokenGridView = new DataGridView();
     contentDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
     ignoredDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
@@ -61,11 +66,11 @@ partial class ParserForm : Form
     hasTypeDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
     TokenBindingSource = new BindingSource(components);
     TokenRuleDataGrid = new DataGridView();
-    typeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    ruleStringDataDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-    typeToAssignDataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
     AssemblerPage = new TabPage();
     LoadRulesButton = new Button();
+    TypeGridColumnCombo = new DataGridViewComboBoxColumn();
+    ruleStringDataDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+    typeToAssignDataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
     TheMenuStrip.SuspendLayout();
     ((ISupportInitialize) SpecBindingSource).BeginInit();
     ((ISupportInitialize) TokenRuleBindingSource).BeginInit();
@@ -79,10 +84,10 @@ partial class ParserForm : Form
     // StatusStrip
     // 
     StatusStrip.ImageScalingSize = new Size(20, 20);
-    StatusStrip.Location = new Point(0, 355);
+    StatusStrip.Location = new Point(0, 606);
     StatusStrip.Name = "StatusStrip";
-    StatusStrip.Padding = new Padding(1, 0, 12, 0);
-    StatusStrip.Size = new Size(1062, 22);
+    StatusStrip.Padding = new Padding(1, 0, 17, 0);
+    StatusStrip.Size = new Size(1517, 22);
     StatusStrip.TabIndex = 0;
     StatusStrip.Text = "StatusStrip";
     // 
@@ -95,14 +100,14 @@ partial class ParserForm : Form
     OpenParseFileDialog.Title = "Parser File Selection";
     OpenParseFileDialog.FileOk += OpenParseFileDialog_FileOk;
     // 
-    // MainMenuStrip
+    // TheMenuStrip
     // 
     TheMenuStrip.ImageScalingSize = new Size(20, 20);
     TheMenuStrip.Items.AddRange(new ToolStripItem[] { FileMenu });
     TheMenuStrip.Location = new Point(0, 0);
-    TheMenuStrip.Name = "MainMenuStrip";
-    TheMenuStrip.Padding = new Padding(5, 2, 0, 2);
-    TheMenuStrip.Size = new Size(1062, 24);
+    TheMenuStrip.Name = "TheMenuStrip";
+    TheMenuStrip.Padding = new Padding(7, 3, 0, 3);
+    TheMenuStrip.Size = new Size(1517, 35);
     TheMenuStrip.TabIndex = 2;
     TheMenuStrip.Text = "menuStrip1";
     // 
@@ -110,38 +115,38 @@ partial class ParserForm : Form
     // 
     FileMenu.DropDownItems.AddRange(new ToolStripItem[] { LoadSpecMenuItem, OpenFileMenuItem, generateRulesToolStripMenuItem, toolStripSeparator1, ExitMenuItem });
     FileMenu.Name = "FileMenu";
-    FileMenu.Size = new Size(37, 20);
+    FileMenu.Size = new Size(50, 29);
     FileMenu.Text = "File";
     // 
     // LoadSpecMenuItem
     // 
     LoadSpecMenuItem.Name = "LoadSpecMenuItem";
-    LoadSpecMenuItem.Size = new Size(169, 22);
+    LoadSpecMenuItem.Size = new Size(227, 30);
     LoadSpecMenuItem.Text = "Load Specs";
     LoadSpecMenuItem.Click += LoadSpecMenuItem_Click;
     // 
     // OpenFileMenuItem
     // 
     OpenFileMenuItem.Name = "OpenFileMenuItem";
-    OpenFileMenuItem.Size = new Size(169, 22);
+    OpenFileMenuItem.Size = new Size(227, 30);
     OpenFileMenuItem.Text = "Open File to Parse";
     OpenFileMenuItem.Click += OpenFileMenuItem_Click;
     // 
     // generateRulesToolStripMenuItem
     // 
     generateRulesToolStripMenuItem.Name = "generateRulesToolStripMenuItem";
-    generateRulesToolStripMenuItem.Size = new Size(169, 22);
+    generateRulesToolStripMenuItem.Size = new Size(227, 30);
     generateRulesToolStripMenuItem.Text = "Generate Rules";
     // 
     // toolStripSeparator1
     // 
     toolStripSeparator1.Name = "toolStripSeparator1";
-    toolStripSeparator1.Size = new Size(166, 6);
+    toolStripSeparator1.Size = new Size(224, 6);
     // 
     // ExitMenuItem
     // 
     ExitMenuItem.Name = "ExitMenuItem";
-    ExitMenuItem.Size = new Size(169, 22);
+    ExitMenuItem.Size = new Size(227, 30);
     ExitMenuItem.Text = "Exit";
     ExitMenuItem.Click += ExitMenuItem_Click;
     // 
@@ -151,24 +156,25 @@ partial class ParserForm : Form
     SpecComboBox.DataBindings.Add(new Binding("Text", SpecBindingSource, "Name", true));
     SpecComboBox.DataBindings.Add(new Binding("SelectedItem", SpecBindingSource, "Name", true));
     SpecComboBox.FormattingEnabled = true;
-    SpecComboBox.Location = new Point(7, 42);
-    SpecComboBox.Margin = new Padding(3, 2, 3, 2);
+    SpecComboBox.Location = new Point(10, 70);
+    SpecComboBox.Margin = new Padding(4, 3, 4, 3);
     SpecComboBox.Name = "SpecComboBox";
-    SpecComboBox.Size = new Size(168, 23);
+    SpecComboBox.Size = new Size(238, 33);
     SpecComboBox.TabIndex = 3;
     // 
     // SpecBindingSource
     // 
     SpecBindingSource.DataSource = typeof(Spec);
     // 
-    // label1
+    // SpecLabel
     // 
-    label1.AutoSize = true;
-    label1.Location = new Point(7, 24);
-    label1.Name = "label1";
-    label1.Size = new Size(75, 15);
-    label1.TabIndex = 4;
-    label1.Text = "Specification";
+    SpecLabel.AutoSize = true;
+    SpecLabel.Location = new Point(10, 40);
+    SpecLabel.Margin = new Padding(4, 0, 4, 0);
+    SpecLabel.Name = "SpecLabel";
+    SpecLabel.Size = new Size(112, 25);
+    SpecLabel.TabIndex = 4;
+    SpecLabel.Text = "Specification";
     // 
     // TypeColumn
     // 
@@ -180,15 +186,15 @@ partial class ParserForm : Form
     TypeColumn.Resizable = DataGridViewTriState.True;
     TypeColumn.Width = 125;
     // 
-    // typeToAssignDataGridViewTextBoxColumn
+    // TypeToAssignColumn
     // 
-    typeToAssignDataGridViewTextBoxColumn.DataPropertyName = "TypeToAssign";
-    typeToAssignDataGridViewTextBoxColumn.HeaderText = "TypeToAssign";
-    typeToAssignDataGridViewTextBoxColumn.MinimumWidth = 6;
-    typeToAssignDataGridViewTextBoxColumn.Name = "typeToAssignDataGridViewTextBoxColumn";
-    typeToAssignDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True;
-    typeToAssignDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic;
-    typeToAssignDataGridViewTextBoxColumn.Width = 125;
+    TypeToAssignColumn.DataPropertyName = "TypeToAssign";
+    TypeToAssignColumn.HeaderText = "TypeToAssign";
+    TypeToAssignColumn.MinimumWidth = 6;
+    TypeToAssignColumn.Name = "TypeToAssignColumn";
+    TypeToAssignColumn.Resizable = DataGridViewTriState.True;
+    TypeToAssignColumn.SortMode = DataGridViewColumnSortMode.Automatic;
+    TypeToAssignColumn.Width = 125;
     // 
     // RuleStringDataColumn
     // 
@@ -204,10 +210,10 @@ partial class ParserForm : Form
     // 
     // ParseButton
     // 
-    ParseButton.Location = new Point(735, 234);
-    ParseButton.Margin = new Padding(3, 2, 3, 2);
+    ParseButton.Location = new Point(1048, 424);
+    ParseButton.Margin = new Padding(4, 3, 4, 3);
     ParseButton.Name = "ParseButton";
-    ParseButton.Size = new Size(91, 24);
+    ParseButton.Size = new Size(130, 40);
     ParseButton.TabIndex = 6;
     ParseButton.Text = "Parse";
     ParseButton.UseVisualStyleBackColor = true;
@@ -217,26 +223,69 @@ partial class ParserForm : Form
     // 
     ItemTabs.Controls.Add(tabPage1);
     ItemTabs.Controls.Add(AssemblerPage);
-    ItemTabs.Location = new Point(196, 24);
-    ItemTabs.Margin = new Padding(3, 2, 3, 2);
+    ItemTabs.Location = new Point(280, 40);
+    ItemTabs.Margin = new Padding(4, 3, 4, 3);
     ItemTabs.Name = "ItemTabs";
     ItemTabs.SelectedIndex = 0;
-    ItemTabs.Size = new Size(847, 294);
+    ItemTabs.Size = new Size(1210, 528);
     ItemTabs.TabIndex = 7;
     // 
     // tabPage1
     // 
+    tabPage1.Controls.Add(label2);
+    tabPage1.Controls.Add(TokenCountLabel);
+    tabPage1.Controls.Add(TokenRuleCountLabel);
+    tabPage1.Controls.Add(label1);
     tabPage1.Controls.Add(TokenGridView);
     tabPage1.Controls.Add(TokenRuleDataGrid);
     tabPage1.Controls.Add(ParseButton);
-    tabPage1.Location = new Point(4, 24);
-    tabPage1.Margin = new Padding(3, 2, 3, 2);
+    tabPage1.Location = new Point(4, 34);
+    tabPage1.Margin = new Padding(4, 3, 4, 3);
     tabPage1.Name = "tabPage1";
-    tabPage1.Padding = new Padding(3, 2, 3, 2);
-    tabPage1.Size = new Size(839, 266);
+    tabPage1.Padding = new Padding(4, 3, 4, 3);
+    tabPage1.Size = new Size(1202, 490);
     tabPage1.TabIndex = 0;
     tabPage1.Text = "Tokenizer";
     tabPage1.UseVisualStyleBackColor = true;
+    // 
+    // label2
+    // 
+    label2.AutoSize = true;
+    label2.Location = new Point(584, 8);
+    label2.Margin = new Padding(4, 0, 4, 0);
+    label2.Name = "label2";
+    label2.Size = new Size(123, 25);
+    label2.TabIndex = 9;
+    label2.Text = "Tokens Parsed";
+    // 
+    // TokenCountLabel
+    // 
+    TokenCountLabel.AutoSize = true;
+    TokenCountLabel.Location = new Point(720, 8);
+    TokenCountLabel.Margin = new Padding(4, 0, 4, 0);
+    TokenCountLabel.Name = "TokenCountLabel";
+    TokenCountLabel.Size = new Size(105, 25);
+    TokenCountLabel.TabIndex = 9;
+    TokenCountLabel.Text = "Token Rules";
+    // 
+    // TokenRuleCountLabel
+    // 
+    TokenRuleCountLabel.AutoSize = true;
+    TokenRuleCountLabel.Location = new Point(120, 8);
+    TokenRuleCountLabel.Margin = new Padding(4, 0, 4, 0);
+    TokenRuleCountLabel.Name = "TokenRuleCountLabel";
+    TokenRuleCountLabel.Size = new Size(0, 25);
+    TokenRuleCountLabel.TabIndex = 9;
+    // 
+    // label1
+    // 
+    label1.AutoSize = true;
+    label1.Location = new Point(8, 8);
+    label1.Margin = new Padding(4, 0, 4, 0);
+    label1.Name = "label1";
+    label1.Size = new Size(105, 25);
+    label1.TabIndex = 9;
+    label1.Text = "Token Rules";
     // 
     // TokenGridView
     // 
@@ -244,11 +293,11 @@ partial class ParserForm : Form
     TokenGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
     TokenGridView.Columns.AddRange(new DataGridViewColumn[] { contentDataGridViewTextBoxColumn, ignoredDataGridViewCheckBoxColumn, exemptDataGridViewCheckBoxColumn, typeDataGridViewTextBoxColumn1, childrenDataGridViewTextBoxColumn, hasTypeDataGridViewCheckBoxColumn });
     TokenGridView.DataSource = TokenBindingSource;
-    TokenGridView.Location = new Point(406, 12);
-    TokenGridView.Margin = new Padding(3, 2, 3, 2);
+    TokenGridView.Location = new Point(580, 48);
+    TokenGridView.Margin = new Padding(4, 3, 4, 3);
     TokenGridView.Name = "TokenGridView";
     TokenGridView.RowHeadersWidth = 51;
-    TokenGridView.Size = new Size(427, 216);
+    TokenGridView.Size = new Size(610, 360);
     TokenGridView.TabIndex = 8;
     // 
     // contentDataGridViewTextBoxColumn
@@ -310,25 +359,58 @@ partial class ParserForm : Form
     // 
     TokenRuleDataGrid.AutoGenerateColumns = false;
     TokenRuleDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-    TokenRuleDataGrid.Columns.AddRange(new DataGridViewColumn[] { typeDataGridViewTextBoxColumn, ruleStringDataDataGridViewTextBoxColumn, typeToAssignDataGridViewTextBoxColumn1 });
+    TokenRuleDataGrid.Columns.AddRange(new DataGridViewColumn[] { TypeGridColumnCombo, ruleStringDataDataGridViewTextBoxColumn, typeToAssignDataGridViewTextBoxColumn1 });
     TokenRuleDataGrid.DataSource = TokenRuleBindingSource;
+    TokenRuleDataGrid.EditMode = DataGridViewEditMode.EditOnKeystroke;
     TokenRuleDataGrid.GridColor = SystemColors.MenuText;
-    TokenRuleDataGrid.Location = new Point(7, 12);
-    TokenRuleDataGrid.Margin = new Padding(3, 2, 3, 2);
+    TokenRuleDataGrid.Location = new Point(8, 48);
+    TokenRuleDataGrid.Margin = new Padding(4, 3, 4, 3);
     TokenRuleDataGrid.MultiSelect = false;
     TokenRuleDataGrid.Name = "TokenRuleDataGrid";
+    TokenRuleDataGrid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+    TokenRuleDataGrid.RowHeadersVisible = false;
     TokenRuleDataGrid.RowHeadersWidth = 51;
+    dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+    dataGridViewCellStyle1.Font = new Font("Cascadia Code", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
+    dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+    TokenRuleDataGrid.RowsDefaultCellStyle = dataGridViewCellStyle1;
     TokenRuleDataGrid.SelectionMode = DataGridViewSelectionMode.CellSelect;
-    TokenRuleDataGrid.Size = new Size(392, 216);
+    TokenRuleDataGrid.Size = new Size(560, 360);
     TokenRuleDataGrid.TabIndex = 7;
+    TokenRuleDataGrid.RowValidated += TokenRuleDataGrid_RowValidated;
     // 
-    // typeDataGridViewTextBoxColumn
+    // AssemblerPage
     // 
-    typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
-    typeDataGridViewTextBoxColumn.HeaderText = "Type";
-    typeDataGridViewTextBoxColumn.MinimumWidth = 6;
-    typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
-    typeDataGridViewTextBoxColumn.Width = 125;
+    AssemblerPage.Location = new Point(4, 34);
+    AssemblerPage.Margin = new Padding(4, 3, 4, 3);
+    AssemblerPage.Name = "AssemblerPage";
+    AssemblerPage.Padding = new Padding(4, 3, 4, 3);
+    AssemblerPage.Size = new Size(1202, 490);
+    AssemblerPage.TabIndex = 1;
+    AssemblerPage.Text = "Assembler";
+    AssemblerPage.UseVisualStyleBackColor = true;
+    // 
+    // LoadRulesButton
+    // 
+    LoadRulesButton.Location = new Point(120, 120);
+    LoadRulesButton.Margin = new Padding(4, 3, 4, 3);
+    LoadRulesButton.Name = "LoadRulesButton";
+    LoadRulesButton.Size = new Size(130, 40);
+    LoadRulesButton.TabIndex = 8;
+    LoadRulesButton.Text = "Load Rules";
+    LoadRulesButton.UseVisualStyleBackColor = true;
+    LoadRulesButton.Click += LoadRulesButton_Click;
+    // 
+    // TypeGridColumnCombo
+    // 
+    TypeGridColumnCombo.DataPropertyName = "Type";
+    TypeGridColumnCombo.HeaderText = "Type";
+    TypeGridColumnCombo.Items.AddRange(new object[] { "TokenMatch", "TokenExact", "", "SplitMatch", "SplitExact", "ErrorMatch", "TokenExtract", "StoreExtra", "StoreOther" });
+    TypeGridColumnCombo.MinimumWidth = 6;
+    TypeGridColumnCombo.Name = "TypeGridColumnCombo";
+    TypeGridColumnCombo.Resizable = DataGridViewTriState.True;
+    TypeGridColumnCombo.SortMode = DataGridViewColumnSortMode.Automatic;
+    TypeGridColumnCombo.Width = 125;
     // 
     // ruleStringDataDataGridViewTextBoxColumn
     // 
@@ -347,41 +429,19 @@ partial class ParserForm : Form
     typeToAssignDataGridViewTextBoxColumn1.Resizable = DataGridViewTriState.True;
     typeToAssignDataGridViewTextBoxColumn1.Width = 125;
     // 
-    // AssemblerPage
-    // 
-    AssemblerPage.Location = new Point(4, 24);
-    AssemblerPage.Margin = new Padding(3, 2, 3, 2);
-    AssemblerPage.Name = "AssemblerPage";
-    AssemblerPage.Padding = new Padding(3, 2, 3, 2);
-    AssemblerPage.Size = new Size(839, 266);
-    AssemblerPage.TabIndex = 1;
-    AssemblerPage.Text = "Assembler";
-    AssemblerPage.UseVisualStyleBackColor = true;
-    // 
-    // LoadRulesButton
-    // 
-    LoadRulesButton.Location = new Point(84, 72);
-    LoadRulesButton.Margin = new Padding(3, 2, 3, 2);
-    LoadRulesButton.Name = "LoadRulesButton";
-    LoadRulesButton.Size = new Size(91, 24);
-    LoadRulesButton.TabIndex = 8;
-    LoadRulesButton.Text = "Load Rules";
-    LoadRulesButton.UseVisualStyleBackColor = true;
-    LoadRulesButton.Click += LoadRulesButton_Click;
-    // 
     // ParserForm
     // 
-    AutoScaleDimensions = new SizeF(7F, 15F);
+    AutoScaleDimensions = new SizeF(10F, 25F);
     AutoScaleMode = AutoScaleMode.Font;
-    ClientSize = new Size(1062, 377);
+    ClientSize = new Size(1517, 628);
     Controls.Add(LoadRulesButton);
     Controls.Add(ItemTabs);
-    Controls.Add(label1);
+    Controls.Add(SpecLabel);
     Controls.Add(SpecComboBox);
     Controls.Add(StatusStrip);
     Controls.Add(TheMenuStrip);
     MainMenuStrip = TheMenuStrip;
-    Margin = new Padding(3, 2, 3, 2);
+    Margin = new Padding(4, 3, 4, 3);
     Name = "ParserForm";
     Text = "Parser Form";
     Load += ParserForm_Load;
@@ -391,6 +451,7 @@ partial class ParserForm : Form
     ((ISupportInitialize) TokenRuleBindingSource).EndInit();
     ItemTabs.ResumeLayout(false);
     tabPage1.ResumeLayout(false);
+    tabPage1.PerformLayout();
     ((ISupportInitialize) TokenGridView).EndInit();
     ((ISupportInitialize) TokenBindingSource).EndInit();
     ((ISupportInitialize) TokenRuleDataGrid).EndInit();
@@ -404,10 +465,10 @@ partial class ParserForm : Form
   private OpenFileDialog OpenParseFileDialog;
   private MenuStrip TheMenuStrip;
   private ComboBox SpecComboBox;
-  private Label label1;
+  private Label SpecLabel;
   private BindingSource TokenRuleBindingSource;
   private DataGridViewComboBoxColumn TypeColumn;
-  private DataGridViewComboBoxColumn typeToAssignDataGridViewTextBoxColumn;
+  private DataGridViewComboBoxColumn TypeToAssignColumn;
   private DataGridViewTextBoxColumn RuleStringDataColumn;
   private Button ParseButton;
   private ToolStripMenuItem FileMenu;
@@ -423,9 +484,6 @@ partial class ParserForm : Form
   private Button LoadRulesButton;
   private DataGridView TokenGridView;
   private DataGridView TokenRuleDataGrid;
-  private DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
-  private DataGridViewTextBoxColumn ruleStringDataDataGridViewTextBoxColumn;
-  private DataGridViewTextBoxColumn typeToAssignDataGridViewTextBoxColumn1;
   private DataGridViewTextBoxColumn contentDataGridViewTextBoxColumn;
   private DataGridViewTextBoxColumn lastPositionDataGridViewTextBoxColumn;
   private DataGridViewTextBoxColumn lengthDataGridViewTextBoxColumn;
@@ -437,4 +495,11 @@ partial class ParserForm : Form
   private DataGridViewTextBoxColumn countDataGridViewTextBoxColumn;
   private DataGridViewCheckBoxColumn hasTypeDataGridViewCheckBoxColumn;
   private BindingSource TokenBindingSource;
+  private Label label2;
+  private Label TokenCountLabel;
+  private Label TokenRuleCountLabel;
+  private Label label1;
+  private DataGridViewComboBoxColumn TypeGridColumnCombo;
+  private DataGridViewTextBoxColumn ruleStringDataDataGridViewTextBoxColumn;
+  private DataGridViewTextBoxColumn typeToAssignDataGridViewTextBoxColumn1;
 }

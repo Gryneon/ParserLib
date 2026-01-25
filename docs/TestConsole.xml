@@ -90,19 +90,9 @@
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
             </summary>
         </member>
-        <member name="P:TestConsole.Paths.wad_tnt">
-            <summary>
-              Looks up a localized string similar to C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD.
-            </summary>
-        </member>
         <member name="P:TestConsole.Paths.xsd_specification">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.zs_demon">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
             </summary>
         </member>
     </members>

@@ -187,29 +187,11 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD.
-        /// </summary>
-        internal static string wad_tnt {
-            get {
-                return ResourceManager.GetString("wad_tnt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
         /// </summary>
         internal static string xsd_specification {
             get {
                 return ResourceManager.GetString("xsd_specification", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
-        /// </summary>
-        internal static string zs_demon {
-            get {
-                return ResourceManager.GetString("zs_demon", resourceCulture);
             }
         }
     }

@@ -145,14 +145,19 @@ internal sealed class Program
 
   internal static XParser TestTextParser (string path, Spec spec)
   {
-    string content = File.ReadAllText(path);
-    Parser = new(spec);
-    IEnumerator<OpStatus> en = Parser.StepInit(content).GetEnumerator();
+    if (spec.IsTextFile)
+    {
+      string content = File.ReadAllText(path);
+      Parser = new(spec);
+      Status = Parser.StepThrough(content);
+    }
+    else
+    {
+      byte[] bytes = File.ReadAllBytes(path);
+      Parser = new(spec);
+      Status = Parser.StepThrough(bytes);
+    }
 
-    while (en.MoveNext())
-      Log("Program", $"{en.Current}");
-
-    Status = Parser.Parse(content);
     Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
     return Parser;
   }

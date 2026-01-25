@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -7,11 +7,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>disable</ImplicitUsings>
-		<LangVersion>preview</LangVersion>
-		<NeutralLanguage>en-US</NeutralLanguage>
-		<NuGetAuditLevel>low</NuGetAuditLevel>
-		<NuGetAuditMode>all</NuGetAuditMode>
-		<Platforms>AnyCPU;x86;x64</Platforms>
+    <LangVersion>preview</LangVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <Platforms>AnyCPU;x86;x64</Platforms>
     
   </PropertyGroup>
 

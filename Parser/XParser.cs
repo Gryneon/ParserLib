@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 using static Parser.OpStatus;
 
 namespace Parser;
@@ -21,10 +23,10 @@ public class FailureEventArgs : EventArgs
 
 public class XParser
 {
-  /// <summary>
-  /// The class name for debugging.
-  /// </summary>
+  /// <summary>The class name for debugging.</summary>
   private const string Area = "XParser";
+  private bool _isDataInit;
+  private bool _isParserInit;
   /// <inheritdoc/>
   public int OpIndex { get; protected set; }
   /// <inheritdoc/>
@@ -80,14 +82,14 @@ public class XParser
   {
     if (Spec.Name.Like("unknown"))
     {
-      if (data is string)
-        Spec = DefaultSpec.TextByLines;
-      if (data is IEnumerable<byte>)
-        Spec = DefaultSpec.Binary;
+      Spec = data is string
+        ? DefaultSpec.TextByLines
+        : data is IEnumerable<byte> ? DefaultSpec.Binary : throw new InvalidDataException("Data must by a byte array or a string.");
     }
     OperationLoad();
     data.ThrowIfNull();
     Data.Initialize(data);
+    _isDataInit = true;
   }
   /// <summary>
   /// Sets up the Specification and DataDictionary for the parser.
@@ -100,6 +102,7 @@ public class XParser
     Spec = spec;
     Spec.SetAsActive();
     NextOpIndex = 1;
+    _isParserInit = true;
   }
   public Collection<CursorData> Cursors { get; } = [];
   /// <summary>
@@ -119,13 +122,13 @@ public class XParser
   public bool HasResult => Result is not null;
   /// <inheritdoc/>
   public int OpCount => Operations.Count;
-  /// <inheritdoc/>
+  /// <summary>Gets the count of the collection stored under the <paramref name="key"/>.</summary>
   /// <exception cref="InvalidOperationException"/>
   public int CountOfKey (string key) => Data is not null ? Data.GetCountOfKey(key) : throw new InvalidOperationException();
   /// <inheritdoc/>
   /// <exception cref="InvalidOperationException"/>
   /// <exception cref="ArgumentNullException"/>
-  public CursorData GetCursorByKey (string key) => Cursors.Single(item => item.Key.Like(key));
+  public CursorData GetCursorByKey (string key) => Cursors.First(item => item.Key.Like(key));
   /// <inheritdoc/>
   public void AddCursor (string key) => Cursors.Add(new(0, key, Data));
 
@@ -149,122 +152,97 @@ public class XParser
     if (status == Any || status == LastStatus)
       Log(Area, $"{OpIndex}-{LastStatus}: {msg}");
   }
-  public void StepThrough (string input)
+  /// <summary>Incrementally steps through all the operations, requesting user confirmation to continue.</summary>
+  /// <param name="input">The file data as a <see langword="string"/>.</param>
+  /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
+  public OpStatus StepThrough<TData> (TData input)
   {
-    foreach (OpStatus op in StepInit(input))
-    {
-      Console.WriteLine(op.ToString());
-      _ = Console.Read();
-    }
-  }
-  public IEnumerable<OpStatus> StepInit (string content)
-  {
-    InitializeData(content);
+    InitializeData(input);
     Log(Area, "StepInit", "Initialized");
 
     while (NextOpIndex >= 0)
     {
-      if (CurrentOp is IfOperation ifop)
-      {
-        Log(Area, "If Operation Encountered");
-        bool condition = ifop.Condition.Evaluate();
-        LastStatus = condition ? ConditionPass : ConditionFail;
-        yield return LastStatus;
-        LastStatus = condition ? ifop.IfTrue.DoOperation(this) : ifop.IfFalse.DoOperation(this);
-        yield return LastStatus;
-      }
-      else if (CurrentOp.SkipOperation)
-      {
-        Log(Area, "Skip Operation Encountered");
-        LastStatus = Skipped;
-        yield return LastStatus;
-        AdvanceOperation();
-        continue;
-      }
-      Log(Area, "StepInit", $"Performing Operation {CurrentOp.GetType().Name}.");
-      LastStatus = CurrentOp.DoOperation(this);
-      Log(Area, "StepInit", $"Operation resulted in {LastStatus}.");
-      yield return LastStatus;
-      if (LastStatus is EndCommand)
-      {
-        NextOpIndex = -1;
-        continue;
-      }
-      if (LastStatus.IsFail(CurrentOp.ContinueOnFail))
-      {
-        LogStatus(FailBadInputNull, "Given bad input, cannot be null");
-        LogStatus(FailBadInputType, "Given bad input, invalid type.");
-        LogStatus(FailBadOpDefinition, "Bad operation definition.");
-        LogStatus(FailBadOpResult, "Bad operation result. Operation failed to generate proper data.");
-        LogStatus(FailBadOpImpossible, "Bad operation event. Impossible condition reached.");
-        LogStatus(Any, "Parse sequence terminated.");
-        yield break;
-      }
-
-      AdvanceOperation();
+      OpStatus status = PerformOperation();
+      Console.WriteLine($"{OpIndex} : {status} (Press enter to advance)");
+      _ = Console.Read();
     }
-
-    LogResult(EndCommand, "Result has been assigned. Operation complete.");
-    Log(Area, "Parse", "Results");
-    Log(Area, "Parse", Data["result"]?.ToString() ?? "<null data>");
-    yield break;
-  }
-  public OpStatus Parse (byte[] bytes)
-  {
-    InitializeData(bytes);
-    return ParseLoop();
-  }
-  public OpStatus Parse (string content)
-  {
-    InitializeData(content);
-    return ParseLoop();
-  }
-
-  public OpStatus ParseLoop ()
-  {
-
-    while (NextOpIndex >= 0)
-    {
-      if (CurrentOp is IfOperation ifop)
-      {
-        Log(Area, "If Operation Encountered");
-        LastStatus = ifop.Condition.Evaluate() ? ifop.IfTrue.DoOperation(this) : ifop.IfFalse.DoOperation(this);
-        continue;
-      }
-      if (CurrentOp.SkipOperation)
-      {
-        Log(Area, "Skip Operation Encountered");
-        LastStatus = Skipped;
-        AdvanceOperation();
-        continue;
-      }
-      LastStatus = CurrentOp.DoOperation(this);
-      if (LastStatus is EndCommand)
-      {
-        NextOpIndex = -1;
-        continue;
-      }
-      if (LastStatus.IsFail(CurrentOp.ContinueOnFail))
-      {
-        LogStatus(FailBadInputNull, "Given bad input, cannot be null");
-        LogStatus(FailBadInputType, "Given bad input, invalid type.");
-        LogStatus(FailBadOpDefinition, "Bad operation definition.");
-        LogStatus(FailBadOpResult, "Bad operation result. Operation failed to generate proper data.");
-        LogStatus(FailBadOpImpossible, "Bad operation event. Impossible condition reached.");
-        LogStatus(Any, "Parse sequence terminated.");
-        return LastStatus;
-      }
-
-      AdvanceOperation();
-    }
-
-    LogResult(EndCommand, "Result has been assigned. Operation complete.");
-    Log(Area, "Parse", "Results");
-    Log(Area, "Parse", Data["result"]?.ToString() ?? "<null data>");
     return LastStatus;
   }
+  /// <summary>Performs all the operations, ending on a fail or a completion of the sequence.</summary>
+  /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
+  protected internal OpStatus ParseLoop ()
+  {
+    Log(Area, "StepInit", "Initialized");
 
-  public OpStatus Infer (string path)
+    while (NextOpIndex >= 0 && !LastStatus.IsFail(CurrentOp.ContinueOnFail))
+    {
+      OpStatus status = PerformOperation();
+      Console.WriteLine($"{OpIndex} : {status}");
+    }
+    return LastStatus;
+  }
+  /// <summary>Performs the operation indicated by <see cref="OpIndex"/> and advances to the next operation.</summary>
+  /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
+  protected internal OpStatus PerformOperation ()
+  {
+    if (CurrentOp.SkipOperation)
+    {
+      Log(Area, "Skip Operation Encountered");
+      LastStatus = Skipped;
+      AdvanceOperation();
+      return LastStatus;
+    }
+
+    if (CurrentOp is IfOperation ifop)
+    {
+      Log(Area, "If Operation Encountered");
+      bool condition = ifop.Condition.Evaluate();
+      LastStatus = condition ? ConditionPass : ConditionFail;
+      if (condition)
+        ifop.IfTrue.DoOperation(this);
+      else
+        ifop.IfFalse.DoOperation(this);
+      AdvanceOperation();
+      return LastStatus;
+    }
+
+    Log(Area, "StepInit", $"Performing Operation {CurrentOp.GetType().Name}.");
+    LastStatus = CurrentOp.DoOperation(this);
+    Log(Area, "StepInit", $"Operation resulted in {LastStatus}.");
+    if (LastStatus is EndCommand)
+      NextOpIndex = -1;
+    if (LastStatus.IsFail(CurrentOp.ContinueOnFail))
+    {
+      LogStatus(FailBadInputNull, "Given bad input, cannot be null");
+      LogStatus(FailBadInputType, "Given bad input, invalid type.");
+      LogStatus(FailBadOpDefinition, "Bad operation definition.");
+      LogStatus(FailBadOpResult, "Bad operation result. Operation failed to generate proper data.");
+      LogStatus(FailBadOpImpossible, "Bad operation event. Impossible condition reached.");
+      LogStatus(Any, "Parse sequence terminated.");
+    }
+    if (NextOpIndex == -1)
+    {
+      LogResult(EndCommand, "Result has been assigned. Operation complete.");
+      Log(Area, "Parse", "Results");
+      Log(Area, "Parse", Data["result"]?.ToString() ?? "<null data>");
+    }
+    AdvanceOperation();
+    return LastStatus;
+  }
+  }
+  /// <summary>Initializes the data and begins parsing.</summary>
+  /// <param name="data">The data to pass to the parser.</param>
+  /// <typeparam name="TData">The type of data to pass to the parser.</typeparam>
+  /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
+  public OpStatus Parse<TData> (TData data)
+  {
+    InitializeData(data);
+    return ParseLoop();
+  }
+  /// <summary>Parses the specified file based on the spec assigned to this <see cref="XParser"/> object.</summary>
+  /// <param name="path">The path to the file to parse.</param>
+  /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
+  public OpStatus ParseAccordingToSpec (string path)
   {
     if (Spec.IsTextFile)
     {

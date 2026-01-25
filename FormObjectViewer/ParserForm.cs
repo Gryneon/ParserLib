@@ -24,6 +24,17 @@ internal sealed partial class ParserForm : Form
       Specification.UDMF.Definition.Spec,
       Specification.XML.Definition.Spec,
       Specification.ZScript.Definition.Spec,
+
+    ];
+  private List<string> TokenRules { get; } = [
+      "TokenMatch",
+      "TokenExact",
+      "SplitMatch",
+      "SplitExact",
+      "ErrorMatch",
+      "TokenExtract",
+      "StoreExtra",
+      "StoreOther",
     ];
   private Spec LoadedSpec => SpecList[SpecComboBox.SelectedIndex];
   private BindingList<TokenRule> WorkingRules { get; set; } = [];
@@ -88,5 +99,10 @@ internal sealed partial class ParserForm : Form
   private void Button1_Click (object sender, EventArgs e)
   {
 
+  }
+
+  private void TokenRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e)
+  {
+    TokenRuleCountLabel.Text = $"{WorkingRules.Count}";
   }
 }

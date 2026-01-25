@@ -147,18 +147,11 @@
   <data name="ipl_label" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\label.ipl</value>
   </data>
-  <data name="zs_demon" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs</value>
-  </data>
   <data name="json_launch" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json</value>
   </data>
   <data name="udmf_map00" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\map00.udmf</value>
-  </data>
-  <data name="wad_tnt" xml:space="preserve">
-    <value>C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD</value>
-    <comment>Requires Final Doom to be installed.</comment>
   </data>
   <data name="udmf_sample" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf</value>

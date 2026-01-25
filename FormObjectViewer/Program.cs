@@ -17,7 +17,7 @@ internal static class Program
     // see https://aka.ms/applicationconfiguration.
     ApplicationConfiguration.Initialize();
     Collection<object> t = [54, 345, 87f, 42m, '3', "str", new Collection<object>()];
-    Form start = new ArrayForm(t);
+    Form start = new ParserForm();
     Application.Run(start);
     start.Dispose();
   }
