@@ -49,4 +49,5 @@ public enum ACSTokenType
   Type,
   Wait,
   PreprocessorFull,
+  Else,
 }

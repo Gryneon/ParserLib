@@ -60,15 +60,17 @@ public static class Definition
       Tm(Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
 
       // Keywords
-      Tm(Script, @"\bscript\b"),
+      .. TokenRule.MakeWordMatchRules(true, [
+        ("script", Script),     ("Function", Function),
+        ("net", Net),
+        ("if", If),             ("else", Else),
+        ("global", MapVar),     ("world", MapVar),
+        ("do", Do),             ("For", For),
+        ("while", Loop),        ("until", Loop),
+        
+        ]
+      ),
       Tm(ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
-      Tm(Function, @"\bfunction\b"),
-      Tm(MapVar, @"\b(global|world)\b"),
-      Tm(Net, @"\bnet\b"),
-      Tm(For, @"\bfor\b"),
-      Tm(If, @"\bif\b"),
-      Tm(Loop, @"\b(until|while)\b"),
-      Tm(Do, @"\bdo\b"),
       Tm(Switch, @"\bswitch\b"),
       Tm(Case, @"\bcase\b"),
       Tm(Default, @"\bdefault\b"),
