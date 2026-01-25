@@ -31,7 +31,7 @@ public static class StringExtensions
   /// </summary>
   /// <param name="text"></param>
   /// <returns><see langword="true"/> if the string is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
-  public static bool IsEmpty ([NotNullWhen(false)] this string? text) => string.IsNullOrEmpty(text);
+  public static bool IsEmpty ([NotNullWhen(false)][MaybeNullWhen(true)] this string? text) => string.IsNullOrEmpty(text);
   public static bool IsNotEmpty ([NotNullWhen(true)] this string? text) => !text.IsEmpty();
   public static bool IsNamedGroup (this string text) => !text.IsPosInteger();
   /// <summary>

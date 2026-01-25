@@ -75,7 +75,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   {
     input.ThrowIfNull();
 
-    IEnumerable<PropertyObj> prop_obj = input.Properties.OfType<TokenProperty>().Select(token_prop => new PropertyObj(token_prop.Name, token_prop.Value ?? SE));
+    IEnumerable<PropertyObj> prop_obj = input.Properties.OfType<TokenProperty>().Select(token_prop => new PropertyObj(token_prop.Name ?? SE, token_prop.Value ?? SE));
 
     return new()
     {

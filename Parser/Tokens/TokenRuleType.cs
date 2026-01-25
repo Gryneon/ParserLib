@@ -38,6 +38,8 @@ public enum TokenRuleType
   BuildTypedValue = 64 * 16 * 4,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel"/>.</summary>
   BuildLabel = 64 * 8 * 16,
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenStatement"/>.</summary>
+  BuildStatement = 0x20000000,
   /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty"/>, <see cref="TokenTypedValue"/>, or <see cref="TokenArray"/>.</summary>
   AssignValue = 64 * 64 * 4,
   /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty"/> or <see cref="TokenObject"/>.</summary>

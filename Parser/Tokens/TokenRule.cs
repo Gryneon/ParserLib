@@ -37,4 +37,17 @@ public class TokenRule
   {
     TypeToAssign = SE;
   }
+
+  public static TokenRule[] MakeSingleCharRules (string chars, RT type, dynamic typeToAssign)
+  {
+    if (string.IsNullOrEmpty(chars))
+      return [];
+
+    Collection<TokenRule> tokenRules = [];
+    foreach (char c in chars)
+    {
+      string s = c.ToString();
+    }
+    return [.. tokenRules];
+  }
 }

@@ -2,6 +2,7 @@ using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
 using static Parser.Tokens.TokenRuleType;
+using static Parser.Tokens.TokenRule;
 
 namespace Specification.INI;
 
@@ -26,10 +27,6 @@ public static class Definition
     RxOpt = ROML | ROIPW | ROEC | ROIC,
     TokenType = typeof(ITT),
     Operations = [
-      //new DictionaryOperation(Regex, RXOptions),
-      //new GenerateOperation<MatchDataSet, Section>(Section.Generate, item => item.HasGroup("section"), "matches", "sections"),
-      //new ExternalOperation<IEnumerable<Section>, INIDocument>(INIDocument.FromSections, item => true, "sections", "result"),
-      //Operation.End],
       new TokenizeOperation(),
       new TokenAssembleOperation(),
       new GenerateOperation<TokenObject, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
@@ -39,7 +36,7 @@ public static class Definition
       new(Competes | IgnoredToken, ITT.None, @";.*?$"),
       new(Competes, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
       new(Competes, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
-      new(TExactly, ITT.Eq, @"="),
+      .. MakeSingleCharRules("=", TExactly, new ITT[] { ITT.Eq } ),
       new(TExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
       new(BuildProperty, ITT.Property, "tn:Key tx:Eq tv:Value"),

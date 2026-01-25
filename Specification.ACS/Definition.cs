@@ -6,6 +6,7 @@
 using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
+using static Specification.ACS.ACSTokenType;
 
 namespace Specification.ACS;
 
@@ -42,65 +43,58 @@ public static class Definition
     SC = SCOIC,
     TokenType = typeof(ATT),
     TokenCompatLookup = {
-      [ATT.Fixed] = [ATT.Int, ATT.Bool]
+      [Fixed] = [Int, Bool]
     },
     TokenRules = [
 
       // Data
-      new(Compet, ATT.Str, @"""([^\\""]|\\.)*"""),
-      new(Compet, ATT.Char, @"'([^\\']|\\.)*'"),
-      new(Ignore, ATT.None, @"\/\/.*?$"),
-      new(Ignore, ATT.None, @"\/\*.*?\*\/"),
+      new(Compet, Str, @"""([^\\""]|\\.)*"""),
+      new(Compet, Char, @"'([^\\']|\\.)*'"),
+      new(Ignore, None, @"\/\/.*?$"),
+      new(Ignore, None, @"\/\*.*?\*\/"),
 
       // Preprocessor
-      Ex(ATT.Preprocessor, @"\# (lib(define|rary)|import|include|define)"),
-      Tm(ATT.Bool, @"\b(true|false|on|off|yes|no)\b"),
-      Tm(ATT.Int, @"-?(\d+|0x[a-f0-9]+)(?!\.)"),
-      Tm(ATT.Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
+      Ex(Preprocessor, @"\# (lib(define|rary)|import|include|define)"),
+      Tm(Bool, @"\b(true|false|on|off|yes|no)\b"),
+      Tm(Int, @"-?(\d+|0x[a-f0-9]+)(?!\.)"),
+      Tm(Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
 
       // Keywords
-      Tm(ATT.Script, @"\bscript\b"),
-      Tm(ATT.ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
-      Tm(ATT.Function, @"\bfunction\b"),
-      Tm(ATT.MapVar, @"\b(global|world)\b"),
-      Tm(ATT.Net, @"\bnet\b"),
-      Tm(ATT.For, @"\bfor\b"),
-      Tm(ATT.If, @"\bif\b"),
-      Tm(ATT.Loop, @"\b(until|while)\b"),
-      Tm(ATT.Do, @"\bdo\b"),
-      Tm(ATT.Switch, @"\bswitch\b"),
-      Tm(ATT.Case, @"\bcase\b"),
-      Tm(ATT.Default, @"\bdefault\b"),
-      Tm(ATT.Return, @"\breturn\b"),
-      Tm(ATT.SimpleJump, @"\b(break|continue|terminate)\b"),
-
+      Tm(Script, @"\bscript\b"),
+      Tm(ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
+      Tm(Function, @"\bfunction\b"),
+      Tm(MapVar, @"\b(global|world)\b"),
+      Tm(Net, @"\bnet\b"),
+      Tm(For, @"\bfor\b"),
+      Tm(If, @"\bif\b"),
+      Tm(Loop, @"\b(until|while)\b"),
+      Tm(Do, @"\bdo\b"),
+      Tm(Switch, @"\bswitch\b"),
+      Tm(Case, @"\bcase\b"),
+      Tm(Default, @"\bdefault\b"),
+      Tm(Return, @"\breturn\b"),
+      Tm(SimpleJump, @"\b(break|continue|terminate)\b"),
+      Tm(Wait, @"\b(delay|scriptwait|tagwait)\b"),
 
       // Operators
-      Tm(ATT.IncDec, @"(\+\+|--)"),
-      Tm(ATT.Unary, @"!(?!=)|~"),
-      Tm(ATT.Minus, @"-"),
-      Tm(ATT.Assign, @"[-+*^/%|&]="),
-      Tm(ATT.Assign, @"(<<|>>| \|\| |&&)="),
-      Tm(ATT.Binary, @"[!<>-]="),
-      Tm(ATT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),
-      Tm(ATT.Binary, @"[+/%|&^*-]"),
+      Tm(IncDec, @"(\+\+|--)"),
+      Tm(Unary, @"!(?!=)|~"),
+      Tm(Minus, @"-"),
+      Tm(Assign, @"[-+*^/%|&]="),
+      Tm(Assign, @"(<<|>>| \|\| |&&)="),
+      Tm(Binary, @"[!<>-]="),
+      Tm(Binary, @"(&&| \|\| |<<|>>)(?!=)"),
+      Tm(Binary, @"[+/%|&^*-]"),
 
-      Ex(ATT.Ao, "["),
-      Ex(ATT.Ac, "]"),
-      Ex(ATT.Bo, "{"),
-      Ex(ATT.Bc, "}"),
-      Ex(ATT.Po, "("),
-      Ex(ATT.Pc, ")"),
-      Ex(ATT.Eq, "="),
-      Ex(ATT.Cm, ","),
-      Ex(ATT.Co, ":"),
-      Ex(ATT.Sc, ";"),
+      .. TokenRule.MakeSingleCharRules("[]{}()=,:;", TExact ,new ATT[] { Ao, Ac, Bo, Bc, Po, Pc, Eq, Cm, Co, Sc }),
 
-      Tm(ATT.Void, @"\bvoid\b"),
-      Tm(ATT.Type, @"\b(int|str|char|bool)\b"),
-      Tm(ATT.Name, @"\b[a-z_][\w]*\b"),
+      Tm(Void, @"\bvoid\b"),
+      Tm(Type, @"\b(int|str|char|bool)\b"),
+      Tm(Name, @"\b[a-z_][\w]*\b"),
     ],
-    GroupTokenRules = [],
+    GroupTokenRules = [
+      new(RT.BuildProperty, PreprocessorFull, "tiy:Preprocessor tin:Name tiv:Expression")
+    ],
   };
   [Export("zdoom.modeldef")]
   public static Spec ModelDef => new()
