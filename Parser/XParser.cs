@@ -198,10 +198,7 @@ public class XParser
       Log(Area, "If Operation Encountered");
       bool condition = ifop.Condition.Evaluate();
       LastStatus = condition ? ConditionPass : ConditionFail;
-      if (condition)
-        ifop.IfTrue.DoOperation(this);
-      else
-        ifop.IfFalse.DoOperation(this);
+      _ = condition ? ifop.IfTrue.DoOperation(this) : ifop.IfFalse.DoOperation(this);
       AdvanceOperation();
       return LastStatus;
     }

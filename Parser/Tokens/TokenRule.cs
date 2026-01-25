@@ -47,6 +47,7 @@ public class TokenRule
     foreach (char c in chars)
     {
       string s = c.ToString();
+      tokenRules.Add(new(type, typeToAssign, s));
     }
     return [.. tokenRules];
   }

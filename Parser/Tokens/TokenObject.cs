@@ -7,11 +7,11 @@ namespace Parser.Tokens;
 public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>, ITypeToken, INameToken
 {
   // Assigned Properties
-  public string Name => NameToken.Content;
+  public string Name => NameToken?.Content ?? SE;
   public string? ObjType => TypeToken?.Content;
 
   // Tokens Kept
-  public required IToken NameToken { get; init; }
+  public required IToken? NameToken { get; init; }
   public IToken? TypeToken { get; init; }
 
   public TokenCollection Properties { get; init; } = [];

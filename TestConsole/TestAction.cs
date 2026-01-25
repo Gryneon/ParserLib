@@ -29,7 +29,7 @@ internal sealed class TestAction : MenuAction
       Program.Status = Program.Parser.StepThrough(bytes);
     }
 
-    Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
+    Debug.Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Program.Status}.");
     data_return = Program.Parser;
   }
 }

@@ -230,13 +230,12 @@ public class TokenFactory
   internal void ExactMatch ()
   {
     int length = RuleData.Length > 0 ? RuleData.Length : throw new InvalidOperationException("RuleData has a length of 0 on an exact token.");
-    int cursor = 0, offset;
+    int cursor = 0;
     int next = Input.IndexOf(RuleData, cursor, IC);
 
     while (next >= 0 && cursor <= Input.Length)
     {
       Section match = Section.ByLength(next, length, Input);
-      offset = 1;
       if (!match.Overlaps(CannotMatch))
       {
         if (Type is RT.TokenExact)
@@ -245,7 +244,6 @@ public class TokenFactory
         }
         if (ExemptAllWithin || Type is RT.SplitExact)
           CannotMatch.Add(match);
-        offset = length;
       }
       next = Input.IndexOf(RuleData, cursor, IC);
     }
