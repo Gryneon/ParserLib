@@ -236,7 +236,7 @@ public class TokenFactory
     while (next >= 0 && cursor <= Input.Length)
     {
       Section match = Section.ByLength(next, length, Input);
-      offset;
+      offset = 1;
       if (!match.Overlaps(CannotMatch))
       {
         if (Type is RT.TokenExact)

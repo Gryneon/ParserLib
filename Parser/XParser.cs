@@ -229,7 +229,6 @@ public class XParser
     AdvanceOperation();
     return LastStatus;
   }
-  }
   /// <summary>Initializes the data and begins parsing.</summary>
   /// <param name="data">The data to pass to the parser.</param>
   /// <typeparam name="TData">The type of data to pass to the parser.</typeparam>
