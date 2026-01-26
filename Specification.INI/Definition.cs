@@ -29,7 +29,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      new GenerateOperation<TokenObject, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
+      new GenerateOperation<TokenObject, INISection>(INISection.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
       Operation.End
     ],
     TokenRules = [
@@ -37,10 +37,10 @@ public static class Definition
       new(Competes, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
       new(Competes, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
       .. MakeSingleCharRules("=", TExactly, new ITT[] { ITT.Eq } ),
-      new(TExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
+      new(TExtract, ITT.INISection, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
       new(BuildProperty, ITT.Property, "tn:Key tx:Eq tv:Value"),
-      new(BuildObject, ITT.SectionWProps, "tn:Section tpm:Property"),
+      new(BuildObject, ITT.INISectionWProps, "tn:INISection tpm:Property"),
     ]
   };
 }

@@ -26,7 +26,6 @@ public class XParser
   /// <summary>The class name for debugging.</summary>
   private const string Area = "XParser";
   private bool _isDataInit;
-  private bool _isParserInit;
   /// <inheritdoc/>
   public int OpIndex { get; protected set; }
   /// <inheritdoc/>
@@ -102,7 +101,6 @@ public class XParser
     Spec = spec;
     Spec.SetAsActive();
     NextOpIndex = 1;
-    _isParserInit = true;
   }
   public Collection<CursorData> Cursors { get; } = [];
   /// <summary>

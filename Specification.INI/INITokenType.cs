@@ -3,12 +3,12 @@ namespace Specification.INI;
 public enum INITokenType
 {
   None,
-  Section,
+  INISection,
   Property,
   Str,
   Op,
   Key,
   Value,
-  SectionWProps,
+  INISectionWProps,
   Eq
 }

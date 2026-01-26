@@ -43,6 +43,7 @@ public struct Section () : IEquatable<Section>, IComparable<Section>
   [SetsRequiredMembers]
   public Section (Match m, string input) : this()
   {
+    m.ThrowIfNull();
     Start = m.Index;
     Length = m.Length;
     FullContent = input;
