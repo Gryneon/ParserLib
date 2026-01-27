@@ -15,14 +15,14 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
   /// <summary>
   /// Creates an <c>INIDocument</c> from an array or collection of <see cref="INISection"/> objects.
   /// </summary>
-  /// <param name="INISections">The array or collection of INISections.</param>
+  /// <param name="sections">The array or collection of INISections.</param>
   /// <returns>The newly created document.</returns>
-  public static INIDocument FromSections (IEnumerable<INISection> INISections) => [.. INISections];
+  public static INIDocument FromSections (IEnumerable<INISection> sections) => [.. sections];
   #endregion
   /// <summary>Creates an empty <see cref="INIDocument"/>.</summary>
   public INIDocument () { }
   /// <summary>Creates a <see cref="INIDocument"/> with the provided <see cref="INISection"/> objects in it.</summary>
-  public INIDocument (IEnumerable<INISection> INISections) => INISections = [.. INISections];
+  public INIDocument (IEnumerable<INISection> iniSections) => Sections = [.. iniSections];
   /// <summary>Creates a deep copy of the passed document.</summary>
   /// <param name="other">The document to copy.</param>
   public INIDocument (INIDocument other)
@@ -58,9 +58,10 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
   public bool Contains (string name) => Sections.Any(item => item.Name.Like(name));
   /// <summary>Adds a INISection if it does not exist.
   /// If it does exist, it adds or updates all the values contained in the provided <see cref="INISection"/>.</summary>
-  /// <param name="INISection">The INISection to add.</param>
+  /// <param name="iniSection">The INISection to add.</param>
   public void Add (INISection iniSection)
   {
+    iniSection.ThrowIfNull();
     if (Contains(iniSection.Name))
     {
       foreach (IProperty<string> item in iniSection)

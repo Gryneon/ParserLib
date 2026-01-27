@@ -4,28 +4,11 @@ using static Parser.OpStatus;
 
 namespace Parser;
 
-public class FailureEventArgs : EventArgs
-{
-  public OpStatus OperationResult { get; init; }
-  public bool UseExpectedLine { get; set; }
-  public string Message { get; init; } = "Generic Operation Failure";
-  public string Expected { get; init; } = "correct item";
-  public string Received { get; init; } = "incorrect item";
-  public override string ToString ()
-  {
-    string result = Message;
-
-    if (UseExpectedLine) result += '\n' + $"Expected {Expected}, got {Received}.";
-
-    return result;
-  }
-}
-
 public class XParser
 {
   /// <summary>The class name for debugging.</summary>
   private const string Area = "XParser";
-  private bool _isDataInit;
+  //private bool _isDataInit;
   /// <inheritdoc/>
   public int OpIndex { get; protected set; }
   /// <inheritdoc/>
@@ -88,7 +71,7 @@ public class XParser
     OperationLoad();
     data.ThrowIfNull();
     Data.Initialize(data);
-    _isDataInit = true;
+    //_isDataInit = true;
   }
   /// <summary>
   /// Sets up the Specification and DataDictionary for the parser.
