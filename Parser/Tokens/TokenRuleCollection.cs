@@ -1,6 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 namespace Parser.Tokens;
 
+/// <summary>A Collection of <see cref="TokenRule"/> objects.</summary>
 public class TokenRuleCollection : IList<TokenRule>
 {
   private readonly Collection<TokenRule> _rules = [];

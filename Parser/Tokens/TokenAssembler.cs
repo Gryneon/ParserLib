@@ -214,7 +214,7 @@ public sealed class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        ValueTypeToken = getToken<IToken>(RT.AssignType),
+        TypeToken = getToken<IToken>(RT.AssignType),
         ValueToken = getToken<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)

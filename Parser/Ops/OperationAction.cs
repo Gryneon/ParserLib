@@ -28,6 +28,7 @@ public sealed class OperationAction : IOperation
   public Collection<object> OData { get; } = [];
   [NotNull] private XParser? Parser { get; set; }
   public OAT Type { get; set; }
+  public bool NeverExecutes { get; }
 
   public OpStatus DoOperation (XParser parser_ref)
   {
@@ -49,7 +50,7 @@ public sealed class OperationAction : IOperation
           goto Pass;
         case OAT.GotoIndex:
           if (IData[0] >= parser_ref.OpCount)
-            return OpStatus.FailBadOpDefinition;
+            goto default;
           parser_ref.NextOpIndex = IData[0];
           goto Pass;
         case OAT.GotoFirst:
@@ -173,6 +174,8 @@ public sealed class OperationAction : IOperation
     OAT.UpdateCursorKey => throw new NotImplementedException(),
     OAT.CreateCursor => $"Creating cursor on {SData[0]}",
     OAT.CopyKey => $"Copying key from {SData[0]} to {SData[1]}",
+    OAT.JumpIf => throw new NotImplementedException(),
+    OAT.Prompt => $"Prompt Encountered."
     _ => "Error: Unknown Action"
   };
 }
