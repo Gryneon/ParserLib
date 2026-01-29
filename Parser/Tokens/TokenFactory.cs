@@ -105,11 +105,11 @@ public class TokenFactory
           break;
         case RT.TokenExact or RT.TokenMatch or RT.TokenExtract when !FromTokens:
           Log(Area, "Token matching starting, from input string.");
-          Tokens_FromInput(split: false);
+          Tokens_FromInput();
           break;
         case RT.SplitMatch or RT.SplitExact:
           Log(Area, "Token splitting starting, from input string.");
-          Tokens_FromInput(split: true);
+          Tokens_FromInput();
           break;
         case RT.StoreExtra:
           Log(Area, $"Storing remaining zones matching {RuleData}");
@@ -276,7 +276,7 @@ public class TokenFactory
               _currentRule.ThrowIfNull();
               SaveResult(MakeToken(c, _currentRule));
             }
-          else if (!split)
+          else if (Type is RT.TokenMatch)
             SaveResult(MakeToken(sub, match.Index));
         }
       }

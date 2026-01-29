@@ -1,3 +1,7 @@
+using System;
+
+using Parser.Tokens;
+
 namespace Specification.XML;
 
 /// <summary>
@@ -12,18 +16,20 @@ public abstract class XMLNodeAttr : XMLNode
   /// <summary>
   /// Assigns attributes based on a <see cref="MatchDataSet"/>.
   /// </summary>
-  /// <param name="mdd"></param>
-  protected void AssignAttributes (MatchDataSet mdd)
+  /// <param name="obj"></param>
+  protected void AssignAttributes (TokenObject obj)
   {
-    if (mdd is null || !mdd.HasGroup("attrname") || mdd["attrname"].Count == 0)
+    if (obj is null || obj.Properties.Count == 0)
       return;
 
-    for (int i = 0; i < mdd["attrname"].Count; i++)
+    for (int i = 0; i < obj.Properties.Count; i++)
     {
+      TokenProperty? prop = obj.Properties[i] as TokenProperty;
+      _ = prop ?? throw new InvalidCastException("TokenObject had an improper property stored.");
       XMLProperty attr = new()
       {
-        Key = mdd["attrname"][i].Content,
-        Value = mdd["attrval"][i].Content
+        Key = prop.Name,
+        Value = prop.Value
       };
       Attributes.Add(attr);
     }

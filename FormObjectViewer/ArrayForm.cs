@@ -1,5 +1,5 @@
 #pragma warning disable CA1416 // Validate platform compatibility
-
+#pragma warning disable CA1812 // Unused class
 using System.Linq;
 
 using Common.Extensions;

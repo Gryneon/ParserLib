@@ -23,8 +23,8 @@ namespace Parser.Ops.Text;
 /// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataDictionary"/>.
 /// </code>
 /// </remarks>
-public class GenerateFromObjectOperation<TOutput> (string input_key, string output_key, string group_name) : Operation(input_key, output_key)
-  where TOutput : IGeneratable<MatchDataSet, TOutput>
+public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, string output_key, string group_name) : Operation(input_key, output_key)
+  where TOutput : IGeneratable<TInput, TOutput>
 {
   /// <inheritdoc/>
   protected override void Execute ()

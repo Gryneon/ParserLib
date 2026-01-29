@@ -3,6 +3,7 @@
 using Parser;
 using Parser.Ops;
 using Parser.Ops.Text;
+using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
 
@@ -17,6 +18,7 @@ public enum XMLTokenType
   Qm, Sc,     // ? ;
   An, Co,     // & :
   Sl, Eq,     // / =
+  Em, Hy,     // ! -
 
   AttrKey,
   AttrValue,
@@ -76,15 +78,16 @@ public static class Definition
     IsTextFile = true,
     SC = SCO,
     TokenType = typeof(XMLTokenType),
-
+    TokenRules = [],
+    GroupTokenRules = [],
     Operations = [
       new TokenizeOperation(),
-      new GenerateFromObjectOperation<XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
-      new GenerateFromObjectOperation<XMLElementClose>("tokens", "xml_close", "endtag"),
-      new GenerateFromObjectOperation<XMLElementOpen>("tokens", "xml_open", "tagname"),
-      new GenerateFromObjectOperation<XMLContent>("tokens", "xml_content", "content"),
-      new GenerateFromObjectOperation<XMLHeader>("tokens", "xml_header", "header"),
-      new GenerateFromObjectOperation<XMLComment>("tokens", "xml_comment", "header"),
+      new GenerateFromObjectOperation<TokenObject, XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
+      new GenerateFromObjectOperation<TokenLabel, XMLElementClose>("tokens", "xml_close", "endtag"),
+      new GenerateFromObjectOperation<TokenObject, XMLElementOpen>("tokens", "xml_open", "tagname"),
+      new GenerateFromObjectOperation<TokenTypedValue, XMLContent>("tokens", "xml_content", "content"),
+      new GenerateFromObjectOperation<TokenObject, XMLHeader>("tokens", "xml_header", "header"),
+      new GenerateFromObjectOperation<TokenLabel, XMLComment>("tokens", "xml_comment", "header"),
       new ConsolidateOperation<IXMLObject>(["xml_single", "xml_close", "xml_open", "xml_content", "xml_header", "xml_comment"], "xml"),
       new XMLStackOperation("xml", "result"),
       Operation.End,

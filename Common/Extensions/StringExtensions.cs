@@ -116,6 +116,15 @@ public static class StringExtensions
       s = s.Replace(lf, replaceWith, SCO);
     return s;
   }
+  public static string XMLEscape (this string s)
+  {
+    s = s.Replace("&", "&amp;", SCO);
+    s = s.Replace("'", "&apos;", SCO);
+    s = s.Replace("\"", "&quot;", SCO);
+    s = s.Replace("<", "&lt;", SCO);
+    s = s.Replace(">", "&gt;", SCO);
+    return s;
+  }
   public static string Replace (this string? text, int changed_pos, int changed_length, string replacement = EmptyString)
   {
     if (text is null)
