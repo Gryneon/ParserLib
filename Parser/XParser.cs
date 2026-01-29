@@ -110,6 +110,9 @@ public sealed class XParser
   /// <exception cref="InvalidOperationException"/>
   /// <exception cref="ArgumentNullException"/>
   public CursorData GetCursorByKey (string key) => Cursors.First(item => item.Key.Like(key));
+  public void SetCursorByKey (string key, int index) => Cursors.First(item => item.Key.Like(key)).Index = index;
+  public void IncCursorByKey (string key, int inc) => Cursors.First(item => item.Key.Like(key)).Index += inc;
+
   /// <inheritdoc/>
   public void AddCursor (string key) => Cursors.Add(new(0, key, Data));
 
