@@ -10,7 +10,7 @@ public sealed class XParser
   private const string Area = "XParser";
   //private bool _isDataInit;
   /// <inheritdoc/>
-  public int OpIndex { get; protected set; }
+  public int OpIndex { get; private set; }
   /// <inheritdoc/>
   public int NextOpIndex { get; set; }
   /// <inheritdoc/>
@@ -18,7 +18,7 @@ public sealed class XParser
   /// <inheritdoc/>
   public IOperation NextOp => Operations[NextOpIndex];
   /// <inheritdoc/>
-  public OpStatus LastStatus { get; protected set; } = AtStart;
+  public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>
   /// Gets the file data as a list of bytes.
   /// </summary>
@@ -151,7 +151,7 @@ public sealed class XParser
   }
   /// <summary>Performs all the operations, ending on a fail or a completion of the sequence.</summary>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
-  protected internal OpStatus ParseLoop ()
+  private OpStatus ParseLoop ()
   {
     Log(Area, "StepInit", "Initialized");
 
@@ -164,7 +164,7 @@ public sealed class XParser
   }
   /// <summary>Performs the operation indicated by <see cref="OpIndex"/> and advances to the next operation.</summary>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
-  protected internal OpStatus PerformOperation ()
+  internal OpStatus PerformOperation ()
   {
     if (CurrentOp.SkipOperation)
     {

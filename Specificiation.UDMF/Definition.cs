@@ -9,8 +9,6 @@ using Parser.Tokens;
 using static Parser.DefinitionStaticFunctions;
 using static Specification.UDMF.UDMFTokenType;
 
-using RT = Parser.Tokens.TokenRuleType;
-
 namespace Specification.UDMF;
 
 [DefinitionExport]
@@ -104,7 +102,7 @@ public class ZVertex : ZMapObj, IGeneratable<TokenObject, ZVertex>
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (TokenObject input) => CanGenerate(input, "vertex");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 
 public class ZThing : ZMapObj, IGeneratable<TokenObject, ZThing>
@@ -116,7 +114,7 @@ public class ZThing : ZMapObj, IGeneratable<TokenObject, ZThing>
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (TokenObject input) => CanGenerate(input, "thing");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 
 public class ZLineDef : ZMapObj, IGeneratable<TokenObject, ZLineDef>
@@ -129,7 +127,7 @@ public class ZLineDef : ZMapObj, IGeneratable<TokenObject, ZLineDef>
   public static bool CanGenerate (TokenObject input)
   {
     input.ThrowIfNull();
-    return input.HasGroup("linedef");
+    return input.Name.Like("linedef");
   }
 }
 
@@ -143,7 +141,7 @@ public class ZSideDef : ZMapObj, IGeneratable<TokenObject, ZSideDef>
   public static bool CanGenerate (TokenObject input)
   {
     input.ThrowIfNull();
-    return input.HasGroup("sidedef");
+    return input.Name.Like("sidedef");
   }
 }
 
@@ -154,6 +152,6 @@ public class ZSector : ZMapObj, IGeneratable<TokenObject, ZSector>
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (TokenObject input) => CanGenerate(input, "sector");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 

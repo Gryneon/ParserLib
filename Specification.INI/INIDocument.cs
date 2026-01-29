@@ -21,8 +21,8 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
   #endregion
   /// <summary>Creates an empty <see cref="INIDocument"/>.</summary>
   public INIDocument () { }
-  /// <summary>Creates a <see cref="INIDocument"/> with the provided <see cref="Section"/> objects in it.</summary>
-  public INIDocument (IEnumerable<INISection> sections) => Sections = [.. sections];
+  /// <summary>Creates a <see cref="INIDocument"/> with the provided <see cref="INISection"/> objects in it.</summary>
+  public INIDocument (IEnumerable<INISection> iniSections) => Sections = [.. iniSections];
   /// <summary>Creates a deep copy of the passed document.</summary>
   /// <param name="other">The document to copy.</param>
   public INIDocument (INIDocument other)
@@ -56,24 +56,24 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
   /// <param name="name">The name to check for.</param>
   /// <returns><see langword="true"/> if the document contains a INISection with the given name, <see langword="false"/> otherwise.</returns>
   public bool Contains (string name) => Sections.Any(item => item.Name.Like(name));
-  /// <summary>Adds a INISection if it does not exist.
-  /// If it does exist, it adds or updates all the values contained in the provided <see cref="INISection"/>.</summary>
-  /// <param name="iniSection">The INISection to add.</param>
-  public void Add (INISection iniSection)
+  /// <summary>Adds a section if it does not exist.
+  /// If it does exist, it adds or updates all the values contained in the provided <see cref="Section"/>.</summary>
+  /// <param name="section">The section to add.</param>
+  public void Add (INISection section)
   {
-    iniSection.ThrowIfNull();
-    if (Contains(iniSection.Name))
+    section.ThrowIfNull();
+    if (Contains(section.Name))
     {
-      foreach (IProperty<string> item in iniSection)
+      foreach (IProperty<string> item in section)
       {
         if (item.Value is null)
           continue;
-        this[iniSection.Name].Set(item.Key, item.Value);
+        this[section.Name].Set(item.Key, item.Value);
       }
     }
     else
     {
-      Sections.Add(iniSection);
+      Sections.Add(section);
     }
   }
   /// <summary>Adds a collection of child INISections to the current document.</summary>
@@ -101,9 +101,9 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
   public void Update (INIDocument other)
   {
     other ??= [];
-    foreach (INISection section in other.Sections)
+    foreach (INISection iniSection in other.Sections)
     {
-      Add(section);
+      Add(iniSection);
     }
   }
   public string Serialize ()

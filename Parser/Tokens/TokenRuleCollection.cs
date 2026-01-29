@@ -24,6 +24,9 @@ public class TokenRuleCollection : IList<TokenRule>, ICanAddChildren<TokenRule>,
   IEnumerator IEnumerable.GetEnumerator () => _rules.GetEnumerator();
   public void AddRange (IEnumerable<TokenRule> children)
   {
+    if (children is null)
+      return;
+
     foreach (var child in children)
     {
       Add(child);
