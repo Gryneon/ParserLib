@@ -10,11 +10,6 @@ namespace Specification.INI;
 [DefinitionExport]
 public static class Definition
 {
-  private const TokenRuleType Competes = TMatches | Competitive;
-  private const TokenRuleType TMatches = TokenMatch | ExemptAllWithin | IgnoreCase;
-  private const TokenRuleType TExactly = TokenExact | ExemptAllWithin | IgnoreCase;
-  private const TokenRuleType TExtract = TokenExtract | ExemptAllWithin | IgnoreCase;
-
   /// <summary>The INI Spec</summary>
   [Export("ini")]
   public static Spec Spec => new()
@@ -33,14 +28,15 @@ public static class Definition
       Operation.End
     ],
     TokenRules = [
-      new(Competes | IgnoredToken, ITT.None, @";.*?$"),
-      new(Competes, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
-      new(Competes, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
-      .. MakeSingleCharRules("=", TExactly, new ITT[] { ITT.Eq } ),
-      new(TExtract, ITT.INISection, @"\[(?'keep'.*?)\]")],
+      new(Competitive | IgnoredToken, ITT.None, @";.*?$"),
+      new(Competitive, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
+      new(Competitive, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
+      .. MakeSingleCharRules("=", TokenExact, new ITT[] { ITT.Eq } ),
+      new(TokenExtract, ITT.INISection, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
       new(BuildProperty, ITT.Property, "tn:Key tx:Eq tv:Value"),
-      new(BuildObject, ITT.INISectionWProps, "tn:INISection tpm:Property"),
-    ]
+      new(BuildObject, ITT.INISectionWProps, "tn:INISection tpm:Property")
+    ],
+    DefaultRuleSet = ExemptAllWithin | IgnoreCase,
   };
 }

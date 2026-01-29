@@ -175,7 +175,7 @@ public sealed class OperationAction : IOperation
     OAT.CreateCursor => $"Creating cursor on {SData[0]}",
     OAT.CopyKey => $"Copying key from {SData[0]} to {SData[1]}",
     OAT.JumpIf => throw new NotImplementedException(),
-    OAT.Prompt => $"Prompt Encountered."
+    OAT.Prompt => $"Prompt Encountered.",
     _ => "Error: Unknown Action"
   };
 }

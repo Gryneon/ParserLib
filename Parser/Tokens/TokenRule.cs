@@ -84,6 +84,7 @@ public class TokenRule
     foreach ((string word, dynamic type) in rules)
     {
       TokenRule r = new(RT.TokenMatch | RT.ExemptAllWithin | (ignore_case ? RT.IgnoreCase : RT.None), type, $"\b{word}\b");
+      tokenRules.Add(r);
     }
 
     return [.. tokenRules];

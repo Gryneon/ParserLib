@@ -12,24 +12,27 @@ public class TokenFactory
   private readonly TokenCollection _result = [];
   private TokenRule? _currentRule;
   private readonly Spec _spec;
+  private readonly TokenRuleType _default_rule;
 
   public TokenFactory (IEnumerable<TokenRule> rules, Spec spec)
   {
     _spec = spec;
     _rules = rules;
+    _default_rule = _spec.DefaultRuleSet;
   }
   public TokenFactory (Spec spec)
   {
     _spec = spec;
     _rules = spec?.TokenRules ?? [];
+    _default_rule = _spec.DefaultRuleSet;
   }
 
-  private bool IgnoreCase => _currentRule?.Type.HasFlag(RT.IgnoreCase) ?? false;
+  private bool IgnoreCase => _currentRule?.Type.HasFlag(RT.IgnoreCase) ?? false || _default_rule.HasFlag(RT.IgnoreCase);
   private StringComparison IC => IgnoreCase ? SCOIC : SCO;
-  private bool Competes => _currentRule?.Type.HasFlag(RT.Competitive) ?? false;
-  private bool IgnoredToken => _currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false;
-  private bool FromTokens => _currentRule?.Type.HasFlag(RT.FromTokens) ?? false;
-  private bool ExemptAllWithin => _currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false;
+  private bool Competes => _currentRule?.Type.HasFlag(RT.Competitive) ?? false || _default_rule.HasFlag(RT.Competitive);
+  private bool IgnoredToken => _currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false || _default_rule.HasFlag(RT.IgnoredToken);
+  private bool FromTokens => _currentRule?.Type.HasFlag(RT.FromTokens) ?? false || _default_rule.HasFlag(RT.FromTokens);
+  private bool ExemptAllWithin => _currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false || _default_rule.HasFlag(RT.ExemptAllWithin);
   private RT Type => GetMaskedType(_currentRule?.Type ?? RT.None);
   private string RuleData => _currentRule?.RuleStringData ?? SE;
   private string AssignType => _currentRule?.TypeToAssign ?? SE;
@@ -78,6 +81,7 @@ public class TokenFactory
   {
     static void debug (string msg) => Log(MsgClass.Debug, Area, "Produce", msg);
     static void log (MsgClass type, string msg) => Log(type, Area, "Produce", msg);
+    static void warning (string msg) => Log(MsgClass.Warning, Area, "Produce", msg);
 
     debug("Method Started");
     bool competed = false;
@@ -91,14 +95,14 @@ public class TokenFactory
 
       if (Competes && !competed)
       {
-        Log(Area, "Running competition.", text: ConsoleColor.Cyan);
+        debug("Running competition.");
         Tokens_Compete();
         competed = true;
         continue;
       }
       if (Competes)
       {
-        log(MsgClass.Debug, "Already ran competition.");
+        debug("Already ran competition.");
         continue;
       }
 
@@ -133,7 +137,7 @@ public class TokenFactory
           Log(Area, "Error Matching");
           break;
         default:
-          Log(Area, "Bad rule type, skipping rule.");
+          warning("Bad rule type, skipping rule.");
           break;
       }
     }
@@ -179,14 +183,14 @@ public class TokenFactory
       {
         if (tokendata.Content.Equals(RuleData, IC))
         {
-          tokendata.Type = _currentRule!.TypeToAssign;
+          tokendata.Type = AssignType;
         }
       }
       else if (Type is RT.TokenMatch)
       {
         if (Regex.Match(tokendata.Content, GetRuleRegex(_currentRule)).Length == tokendata.Content.Length)
         {
-          tokendata.Type = _currentRule!.TypeToAssign;
+          tokendata.Type = AssignType;
           tokendata.Exempt = ExemptAllWithin;
         }
       }
@@ -195,7 +199,7 @@ public class TokenFactory
         Match m = Regex.Match(tokendata.Content, GetRuleRegex(_currentRule));
         if (m.Length == tokendata.Content.Length)
         {
-          tokendata.Type = _currentRule!.TypeToAssign;
+          tokendata.Type = AssignType;
           tokendata.Exempt = ExemptAllWithin;
           tokendata.Content = m.Groups["keep"].Value;
         }
@@ -288,7 +292,7 @@ public class TokenFactory
 
       if (index == ErrVal)
       {
-        Log(Area, "GetRuleGroupIndex Returned -1");
+        Log(MsgClass.Error, Area, "GetRuleGroupIndex Returned -1");
         continue;
       }
       TokenRule cRule = contestants[index].Rule;
