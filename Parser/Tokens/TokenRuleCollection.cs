@@ -1,8 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 namespace Parser.Tokens;
 
-/// <summary>A Collection of <see cref="TokenRule"/> objects.</summary>
-public class TokenRuleCollection : IList<TokenRule>
+public class TokenRuleCollection : IList<TokenRule>, ICanAddChildren<TokenRule>, ICanAccessChildren<int, TokenRule>
 {
   private readonly Collection<TokenRule> _rules = [];
 
@@ -23,4 +22,11 @@ public class TokenRuleCollection : IList<TokenRule>
   public bool Remove (TokenRule item) => _rules.Remove(item);
   public void RemoveAt (int index) => _rules.RemoveAt(index);
   IEnumerator IEnumerable.GetEnumerator () => _rules.GetEnumerator();
+  public void AddRange (IEnumerable<TokenRule> children)
+  {
+    foreach (var child in children)
+    {
+      Add(child);
+    }
+  }
 }

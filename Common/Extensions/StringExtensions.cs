@@ -43,8 +43,8 @@ public static class StringExtensions
   public static bool Like (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCOIC) ?? false);
   public static bool Like (this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || (text?.Any(other, Like) ?? false);
   public static bool Any (this string? text, IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
-  public static bool ContainsAny (this string text, IEnumerable<string> other, StringComparison sc = SCO) => other.Any(x => text.Contains(x, sc));
-  public static bool ContainsNewLine (this string s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
+  public static bool ContainsAny ([NotNullWhen(true)] this string text, IEnumerable<string> other, StringComparison sc = SCO) => other.Any(x => text.Contains(x, sc));
+  public static bool ContainsNewLine ([NotNullWhen(true)] this string s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
   public static int ContainsCount (this string s, string checkFor, StringComparison sc = SCO)
   {
     if (s is null || checkFor is null || s.Length == 0 || checkFor.Length == 0)

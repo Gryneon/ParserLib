@@ -9,7 +9,7 @@ namespace Specification.INI;
 /// <summary>
 /// Represents a INISection heading in an INI formatted file.
 /// </summary>
-public sealed class INISection : IGeneratable<MatchDataSet, INISection>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
+public sealed class INISection : IGeneratable<TokenProperty, INISection>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
 {
   /// <summary>
   /// Creates an empty INISection.

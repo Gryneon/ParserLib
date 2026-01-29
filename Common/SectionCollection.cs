@@ -1,8 +1,10 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using Common;
+
 namespace Parser.Tokens;
 
-public sealed class SectionCollection () : ICollection<Section>
+public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren<Section>
 {
   private readonly List<Section> _sections = [];
   private readonly Dictionary<int, bool> _bit_array = [];
@@ -83,4 +85,9 @@ public sealed class SectionCollection () : ICollection<Section>
   public IEnumerator<Section> GetEnumerator () => _sections.GetEnumerator();
   public bool Remove (Section item) => _sections.Remove(item);
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
+  public void AddRange (IEnumerable<Section> children)
+  {
+    foreach (Section item in children ?? [])
+      Add(item);
+  }
 }

@@ -4,7 +4,7 @@ using static Parser.OpStatus;
 
 namespace Parser;
 
-public class XParser
+public sealed class XParser
 {
   /// <summary>The class name for debugging.</summary>
   private const string Area = "XParser";
@@ -44,7 +44,7 @@ public class XParser
   }
 
   /// <summary>Loads the operations into a flat pattern.</summary>
-  protected void OperationLoad ()
+  private void OperationLoad ()
   {
     Operations.AddRange(Spec.Operations);
 
@@ -60,7 +60,7 @@ public class XParser
       }
     }
   }
-  protected void InitializeData<T> (T data)
+  private void InitializeData<T> (T data)
   {
     if (Spec.Name.Like("unknown"))
     {
@@ -78,7 +78,7 @@ public class XParser
   /// </summary>
   /// <param name="spec">The specificiation to use.</param>
   [MemberNotNull(nameof(Data), nameof(Spec))]
-  protected void InitializeParser (Spec spec)
+  private void InitializeParser (Spec spec)
   {
     Data = new() { Parser = this };
     Spec = spec;

@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using Parser;
 using Parser.Inference;
 using Parser.Ops.Text;
+using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
 using static Specification.UDMF.UDMFTokenType;
@@ -93,66 +94,66 @@ public abstract class ZMapObj
   }
 }
 
-public class ZVertex : ZMapObj, IGeneratable<MatchDataSet, ZVertex>
+public class ZVertex : ZMapObj, IGeneratable<TokenObject, ZVertex>
 {
   public string? X => Properties.Single(item => item.Key.Like("x")).Value;
   public string? Y => Properties.Single(item => item.Key.Like("y")).Value;
 
-  public static ZVertex Generate (MatchDataSet input)
+  public static ZVertex Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input) => CanGenerate(input, "vertex");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input, "vertex");
 }
 
-public class ZThing : ZMapObj, IGeneratable<MatchDataSet, ZThing>
+public class ZThing : ZMapObj, IGeneratable<TokenObject, ZThing>
 {
   public string? X => Properties.Single(item => item.Key.Like("x")).Value;
   public string? Y => Properties.Single(item => item.Key.Like("y")).Value;
-  public static ZThing Generate (MatchDataSet input)
+  public static ZThing Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input) => CanGenerate(input, "thing");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input, "thing");
 }
 
-public class ZLineDef : ZMapObj, IGeneratable<MatchDataSet, ZLineDef>
+public class ZLineDef : ZMapObj, IGeneratable<TokenObject, ZLineDef>
 {
-  public static ZLineDef Generate (MatchDataSet input)
+  public static ZLineDef Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input)
+  public static bool CanGenerate (TokenObject input)
   {
     input.ThrowIfNull();
     return input.HasGroup("linedef");
   }
 }
 
-public class ZSideDef : ZMapObj, IGeneratable<MatchDataSet, ZSideDef>
+public class ZSideDef : ZMapObj, IGeneratable<TokenObject, ZSideDef>
 {
-  public static ZSideDef Generate (MatchDataSet input)
+  public static ZSideDef Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input)
+  public static bool CanGenerate (TokenObject input)
   {
     input.ThrowIfNull();
     return input.HasGroup("sidedef");
   }
 }
 
-public class ZSector : ZMapObj, IGeneratable<MatchDataSet, ZSector>
+public class ZSector : ZMapObj, IGeneratable<TokenObject, ZSector>
 {
-  public static ZSector Generate (MatchDataSet input)
+  public static ZSector Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input) => CanGenerate(input, "sector");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input, "sector");
 }
 

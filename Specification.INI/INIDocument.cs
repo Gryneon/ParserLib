@@ -21,8 +21,8 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
   #endregion
   /// <summary>Creates an empty <see cref="INIDocument"/>.</summary>
   public INIDocument () { }
-  /// <summary>Creates a <see cref="INIDocument"/> with the provided <see cref="INISection"/> objects in it.</summary>
-  public INIDocument (IEnumerable<INISection> iniSections) => Sections = [.. iniSections];
+  /// <summary>Creates a <see cref="INIDocument"/> with the provided <see cref="Section"/> objects in it.</summary>
+  public INIDocument (IEnumerable<INISection> sections) => Sections = [.. sections];
   /// <summary>Creates a deep copy of the passed document.</summary>
   /// <param name="other">The document to copy.</param>
   public INIDocument (INIDocument other)
@@ -101,9 +101,9 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
   public void Update (INIDocument other)
   {
     other ??= [];
-    foreach (INISection iniSection in other.Sections)
+    foreach (INISection section in other.Sections)
     {
-      Add(iniSection);
+      Add(section);
     }
   }
   public string Serialize ()

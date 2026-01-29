@@ -1,6 +1,8 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-namespace Parser.Tokens;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Common;
 
 public struct Section () : IEquatable<Section>, IComparable<Section>
 {
