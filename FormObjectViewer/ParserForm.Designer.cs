@@ -628,10 +628,8 @@ partial class ParserForm : Form
   private Button LoadRulesButton;
   private DataGridView TokenDataGrid;
   private DataGridView TokenRuleDataGrid;
-  private DataGridViewTextBoxColumn lastPositionDataGridViewTextBoxColumn;
   private DataGridViewTextBoxColumn LengthTokenColumn;
   private DataGridViewTextBoxColumn IndexTokenColumn;
-  private DataGridViewTextBoxColumn countDataGridViewTextBoxColumn;
   private BindingSource TokenBindingSource;
   private Label TokenLabel;
   private Label TokenCountLabel;

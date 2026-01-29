@@ -4,31 +4,12 @@ using static Parser.OpStatus;
 
 namespace Parser;
 
-public class FailureEventArgs : EventArgs
-{
-  public OpStatus OperationResult { get; init; }
-  public bool UseExpectedLine { get; set; }
-  public string Message { get; init; } = "Generic Operation Failure";
-  public string Expected { get; init; } = "correct item";
-  public string Received { get; init; } = "incorrect item";
-  public override string ToString ()
-  {
-    string result = Message;
-
-    if (UseExpectedLine) result += '\n' + $"Expected {Expected}, got {Received}.";
-
-    return result;
-  }
-}
-
-public class XParser
+public sealed class XParser
 {
   /// <summary>The class name for debugging.</summary>
   private const string Area = "XParser";
-  private bool _isDataInit;
-  private bool _isParserInit;
   /// <inheritdoc/>
-  public int OpIndex { get; protected set; }
+  public int OpIndex { get; private set; }
   /// <inheritdoc/>
   public int NextOpIndex { get; set; }
   /// <inheritdoc/>
@@ -36,7 +17,7 @@ public class XParser
   /// <inheritdoc/>
   public IOperation NextOp => Operations[NextOpIndex];
   /// <inheritdoc/>
-  public OpStatus LastStatus { get; protected set; } = AtStart;
+  public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>
   /// Gets the file data as a list of bytes.
   /// </summary>
@@ -62,7 +43,7 @@ public class XParser
   }
 
   /// <summary>Loads the operations into a flat pattern.</summary>
-  protected void OperationLoad ()
+  private void OperationLoad ()
   {
     Operations.AddRange(Spec.Operations);
 
@@ -78,7 +59,7 @@ public class XParser
       }
     }
   }
-  protected void InitializeData<T> (T data)
+  private void InitializeData<T> (T data)
   {
     if (Spec.Name.Like("unknown"))
     {
@@ -89,20 +70,19 @@ public class XParser
     OperationLoad();
     data.ThrowIfNull();
     Data.Initialize(data);
-    _isDataInit = true;
+    //_isDataInit = true;
   }
   /// <summary>
   /// Sets up the Specification and DataDictionary for the parser.
   /// </summary>
   /// <param name="spec">The specificiation to use.</param>
   [MemberNotNull(nameof(Data), nameof(Spec))]
-  protected void InitializeParser (Spec spec)
+  private void InitializeParser (Spec spec)
   {
     Data = new() { Parser = this };
     Spec = spec;
     Spec.SetAsActive();
     NextOpIndex = 1;
-    _isParserInit = true;
   }
   public Collection<CursorData> Cursors { get; } = [];
   /// <summary>
@@ -129,6 +109,9 @@ public class XParser
   /// <exception cref="InvalidOperationException"/>
   /// <exception cref="ArgumentNullException"/>
   public CursorData GetCursorByKey (string key) => Cursors.First(item => item.Key.Like(key));
+  public void SetCursorByKey (string key, int index) => Cursors.First(item => item.Key.Like(key)).Index = index;
+  public void IncCursorByKey (string key, int inc) => Cursors.First(item => item.Key.Like(key)).Index += inc;
+
   /// <inheritdoc/>
   public void AddCursor (string key) => Cursors.Add(new(0, key, Data));
 
@@ -170,7 +153,7 @@ public class XParser
   }
   /// <summary>Performs all the operations, ending on a fail or a completion of the sequence.</summary>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
-  protected internal OpStatus ParseLoop ()
+  private OpStatus ParseLoop ()
   {
     Log(Area, "StepInit", "Initialized");
 
@@ -183,7 +166,7 @@ public class XParser
   }
   /// <summary>Performs the operation indicated by <see cref="OpIndex"/> and advances to the next operation.</summary>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
-  protected internal OpStatus PerformOperation ()
+  internal OpStatus PerformOperation ()
   {
     if (CurrentOp.SkipOperation)
     {

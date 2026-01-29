@@ -34,6 +34,7 @@ public class Spec
 
   /// <summary>Define the names of equilivent groups of tokens.</summary>
   public Dictionary<dynamic, Collection<dynamic>> TokenCompatLookup { get; init; } = [];
+  public RT DefaultRuleSet { get; init; } = RT.None;
   /// <summary>Token rules for the tokenize operration..</summary>
   public TokenRuleCollection TokenRules { get; init; } = [];
   /// <summary>Group token rules for the tokenize operration..</summary>

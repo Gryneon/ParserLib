@@ -14,7 +14,7 @@ public sealed class XMLComment () : IGeneratable<TokenLabel, XMLComment>, IXMLOb
     obj.ThrowIfNull();
     XMLComment result = new()
     {
-      Content = obj.Name,
+      Content = obj?.Name ?? SE,
     };
 
     return result;

@@ -47,4 +47,7 @@ public enum ACSTokenType
   SimpleJump,
   Void,
   Type,
+  Wait,
+  PreprocessorFull,
+  Else,
 }

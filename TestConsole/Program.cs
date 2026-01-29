@@ -4,6 +4,8 @@ using System.IO;
 using Parser;
 using Parser.Tokens;
 
+using Specification.WAD;
+
 using static Parser.Debug;
 
 using CK = System.ConsoleKey;
@@ -73,6 +75,7 @@ internal sealed class Program
     //InitialTest(Specification.IPL.Definition.Spec, Paths.ipl_batch6458);
     //InitialTest(Specification.XML.Definition.Spec, Paths.xsd_specification);
     InitialTest(Specification.WAD.Definition.WAD, Paths.wad_pl2);
+    InitialTest(Specification.WAD.Definition.WAD, Resources.wad_tnt);
 
     if (args.Length == 0)
     {

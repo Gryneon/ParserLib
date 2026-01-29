@@ -13,6 +13,6 @@ public class XMLElementClose () : XMLNode, IGeneratable<TokenLabel, XMLElementCl
   public static XMLElementClose Generate (TokenLabel label)
   {
     label.ThrowIfNull();
-    return new() { Tag = label.Name };
+    return new() { Tag = label?.Name ?? SE };
   }
 }

@@ -2,25 +2,28 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenProperty : TokenBase, IReadOnlyProperty<string>, IProperty<string>
+public sealed class TokenProperty : TokenBase, IReadOnlyProperty<string>, IProperty<string>, INameToken, IValueToken, ITypeToken
 {
   // Assigned Properties
-  string IProperty<string>.Key { get => Name; set => value.DoNothing(); }
-  public string Name => NameToken.Content;
+  string IProperty<string>.Key { get => Name ?? SE; set => this.DoNothing(); }
+  public string? Name => NameToken?.Content;
   string? IProperty<string>.Value
   {
     get => ValueToken?.Content;
     set => value.DoNothing();
   }
   public string? Value => ValueToken?.Content;
+  public string? ObjType => TypeToken?.Content;
 
   // Tokens Kept
-  public required IToken NameToken { get; init; }
+  public required IToken? NameToken { get; init; }
   public required IToken? ValueToken { get; init; }
+  public IToken? TypeToken { get; init; }
 
-  string IReadOnlyProperty<string>.Key => Name;
+  string IReadOnlyProperty<string>.Key => Name ?? SE;
+
   int IComparable<IProperty<string>>.CompareTo (IProperty<string>? other) => Name.CompareTo(other?.Key, SCO);
-  public bool Equals (IProperty<string>? other) => Name.Equals(other?.Key, SCO) && (Value?.Equals(other?.Value, SCO) ?? false);
-  public override bool Equals (object? obj) => obj is IProperty<string> ips && Name.Equals(ips.Key, SCO) && (Value?.Equals(ips.Value, SCO) ?? false);
+  public bool Equals (IProperty<string>? other) => (Name?.Equals(other?.Key, SCO) ?? false) && (Value?.Equals(other?.Value, SCO) ?? false);
+  public override bool Equals (object? obj) => obj is IProperty<string> ips && (Name?.Equals(ips.Key, SCO) ?? false) && (Value?.Equals(ips.Value, SCO) ?? false);
   public override int GetHashCode () => HashCode.Combine(Name, Value);
 }

@@ -1,15 +1,17 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using System.Xml.Linq;
+
 namespace Parser.Tokens;
 
-public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>
+public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>, ITypeToken, INameToken
 {
   // Assigned Properties
-  public string Name => NameToken.Content;
-  public string? ObjType => TypeToken is IToken t ? t.Content : null;
+  public string Name => NameToken?.Content ?? SE;
+  public string? ObjType => TypeToken?.Content;
 
   // Tokens Kept
-  public required IToken NameToken { get; init; }
+  public required IToken? NameToken { get; init; }
   public IToken? TypeToken { get; init; }
 
   public TokenCollection Properties { get; init; } = [];

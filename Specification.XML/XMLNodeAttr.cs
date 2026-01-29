@@ -28,7 +28,7 @@ public abstract class XMLNodeAttr : XMLNode
       _ = prop ?? throw new InvalidCastException("TokenObject had an improper property stored.");
       XMLProperty attr = new()
       {
-        Key = prop.Name,
+        Key = prop.Name ?? SE,
         Value = prop.Value
       };
       Attributes.Add(attr);

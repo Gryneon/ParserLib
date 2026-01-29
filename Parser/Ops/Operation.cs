@@ -160,6 +160,7 @@ public abstract class Operation : IOperation
   public bool ContinueOnFail { get; set; }
   /// <inheritdoc/>
   public bool SkipOperation { get; set; }
+  public bool NeverExecutes { get; }
   /// <summary>
   /// Whether or not this operation loads any data.
   /// </summary>
@@ -177,17 +178,17 @@ public abstract class Operation : IOperation
   {
     if (InputKey == SE || IgnoreAllLoads)
     {
-      Log("TextOperation.CheckInputNull", $"No key checked.");
+      Log("Operation.CheckInputNull", $"No key checked.");
       Status = OpStatus.Skipped;
     }
     else if (!Data.CanLoad(InputKey))
     {
-      Log("TextOperation.CheckInputNull", $"Key {InputKey} does not exist.");
+      Log("Operation.CheckInputNull", $"Key {InputKey} does not exist.");
       Status = OpStatus.FailNoSuchVarName;
     }
     else if (Data.CanLoad(InputKey))
     {
-      Log("TextOperation.CheckInputNull", $"Key {InputKey} is not null.");
+      Log("Operation.CheckInputNull", $"Key {InputKey} is not null.");
       Status = OpStatus.Pass;
     }
   }
@@ -208,7 +209,7 @@ public abstract class Operation : IOperation
     {
       if (!Parser.Data.ContainsKey(key))
       {
-        Debug.Log("TextOperation.CheckInputsNull", $"Key {key} does not exist.");
+        Debug.Log("Operation.CheckInputsNull", $"Key {key} does not exist.");
         Status = OpStatus.FailNoSuchVarName;
         return false;
       }
@@ -218,12 +219,12 @@ public abstract class Operation : IOperation
       }
       else
       {
-        Debug.Log("TextOperation.CheckInputsNull", $"Key {key} is null.");
+        Debug.Log("Operation.CheckInputsNull", $"Key {key} is null.");
         Status = OpStatus.FailBadInputNull;
         return false;
       }
     }
-    Debug.Log("TextOperation.CheckInputsNull", $"All keys are not null.");
+    Debug.Log("Operation.CheckInputsNull", $"All keys are not null.");
     Status = OpStatus.Pass;
     InputKey ??= SE;
     return true;
@@ -416,12 +417,12 @@ public abstract class Operation : IOperation
     {
       if (Parser.Data.TryGetValue(InputKey, out object? value))
       {
-        Log("TextOperation.Initialize", $"Loaded {InputKey} with value {value}.");
+        Log("Operation.Initialize", $"Loaded {InputKey} with value {value}.");
         WorkToReturn = value;
       }
       else
       {
-        Log("TextOperation.Initialize", $"Key {InputKey} does not exist or is null.");
+        Log("Operation.Initialize", $"Key {InputKey} does not exist or is null.");
         WorkToReturn = null;
         Status = OpStatus.FailNoSuchVarName;
       }
