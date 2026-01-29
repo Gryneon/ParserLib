@@ -64,9 +64,9 @@
             <returns><see langword="true"/> if the document contains a INISection with the given name, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Specification.INI.INIDocument.Add(Specification.INI.INISection)">
-            <summary>Adds a INISection if it does not exist.
-            If it does exist, it adds or updates all the values contained in the provided <see cref="T:Specification.INI.INISection"/>.</summary>
-            <param name="iniSection">The INISection to add.</param>
+            <summary>Adds a section if it does not exist.
+            If it does exist, it adds or updates all the values contained in the provided <see cref="T:Common.Section"/>.</summary>
+            <param name="section">The section to add.</param>
         </member>
         <member name="M:Specification.INI.INIDocument.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.INISection})">
             <summary>Adds a collection of child INISections to the current document.</summary>
@@ -82,53 +82,6 @@
         </member>
         <member name="M:Specification.INI.INIDocument.Clear">
             <summary>Clears and removes all INISections.</summary>
-        </member>
-        <member name="T:Specification.INI.PropertyObj">
-            <summary>A key and value pair in an INI file.</summary>
-        </member>
-        <member name="P:Specification.INI.PropertyObj.Key">
-            <summary>The key name.</summary>
-        </member>
-        <member name="P:Specification.INI.PropertyObj.Value">
-            <summary>The value assigned to the key.</summary>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.#ctor">
-            <summary>Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.</summary>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.#ctor(System.String,System.String)">
-            <summary>
-            Creates a property from a key and value
-            </summary>
-            <param name="key">The key of the new property.</param>
-            <param name="value">The value of the new property.</param>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.Object})">
-            <summary>
-            Creates a property from an IProperty interface
-            </summary>
-            <param name="iprop">The other property.</param>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.String})">
-            <summary>
-            Creates a property from an IProperty interface
-            </summary>
-            <param name="iprop">The other property.</param>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.Generate(Common.Regex.MatchDataSet)">
-            <inheritdoc/>
-            <remarks>
-            <list type="table">
-            <listheader>Required Groups:</listheader>
-            <item><c>key</c></item> : The name of the property.
-            <item><c>value</c></item> : The value of the property.
-            </list>
-            </remarks>
-        </member>
-        <member name="M:Specification.INI.PropertyObj.Serialize">
-            <summary>
-            Gets the <see langword="string"/> representation of the object for serialization.
-            </summary>
-            <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
         <member name="T:Specification.INI.INISection">
             <summary>
@@ -234,6 +187,53 @@
         </member>
         <member name="M:Specification.INI.INISection.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc/>
+        </member>
+        <member name="T:Specification.INI.PropertyObj">
+            <summary>A key and value pair in an INI file.</summary>
+        </member>
+        <member name="P:Specification.INI.PropertyObj.Key">
+            <summary>The key name.</summary>
+        </member>
+        <member name="P:Specification.INI.PropertyObj.Value">
+            <summary>The value assigned to the key.</summary>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor">
+            <summary>Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.</summary>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor(System.String,System.String)">
+            <summary>
+            Creates a property from a key and value
+            </summary>
+            <param name="key">The key of the new property.</param>
+            <param name="value">The value of the new property.</param>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.Object})">
+            <summary>
+            Creates a property from an IProperty interface
+            </summary>
+            <param name="iprop">The other property.</param>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.String})">
+            <summary>
+            Creates a property from an IProperty interface
+            </summary>
+            <param name="iprop">The other property.</param>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.Generate(Common.Regex.MatchDataSet)">
+            <inheritdoc/>
+            <remarks>
+            <list type="table">
+            <listheader>Required Groups:</listheader>
+            <item><c>key</c></item> : The name of the property.
+            <item><c>value</c></item> : The value of the property.
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.Serialize">
+            <summary>
+            Gets the <see langword="string"/> representation of the object for serialization.
+            </summary>
+            <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
     </members>
 </doc>

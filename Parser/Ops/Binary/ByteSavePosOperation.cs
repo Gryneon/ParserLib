@@ -9,8 +9,8 @@ public class ByteSavePosOperation (string cursor_key, string output_key = "recal
   protected override void Execute ()
   {
     if (InputKey is null) throw new InvalidOperationException();
-    Data[OutputKey] = Parser.GetCursorByKey(InputKey).Index;
-    Log("ByteSavePosOperation:", $"Position saved, {Parser.Cursors.Last().Index} in '{OutputKey}'.");
+    Data.Save<int>(OutputKey, Parser.GetCursorByKey(InputKey).Index);
+    Log("ByteSavePosOperation:", $"Position saved, {Parser.GetCursorByKey(InputKey).Index} in '{OutputKey}'.");
     Status = Pass;
   }
 }

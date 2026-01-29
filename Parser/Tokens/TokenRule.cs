@@ -49,7 +49,7 @@ public class TokenRule
     if (string.IsNullOrEmpty(chars))
       return [.. tokenRules];
 
-    if (typeToAssign.IsCollection() && typeToAssign.Count == chars.Length)
+    if (typeToAssign is IList<object> && typeToAssign.Count == chars.Length)
     {
       for (int i = 0; i < chars.Length; i++)
       {
