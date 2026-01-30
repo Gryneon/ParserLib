@@ -106,6 +106,12 @@ public static class Definition
       IfN(FName|Is, "modeldef"))],
     Name = "zdoom.modeldef",
     RxOpt = ROML | ROIC | ROIPW | ROEC,
+    SC = SCOIC,
+    IsTextFile = true,
+    DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
+    TokenRules = [
+      .. TokenRule.MakeSingleCharRules("{}()=,;", TExact ,new ATT[] { Bo, Bc, Po, Pc, Eq, Cm, Sc }),
+    ],
     Operations = [
       new TokenizeOperation(),
       new DebugToStringOperation("tokens"),
