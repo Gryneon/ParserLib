@@ -118,6 +118,7 @@ public static class StringExtensions
   }
   public static string XMLEscape (this string s)
   {
+    s ??= SE;
     s = s.Replace("&", "&amp;", SCO);
     s = s.Replace("'", "&apos;", SCO);
     s = s.Replace("\"", "&quot;", SCO);

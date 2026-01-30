@@ -1,50 +1,68 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 namespace Parser.Tokens;
 
-public class TokenFactory
+public sealed class TokenFactory
 {
+  #region Private Fields
   private const string Area = "TokenFactory";
-  private readonly IEnumerable<TokenRule> _rules;
-
-  private string Input { get; set; } = SE;
-  private SectionCollection CannotMatch { get; } = [];
+  private TokenRuleCollection _rules;
   private readonly TokenCollection _result = [];
   private TokenRule? _currentRule;
-  private readonly Spec _spec;
-  private readonly TokenRuleType _default_rule;
-
+  private Spec _spec;
+  private RT _default_rule;
+  #endregion
+  #region Public Properties
+  public string Input { get; private set; } = SE;
+  public SectionCollection CannotMatch { get; } = [];
+  #endregion
+  #region Constructors
   public TokenFactory (IEnumerable<TokenRule> rules, Spec spec)
   {
-    _spec = spec;
-    _rules = rules;
-    _default_rule = _spec.DefaultRuleSet;
+    SetSpec(spec);
+    _rules.AddRange(rules);
   }
   public TokenFactory (Spec spec)
   {
-    _spec = spec;
-    _rules = spec?.TokenRules ?? [];
-    _default_rule = _spec.DefaultRuleSet;
+    SetSpec(spec);
   }
-
-  private bool IgnoreCase => _currentRule?.Type.HasFlag(RT.IgnoreCase) ?? false || _default_rule.HasFlag(RT.IgnoreCase);
+  public TokenFactory ()
+  {
+    SetSpec(DefaultSpec.Unknown);
+  }
+  #endregion
+  #region Private Helper Properties
+  private bool IgnoreCase => (_currentRule?.Type.HasFlag(RT.IgnoreCase) ?? false) || _default_rule.HasFlag(RT.IgnoreCase);
   private StringComparison IC => IgnoreCase ? SCOIC : SCO;
-  private bool Competes => _currentRule?.Type.HasFlag(RT.Competitive) ?? false || _default_rule.HasFlag(RT.Competitive);
-  private bool IgnoredToken => _currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false || _default_rule.HasFlag(RT.IgnoredToken);
-  private bool FromTokens => _currentRule?.Type.HasFlag(RT.FromTokens) ?? false || _default_rule.HasFlag(RT.FromTokens);
-  private bool ExemptAllWithin => _currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false || _default_rule.HasFlag(RT.ExemptAllWithin);
+  private bool Competes => (_currentRule?.Type.HasFlag(RT.Competitive) ?? false) || _default_rule.HasFlag(RT.Competitive);
+  private bool IgnoredToken => (_currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false) || _default_rule.HasFlag(RT.IgnoredToken);
+  private bool FromTokens => (_currentRule?.Type.HasFlag(RT.FromTokens) ?? false) || _default_rule.HasFlag(RT.FromTokens);
+  private bool ExemptAllWithin => (_currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false) || _default_rule.HasFlag(RT.ExemptAllWithin);
   private RT Type => GetMaskedType(_currentRule?.Type ?? RT.None);
   private string RuleData => _currentRule?.RuleStringData ?? SE;
   private string AssignType => _currentRule?.TypeToAssign ?? SE;
+  #endregion
   internal void SaveResult (Token token)
   {
-    if (_result.Any(t => t.Index == token.Index))
+    bool any = _result.Any(t => t.Index == token.Index);
+    if (any)
     {
-      throw new InvalidOperationException("Index already has a token!");
+      IToken first = _result.First(t => t.Index == token.Index);
+      throw new InvalidOperationException($"Index {token.Index} already has a token! ({first.Content}) adding ({token.Content})");
     }
 
     _result.Add(token);
   }
+  [MemberNotNull(nameof(_spec), nameof(_default_rule), nameof(_rules))]
+  public void SetSpec (Spec spec)
+  {
+    _spec = spec;
+    _default_rule = _spec.DefaultRuleSet;
+    _rules = _spec.TokenRules;
+  }
+  #region MakeToken
   internal Token MakeToken (string content, int index, TokenRule? rule = null) => new()
   {
     Index = index,
@@ -77,6 +95,7 @@ public class TokenFactory
     Ignored = (rule is null) ? IgnoredToken : rule.Type.HasFlag(RT.IgnoredToken),
     Exempt = (rule is null) ? ExemptAllWithin : rule.Type.HasFlag(RT.ExemptAllWithin),
   };
+  #endregion
   public TokenCollection Produce (string input)
   {
     static void debug (string msg) => Log(MsgClass.Debug, Area, "Produce", msg);
@@ -91,26 +110,20 @@ public class TokenFactory
     {
       debug("Rule processing started.");
       _currentRule = rule;
-      RT masked_type = rule.Type.RemoveBit<RT>(RT.FlagBits);
 
-      if (Competes && !competed)
+      switch (Type)
       {
-        debug("Running competition.");
-        Tokens_Compete();
-        competed = true;
-        continue;
-      }
-      if (Competes)
-      {
-        debug("Already ran competition.");
-        continue;
-      }
-
-      switch (masked_type)
-      {
+        case RT when Competes && !competed:
+          debug("Running competition.");
+          Tokens_Compete();
+          competed = true;
+          break;
+        case RT when Competes && competed:
+          debug("Already ran competition.");
+          break;
         case RT.None:
           log(MsgClass.Warning, "Warning: Bad type defined.");
-          continue;
+          break;
         case RT.TokenExact or RT.TokenMatch or RT.TokenExtract or RT.SplitMatch or RT.SplitExact when FromTokens:
           Log(Area, "Token matching starting, from Tokens");
           Tokens_FromTokens();
@@ -167,7 +180,12 @@ public class TokenFactory
       AsReadOnly().
       First(static g => g.Name.StartsWith("_R", SCO) && g.Value.Length > 0).
       Name[2..];
-    return int.TryParse(num, out int value) ? value : ErrVal;
+    int result = int.TryParse(num, out int value) ? value : ErrVal;
+    if (result == ErrVal)
+    {
+      Log(MsgClass.Error, Area, "GetRuleGroupIndex Returned -1");
+    }
+    return result;
   }
   internal void Tokens_FromTokens ()
   {
@@ -184,6 +202,7 @@ public class TokenFactory
         if (tokendata.Content.Equals(RuleData, IC))
         {
           tokendata.Type = AssignType;
+          tokendata.Exempt = ExemptAllWithin;
         }
       }
       else if (Type is RT.TokenMatch)
@@ -211,6 +230,7 @@ public class TokenFactory
     foreach (Section applicant in CannotMatch.Inverse())
     {
       Log(Area, "Tokens_StoreOther", $"Section: {applicant} Found with no token.");
+      CannotMatch.Add(Section.ByLength(applicant.Start, applicant.Length, Input));
       Token t = MakeToken(applicant);
       SaveResult(t);
     }
@@ -249,6 +269,7 @@ public class TokenFactory
         if (ExemptAllWithin || Type is RT.SplitExact)
           CannotMatch.Add(match);
       }
+      cursor = next + 1;
       next = Input.IndexOf(RuleData, cursor, IC);
     }
   }
@@ -260,19 +281,17 @@ public class TokenFactory
 
     foreach (Match match in mc)
     {
-      Section rng = Section.ByLength(match.Index, match.Length, Input);
+      Section rng = Section.ByMatch(match, Input);
 
       if (!rng.Overlaps(CannotMatch))
       {
-        string sub = match.Value;
         if (ExemptAllWithin)
           CannotMatch.Add(rng);
+
         if (Type is RT.TokenExtract)
           foreach (Capture c in match.Groups["keep"].Captures)
-          {
-            _currentRule.ThrowIfNull();
             SaveResult(MakeToken(c));
-          }
+
         else if (Type is RT.TokenMatch)
           SaveResult(MakeToken(rng));
       }
@@ -289,18 +308,15 @@ public class TokenFactory
     foreach (Match match in mc)
     {
       int index = GetRuleGroupIndex(match);
+      Section rng = Section.ByMatch(match, Input);
 
-      if (index == ErrVal)
-      {
-        Log(MsgClass.Error, Area, "GetRuleGroupIndex Returned -1");
-        continue;
-      }
-      TokenRule cRule = contestants[index].Rule;
-      Token token = MakeToken(match, cRule);
-      if (!token.Ignored)
-        SaveResult(token);
-      if (token.Exempt)
-        CannotMatch.Add(Section.ByLength(match.Index, match.Length, Input));
+      _currentRule = contestants[index].Rule;
+
+      if (ExemptAllWithin)
+        CannotMatch.Add(rng);
+
+      if (!IgnoredToken)
+        SaveResult(MakeToken(rng));
     }
   }
 }

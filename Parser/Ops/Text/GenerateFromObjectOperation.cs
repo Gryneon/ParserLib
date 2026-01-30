@@ -6,6 +6,7 @@ namespace Parser.Ops.Text;
 /// provided that the specified group (or groups) are present.
 /// </summary>
 /// <typeparam name="TOutput">The type of object to create.</typeparam>
+/// <typeparam name="TInput">The type of object to accept as input.</typeparam>
 /// <param name="input_key">The key to get the input from.</param>
 /// <param name="output_key">The key to write the output to.</param>
 /// <param name="group_name">The group name to check for.</param>

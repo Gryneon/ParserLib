@@ -9,6 +9,9 @@ using Specification.WAD;
 using static Parser.Debug;
 
 using CK = System.ConsoleKey;
+using SpecIPL = Specification.IPL.Definition;
+using SpecMapInfo = Specification.MapInfo.Definition;
+using SpecXML = Specification.XML.Definition;
 
 namespace TestConsole;
 
@@ -72,10 +75,12 @@ internal sealed class Program
     //InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
     //InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
     //InitialTest(Specification.ACS.Definition.ACS, Paths.acs_rpgmfunc);
-    //InitialTest(Specification.IPL.Definition.Spec, Paths.ipl_batch6458);
-    //InitialTest(Specification.XML.Definition.Spec, Paths.xsd_specification);
-    InitialTest(Specification.WAD.Definition.WAD, Paths.wad_pl2);
-    InitialTest(Specification.WAD.Definition.WAD, Resources.wad_tnt);
+    //InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
+    InitialTest(SpecXML.Spec, Paths.xsd_specification);
+    InitialTest(Definition.WAD, Paths.wad_pl2);
+    //InitialTest(Definition.WAD, Resources.wad_tnt);
+    InitialTest(SpecMapInfo.Spec, Paths.mapinfo_common);
+    InitialTest(SpecIPL.Spec, Paths.ipl_simple);
 
     if (args.Length == 0)
     {

@@ -6,6 +6,9 @@ using Parser.Ops.Text;
 using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
+using static Parser.Tokens.TokenRuleType;
+
+using XTT = Specification.XML.XMLTokenType;
 
 namespace Specification.XML;
 
@@ -25,13 +28,16 @@ public enum XMLTokenType
   ElementName,
   Namespace,
   Content,
+  DString,
+  SString,
 
   // Structures
   Attribute,
   ElementStart,
   ElementEnd,
   ElementSingle,
-  Header
+  Header,
+  NamespaceAttr
 }
 
 /// <summary>
@@ -77,9 +83,20 @@ public static class Definition
     RxOpt = ROML | ROEC | ROIPW,
     IsTextFile = true,
     SC = SCO,
-    TokenType = typeof(XMLTokenType),
-    TokenRules = [],
-    GroupTokenRules = [],
+    TokenType = typeof(XTT),
+    TokenRules = [
+      new(Competitive, XTT.DString, @"""[^""]*"""),
+      new(Competitive, XTT.SString, @"'[^']*'"),
+      new(Competitive, XTT.Comment, @"\<\!\s*--([^-]|(?<!-)-(?!-))*--\s*\>"),
+      .. TokenRule.MakeSingleCharRules("<>/?;&:=!-", TokenExact, new Collection<XTT>() { XTT.Ao, XTT.Ac, XTT.Sl, XTT.Qm, XTT.Sc, XTT.An, XTT.Co, XTT.Eq, XTT.Em, XTT.Hy }),
+      new (TokenMatch, XTT.NamespaceAttr, @"\bxmlns\b"),
+      new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*[=])"),
+      new (TokenMatch, XTT.ElementName, @"\b[a-z]\w*\b(?=\s*[^=])"),
+    ],
+    DefaultRuleSet = ExemptAllWithin | IgnoreCase,
+    GroupTokenRules = [
+      new (BuildProperty, XTT.Attribute, "ti:AttrKey")
+    ],
     Operations = [
       new TokenizeOperation(),
       new GenerateFromObjectOperation<TokenObject, XMLElementSingle>("tokens", "xml_single", "noinsidetag"),

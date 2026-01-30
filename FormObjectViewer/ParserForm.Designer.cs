@@ -93,10 +93,10 @@ partial class ParserForm : Form
     // StatusStrip
     // 
     StatusStrip.ImageScalingSize = new Size(20, 20);
-    StatusStrip.Location = new Point(0, 606);
+    StatusStrip.Location = new Point(0, 405);
     StatusStrip.Name = "StatusStrip";
-    StatusStrip.Padding = new Padding(1, 0, 17, 0);
-    StatusStrip.Size = new Size(1517, 22);
+    StatusStrip.Padding = new Padding(1, 0, 12, 0);
+    StatusStrip.Size = new Size(1062, 22);
     StatusStrip.TabIndex = 0;
     StatusStrip.Text = "StatusStrip";
     // 
@@ -115,8 +115,8 @@ partial class ParserForm : Form
     TheMenuStrip.Items.AddRange(new ToolStripItem[] { FileMenu });
     TheMenuStrip.Location = new Point(0, 0);
     TheMenuStrip.Name = "TheMenuStrip";
-    TheMenuStrip.Padding = new Padding(7, 3, 0, 3);
-    TheMenuStrip.Size = new Size(1517, 27);
+    TheMenuStrip.Padding = new Padding(5, 2, 0, 2);
+    TheMenuStrip.Size = new Size(1062, 25);
     TheMenuStrip.TabIndex = 2;
     TheMenuStrip.Text = "TheMenuStrip";
     // 
@@ -132,14 +132,14 @@ partial class ParserForm : Form
     LoadSpecMenuItem.Name = "LoadSpecMenuItem";
     LoadSpecMenuItem.Size = new Size(191, 22);
     LoadSpecMenuItem.Text = "Load Specs";
-    LoadSpecMenuItem.Click += LoadSpecMenuItem_Click;
+    LoadSpecMenuItem.Click += LoadSpecList;
     // 
     // OpenFileMenuItem
     // 
     OpenFileMenuItem.Name = "OpenFileMenuItem";
     OpenFileMenuItem.Size = new Size(191, 22);
     OpenFileMenuItem.Text = "Open File to Parse";
-    OpenFileMenuItem.Click += OpenFileMenuItem_Click;
+    OpenFileMenuItem.Click += OpenParseFile;
     // 
     // GenerateRulesMenuItem
     // 
@@ -158,7 +158,7 @@ partial class ParserForm : Form
     ExitMenuItem.Name = "ExitMenuItem";
     ExitMenuItem.Size = new Size(191, 22);
     ExitMenuItem.Text = "Exit";
-    ExitMenuItem.Click += ExitMenuItem_Click;
+    ExitMenuItem.Click += Exit;
     // 
     // SpecComboBox
     // 
@@ -166,10 +166,10 @@ partial class ParserForm : Form
     SpecComboBox.DataBindings.Add(new Binding("Text", SpecBindingSource, "Name", true));
     SpecComboBox.DataBindings.Add(new Binding("SelectedItem", SpecBindingSource, "Name", true));
     SpecComboBox.FormattingEnabled = true;
-    SpecComboBox.Location = new Point(10, 70);
-    SpecComboBox.Margin = new Padding(4, 3, 4, 3);
+    SpecComboBox.Location = new Point(7, 48);
+    SpecComboBox.Margin = new Padding(3, 2, 3, 2);
     SpecComboBox.Name = "SpecComboBox";
-    SpecComboBox.Size = new Size(254, 33);
+    SpecComboBox.Size = new Size(179, 25);
     SpecComboBox.TabIndex = 3;
     // 
     // SpecBindingSource
@@ -179,8 +179,7 @@ partial class ParserForm : Form
     // SpecLabel
     // 
     SpecLabel.AutoSize = true;
-    SpecLabel.Location = new Point(10, 40);
-    SpecLabel.Margin = new Padding(4, 0, 4, 0);
+    SpecLabel.Location = new Point(7, 27);
     SpecLabel.Name = "SpecLabel";
     SpecLabel.Size = new Size(81, 17);
     SpecLabel.TabIndex = 4;
@@ -220,24 +219,24 @@ partial class ParserForm : Form
     // 
     // ParseButton
     // 
-    ParseButton.Location = new Point(1048, 432);
-    ParseButton.Margin = new Padding(4, 3, 4, 3);
+    ParseButton.Location = new Point(734, 294);
+    ParseButton.Margin = new Padding(3, 2, 3, 2);
     ParseButton.Name = "ParseButton";
-    ParseButton.Size = new Size(130, 40);
+    ParseButton.Size = new Size(91, 27);
     ParseButton.TabIndex = 6;
     ParseButton.Text = "Parse";
     ParseButton.UseVisualStyleBackColor = true;
-    ParseButton.Click += ParseButton_Click;
+    ParseButton.Click += ExecuteParse;
     // 
     // ItemTabs
     // 
     ItemTabs.Controls.Add(TokenizerPage);
     ItemTabs.Controls.Add(AssemblerPage);
-    ItemTabs.Location = new Point(280, 40);
-    ItemTabs.Margin = new Padding(4, 3, 4, 3);
+    ItemTabs.Location = new Point(196, 27);
+    ItemTabs.Margin = new Padding(3, 2, 3, 2);
     ItemTabs.Name = "ItemTabs";
     ItemTabs.SelectedIndex = 0;
-    ItemTabs.Size = new Size(1210, 528);
+    ItemTabs.Size = new Size(847, 359);
     ItemTabs.TabIndex = 7;
     // 
     // TokenizerPage
@@ -253,11 +252,11 @@ partial class ParserForm : Form
     TokenizerPage.Controls.Add(TokenDataGrid);
     TokenizerPage.Controls.Add(TokenRuleDataGrid);
     TokenizerPage.Controls.Add(ParseButton);
-    TokenizerPage.Location = new Point(4, 34);
-    TokenizerPage.Margin = new Padding(4, 3, 4, 3);
+    TokenizerPage.Location = new Point(4, 26);
+    TokenizerPage.Margin = new Padding(3, 2, 3, 2);
     TokenizerPage.Name = "TokenizerPage";
-    TokenizerPage.Padding = new Padding(4, 3, 4, 3);
-    TokenizerPage.Size = new Size(1202, 490);
+    TokenizerPage.Padding = new Padding(3, 2, 3, 2);
+    TokenizerPage.Size = new Size(839, 329);
     TokenizerPage.TabIndex = 0;
     TokenizerPage.Text = "Tokenizer";
     TokenizerPage.UseVisualStyleBackColor = true;
@@ -265,25 +264,28 @@ partial class ParserForm : Form
     // TokenTableLabel
     // 
     TokenTableLabel.Font = new Font("Arial Rounded MT Bold", 15.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    TokenTableLabel.Location = new Point(584, 8);
+    TokenTableLabel.Location = new Point(409, 5);
+    TokenTableLabel.Margin = new Padding(2, 0, 2, 0);
     TokenTableLabel.Name = "TokenTableLabel";
-    TokenTableLabel.Size = new Size(144, 30);
+    TokenTableLabel.Size = new Size(101, 20);
     TokenTableLabel.TabIndex = 12;
     TokenTableLabel.Text = "Token Table";
     // 
     // RuleTableLabel
     // 
     RuleTableLabel.Font = new Font("Arial Rounded MT Bold", 15.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    RuleTableLabel.Location = new Point(8, 8);
+    RuleTableLabel.Location = new Point(6, 5);
+    RuleTableLabel.Margin = new Padding(2, 0, 2, 0);
     RuleTableLabel.Name = "RuleTableLabel";
-    RuleTableLabel.Size = new Size(128, 30);
+    RuleTableLabel.Size = new Size(90, 20);
     RuleTableLabel.TabIndex = 12;
     RuleTableLabel.Text = "Rule Table";
     // 
     // ParsePathLabel
     // 
     ParsePathLabel.AutoSize = true;
-    ParsePathLabel.Location = new Point(16, 416);
+    ParsePathLabel.Location = new Point(11, 283);
+    ParsePathLabel.Margin = new Padding(2, 0, 2, 0);
     ParsePathLabel.Name = "ParsePathLabel";
     ParsePathLabel.Size = new Size(123, 17);
     ParsePathLabel.TabIndex = 11;
@@ -291,16 +293,16 @@ partial class ParserForm : Form
     // 
     // ParsePathTextBox
     // 
-    ParsePathTextBox.Location = new Point(16, 440);
+    ParsePathTextBox.Location = new Point(11, 299);
+    ParsePathTextBox.Margin = new Padding(2);
     ParsePathTextBox.Name = "ParsePathTextBox";
-    ParsePathTextBox.Size = new Size(1016, 25);
+    ParsePathTextBox.Size = new Size(712, 25);
     ParsePathTextBox.TabIndex = 10;
     // 
     // TokenLabel
     // 
     TokenLabel.AutoSize = true;
-    TokenLabel.Location = new Point(928, 16);
-    TokenLabel.Margin = new Padding(4, 0, 4, 0);
+    TokenLabel.Location = new Point(650, 11);
     TokenLabel.Name = "TokenLabel";
     TokenLabel.Size = new Size(92, 17);
     TokenLabel.TabIndex = 9;
@@ -308,27 +310,24 @@ partial class ParserForm : Form
     // 
     // TokenCountLabel
     // 
-    TokenCountLabel.Location = new Point(1024, 16);
-    TokenCountLabel.Margin = new Padding(4, 0, 4, 0);
+    TokenCountLabel.Location = new Point(717, 11);
     TokenCountLabel.Name = "TokenCountLabel";
-    TokenCountLabel.Size = new Size(77, 17);
+    TokenCountLabel.Size = new Size(54, 12);
     TokenCountLabel.TabIndex = 9;
     TokenCountLabel.Text = "0";
     // 
     // TokenRuleCountLabel
     // 
-    TokenRuleCountLabel.Location = new Point(504, 16);
-    TokenRuleCountLabel.Margin = new Padding(4, 0, 4, 0);
+    TokenRuleCountLabel.Location = new Point(353, 11);
     TokenRuleCountLabel.Name = "TokenRuleCountLabel";
-    TokenRuleCountLabel.Size = new Size(50, 17);
+    TokenRuleCountLabel.Size = new Size(35, 12);
     TokenRuleCountLabel.TabIndex = 9;
     TokenRuleCountLabel.Text = "0";
     // 
     // TokenRuleLabel
     // 
     TokenRuleLabel.AutoSize = true;
-    TokenRuleLabel.Location = new Point(424, 16);
-    TokenRuleLabel.Margin = new Padding(4, 0, 4, 0);
+    TokenRuleLabel.Location = new Point(297, 11);
     TokenRuleLabel.Name = "TokenRuleLabel";
     TokenRuleLabel.Size = new Size(77, 17);
     TokenRuleLabel.TabIndex = 9;
@@ -340,11 +339,11 @@ partial class ParserForm : Form
     TokenDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
     TokenDataGrid.Columns.AddRange(new DataGridViewColumn[] { ContentTokenColumn, ExemptTokenColumn, TypeTokenColumn, ChildrenTokenColumn });
     TokenDataGrid.DataSource = TokenBindingSource;
-    TokenDataGrid.Location = new Point(580, 48);
-    TokenDataGrid.Margin = new Padding(4, 3, 4, 3);
+    TokenDataGrid.Location = new Point(406, 33);
+    TokenDataGrid.Margin = new Padding(3, 2, 3, 2);
     TokenDataGrid.Name = "TokenDataGrid";
     TokenDataGrid.RowHeadersWidth = 51;
-    TokenDataGrid.Size = new Size(610, 360);
+    TokenDataGrid.Size = new Size(427, 245);
     TokenDataGrid.TabIndex = 8;
     // 
     // ContentTokenColumn
@@ -395,8 +394,8 @@ partial class ParserForm : Form
     TokenRuleDataGrid.DataSource = TokenRuleBindingSource;
     TokenRuleDataGrid.EditMode = DataGridViewEditMode.EditOnKeystroke;
     TokenRuleDataGrid.GridColor = SystemColors.MenuText;
-    TokenRuleDataGrid.Location = new Point(8, 48);
-    TokenRuleDataGrid.Margin = new Padding(4, 3, 4, 3);
+    TokenRuleDataGrid.Location = new Point(6, 33);
+    TokenRuleDataGrid.Margin = new Padding(3, 2, 3, 2);
     TokenRuleDataGrid.MultiSelect = false;
     TokenRuleDataGrid.Name = "TokenRuleDataGrid";
     TokenRuleDataGrid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
@@ -407,8 +406,9 @@ partial class ParserForm : Form
     dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
     TokenRuleDataGrid.RowsDefaultCellStyle = dataGridViewCellStyle1;
     TokenRuleDataGrid.SelectionMode = DataGridViewSelectionMode.CellSelect;
-    TokenRuleDataGrid.Size = new Size(560, 360);
+    TokenRuleDataGrid.Size = new Size(392, 245);
     TokenRuleDataGrid.TabIndex = 7;
+    TokenRuleDataGrid.DataError += TokenRuleDataGrid_DataError;
     TokenRuleDataGrid.RowValidated += TokenRuleDataGrid_RowValidated;
     // 
     // TypeGridColumnCombo
@@ -441,11 +441,11 @@ partial class ParserForm : Form
     // 
     // AssemblerPage
     // 
-    AssemblerPage.Location = new Point(4, 34);
-    AssemblerPage.Margin = new Padding(4, 3, 4, 3);
+    AssemblerPage.Location = new Point(4, 26);
+    AssemblerPage.Margin = new Padding(3, 2, 3, 2);
     AssemblerPage.Name = "AssemblerPage";
-    AssemblerPage.Padding = new Padding(4, 3, 4, 3);
-    AssemblerPage.Size = new Size(1202, 490);
+    AssemblerPage.Padding = new Padding(3, 2, 3, 2);
+    AssemblerPage.Size = new Size(839, 329);
     AssemblerPage.TabIndex = 1;
     AssemblerPage.Text = "Assembler";
     AssemblerPage.UseVisualStyleBackColor = true;
@@ -454,38 +454,39 @@ partial class ParserForm : Form
     // 
     LoadRulesButton.Enabled = false;
     LoadRulesButton.FlatStyle = FlatStyle.System;
-    LoadRulesButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    LoadRulesButton.Location = new Point(144, 112);
-    LoadRulesButton.Margin = new Padding(4, 3, 4, 3);
+    LoadRulesButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    LoadRulesButton.Location = new Point(101, 76);
+    LoadRulesButton.Margin = new Padding(3, 2, 3, 2);
     LoadRulesButton.Name = "LoadRulesButton";
-    LoadRulesButton.Size = new Size(122, 48);
+    LoadRulesButton.Size = new Size(85, 33);
     LoadRulesButton.TabIndex = 8;
-    LoadRulesButton.Text = "Load Rules From Specification";
+    LoadRulesButton.Text = "Load Rules from Specification";
     LoadRulesButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     LoadRulesButton.UseVisualStyleBackColor = true;
-    LoadRulesButton.Click += LoadRulesButton_Click;
+    LoadRulesButton.Click += LoadRules;
     // 
     // LoadSpecButton
     // 
-    LoadSpecButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    LoadSpecButton.Location = new Point(8, 112);
-    LoadSpecButton.Margin = new Padding(4, 3, 4, 3);
+    LoadSpecButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    LoadSpecButton.Location = new Point(6, 76);
+    LoadSpecButton.Margin = new Padding(3, 2, 3, 2);
     LoadSpecButton.Name = "LoadSpecButton";
-    LoadSpecButton.Size = new Size(122, 48);
+    LoadSpecButton.Size = new Size(85, 36);
     LoadSpecButton.TabIndex = 8;
     LoadSpecButton.Text = "Load Specifications";
     LoadSpecButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     LoadSpecButton.UseVisualStyleBackColor = true;
+    LoadSpecButton.Click += LoadSpecList;
     // 
     // LoadRulesFileButton
     // 
     LoadRulesFileButton.Enabled = false;
     LoadRulesFileButton.FlatStyle = FlatStyle.System;
-    LoadRulesFileButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    LoadRulesFileButton.Location = new Point(144, 168);
-    LoadRulesFileButton.Margin = new Padding(4, 3, 4, 3);
+    LoadRulesFileButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    LoadRulesFileButton.Location = new Point(101, 114);
+    LoadRulesFileButton.Margin = new Padding(3, 2, 3, 2);
     LoadRulesFileButton.Name = "LoadRulesFileButton";
-    LoadRulesFileButton.Size = new Size(122, 48);
+    LoadRulesFileButton.Size = new Size(85, 33);
     LoadRulesFileButton.TabIndex = 8;
     LoadRulesFileButton.Text = "Load Rules From File";
     LoadRulesFileButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -495,82 +496,82 @@ partial class ParserForm : Form
     // 
     ClearRulesButton.Enabled = false;
     ClearRulesButton.FlatStyle = FlatStyle.System;
-    ClearRulesButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    ClearRulesButton.Location = new Point(144, 224);
-    ClearRulesButton.Margin = new Padding(4, 3, 4, 3);
+    ClearRulesButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    ClearRulesButton.Location = new Point(101, 152);
+    ClearRulesButton.Margin = new Padding(3, 2, 3, 2);
     ClearRulesButton.Name = "ClearRulesButton";
-    ClearRulesButton.Size = new Size(122, 48);
+    ClearRulesButton.Size = new Size(85, 33);
     ClearRulesButton.TabIndex = 8;
     ClearRulesButton.Text = "Clear Rule Table";
     ClearRulesButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     ClearRulesButton.UseVisualStyleBackColor = true;
-    ClearRulesButton.Click += ClearRulesButton_Click;
+    ClearRulesButton.Click += ClearRules;
     // 
     // ClearTokensButton
     // 
     ClearTokensButton.Enabled = false;
     ClearTokensButton.FlatStyle = FlatStyle.System;
-    ClearTokensButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    ClearTokensButton.Location = new Point(144, 280);
-    ClearTokensButton.Margin = new Padding(4, 3, 4, 3);
+    ClearTokensButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    ClearTokensButton.Location = new Point(101, 190);
+    ClearTokensButton.Margin = new Padding(3, 2, 3, 2);
     ClearTokensButton.Name = "ClearTokensButton";
-    ClearTokensButton.Size = new Size(122, 48);
+    ClearTokensButton.Size = new Size(85, 33);
     ClearTokensButton.TabIndex = 8;
     ClearTokensButton.Text = "Clear Token Table";
     ClearTokensButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     ClearTokensButton.UseVisualStyleBackColor = true;
-    ClearTokensButton.Click += ClearTokensButton_Click;
+    ClearTokensButton.Click += ClearTokens;
     // 
     // SaveRuleButton
     // 
     SaveRuleButton.Enabled = false;
     SaveRuleButton.FlatStyle = FlatStyle.System;
-    SaveRuleButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    SaveRuleButton.Location = new Point(8, 168);
-    SaveRuleButton.Margin = new Padding(4, 3, 4, 3);
+    SaveRuleButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    SaveRuleButton.Location = new Point(6, 114);
+    SaveRuleButton.Margin = new Padding(3, 2, 3, 2);
     SaveRuleButton.Name = "SaveRuleButton";
-    SaveRuleButton.Size = new Size(122, 48);
+    SaveRuleButton.Size = new Size(85, 33);
     SaveRuleButton.TabIndex = 8;
     SaveRuleButton.Text = "Save Ruleset to File";
     SaveRuleButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     SaveRuleButton.UseVisualStyleBackColor = true;
-    SaveRuleButton.Click += SaveRuleButton_Click;
+    SaveRuleButton.Click += SaveRule;
     // 
     // ShowUnparsedButton
     // 
     ShowUnparsedButton.Enabled = false;
     ShowUnparsedButton.FlatStyle = FlatStyle.System;
-    ShowUnparsedButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    ShowUnparsedButton.Location = new Point(8, 224);
-    ShowUnparsedButton.Margin = new Padding(4, 3, 4, 3);
+    ShowUnparsedButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    ShowUnparsedButton.Location = new Point(6, 152);
+    ShowUnparsedButton.Margin = new Padding(3, 2, 3, 2);
     ShowUnparsedButton.Name = "ShowUnparsedButton";
-    ShowUnparsedButton.Size = new Size(122, 48);
+    ShowUnparsedButton.Size = new Size(85, 33);
     ShowUnparsedButton.TabIndex = 8;
     ShowUnparsedButton.Text = "Show Unparsed Text";
     ShowUnparsedButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     ShowUnparsedButton.UseVisualStyleBackColor = true;
-    ShowUnparsedButton.Click += ShowUnparsedButton_Click;
+    ShowUnparsedButton.Click += ShowUnparsed;
     // 
     // LoadParseFileButton
     // 
     LoadParseFileButton.Enabled = false;
     LoadParseFileButton.FlatStyle = FlatStyle.System;
-    LoadParseFileButton.Font = new Font("MS Reference Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    LoadParseFileButton.Location = new Point(8, 280);
-    LoadParseFileButton.Margin = new Padding(4, 3, 4, 3);
+    LoadParseFileButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
+    LoadParseFileButton.Location = new Point(6, 190);
+    LoadParseFileButton.Margin = new Padding(3, 2, 3, 2);
     LoadParseFileButton.Name = "LoadParseFileButton";
-    LoadParseFileButton.Size = new Size(122, 48);
+    LoadParseFileButton.Size = new Size(85, 33);
     LoadParseFileButton.TabIndex = 8;
     LoadParseFileButton.Text = "Load Parse File";
     LoadParseFileButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     LoadParseFileButton.UseVisualStyleBackColor = true;
-    LoadParseFileButton.Click += LoadParseFileButton_Click;
+    LoadParseFileButton.Click += OpenParseFile;
     // 
     // ParserForm
     // 
-    AutoScaleDimensions = new SizeF(10F, 25F);
+    AutoScaleDimensions = new SizeF(7F, 17F);
     AutoScaleMode = AutoScaleMode.Font;
-    ClientSize = new Size(1517, 628);
+    ClientSize = new Size(1062, 427);
     Controls.Add(LoadSpecButton);
     Controls.Add(LoadParseFileButton);
     Controls.Add(ShowUnparsedButton);
@@ -585,7 +586,7 @@ partial class ParserForm : Form
     Controls.Add(StatusStrip);
     Controls.Add(TheMenuStrip);
     MainMenuStrip = TheMenuStrip;
-    Margin = new Padding(4, 3, 4, 3);
+    Margin = new Padding(3, 2, 3, 2);
     Name = "ParserForm";
     Text = "Parser Form";
     Load += ParserForm_Load;

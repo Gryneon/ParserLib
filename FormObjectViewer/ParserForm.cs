@@ -9,9 +9,9 @@ using Common.Extensions;
 
 using Parser.Tokens;
 
-using Specification.XML;
-
 using static Common.Names;
+
+using XMLMaker = Specification.XML.XMLString;
 
 namespace FormObjectViewer;
 
@@ -46,16 +46,16 @@ internal sealed partial class ParserForm : Form
       "StoreOther",
     ];
   private Spec LoadedSpec => SpecComboBox.SelectedIndex >= 0 ? SpecList[SpecComboBox.SelectedIndex] : DefaultSpec.Unknown;
-  private BindingList<TokenRule> WorkingRules { get; set; } = [];
-  private BindingList<IToken> CurrentTokens { get; set; } = [];
-  private string ParseFile { get; set; } = "";
-  private TokenFactory? Factory { get; set; }
+  private readonly BindingList<TokenRule> _workingRules = [];
+  private readonly BindingList<IToken> _currentTokens = [];
+  private string _parseFile = "";
+  private TokenFactory? _factory = new();
 
   public ParserForm () => InitializeComponent();
 
   private void ParserForm_Load (object sender, EventArgs e)
   {
-    TokenDataGrid.DataSource = CurrentTokens;
+    TokenDataGrid.DataSource = _currentTokens;
   }
 
   private void OpenParseFileDialog_FileOk (object sender, CancelEventArgs e)
@@ -64,13 +64,15 @@ internal sealed partial class ParserForm : Form
     ParsePathTextBox.SelectAll();
   }
 
-  private void LoadSpecMenuItem_Click (object sender, EventArgs e)
+  private void LoadSpecList (object sender, EventArgs e)
   {
     List<string> specNames = [.. SpecList.Select(i => i.Name)];
     SpecComboBox.DataSource = specNames;
+    LoadParseFileButton.Enabled = true;
+    LoadSpecButton.Enabled = true;
   }
 
-  private void ExitMenuItem_Click (object sender, EventArgs e)
+  private void Exit (object sender, EventArgs e)
   {
     if (ItemsChanged)
     {
@@ -86,18 +88,18 @@ internal sealed partial class ParserForm : Form
     }
   }
 
-  private void LoadRulesButton_Click (object sender, EventArgs e)
+  private void LoadRules (object sender, EventArgs e)
   {
-    TokenRuleDataGrid.DataSource = WorkingRules;
-    TokenRuleBindingSource.DataSource = WorkingRules;
+    TokenRuleDataGrid.DataSource = _workingRules;
+    TokenRuleBindingSource.DataSource = _workingRules;
 
     foreach (TokenRule rule in LoadedSpec.TokenRules)
     {
-      WorkingRules.Add(rule);
+      _workingRules.Add(rule);
     }
   }
 
-  private void OpenFileMenuItem_Click (object sender, EventArgs e)
+  private void OpenParseFile (object sender, EventArgs e)
   {
     DialogResult dialog = OpenParseFileDialog.ShowDialog();
     if (dialog == DialogResult.OK)
@@ -106,13 +108,13 @@ internal sealed partial class ParserForm : Form
     }
   }
 
-  private void ParseButton_Click (object sender, EventArgs e)
+  private void ExecuteParse (object sender, EventArgs e)
   {
-    CurrentTokens.Clear();
+    _currentTokens.Clear();
     TokenDataGrid.Refresh();
-    ParseFile = ParsePathTextBox.Text;
+    _parseFile = ParsePathTextBox.Text;
 
-    if (!File.Exists(ParseFile))
+    if (!File.Exists(_parseFile))
     {
       _ = MessageBox.Show(this, "Parse file not found.", "Please correct any mistakes in the path name.");
       return;
@@ -120,7 +122,7 @@ internal sealed partial class ParserForm : Form
     string? contents;
     try
     {
-      contents = File.ReadAllText(ParseFile);
+      contents = File.ReadAllText(_parseFile);
       ParseFileContent = contents;
     }
     catch (IOException)
@@ -129,48 +131,49 @@ internal sealed partial class ParserForm : Form
       return;
     }
 
-    Factory = new(WorkingRules, LoadedSpec);
+    _factory = new(_workingRules, LoadedSpec);
 
-    foreach (IToken token in Factory.Produce(contents))
+    foreach (IToken token in _factory.Produce(contents))
     {
-      CurrentTokens.Add(token);
+      _currentTokens.Add(token);
     }
     TokenDataGrid.Refresh();
   }
 
   private void TokenRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e)
   {
-    TokenRuleCountLabel.Text = $"{WorkingRules.Count}";
+    TokenRuleCountLabel.Text = $"{_workingRules.Count}";
   }
 
-  private void ClearTokensButton_Click (object sender, EventArgs e)
+  private void ClearTokens (object sender, EventArgs e)
   {
-    CurrentTokens.Clear();
+    _currentTokens.Clear();
     TokenDataGrid.Refresh();
   }
 
-  private void LoadParseFileButton_Click (object sender, EventArgs e)
+  private void ClearRules (object sender, EventArgs e)
   {
-    _ = OpenParseFileDialog.ShowDialog();
-  }
-
-  private void ClearRulesButton_Click (object sender, EventArgs e)
-  {
-    WorkingRules.Clear();
+    _workingRules.Clear();
     TokenRuleDataGrid.Refresh();
   }
 
-  private void ShowUnparsedButton_Click (object sender, EventArgs e)
+  private void ShowUnparsed (object sender, EventArgs e)
   {
-    //TODO: Add Feature (Interactive visual display of everything the tokenizer missed.)
+    UnparsedViewer viewer = new()
+    {
+      Sections = _factory?.CannotMatch ?? []
+    };
+    _ = viewer.ShowDialog();
+    viewer.Dispose();
   }
 
-  private void SaveRuleButton_Click (object sender, EventArgs e)
+  private void SaveRule (object sender, EventArgs e)
   {
     int counter = 0;
-    XMLString maker = new();
+    XMLMaker maker = new();
     maker.AddElementOpen("RuleSet");
-    foreach (TokenRule rule in WorkingRules)
+    maker.AddLineFeed();
+    foreach (TokenRule rule in _workingRules)
     {
 
       maker.AddElementOpen("Rule", [new PropertyBase<string>() { Key = "index", Value = $"{counter++}" }]);
@@ -193,5 +196,10 @@ internal sealed partial class ParserForm : Form
     maker.CloseLastElement();
 
     string doc = maker.Serialize();
+  }
+
+  private void TokenRuleDataGrid_DataError (object sender, DataGridViewDataErrorEventArgs e)
+  {
+    TokenRuleDataGrid[e.ColumnIndex, e.RowIndex].Style.BackColor = Color.Pink;
   }
 }

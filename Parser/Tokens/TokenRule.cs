@@ -42,33 +42,24 @@ public class TokenRule
   /// <param name="type">The rule type. Should be TokenExact or SplitExact, plus any necessary modifiers.</param>
   /// <param name="typeToAssign">The type to assign. May be a single object applied to all, or a list of objects the same length as <paramref name="chars"/>.</param>
   /// <returns>An array of TokenRules.</returns>
-  public static TokenRule[] MakeSingleCharRules (string chars, RT type, dynamic typeToAssign)
+  public static TokenRule[] MakeSingleCharRules (string chars, RT type, object typeToAssign)
   {
     Collection<TokenRule> tokenRules = [];
 
     if (string.IsNullOrEmpty(chars))
       return [.. tokenRules];
 
-    if (typeToAssign is IList<object> && typeToAssign.Count == chars.Length)
-    {
-      for (int i = 0; i < chars.Length; i++)
-      {
-        string c = chars[i].ToString();
-        dynamic t = typeToAssign[i];
-
-        tokenRules.Add(new(type, t, c));
-      }
-    }
-
-    else
-    {
-      foreach (char v in chars)
-      {
-        string c = v.ToString();
-
-        tokenRules.Add(new(type, typeToAssign, c));
-      }
-    }
+    tokenRules = typeToAssign.IsCollection()
+      ? [..
+        typeToAssign.
+        AsCollection().
+        Zip(chars).
+        Select(i => new TokenRule(type, i.First, i.Second.ToString()))]
+      : [..
+        chars.
+        ToArray().
+        AsCollection().
+        Select(i => new TokenRule(type, typeToAssign, i.ToString()))];
 
     return [.. tokenRules];
   }

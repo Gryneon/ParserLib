@@ -124,6 +124,15 @@ namespace TestConsole {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\simple.txt.
+        /// </summary>
+        internal static string ipl_simple {
+            get {
+                return ResourceManager.GetString("ipl_simple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
         /// </summary>
         internal static string json_launch {

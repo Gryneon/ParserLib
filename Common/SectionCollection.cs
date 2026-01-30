@@ -1,13 +1,37 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using Common;
-
-namespace Parser.Tokens;
+namespace Common;
 
 public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren<Section>
 {
   private readonly List<Section> _sections = [];
   private readonly Dictionary<int, bool> _bit_array = [];
+
+  public Collection<bool> GetGetParsedFromSections ()
+  {
+    Collection<bool> result = [];
+    for (int i = 0; i < FullText?.Length; i++)
+    {
+      if (IsWithin(i))
+        result.Add(true);
+      else
+        result.Add(false);
+    }
+    return result;
+  }
+
+  public Collection<bool> GetGetParsedFromBitArray ()
+  {
+    Collection<bool> result = [];
+    for (int i = 0; i < FullText?.Length; i++)
+    {
+      if (_bit_array[i] == true)
+        result.Add(true);
+      else
+        result.Add(false);
+    }
+    return result;
+  }
 
   internal bool Compress ()
   {
@@ -41,9 +65,9 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
 
     FullText ??= _sections[0].FullContent;
 
-    for (int i = item.Start; i <= item.End; i++)
+    for (int i = 0; i < item.Length; i++)
     {
-      _bit_array[i] = true;
+      _bit_array[item.Start + i] = true;
     }
 
     while (Compress()) { }

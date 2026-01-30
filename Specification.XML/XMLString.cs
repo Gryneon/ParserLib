@@ -55,6 +55,8 @@ public class XMLString () : ITextSerializer
   public void AddLineFeed ()
   {
     Elements.Add("\n");
+    int depth = Closing.Count;
+    Elements.Add(new(' ', depth * 2));
   }
   public void CloseAllElements ()
   {

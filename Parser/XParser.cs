@@ -111,6 +111,12 @@ public sealed class XParser
   public CursorData GetCursorByKey (string key) => Cursors.First(item => item.Key.Like(key));
   public void SetCursorByKey (string key, int index) => Cursors.First(item => item.Key.Like(key)).Index = index;
   public void IncCursorByKey (string key, int inc) => Cursors.First(item => item.Key.Like(key)).Index += inc;
+  public bool HasCursorByKey (string key) => Cursors.Any(item => item.Key.Like(key));
+  public void RemCursorByKey (string key)
+  {
+    int index = Cursors.Index().First(c => c.Item.Key.Like(key)).Index;
+    Cursors.RemoveAt(index);
+  }
 
   /// <inheritdoc/>
   public void AddCursor (string key) => Cursors.Add(new(0, key, Data));
