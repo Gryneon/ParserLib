@@ -51,3 +51,14 @@ public enum ACSTokenType
   PreprocessorFull,
   Else,
 }
+
+
+public enum ModelDefTokenType
+{
+  None,
+
+  //Structures
+  Model,
+  Skin,
+
+}
