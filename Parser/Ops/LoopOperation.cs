@@ -18,15 +18,14 @@ public enum LoopType
 /// </remarks>
 public sealed class LoopOperation : Operation, IPlaceholderOperation
 {
+  /// <summary>The type of loop to perform.</summary>
   public LoopType Type { get; init; }
-  /// <summary>
-  /// Start of loop section.
-  /// </summary>
+  /// <summary>Start of loop section.</summary>
   public int OpIndex { get; set; }
   public string? CursorKey { get; set; }
   public int? Count { get; init; }
   public ICondition? Condition { get; set; }
-  public Collection<IOperation> Operations { get; }
+  public required Collection<IOperation> Operations { get; init; }
 
   private string GetLoopName ()
   {
@@ -123,6 +122,4 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
         return;
     }
   }
-
-  internal LoopOperation (IEnumerable<IOperation> operations) => Operations = [.. operations];
 }
