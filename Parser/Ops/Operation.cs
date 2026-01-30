@@ -70,32 +70,37 @@ public abstract class Operation : IOperation
   public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
   public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
 
-  public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation(operations)
+  public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
   {
+    Operations = [..operations],
     Type = LoopType.While,
     Condition = condition,
     Count = null
   };
-  public static IOperation Until (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation(operations)
+  public static IOperation Until (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
   {
+    Operations = [.. operations],
     Type = LoopType.Until,
     Condition = condition,
     Count = null
   };
-  public static IOperation ForEach (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation(operations)
+  public static IOperation ForEach (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
   {
+    Operations = [.. operations],
     Type = LoopType.ForEach,
     CursorKey = cursor_key,
     Count = null
   };
-  public static IOperation ForCount (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation(operations)
+  public static IOperation ForCount (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
   {
+    Operations = [.. operations],
     Type = LoopType.ForCount,
     CursorKey = cursor_key,
     Count = null
   };
-  public static IOperation ForCount (IEnumerable<IOperation> operations, string count_key, int count) => new LoopOperation(operations)
+  public static IOperation ForCount (IEnumerable<IOperation> operations, string count_key, int count) => new LoopOperation()
   {
+    Operations = [.. operations],
     Type = LoopType.ForCount,
     CursorKey = count_key,
     Count = count
