@@ -12,7 +12,7 @@
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
     <Platforms>AnyCPU;x86;x64</Platforms>
-    
+    <Deterministic>True</Deterministic>
   </PropertyGroup>
 
 </Project>
