@@ -98,6 +98,14 @@ internal sealed partial class ParserForm : Form
       _workingRules.Add(rule);
     }
   }
+  private void SaveRuleDialog (object sender, EventArgs e)
+  {
+    //DialogResult dialog = SaveRuleFileDialog.ShowDialog();
+    //if (dialog == DialogResult.OK)
+    {
+      //TODO: Maybe need something here?
+    }
+  }
 
   private void OpenParseFile (object sender, EventArgs e)
   {

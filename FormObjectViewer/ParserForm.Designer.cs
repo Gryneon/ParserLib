@@ -33,7 +33,7 @@ partial class ParserForm : Form
   private void InitializeComponent ()
   {
     components = new Container();
-    DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+    DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
     StatusStrip = new StatusStrip();
     OpenParseFileDialog = new OpenFileDialog();
     TheMenuStrip = new MenuStrip();
@@ -80,6 +80,7 @@ partial class ParserForm : Form
     SaveRuleButton = new Button();
     ShowUnparsedButton = new Button();
     LoadParseFileButton = new Button();
+    SaveRuleFileDialog = new SaveFileDialog();
     TheMenuStrip.SuspendLayout();
     ((ISupportInitialize) SpecBindingSource).BeginInit();
     ((ISupportInitialize) TokenRuleBindingSource).BeginInit();
@@ -401,10 +402,10 @@ partial class ParserForm : Form
     TokenRuleDataGrid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
     TokenRuleDataGrid.RowHeadersVisible = false;
     TokenRuleDataGrid.RowHeadersWidth = 51;
-    dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-    dataGridViewCellStyle1.Font = new Font("Cascadia Code", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
-    dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-    TokenRuleDataGrid.RowsDefaultCellStyle = dataGridViewCellStyle1;
+    dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+    dataGridViewCellStyle3.Font = new Font("Cascadia Code", 9.75F, FontStyle.Regular, GraphicsUnit.Point,  0);
+    dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+    TokenRuleDataGrid.RowsDefaultCellStyle = dataGridViewCellStyle3;
     TokenRuleDataGrid.SelectionMode = DataGridViewSelectionMode.CellSelect;
     TokenRuleDataGrid.Size = new Size(392, 245);
     TokenRuleDataGrid.TabIndex = 7;
@@ -567,6 +568,14 @@ partial class ParserForm : Form
     LoadParseFileButton.UseVisualStyleBackColor = true;
     LoadParseFileButton.Click += OpenParseFile;
     // 
+    // SaveRuleFileDialog
+    // 
+    SaveRuleFileDialog.DefaultExt = "xml";
+    SaveRuleFileDialog.FileName = "Rule.xml";
+    SaveRuleFileDialog.Filter = "XML Files|*.xml";
+    SaveRuleFileDialog.InitialDirectory = "%USERPROFILE%";
+    SaveRuleFileDialog.Title = "Save Rule XML File";
+    // 
     // ParserForm
     // 
     AutoScaleDimensions = new SizeF(7F, 17F);
@@ -654,4 +663,5 @@ partial class ParserForm : Form
   private Button SaveRuleButton;
   private Button ShowUnparsedButton;
   private Button LoadParseFileButton;
+  private SaveFileDialog SaveRuleFileDialog;
 }

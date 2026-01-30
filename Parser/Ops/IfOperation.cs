@@ -8,7 +8,7 @@ public sealed class IfOperation (ICondition condition, IOperation ifTrue, IOpera
   public OpStatus Status { get; set; }
   public int LoopBreak { get; set; }
   public int LoopStart { get; set; }
-  public bool NeverExecutes => false;
+  bool IOperation.NeverExecutes => false;
   bool IOperation.ContinueOnFail { get; set; }
   bool IOperation.SkipOperation { get; set; }
   bool IOperation.IgnoreAllLoads => false;

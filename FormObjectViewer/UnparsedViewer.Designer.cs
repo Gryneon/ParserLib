@@ -32,8 +32,8 @@ partial class UnparsedViewer
     InverseCountTextBox = new TextBox();
     InverseCharsTextBox = new TextBox();
     SectionsTotalLabel = new Label();
-    label1 = new Label();
-    label2 = new Label();
+    InverseTotalLabel = new Label();
+    InverseCharsLabel = new Label();
     VisualRichBox = new RichTextBox();
     CloseButton = new Button();
     SuspendLayout();
@@ -73,21 +73,21 @@ partial class UnparsedViewer
     // 
     // label1
     // 
-    label1.AutoSize = true;
-    label1.Location = new Point(112, 40);
-    label1.Name = "label1";
-    label1.Size = new Size(107, 17);
-    label1.TabIndex = 1;
-    label1.Text = "Inverted Sections";
+    InverseTotalLabel.AutoSize = true;
+    InverseTotalLabel.Location = new Point(112, 40);
+    InverseTotalLabel.Name = "label1";
+    InverseTotalLabel.Size = new Size(107, 17);
+    InverseTotalLabel.TabIndex = 1;
+    InverseTotalLabel.Text = "Inverted Sections";
     // 
     // label2
     // 
-    label2.AutoSize = true;
-    label2.Location = new Point(112, 72);
-    label2.Name = "label2";
-    label2.Size = new Size(182, 17);
-    label2.TabIndex = 1;
-    label2.Text = "Inverted Unparsed Characters";
+    InverseCharsLabel.AutoSize = true;
+    InverseCharsLabel.Location = new Point(112, 72);
+    InverseCharsLabel.Name = "label2";
+    InverseCharsLabel.Size = new Size(182, 17);
+    InverseCharsLabel.TabIndex = 1;
+    InverseCharsLabel.Text = "Inverted Unparsed Characters";
     // 
     // VisualRichBox
     // 
@@ -115,8 +115,8 @@ partial class UnparsedViewer
     ControlBox = false;
     Controls.Add(CloseButton);
     Controls.Add(VisualRichBox);
-    Controls.Add(label2);
-    Controls.Add(label1);
+    Controls.Add(InverseCharsLabel);
+    Controls.Add(InverseTotalLabel);
     Controls.Add(SectionsTotalLabel);
     Controls.Add(InverseCharsTextBox);
     Controls.Add(InverseCountTextBox);
@@ -140,8 +140,8 @@ partial class UnparsedViewer
   private TextBox InverseCountTextBox;
   private TextBox InverseCharsTextBox;
   private Label SectionsTotalLabel;
-  private Label label1;
-  private Label label2;
+  private Label InverseTotalLabel;
+  private Label InverseCharsLabel;
   private RichTextBox VisualRichBox;
   private Button CloseButton;
 }
