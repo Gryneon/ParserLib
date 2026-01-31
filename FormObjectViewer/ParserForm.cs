@@ -100,10 +100,10 @@ internal sealed partial class ParserForm : Form
   }
   private void SaveRuleDialog (object sender, EventArgs e)
   {
-    //DialogResult dialog = SaveRuleFileDialog.ShowDialog();
-    //if (dialog == DialogResult.OK)
+    DialogResult dialog = SaveRuleFileDialog.ShowDialog();
+    if (dialog == DialogResult.OK)
     {
-      //TODO: Maybe need something here?
+      SaveRule(SaveRuleFileDialog, new() { Path = SaveRuleFileDialog.FileName });
     }
   }
 
@@ -175,7 +175,12 @@ internal sealed partial class ParserForm : Form
     viewer.Dispose();
   }
 
-  private void SaveRule (object sender, EventArgs e)
+  private sealed class PathEventArgs : EventArgs
+  {
+    public required string Path { get; init; }
+  }
+
+  private void SaveRule (object sender, PathEventArgs args)
   {
     int counter = 0;
     XMLMaker maker = new();
@@ -204,10 +209,15 @@ internal sealed partial class ParserForm : Form
     maker.CloseLastElement();
 
     string doc = maker.Serialize();
+
+    try { File.WriteAllText(args.Path, doc); } catch (IOException) { return; }
+
+    ItemsChanged = false;
   }
 
   private void TokenRuleDataGrid_DataError (object sender, DataGridViewDataErrorEventArgs e)
   {
     TokenRuleDataGrid[e.ColumnIndex, e.RowIndex].Style.BackColor = Color.Pink;
+    ItemsChanged = true;
   }
 }

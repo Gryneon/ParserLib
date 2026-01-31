@@ -519,7 +519,7 @@ partial class ParserForm : Form
     SaveRuleButton.Text = "Save Ruleset to File";
     SaveRuleButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     SaveRuleButton.UseVisualStyleBackColor = true;
-    SaveRuleButton.Click += SaveRule;
+    SaveRuleButton.Click += SaveRuleDialog;
     // 
     // ShowUnparsedButton
     // 
@@ -670,6 +670,7 @@ partial class ParserForm : Form
   #endregion
 
   private StatusStrip StatusStrip;
+  private SaveFileDialog SaveRuleFileDialog;
   private OpenFileDialog OpenParseFileDialog;
   private MenuStrip TheMenuStrip;
   private ComboBox SpecComboBox;
