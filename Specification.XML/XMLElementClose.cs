@@ -1,16 +1,18 @@
 using Common.Extensions;
 
+using Parser.Tokens;
+
 namespace Specification.XML;
 
 /// <summary>
 /// Represents a closing XML element.
 /// </summary>
-public class XMLElementClose () : XMLNode, IGeneratable<MatchDataSet, XMLElementClose>, IXMLObject
+public class XMLElementClose () : XMLNode, IGeneratable<TokenLabel, XMLElementClose>, IXMLObject
 {
   /// <inheritdoc/>
-  public static XMLElementClose Generate (MatchDataSet mdd)
+  public static XMLElementClose Generate (TokenLabel label)
   {
-    mdd.ThrowIfNull();
-    return new() { Tag = mdd["tagname"].Content };
+    label.ThrowIfNull();
+    return new() { Tag = label?.Name ?? SE };
   }
 }

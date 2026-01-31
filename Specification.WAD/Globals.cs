@@ -1,2 +1,15 @@
 global using Parser;
 global using Parser.Ops.Binary;
+
+using System.Reflection;
+using System.Resources;
+
+[assembly: AssemblyCompany("WAD Specification")]
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyFlags(AssemblyNameFlags.None)]
+[assembly: AssemblyProduct("WAD Specification")]
+[assembly: AssemblyTitle("WAD Specification")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0.0-Pre")]
+[assembly: NeutralResourcesLanguage("en-US")]

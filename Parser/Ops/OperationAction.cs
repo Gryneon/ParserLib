@@ -28,6 +28,7 @@ public sealed class OperationAction : IOperation
   public Collection<object> OData { get; } = [];
   [NotNull] private XParser? Parser { get; set; }
   public OAT Type { get; set; }
+  public bool NeverExecutes { get; }
 
   public OpStatus DoOperation (XParser parser_ref)
   {
@@ -45,19 +46,19 @@ public sealed class OperationAction : IOperation
 
         // Jumps
         case OAT.GotoLabel:
-          parser_ref.NextOpIndex = parser_ref.Labels[SData[0]];
+          Parser.NextOpIndex = Parser.Labels[SData[0]];
           goto Pass;
         case OAT.GotoIndex:
-          if (IData[0] >= parser_ref.OpCount)
-            return OpStatus.FailBadOpDefinition;
-          parser_ref.NextOpIndex = IData[0];
+          if (IData[0] >= Parser.OpCount)
+            goto default;
+          Parser.NextOpIndex = IData[0];
           goto Pass;
         case OAT.GotoFirst:
-          parser_ref.NextOpIndex = 0;
+          Parser.NextOpIndex = 0;
           goto Pass;
         case OAT.JumpIf:
           if (OData[0] is ICondition c && c.Evaluate())
-            parser_ref.NextOpIndex = IData[0];
+            Parser.NextOpIndex = IData[0];
           goto Pass;
 
         // State Setters
@@ -68,58 +69,58 @@ public sealed class OperationAction : IOperation
 
         // Data Actions
         case OAT.EraseKey:
-          _ = parser_ref.Data.Remove(SData[0]);
+          _ = Parser.Data.Remove(SData[0]);
           goto Pass;
         case OAT.StoreKey:
-          parser_ref.Data[SData[0]] = SData[1];
+          Parser.Data[SData[0]] = SData[1];
           goto Pass;
         case OAT.DebugKey:
           Log(Area, "Dumping Key.\n\n\n");
-          if (parser_ref.Data.TryLoad(SData[0], out object? keyData))
+          if (Parser.Data.TryLoad(SData[0], out object? keyData))
             Log(keyData.ToString() ?? "No string representation.");
           else
             Log("Key not found.");
           Log("\n\n\n");
           goto Pass;
         case OAT.CopyKey:
-          if (parser_ref.Data.ContainsKey(SData[0]))
+          if (Parser.Data.ContainsKey(SData[0]))
           {
-            parser_ref.Data[SData[1]] = parser_ref.Data[SData[0]];
+            Parser.Data[SData[1]] = Parser.Data[SData[0]];
             goto Pass;
           }
           return OpStatus.FailNoSuchVarName;
         // State actions
         case OAT.BreakLoop:
-          parser_ref.NextOpIndex = LoopBreak;
-          parser_ref.Cursors.Drop();
+          Parser.NextOpIndex = LoopBreak;
+          Parser.Cursors.Drop();
           goto Pass;
         case OAT.StartLoop:
           if (OData[0] is LoopOperation lo && !lo.Continue())
             goto case OAT.BreakLoop;
           goto Pass;
         case OAT.NextLoop:
-          parser_ref.GetCursorByKey(SData[0]).Index += IData[0];
-          parser_ref.NextOpIndex = LoopStart;
+          Parser.GetCursorByKey(SData[0]).Index += IData[0];
+          Parser.NextOpIndex = LoopStart;
           goto Pass;
         case OAT.ContinueLoop:
-          parser_ref.GetCursorByKey(SData[0]).Index += IData[0];
-          parser_ref.NextOpIndex = LoopStart;
+          Parser.GetCursorByKey(SData[0]).Index += IData[0];
+          Parser.NextOpIndex = LoopStart;
           goto Pass;
 
         // Cursor actions
         case OAT.CreateCursor:
-          parser_ref.Cursors.Add(new(IData[0], SData[0], parser_ref.Data));
+          if (Parser.HasCursorByKey(SData[0]))
+            Log(MsgClass.Warning, Area, "DoOperation", $"Cursor of type {SData[0]} already exists in the parser.");
+          Parser.AddCursor(SData[0]);
           goto Pass;
         case OAT.SetCursor:
-          CursorData cursor = Parser.GetCursorByKey(SData[0]);
-          cursor.Index = IData[0];
+          Parser.SetCursorByKey(SData[0], IData[0]);
           goto Pass;
         case OAT.ClearCursor:
-          CursorData cursor2 = Parser.GetCursorByKey(SData[0]);
-          _ = Parser.Cursors.Remove(cursor2);
+          Parser.RemCursorByKey(SData[0]);
           goto Pass;
-        case OAT.UpdateCursorKey:
-          //TODO: What is this?
+        case OAT.IncrementCursorKey:
+          Parser.IncCursorByKey(SData[0], IData[0]);
           goto Pass;
 
         case OAT.Prompt:
@@ -148,7 +149,7 @@ public sealed class OperationAction : IOperation
     OAT.GotoIndex => $"Goto Index '{IData[0]}'",
     OAT.GotoFirst => $"Goto First",
     OAT.CopyKey => $"Key '{SData[0]}' copied to '{SData[1]}'",
-    _ => "No description",
+    _ => $"{Type} (string args:{SData.Count} int args:{IData.Count})",
   };
 
   private string GetMessage () => Type switch
@@ -168,9 +169,11 @@ public sealed class OperationAction : IOperation
     OAT.DebugKey => "Dumping Key.",
     OAT.SetCursor => $"Setting Cursor {SData[0]} to {IData[0]}",
     OAT.ClearCursor => $"Cursor on {SData[0]} cleared",
-    OAT.UpdateCursorKey => throw new NotImplementedException(),
+    OAT.IncrementCursorKey => throw new NotImplementedException(),
     OAT.CreateCursor => $"Creating cursor on {SData[0]}",
     OAT.CopyKey => $"Copying key from {SData[0]} to {SData[1]}",
+    OAT.JumpIf => throw new NotImplementedException(),
+    OAT.Prompt => $"Prompt Encountered.",
     _ => "Error: Unknown Action"
   };
 }

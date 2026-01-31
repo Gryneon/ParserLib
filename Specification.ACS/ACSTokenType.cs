@@ -47,4 +47,18 @@ public enum ACSTokenType
   SimpleJump,
   Void,
   Type,
+  Wait,
+  PreprocessorFull,
+  Else,
+}
+
+
+public enum ModelDefTokenType
+{
+  None,
+
+  //Structures
+  Model,
+  Skin,
+
 }

@@ -6,6 +6,7 @@ namespace Parser.Ops.Text;
 /// provided that the specified group (or groups) are present.
 /// </summary>
 /// <typeparam name="TOutput">The type of object to create.</typeparam>
+/// <typeparam name="TInput">The type of object to accept as input.</typeparam>
 /// <param name="input_key">The key to get the input from.</param>
 /// <param name="output_key">The key to write the output to.</param>
 /// <param name="group_name">The group name to check for.</param>
@@ -23,8 +24,8 @@ namespace Parser.Ops.Text;
 /// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataDictionary"/>.
 /// </code>
 /// </remarks>
-public class GenerateFromObjectOperation<TOutput> (string input_key, string output_key, string group_name) : Operation(input_key, output_key)
-  where TOutput : IGeneratable<MatchDataSet, TOutput>
+public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, string output_key, string group_name) : Operation(input_key, output_key)
+  where TOutput : IGeneratable<TInput, TOutput>
 {
   /// <inheritdoc/>
   protected override void Execute ()

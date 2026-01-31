@@ -1,11 +1,13 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+
 using Parser;
 using Parser.Inference;
 using Parser.Ops.Text;
+using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
 using static Specification.UDMF.UDMFTokenType;
-
-using RT = Parser.Tokens.TokenRuleType;
 
 namespace Specification.UDMF;
 
@@ -48,20 +50,20 @@ public static class Definition
     // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
     //new(RT.StoreOther, None)],
     GroupTokenRules = [
-      new(RT.BuildProperty, Object, "tn:Namespace tx:Eq tv:Str tx:Sc"),
+      new(RT.BuildProperty, Structure, "tn:Namespace tx:Eq tv:Str tx:Sc"),
       new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:Value tx:Sc"),
-      new(RT.BuildObject, Object, "tn:Vertex tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Object, "tn:Thing tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Object, "tn:Sector tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Object, "tn:LineDef tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Object, "tn:SideDef tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildObject, Structure, "tn:Vertex tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildObject, Structure, "tn:Thing tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildObject, Structure, "tn:Sector tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildObject, Structure, "tn:LineDef tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildObject, Structure, "tn:SideDef tx:Bo tpm:Property tx:Bc"),
       ],
     SC = SCOIC,
     IsTextFile = true,
     TokenType = typeof(UDMFTokenType),
     TokenCompatLookup = new Dictionary<dynamic, Collection<dynamic>>()
     {
-      [Object] = [Vertex, Thing, Sector, LineDef, SideDef],
+      [Structure] = [Vertex, Thing, Sector, LineDef, SideDef],
       [Op] = [Eq, Sc, Bo, Bc],
       [Value] = [Bool, Dec, Str],
     },
@@ -73,25 +75,15 @@ public abstract class ZMapObj
   protected virtual string GroupName => EmptyString;
 
   public Collection<IProperty<string>> Properties { get; } = [];
-  public bool TryGetProperty (string key, out decimal value)
+  public bool TryGetProperty<T> (string key, [NotNullWhen(true)][MaybeNullWhen(false)] out T value) where T : IParsable<T>
   {
     value = default;
-    return decimal.TryParse(Properties.First(p => p.Key.Equals(key, SCOIC)).Value ?? SE, out value);
-  }
-  public bool TryGetProperty (string key, out int value)
-  {
-    value = default;
-    return int.TryParse(Properties.First(p => p.Key.Equals(key, SCOIC)).Value ?? SE, out value);
+    return T.TryParse(Properties.First(p => p.Key.Equals(key, SCOIC)).Value ?? SE, null, out value);
   }
   public bool TryGetProperty (string key, out string value)
   {
     value = Properties.First(p => p.Key.Equals(key, SCOIC)).Value ?? SE;
     return true;
-  }
-  public bool TryGetProperty (string key, out bool value)
-  {
-    value = default;
-    return bool.TryParse(Properties.First(p => p.Key.Equals(key, SCOIC)).Value ?? SE, out value); ;
   }
   protected static bool CanGenerate (MatchDataSet input, string groupName)
   {
@@ -100,66 +92,66 @@ public abstract class ZMapObj
   }
 }
 
-public class ZVertex : ZMapObj, IGeneratable<MatchDataSet, ZVertex>
+public class ZVertex : ZMapObj, IGeneratable<TokenObject, ZVertex>
 {
   public string? X => Properties.Single(item => item.Key.Like("x")).Value;
   public string? Y => Properties.Single(item => item.Key.Like("y")).Value;
 
-  public static ZVertex Generate (MatchDataSet input)
+  public static ZVertex Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input) => CanGenerate(input, "vertex");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 
-public class ZThing : ZMapObj, IGeneratable<MatchDataSet, ZThing>
+public class ZThing : ZMapObj, IGeneratable<TokenObject, ZThing>
 {
   public string? X => Properties.Single(item => item.Key.Like("x")).Value;
   public string? Y => Properties.Single(item => item.Key.Like("y")).Value;
-  public static ZThing Generate (MatchDataSet input)
+  public static ZThing Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input) => CanGenerate(input, "thing");
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 
-public class ZLineDef : ZMapObj, IGeneratable<MatchDataSet, ZLineDef>
+public class ZLineDef : ZMapObj, IGeneratable<TokenObject, ZLineDef>
 {
-  public static ZLineDef Generate (MatchDataSet input)
+  public static ZLineDef Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input)
+  public static bool CanGenerate (TokenObject input)
   {
     input.ThrowIfNull();
-    return input.HasGroup("linedef");
-  }
-}
-
-public class ZSideDef : ZMapObj, IGeneratable<MatchDataSet, ZSideDef>
-{
-  public static ZSideDef Generate (MatchDataSet input)
-  {
-    input.ThrowIfNull();
-    return new();
-  }
-  public static bool CanGenerate (MatchDataSet input)
-  {
-    input.ThrowIfNull();
-    return input.HasGroup("sidedef");
+    return input.Name.Like("linedef");
   }
 }
 
-public class ZSector : ZMapObj, IGeneratable<MatchDataSet, ZSector>
+public class ZSideDef : ZMapObj, IGeneratable<TokenObject, ZSideDef>
 {
-  public static ZSector Generate (MatchDataSet input)
+  public static ZSideDef Generate (TokenObject input)
   {
     input.ThrowIfNull();
     return new();
   }
-  public static bool CanGenerate (MatchDataSet input) => CanGenerate(input, "sector");
+  public static bool CanGenerate (TokenObject input)
+  {
+    input.ThrowIfNull();
+    return input.Name.Like("sidedef");
+  }
+}
+
+public class ZSector : ZMapObj, IGeneratable<TokenObject, ZSector>
+{
+  public static ZSector Generate (TokenObject input)
+  {
+    input.ThrowIfNull();
+    return new();
+  }
+  public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 

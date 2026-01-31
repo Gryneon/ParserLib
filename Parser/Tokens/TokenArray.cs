@@ -2,11 +2,11 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenArray : TokenBase, ICollection<IToken>
+public sealed class TokenArray : TokenBase, ICollection<IToken>, ITypeToken
 {
   // Tokens Kept
-  public string? ValueType => ValueTypeToken?.Content;
-  public IToken? ValueTypeToken { get; init; }
+  public string? ObjType => TypeToken?.Content;
+  public IToken? TypeToken { get; init; }
   public required TokenCollection Items { get; init; }
   public override int Count => Items.Count;
 

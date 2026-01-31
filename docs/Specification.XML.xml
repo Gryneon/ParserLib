@@ -12,8 +12,8 @@
         <member name="P:Specification.XML.Definition.Regex">
             <summary>
             <para>XML Regex for tokens</para>
-            New: https://regex101.com/r/PTKqnJ/3
-            Old: https://regex101.com/r/jcPotD/4
+            Old: <see href="https://regex101.com/r/PTKqnJ/3"/><br/>
+            New: <see href="https://regex101.com/r/jcPotD/4"/>
             </summary>
         </member>
         <member name="F:Specification.XML.Definition.Attribute">
@@ -117,7 +117,7 @@
         <member name="P:Specification.XML.XMLContent.Specification#XML#IXMLObject#Tag">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.XML.XMLContent.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.XML.XMLContent.Generate(Parser.Tokens.TokenTypedValue)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementClose">
@@ -130,7 +130,7 @@
             Represents a closing XML element.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementClose.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.XML.XMLElementClose.Generate(Parser.Tokens.TokenLabel)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementOpen">
@@ -143,7 +143,7 @@
             Represents an opening XML tag.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementOpen.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.XML.XMLElementOpen.Generate(Parser.Tokens.TokenObject)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementSingle">
@@ -156,7 +156,7 @@
             Represents a single self closing XML tag.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLElementSingle.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.XML.XMLElementSingle.Generate(Parser.Tokens.TokenObject)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLHeader">
@@ -169,7 +169,7 @@
             Represents an XML header.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLHeader.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.XML.XMLHeader.Generate(Parser.Tokens.TokenObject)">
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLNode">
@@ -192,11 +192,11 @@
             The attributes for this XML object.
             </summary>
         </member>
-        <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.XML.XMLNodeAttr.AssignAttributes(Parser.Tokens.TokenObject)">
             <summary>
             Assigns attributes based on a <see cref="T:Common.Regex.MatchDataSet"/>.
             </summary>
-            <param name="mdd"></param>
+            <param name="obj"></param>
         </member>
         <member name="P:Specification.XML.XMLNodeAttr.Children">
             <summary>

@@ -30,7 +30,7 @@ public static class Definition
         ReadInt("filepos"),
         ReadInt("size"),
         ReadString("name", 8),
-        new ByteSavePosOperation("savepos"),
+        new ByteSavePosOperation("bytes", "savepos"),
         new ByteJumpVarOperation("filepos"),
         ReadBinary("size", "data"),
         new ByteRecallOperation("savepos"),

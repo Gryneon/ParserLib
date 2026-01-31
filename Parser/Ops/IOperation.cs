@@ -21,7 +21,7 @@ public interface IOperation
   /// <summary>
   /// Set this in a child operation if the <see cref="DoOperation"/> method should never execute.
   /// </summary>
-  virtual bool NeverExecutes => false;
+  bool NeverExecutes { get; }
   #endregion
   #region Loop Positions
   /// <summary>

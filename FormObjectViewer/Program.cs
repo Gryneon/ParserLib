@@ -16,8 +16,8 @@ internal static class Program
     // To customize application configuration such as set high DPI settings or default font,
     // see https://aka.ms/applicationconfiguration.
     ApplicationConfiguration.Initialize();
-    Collection<object> t = new Collection<object>() { 54, 345, 87f, 42m, '3', "str", new Collection<object>() };
-    Form start = new ArrayForm(t);
+    //Collection<object> t = [54, 345, 87f, 42m, '3', "str", new Collection<object>()];
+    Form start = new ParserForm();
     Application.Run(start);
     start.Dispose();
   }

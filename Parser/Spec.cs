@@ -1,7 +1,5 @@
 #pragma warning disable CA1822 // Mark members as static
 
-using System;
-
 using Parser.Inference;
 
 namespace Parser;
@@ -18,9 +16,9 @@ public class Spec
   /// <summary>The name of this Spec.</summary>
   public required string Name { get; init; }
   /// <summary>A <see cref="Collection{IOperation}"/> of <see cref="Ops.Operation"/> objects that are executed in order to produce the result.</summary>
-  public required Collection<IOperation> Operations { get; init; }
+  public Collection<IOperation> Operations { get; init; } = [];
   /// <summary>A <see cref="Collection{IInferenceNode}"/> of <see cref="InferenceNode"/> objects that specify what files use this specification.</summary>
-  public required ReadOnlyCollection<IInferenceNode> FileInferences { get; init; }
+  public ReadOnlyCollection<IInferenceNode> FileInferences { get; init; } = [];
   /// <summary>Determines whether to use a byte parser or a text one.</summary>
   public bool IsTextFile { get; init; }
   /// <summary>The default regex options to use.</summary>
@@ -30,12 +28,13 @@ public class Spec
     init;
   }
   /// <summary>The type of token type to use.</summary>
-  public Type TokenType { get; init; } = typeof(int);
+  public Type TokenType { get; init; } = typeof(string);
   /// <summary>The default string comparison type to use.</summary>
   public StringComparison SC { get; init; } = SCO;
 
   /// <summary>Define the names of equilivent groups of tokens.</summary>
   public Dictionary<dynamic, Collection<dynamic>> TokenCompatLookup { get; init; } = [];
+  public RT DefaultRuleSet { get; init; } = RT.None;
   /// <summary>Token rules for the tokenize operration..</summary>
   public TokenRuleCollection TokenRules { get; init; } = [];
   /// <summary>Group token rules for the tokenize operration..</summary>

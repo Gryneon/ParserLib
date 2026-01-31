@@ -83,19 +83,28 @@ public static class Debug
     else if (values.Count == 2)
       DoLog(MsgFormats[msg](values[0], values[1]));
   }
+  public static ConsoleColor GetTextColor (MsgClass msg) => msg switch
+  {
+    MsgClass.Debug => C_Blue,
+    MsgClass.Forced => C_Cyan,
+    MsgClass.Error => C_Red,
+    MsgClass.Warning => C_Yellow,
+    MsgClass.Critical => C_Black,
+    MsgClass.None or MsgClass.Informational or _ => C_White,
+  };
+  public static ConsoleColor GetBackColor (MsgClass msg) => msg switch
+  {
+    MsgClass.Error => C_DarkRed,
+    MsgClass.Critical => C_Red,
+    _ => C_Black,
+  };
   public static void Log (MsgClass msgClass, string className, string methodName, string msg)
   {
-    if (msgClass is MsgClass.Warning)
-      Log(className, methodName, msg, C_Black, C_Yellow);
-    else if (msgClass is MsgClass.Debug)
-      Log(className, methodName, msg, C_Black, C_Blue);
-    else if (msgClass is MsgClass.Error)
-      Log(className, methodName, msg, C_DarkRed, C_Red);
-    else if (msgClass is MsgClass.Informational)
-      Log(className, methodName, msg, C_Black, C_White);
-    else
-      Log(className, methodName, msg);
-
+    Log(className, methodName, msg, GetBackColor(msgClass), GetTextColor(msgClass));
+  }
+  public static void Log (MsgClass msgClass, string className, string msg)
+  {
+    Log(className, msg, GetBackColor(msgClass), GetTextColor(msgClass));
   }
   [DoesNotReturn]
   internal static void Throw<T> (ExceptionMsg msg, params Collection<string> values) where T : Exception => _ = Throw<T, object>(msg, values);
@@ -128,7 +137,7 @@ public static class Debug
   /// <param name="msg">The message to log.</param>
   /// <param name="back">The background color.</param>
   /// <param name="text">The foreground color.</param>
-  public static void Log (string src, string msg, ConsoleColor back = ConsoleColor.Black, ConsoleColor text = ConsoleColor.White)
+  public static void Log (string src, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White)
   {
     DoLog($"{src} : {msg}", back, text);
   }

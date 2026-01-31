@@ -1,7 +1,3 @@
-
-
-
-
 # Recommended Names
 
 Recommended standard names for various elements in the parser, including data keys, parser tokens, and other identifiers. These are not enforced, but are recommended to maintain consistency and clarity in your code.
@@ -27,11 +23,6 @@ These are the naming conventions for data keys.
     matches   - Results of DictionaryOperation, as a Collection<MatchData>.
     tokens    - Results of TokenizeOperation, as a Collection<IToken>.
     bytes     - Loaded bytes from binary file.
-
-
-
-
-
 
 
 ## Parser Tokens

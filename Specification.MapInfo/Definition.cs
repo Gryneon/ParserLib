@@ -3,9 +3,14 @@
 #pragma warning disable IDE0052 // Remove unread private members
 #pragma warning disable IDE1006 // Naming Styles
 
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Security;
+
 using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
 using static Parser.Tokens.TokenRuleType;
+using static Specification.MapInfo.MapInfoTokenType;
 
 using MTT = Specification.MapInfo.MapInfoTokenType;
 
@@ -14,17 +19,15 @@ namespace Specification.MapInfo;
 [DefinitionExport]
 public static class Definition
 {
-  private const TokenRuleType RT_Compete = TokenMatch | Competitive | IgnoreCase | ExemptAllWithin;
-  private const TokenRuleType RT_Comment = RT_Compete | IgnoredToken;
-  private const TokenRuleType RT_Matches = TokenMatch | IgnoreCase | ExemptAllWithin;
-  private const TokenRuleType RT_Exactly = TokenExact | IgnoreCase | ExemptAllWithin;
-
+  internal static TokenRule Word (MTT token) => new(TokenMatch, token, @$"\b{token}\b");
+  internal static Collection<TokenRule> Keywords (MTT type, Collection<string> words) => [.. words.Select(item => new TokenRule(TokenMatch, type, @$"\b{item}\b"))];
   /// <summary>
   /// Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see>
   /// </summary>
   [Export("zdoom.mapinfo")]
   public static Spec Spec { get; } = new()
   {
+    DefaultRuleSet = IgnoreCase | ExemptAllWithin,
     Name = "zdoom.mapinfo",
     FileInferences = [
       IfN(ExtIs, "mapinfo"),
@@ -39,19 +42,27 @@ public static class Definition
     IsTextFile = true,
     TokenType = typeof(MTT),
     TokenRules = [
-      new (RT_Compete, MTT.LangRef, @"""\$\w+"""),
-      new (RT_Compete, MTT.Str, @""".+?"""),
-      new (RT_Comment, MTT.LnComment, @"\/\/.*?$"),
-      new (RT_Comment, MTT.BlkComment, @"\/\*[\s\S]*?\*\/"),
-      new (RT_Matches, MTT.Doomednums, @"\bDoomEdNums\b"),
-      new (RT_Matches, MTT.AddDefaultMap, @"\bAddDefaultMap\b"),
-      new (RT_Matches, MTT.DefaultMap, @"\bDefaultMap\b"),
+      new (Competitive, LangRef, @"""\$\w+"""),
+      new (Competitive, String, @""".+?"""),
+      new (Competitive | IgnoredToken, LnComment, @"\/\/.*?$"),
+      new (Competitive | IgnoredToken, BlkComment, @"\/\*[\s\S]*?\*\/"),
+      Word(Doomednums),
+      Word(AddDefaultMap),
+      Word(Episode),
+      Word(Skill),
+      Word(Cluster),
+      Word(Map),
+      Word(DamageType),
+      Word(Include),
+      Word(Intermission),
+      .. Keywords (PropertyName, ["Background", "Draw", "DrawConditional", "Music", "Sound", "Time", "CastClass", "CastName", "AttackSound", "FadeType", "Background2", "InitialDelay", "ScrollDirection", "ScrollTime", "WipeType" ]),
+      .. Keywords (BlockKeyword, ["Cast", "Fader", "GotoTitle", "Image", "Scroller", "TextScreen", "Wiper", "Cutscene"]),
     ],
     SC = SCOIC,
     TokenCompatLookup = {
-      [MTT.Value] = [MTT.Int, MTT.Dec, MTT.Str, MTT.Char, MTT.Bool],
-      [MTT.Str] = [MTT.LangRef],
-      [MTT.Dec] = [MTT.Int]
+      [Value] = [Int, Dec, String, Char, Bool],
+      [String] = [LangRef],
+      [Dec] = [Int]
     },
   };
 }

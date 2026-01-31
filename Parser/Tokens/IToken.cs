@@ -11,3 +11,21 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
   IReadOnlyList<IToken> Children { get; init; }
   string Content => Children.Select(static t => t.Content).TextJoin();
 }
+
+public interface ITypeToken
+{
+  string? ObjType { get; }
+  IToken? TypeToken { get; init; }
+}
+
+public interface INameToken
+{
+  string? Name { get; }
+  IToken? NameToken { get; init; }
+}
+
+public interface IValueToken
+{
+  string? Value { get; }
+  IToken? ValueToken { get; init; }
+}

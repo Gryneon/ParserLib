@@ -1,23 +1,25 @@
 using Common.Extensions;
 
+using Parser.Tokens;
+
 namespace Specification.XML;
 
 /// <summary>
 /// Represents an opening XML tag.
 /// </summary>
-public class XMLElementOpen () : XMLNodeAttr, IGeneratable<MatchDataSet, XMLElementOpen>, IXMLObject
+public class XMLElementOpen () : XMLNodeAttr, IGeneratable<TokenObject, XMLElementOpen>, IXMLObject
 {
   /// <inheritdoc/>
-  public static XMLElementOpen Generate (MatchDataSet mdd)
+  public static XMLElementOpen Generate (TokenObject obj)
   {
-    mdd.ThrowIfNull();
+    obj.ThrowIfNull();
 
     XMLElementOpen result = new()
     {
-      Tag = mdd["tagname"].Content
+      Tag = obj.Name,
     };
 
-    result.AssignAttributes(mdd);
+    result.AssignAttributes(obj);
 
     return result;
   }

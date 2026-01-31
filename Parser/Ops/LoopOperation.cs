@@ -16,17 +16,16 @@ public enum LoopType
 /// <remarks>
 /// <see cref="OpIndex"/> must be set in the operation loader in the parser. This is the loop's position the operation list.
 /// </remarks>
-public sealed class LoopOperation : Operation
+public sealed class LoopOperation : Operation, IPlaceholderOperation
 {
+  /// <summary>The type of loop to perform.</summary>
   public LoopType Type { get; init; }
-  /// <summary>
-  /// Start of loop section.
-  /// </summary>
+  /// <summary>Start of loop section.</summary>
   public int OpIndex { get; set; }
   public string? CursorKey { get; set; }
   public int? Count { get; init; }
   public ICondition? Condition { get; set; }
-  public Collection<IOperation> Operations { get; }
+  public required Collection<IOperation> Operations { get; init; }
 
   private string GetLoopName ()
   {
@@ -49,7 +48,7 @@ public sealed class LoopOperation : Operation
     operations.AddRange(additions);
     return operations.Count;
   }
-  public int Unpack ([NotNull] Collection<IOperation> operations, int index) =>
+  public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref) =>
     Type is LoopType.While or LoopType.Until or LoopType.None
       ? UnpackInc(operations, index, 0)
       : Type is LoopType.ForCount or LoopType.ForEach ? UnpackInc(operations, index, 1) : operations.Count;
@@ -69,7 +68,7 @@ public sealed class LoopOperation : Operation
   {
     if (OpIndex == 0)
     {
-      Log("ERROR: Loop Pre-processing not complete.");
+      Log(MsgClass.Error, "LoopOperation", "Loop Pre-processing not complete.");
       Status = OpStatus.Error;
     }
 
@@ -86,29 +85,24 @@ public sealed class LoopOperation : Operation
         {
           Parser.NextOpIndex = OpIndex;
         }
-        Status = OpStatus.Pass;
-        return;
+        goto Pass;
       case LoopType.None:
         Parser.NextOpIndex = OpIndex;
-        Status = OpStatus.Pass;
-        return;
+        goto Pass;
       case LoopType.ForEach when CursorKey is not null:
         initializeCursor();
-        Status = OpStatus.Pass;
-        return;
+        goto Pass;
       case LoopType.Until when Condition is not null:
         if (!Condition.Evaluate())
         {
           Parser.NextOpIndex = OpIndex;
         }
-        Status = OpStatus.Pass;
-        return;
+        goto Pass;
       case LoopType.ForCount when Count is not null:
         CursorKey ??= GetLoopName();
         Data[CursorKey] = new object[Count.Value];
         initializeCursor();
-        Status = OpStatus.Pass;
-        return;
+        goto Pass;
       case LoopType.ForCount when Count is null && CursorKey is not null:
 
         if (!Data.TryLoad(CursorKey, out int count))
@@ -119,6 +113,8 @@ public sealed class LoopOperation : Operation
         string loop_name = GetLoopName();
         Data[loop_name] = new object[count];
         initializeCursor();
+        goto Pass;
+      Pass:
         Status = OpStatus.Pass;
         return;
       default:
@@ -126,6 +122,4 @@ public sealed class LoopOperation : Operation
         return;
     }
   }
-
-  internal LoopOperation (IEnumerable<IOperation> operations) => Operations = [.. operations];
 }

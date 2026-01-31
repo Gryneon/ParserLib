@@ -8,28 +8,14 @@ namespace Specification.MapInfo;
 
 public enum MapInfoTokenType
 {
-  AddDefaultMap,
-  BlkComment,
+  AddDefaultMap, DefaultMap, Map,
+  BlkComment, LnComment,
   BlockKeyword,
-  Bool,
-  Char,
-  Class,
-  Cluster,
-  DamageType,
-  Dec,
-  DefaultMap,
-  Doomednums,
-  Episode,
+  Bool, Char, Dec, Int, String, Class, LangRef, Value, Name,
   Include,
-  Int,
-  Keyword,
-  LangRef,
-  LnComment,
-  Map,
-  Name,
+  GameInfo, Cluster, Skill, DamageType, Doomednums, Episode, Intermission,
+
   Op,
-  Property,
-  Skill,
-  Str,
-  Value,
+
+  PropertyName,
 }
