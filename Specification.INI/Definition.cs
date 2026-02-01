@@ -32,7 +32,7 @@ public static class Definition
       //Operation.End],
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      new GenerateOperation<TokenObject, Section>(Section.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
+      new GenerateOperation<TokenObject, INISection>(INISection.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
       Operation.End
     ],
     TokenRules = [

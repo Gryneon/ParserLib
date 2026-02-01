@@ -9,24 +9,24 @@ namespace Specification.INI;
 /// <summary>
 /// Represents a section heading in an INI formatted file.
 /// </summary>
-public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
+public sealed class INISection : IGeneratable<MatchDataSet, INISection>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
 {
   /// <summary>
   /// Creates an empty Section.
   /// </summary>
-  private Section () { }
+  private INISection () { }
   /// <summary>
-  /// Creates a <see cref="Section"/> with the provided name.
+  /// Creates a <see cref="INISection"/> with the provided name.
   /// </summary>
   /// <param name="name">The name of the section.</param>
   [SetsRequiredMembers]
-  public Section (string name) => Name = name;
+  public INISection (string name) => Name = name;
 
   /// <summary>
   /// Creates a section from a string.
   /// </summary>
   /// <param name="name">The name of the section.</param>
-  public static explicit operator Section (string name) => new() { Name = name };
+  public static explicit operator INISection (string name) => new() { Name = name };
   /// <summary>The name of the section.</summary>
   public string Name { get; set; } = SE;
   /// <summary>
@@ -52,7 +52,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// <item><c>name</c></item> : The name of the section.<item></item><br/>
   /// </list>
   /// </remarks>
-  public static Section Generate (MatchDataSet input)
+  public static INISection Generate (MatchDataSet input)
   {
     input.ThrowIfNull();
     Collection<string> keys = input["key"].Captures.Select(c => c.Content).ToCollection();
@@ -64,14 +64,14 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
         throw new ArgumentOutOfRangeException(nameof(input), "The number of values must match the number of keys.");
       props = [.. keys.Zip(values).Select<(string, string), PropertyObj>(item => new(item.Item1, item.Item2))];
     }
-    Section result = new()
+    INISection result = new()
     {
       Name = input["name"].Content,
       Properties = [.. props]
     };
     return result;
   }
-  public static Section Generate (TokenObject input)
+  public static INISection Generate (TokenObject input)
   {
     input.ThrowIfNull();
 
@@ -147,7 +147,7 @@ public sealed class Section : IGeneratable<MatchDataSet, Section>, IEnumerable<P
   /// <inheritdoc/>
   public object Clone ()
   {
-    Section result = new(Name);
+    INISection result = new(Name);
 
     foreach (KeyValuePair<string, string> item in Properties)
     {

@@ -5,9 +5,7 @@ using static Parser.Ops.Binary.ByteReadOperation;
 using static Parser.Ops.Operation;
 
 namespace Specification.WAD;
-/// <summary>
-/// A static class containing the WAD, WAD2, and PAK specificiations.
-/// </summary>
+/// <summary>A static class containing the WAD, WAD2, and PAK specificiations.</summary>
 [DefinitionExport(true)]
 public static class Definition
 {

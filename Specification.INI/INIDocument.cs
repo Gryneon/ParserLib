@@ -3,7 +3,7 @@ namespace Specification.INI;
 /// <summary>
 /// A document, which is a collection of sections.
 /// </summary>
-public sealed class INIDocument : ICanAddChildren<Section>, ITextSerializer, ICloneable, IEnumerable<Section>
+public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, ICloneable, IEnumerable<INISection>
 {
   #region Static Constructors
   /// <summary>
@@ -13,23 +13,23 @@ public sealed class INIDocument : ICanAddChildren<Section>, ITextSerializer, ICl
   /// <returns>An <c>INIDocument</c> that is a deep clone of the specified object.</returns>
   public static INIDocument FromINIDocument (INIDocument other) => [.. other];
   /// <summary>
-  /// Creates an <c>INIDocument</c> from an array or collection of <see cref="Section"/> objects.
+  /// Creates an <c>INIDocument</c> from an array or collection of <see cref="INISection"/> objects.
   /// </summary>
   /// <param name="sections">The array or collection of sections.</param>
   /// <returns>The newly created document.</returns>
-  public static INIDocument FromSections (IEnumerable<Section> sections) => [.. sections];
+  public static INIDocument FromSections (IEnumerable<INISection> sections) => [.. sections];
   #endregion
   /// <summary>Creates an empty <see cref="INIDocument"/>.</summary>
   public INIDocument () { }
-  /// <summary>Creates a <see cref="INIDocument"/> with the provided <see cref="Section"/> objects in it.</summary>
-  public INIDocument (IEnumerable<Section> sections) => Sections = [.. sections];
+  /// <summary>Creates a <see cref="INIDocument"/> with the provided <see cref="INISection"/> objects in it.</summary>
+  public INIDocument (IEnumerable<INISection> sections) => Sections = [.. sections];
   /// <summary>Creates a deep copy of the passed document.</summary>
   /// <param name="other">The document to copy.</param>
   public INIDocument (INIDocument other)
   {
-    foreach (Section s in other?.Sections ?? [])
+    foreach (INISection s in other?.Sections ?? [])
     {
-      Section? ns = new(s.Name);
+      INISection? ns = new(s.Name);
       Sections.Add(ns);
       foreach (IProperty<string> p in s)
       {
@@ -41,25 +41,25 @@ public sealed class INIDocument : ICanAddChildren<Section>, ITextSerializer, ICl
   /// <summary>The name of the document.</summary>
   public string Name { get; set; } = SE;
   /// <summary>A <see cref="Collection{T}">Collection&lt;Section></see> object stored in this <see cref="INIDocument"/>.</summary>
-  private Collection<Section> Sections { get; init; } = [];
+  private Collection<INISection> Sections { get; init; } = [];
   /// <inheritdoc/>
   public int Count => Sections.Count;
   /// <summary>Gets the (nth) Section.</summary>
   /// <param name="index">The index.</param>
   /// <returns>The Section at that index.</returns>
-  public Section this[int index] => Sections[index];
+  public INISection this[int index] => Sections[index];
   /// <summary>Gets the section named 'name'.</summary>
   /// <param name="name">The name to identtiry it,</param>
   /// <returns>The section starting with that name.</returns>
-  public Section this[string name] => Sections.First(item => item.Name.Like(name));
+  public INISection this[string name] => Sections.First(item => item.Name.Like(name));
   /// <summary>Checks if the document contains a section with the provided name.</summary>
   /// <param name="name">The name to check for.</param>
   /// <returns><see langword="true"/> if the document contains a section with the given name, <see langword="false"/> otherwise.</returns>
   public bool Contains (string name) => Sections.Any(item => item.Name.Like(name));
   /// <summary>Adds a section if it does not exist.
-  /// If it does exist, it adds or updates all the values contained in the provided <see cref="Section"/>.</summary>
+  /// If it does exist, it adds or updates all the values contained in the provided <see cref="INISection"/>.</summary>
   /// <param name="section">The section to add.</param>
-  public void Add (Section section)
+  public void Add (INISection section)
   {
     section.ThrowIfNull();
     if (Contains(section.Name))
@@ -77,11 +77,11 @@ public sealed class INIDocument : ICanAddChildren<Section>, ITextSerializer, ICl
     }
   }
   /// <summary>Adds a collection of child sections to the current document.</summary>
-  /// <param name="children">An enumerable collection of <see cref="Section"/> objects to add as children. Cannot be null.</param>
-  public void AddRange (IEnumerable<Section> children)
+  /// <param name="children">An enumerable collection of <see cref="INISection"/> objects to add as children. Cannot be null.</param>
+  public void AddRange (IEnumerable<INISection> children)
   {
     children.ThrowIfNull();
-    foreach (Section child in children)
+    foreach (INISection child in children)
     {
       Add(child);
     }
@@ -101,7 +101,7 @@ public sealed class INIDocument : ICanAddChildren<Section>, ITextSerializer, ICl
   public void Update (INIDocument other)
   {
     other ??= [];
-    foreach (Section section in other.Sections)
+    foreach (INISection section in other.Sections)
     {
       Add(section);
     }
@@ -109,7 +109,7 @@ public sealed class INIDocument : ICanAddChildren<Section>, ITextSerializer, ICl
   public string Serialize ()
   {
     string result = SE;
-    foreach (Section s in Sections)
+    foreach (INISection s in Sections)
     {
       result += s.Serialize() + "\n";
 
@@ -126,7 +126,7 @@ public sealed class INIDocument : ICanAddChildren<Section>, ITextSerializer, ICl
   public void Clear () => Sections.Clear();
   public object Clone () => FromINIDocument(this);
   #region Interface IEnumerable<Section>
-  public IEnumerator<Section> GetEnumerator () => Sections.GetEnumerator();
+  public IEnumerator<INISection> GetEnumerator () => Sections.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   #endregion
 }

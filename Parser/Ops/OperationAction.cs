@@ -148,7 +148,7 @@ public sealed class OperationAction : IOperation
     OAT.GotoIndex => $"Goto Index '{IData[0]}'",
     OAT.GotoFirst => $"Goto First",
     OAT.CopyKey => $"Key '{SData[0]}' copied to '{SData[1]}'",
-    _ => "No description",
+    _ => $"(string args:{SData.Count} int args:{IData.Count})",
   };
 
   private string GetMessage () => Type switch

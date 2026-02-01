@@ -74,7 +74,6 @@ partial class ParserForm : Form
     SpecLoadedCheck = new CheckBox();
     button1 = new Button();
     textBox1 = new TextBox();
-    menuStrip1.SuspendLayout();
     ((ISupportInitialize) SpecBindingSource).BeginInit();
     ((ISupportInitialize) TokenRuleBindingSource).BeginInit();
     ItemTabs.SuspendLayout();
