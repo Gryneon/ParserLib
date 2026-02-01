@@ -12,7 +12,6 @@ public class TokenCollection () : IList<IToken>
   public TokenCollection (IEnumerable<IToken> tokens) : this()
   {
     _tokens = [.. tokens];
-    _restrictedTo = typeof(IToken);
   }
 
   /// <summary>Gets or sets the token at a given index.</summary>
@@ -68,4 +67,6 @@ public class TokenCollection () : IList<IToken>
   {
     _tokens.Sort((item, item2) => item.CompareTo(item2));
   }
+
+  public override string ToString () => $"TokenCollection ({Count} Tokens)";
 }

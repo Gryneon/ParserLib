@@ -1,0 +1,147 @@
+namespace FormObjectViewer;
+
+partial class UnparsedViewer
+{
+  /// <summary>
+  /// Required designer variable.
+  /// </summary>
+  private System.ComponentModel.IContainer components = null;
+
+  /// <summary>
+  /// Clean up any resources being used.
+  /// </summary>
+  /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+  protected override void Dispose (bool disposing)
+  {
+    if (disposing && (components != null))
+    {
+      components.Dispose();
+    }
+    base.Dispose(disposing);
+  }
+
+  #region Windows Form Designer generated code
+
+  /// <summary>
+  /// Required method for Designer support - do not modify
+  /// the contents of this method with the code editor.
+  /// </summary>
+  private void InitializeComponent ()
+  {
+    SectionCountTextBox = new TextBox();
+    InverseCountTextBox = new TextBox();
+    InverseCharsTextBox = new TextBox();
+    SectionsTotalLabel = new Label();
+    InverseTotalLabel = new Label();
+    InverseCharsLabel = new Label();
+    VisualRichBox = new RichTextBox();
+    CloseButton = new Button();
+    SuspendLayout();
+    // 
+    // SectionCountTextBox
+    // 
+    SectionCountTextBox.Location = new Point(8, 8);
+    SectionCountTextBox.Name = "SectionCountTextBox";
+    SectionCountTextBox.ReadOnly = true;
+    SectionCountTextBox.Size = new Size(100, 25);
+    SectionCountTextBox.TabIndex = 0;
+    // 
+    // InverseCountTextBox
+    // 
+    InverseCountTextBox.Location = new Point(8, 40);
+    InverseCountTextBox.Name = "InverseCountTextBox";
+    InverseCountTextBox.ReadOnly = true;
+    InverseCountTextBox.Size = new Size(100, 25);
+    InverseCountTextBox.TabIndex = 0;
+    // 
+    // InverseCharsTextBox
+    // 
+    InverseCharsTextBox.Location = new Point(8, 72);
+    InverseCharsTextBox.Name = "InverseCharsTextBox";
+    InverseCharsTextBox.ReadOnly = true;
+    InverseCharsTextBox.Size = new Size(100, 25);
+    InverseCharsTextBox.TabIndex = 0;
+    // 
+    // SectionsTotalLabel
+    // 
+    SectionsTotalLabel.AutoSize = true;
+    SectionsTotalLabel.Location = new Point(112, 8);
+    SectionsTotalLabel.Name = "SectionsTotalLabel";
+    SectionsTotalLabel.Size = new Size(88, 17);
+    SectionsTotalLabel.TabIndex = 1;
+    SectionsTotalLabel.Text = "Sections Total";
+    // 
+    // label1
+    // 
+    InverseTotalLabel.AutoSize = true;
+    InverseTotalLabel.Location = new Point(112, 40);
+    InverseTotalLabel.Name = "label1";
+    InverseTotalLabel.Size = new Size(107, 17);
+    InverseTotalLabel.TabIndex = 1;
+    InverseTotalLabel.Text = "Inverted Sections";
+    // 
+    // label2
+    // 
+    InverseCharsLabel.AutoSize = true;
+    InverseCharsLabel.Location = new Point(112, 72);
+    InverseCharsLabel.Name = "label2";
+    InverseCharsLabel.Size = new Size(182, 17);
+    InverseCharsLabel.TabIndex = 1;
+    InverseCharsLabel.Text = "Inverted Unparsed Characters";
+    // 
+    // VisualRichBox
+    // 
+    VisualRichBox.Location = new Point(8, 104);
+    VisualRichBox.Name = "VisualRichBox";
+    VisualRichBox.ReadOnly = true;
+    VisualRichBox.Size = new Size(440, 248);
+    VisualRichBox.TabIndex = 2;
+    VisualRichBox.Text = "";
+    // 
+    // CloseButton
+    // 
+    CloseButton.Location = new Point(368, 64);
+    CloseButton.Name = "CloseButton";
+    CloseButton.Size = new Size(75, 31);
+    CloseButton.TabIndex = 3;
+    CloseButton.Text = "Close";
+    CloseButton.UseVisualStyleBackColor = true;
+    // 
+    // UnparsedViewer
+    // 
+    AutoScaleDimensions = new SizeF(7F, 17F);
+    AutoScaleMode = AutoScaleMode.Font;
+    ClientSize = new Size(454, 359);
+    ControlBox = false;
+    Controls.Add(CloseButton);
+    Controls.Add(VisualRichBox);
+    Controls.Add(InverseCharsLabel);
+    Controls.Add(InverseTotalLabel);
+    Controls.Add(SectionsTotalLabel);
+    Controls.Add(InverseCharsTextBox);
+    Controls.Add(InverseCountTextBox);
+    Controls.Add(SectionCountTextBox);
+    FormBorderStyle = FormBorderStyle.FixedToolWindow;
+    MinimizeBox = false;
+    Name = "UnparsedViewer";
+    ShowInTaskbar = false;
+    SizeGripStyle = SizeGripStyle.Hide;
+    StartPosition = FormStartPosition.CenterParent;
+    Text = "UnparsedViewer";
+    TopMost = true;
+    Load += UnparsedViewer_Load;
+    ResumeLayout(false);
+    PerformLayout();
+  }
+
+  #endregion
+
+  private TextBox SectionCountTextBox;
+  private TextBox InverseCountTextBox;
+  private TextBox InverseCharsTextBox;
+  private Label SectionsTotalLabel;
+  private Label InverseTotalLabel;
+  private Label InverseCharsLabel;
+  private RichTextBox VisualRichBox;
+  private Button CloseButton;
+}

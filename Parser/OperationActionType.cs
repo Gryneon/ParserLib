@@ -23,7 +23,7 @@ public enum OperationActionType
 
   SetCursor,
   ClearCursor,
-  UpdateCursorKey,
+  IncrementCursorKey,
   CreateCursor,
 
   JumpIf,

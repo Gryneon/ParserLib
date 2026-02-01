@@ -8,9 +8,12 @@ public sealed class IfOperation (ICondition condition, IOperation ifTrue, IOpera
   public OpStatus Status { get; set; }
   public int LoopBreak { get; set; }
   public int LoopStart { get; set; }
+  bool IOperation.NeverExecutes => false;
   bool IOperation.ContinueOnFail { get; set; }
   bool IOperation.SkipOperation { get; set; }
   bool IOperation.IgnoreAllLoads => false;
+  private int IfTrueIndex { get; set; }
+  private int IfFalseIndex { get; set; }
   /// <summary>Unpacks the operation into a flat structure.</summary>
   /// <param name="operations">The operation list.</param>
   /// <param name="index">The index of the operation sequencer.</param>
@@ -20,15 +23,32 @@ public sealed class IfOperation (ICondition condition, IOperation ifTrue, IOpera
   {
     int nextOrEnd (int i) => i + 1 >= operations.Count ? -1 : i + 1;
 
-    int iftrue = operations.Count;
+    IfTrueIndex = operations.Count;
     operations.Add(IfTrue);
     operations.Add(Operation.JumpTo(nextOrEnd(index)));
-    int iffalse = operations.Count;
+    IfFalseIndex = operations.Count;
     operations.Add(IfFalse);
     operations.Add(Operation.JumpTo(nextOrEnd(index)));
-    IfTrue = Operation.JumpTo(iftrue);
-    IfFalse = Operation.JumpTo(iffalse);
     return operations.Count;
   }
-  OpStatus IOperation.DoOperation (XParser parser_ref) => OpStatus.Pass;
+  public OpStatus DoOperation (XParser parser_ref)
+  {
+    if (parser_ref is null)
+      return OpStatus.FailBadOpImpossible;
+
+    bool result = Condition.Evaluate();
+
+    if (result)
+    {
+      Status = OpStatus.ConditionPass;
+      parser_ref.NextOpIndex = IfTrueIndex;
+    }
+    else
+    {
+      Status = OpStatus.ConditionFail;
+      parser_ref.NextOpIndex = IfFalseIndex;
+    }
+
+    return Status;
+  }
 }

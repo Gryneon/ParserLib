@@ -14,7 +14,6 @@ global using Common.Extensions;
 global using static Common.Names;
 
 global using ANEx = System.ArgumentNullException;
-global using DM = Common.DictionaryMode;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 global using StringTuple = (string Key, string Value);
 

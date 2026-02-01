@@ -1,23 +1,25 @@
 using Common.Extensions;
 
+using Parser.Tokens;
+
 namespace Specification.XML;
 
 /// <summary>
 /// Represents a single self closing XML tag.
 /// </summary>
-public class XMLElementSingle () : XMLNodeAttr, IGeneratable<MatchDataSet, XMLElementSingle>, IXMLObject
+public class XMLElementSingle () : XMLNodeAttr, IGeneratable<TokenObject, XMLElementSingle>, IXMLObject
 {
   /// <inheritdoc/>
-  public static XMLElementSingle Generate (MatchDataSet mdd)
+  public static XMLElementSingle Generate (TokenObject obj)
   {
-    mdd.ThrowIfNull();
+    obj.ThrowIfNull();
 
     XMLElementSingle result = new()
     {
-      Tag = mdd["tagname"].Content
+      Tag = obj.Name
     };
 
-    result.AssignAttributes(mdd);
+    result.AssignAttributes(obj);
 
     return result;
   }

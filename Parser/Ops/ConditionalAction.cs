@@ -16,7 +16,8 @@ public sealed class ConditionalAction : IOperation
   public int LoopStart { get; set; }
   private ICondition Condition { get; }
   private OperationAction Action { get; }
-  public bool IgnoreAllLoads { get; }
+  public bool IgnoreAllLoads { get; } = true;
+  public bool NeverExecutes { get; }
 
   public ConditionalAction (ICondition condition, OperationAction action)
   {

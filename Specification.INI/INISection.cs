@@ -7,30 +7,30 @@ using Parser.Tokens;
 namespace Specification.INI;
 
 /// <summary>
-/// Represents a section heading in an INI formatted file.
+/// Represents a INISection heading in an INI formatted file.
 /// </summary>
-public sealed class INISection : IGeneratable<MatchDataSet, INISection>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
+public sealed class INISection : IGeneratable<TokenProperty, INISection>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
 {
   /// <summary>
-  /// Creates an empty Section.
+  /// Creates an empty INISection.
   /// </summary>
   private INISection () { }
   /// <summary>
   /// Creates a <see cref="INISection"/> with the provided name.
   /// </summary>
-  /// <param name="name">The name of the section.</param>
+  /// <param name="name">The name of the INISection.</param>
   [SetsRequiredMembers]
   public INISection (string name) => Name = name;
 
   /// <summary>
-  /// Creates a section from a string.
+  /// Creates a INISection from a string.
   /// </summary>
   /// <param name="name">The name of the section.</param>
   public static explicit operator INISection (string name) => new() { Name = name };
   /// <summary>The name of the section.</summary>
   public string Name { get; set; } = SE;
   /// <summary>
-  /// The properties within the section.
+  /// The properties within the INISection.
   /// </summary>
   private Dictionary<string, string> Properties { get; init; } = [];
   /// <summary>
@@ -49,7 +49,7 @@ public sealed class INISection : IGeneratable<MatchDataSet, INISection>, IEnumer
   /// <remarks>
   /// <list type="table">
   /// <listheader>Required Groups:</listheader>
-  /// <item><c>name</c></item> : The name of the section.<item></item><br/>
+  /// <item><c>name</c></item> : The name of the INISection.<item></item><br/>
   /// </list>
   /// </remarks>
   public static INISection Generate (MatchDataSet input)
@@ -75,7 +75,7 @@ public sealed class INISection : IGeneratable<MatchDataSet, INISection>, IEnumer
   {
     input.ThrowIfNull();
 
-    IEnumerable<PropertyObj> prop_obj = input.Properties.OfType<TokenProperty>().Select(token_prop => new PropertyObj(token_prop.Name, token_prop.Value ?? SE));
+    IEnumerable<PropertyObj> prop_obj = input.Properties.OfType<TokenProperty>().Select(token_prop => new PropertyObj(token_prop.Name ?? SE, token_prop.Value ?? SE));
 
     return new()
     {

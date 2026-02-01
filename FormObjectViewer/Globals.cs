@@ -7,8 +7,10 @@ global using System.Windows.Forms;
 
 global using Parser;
 
+global using DSV = System.ComponentModel.DesignerSerializationVisibility;
 global using DSVA = System.ComponentModel.DesignerSerializationVisibilityAttribute;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Resources;
 

@@ -41,6 +41,6 @@ public enum UDMFTokenType
   /// <summary>An assembled property definition.</summary>
   Property,
   Op,
-  Object
+  Structure
 }
 

@@ -1,11 +1,12 @@
 #pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1812 // Unused class
+using System.Linq;
 
 using Common.Extensions;
-using System.Linq;
 
 namespace FormObjectViewer;
 
-internal partial class ArrayForm : Form
+internal sealed partial class ArrayForm : Form
 {
   [ListBindable(BindableSupport.Yes)]
   [DSVA(DesignerSerializationVisibility.Hidden)]
@@ -28,11 +29,10 @@ internal partial class ArrayForm : Form
     ArrayListBox.Items.Clear();
     foreach (object item in Array)
     {
-      int i = ArrayListBox.Items.Add(item);
+      _ = ArrayListBox.Items.Add(item);
     }
     ArrayListBox.Refresh();
   }
-
 
   private void UpdateButton_Click (object sender, EventArgs e)
   {

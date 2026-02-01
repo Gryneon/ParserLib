@@ -2,6 +2,7 @@ using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
 using static Parser.Tokens.TokenRuleType;
+using static Parser.Tokens.TokenRule;
 
 namespace Specification.INI;
 
@@ -9,11 +10,6 @@ namespace Specification.INI;
 [DefinitionExport]
 public static class Definition
 {
-  private const TokenRuleType Competes = TMatches | Competitive;
-  private const TokenRuleType TMatches = TokenMatch | ExemptAllWithin | IgnoreCase;
-  private const TokenRuleType TExactly = TokenExact | ExemptAllWithin | IgnoreCase;
-  private const TokenRuleType TExtract = TokenExtract | ExemptAllWithin | IgnoreCase;
-
   /// <summary>The INI Spec</summary>
   [Export("ini")]
   public static Spec Spec => new()
@@ -26,24 +22,21 @@ public static class Definition
     RxOpt = ROML | ROIPW | ROEC | ROIC,
     TokenType = typeof(ITT),
     Operations = [
-      //new DictionaryOperation(Regex, RXOptions),
-      //new GenerateOperation<MatchDataSet, Section>(Section.Generate, item => item.HasGroup("section"), "matches", "sections"),
-      //new ExternalOperation<IEnumerable<Section>, INIDocument>(INIDocument.FromSections, item => true, "sections", "result"),
-      //Operation.End],
       new TokenizeOperation(),
       new TokenAssembleOperation(),
       new GenerateOperation<TokenObject, INISection>(INISection.Generate, item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
       Operation.End
     ],
     TokenRules = [
-      new(Competes | IgnoredToken, ITT.None, @";.*?$"),
-      new(Competes, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
-      new(Competes, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
-      new(TExactly, ITT.Eq, @"="),
-      new(TExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
+      new(Competitive | IgnoredToken, ITT.None, @";.*?$"),
+      new(Competitive, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
+      new(Competitive, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
+      .. MakeSingleCharRules("=", TokenExact, new ITT[] { ITT.Eq } ),
+      new(TokenExtract, ITT.INISection, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
       new(BuildProperty, ITT.Property, "tn:Key tx:Eq tv:Value"),
-      new(BuildObject, ITT.SectionWProps, "tn:Section tpm:Property"),
-    ]
+      new(BuildObject, ITT.INISectionWProps, "tn:INISection tpm:Property")
+    ],
+    DefaultRuleSet = ExemptAllWithin | IgnoreCase,
   };
 }

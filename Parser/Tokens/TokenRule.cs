@@ -3,8 +3,8 @@ namespace Parser.Tokens;
 
 public class TokenRule
 {
-  public required RT Type { get; init; }
-  public string? RuleStringData { get; init; }
+  public required RT Type { get; set; }
+  public string? RuleStringData { get; set; }
   public string TypeToAssign { get; set; }
 
   [SetsRequiredMembers]
@@ -37,4 +37,60 @@ public class TokenRule
   {
     TypeToAssign = SE;
   }
+  public static TokenRule[] CopyOfRuleSet (TokenRuleCollection rules)
+  {
+    Collection<TokenRule> new_rules = [];
+    rules ??= [];
+    foreach (TokenRule rule in rules)
+    {
+      TokenRule new_rule = new(rule.Type, rule.TypeToAssign, rule.RuleStringData);
+      new_rules.Add(new_rule);
+    }
+    return [.. new_rules];
+  }
+  /// <summary>Makes a series of single character TokenExact styled rules.</summary>
+  /// <param name="chars">The characters to use.</param>
+  /// <param name="type">The rule type. Should be TokenExact or SplitExact, plus any necessary modifiers.</param>
+  /// <param name="typeToAssign">The type to assign. May be a single object applied to all, or a list of objects the same length as <paramref name="chars"/>.</param>
+  /// <returns>An array of TokenRules.</returns>
+  public static TokenRule[] MakeSingleCharRules (string chars, RT type, object typeToAssign)
+  {
+    Collection<TokenRule> tokenRules = [];
+
+    if (string.IsNullOrEmpty(chars))
+      return [.. tokenRules];
+
+    tokenRules = typeToAssign.IsCollection()
+      ? [..
+        typeToAssign.
+        AsCollection().
+        Zip(chars).
+        Select(i => new TokenRule(type, i.First, i.Second.ToString()))]
+      : [..
+        chars.
+        ToArray().
+        AsCollection().
+        Select(i => new TokenRule(type, typeToAssign, i.ToString()))];
+
+    return [.. tokenRules];
+  }
+  /// <summary>Creates an array of token rules representing keywords.</summary>
+  /// <returns>A list of TokenMatch rules that properly exempt ranges.</returns>
+  public static TokenRule[] MakeWordMatchRules (bool ignore_case, params Collection<(string, dynamic)> rules)
+  {
+    Collection<TokenRule> tokenRules = [];
+
+    if (rules.IsEmpty() || rules is null)
+      return [.. tokenRules];
+
+    foreach ((string word, dynamic type) in rules)
+    {
+      TokenRule r = new(RT.TokenMatch | RT.ExemptAllWithin | (ignore_case ? RT.IgnoreCase : RT.None), type, @$"\b{word}\b");
+      tokenRules.Add(r);
+    }
+
+    return [.. tokenRules];
+  }
+
+  public override string ToString () => $"TokenRule ({Type} => {TypeToAssign})";
 }

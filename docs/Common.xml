@@ -1371,6 +1371,9 @@
             <param name="sc"><see cref="T:System.StringComparison"/> properties.</param>
             <returns>A <see cref="T:System.String"/> with the text replaced as directed.</returns>
         </member>
+        <member name="M:Common.Section.CompareTo(Common.Section)">
+            <inheritdoc/>
+        </member>
         <member name="T:Common.Types.FileExt">
             <summary>A definition for a file extension.</summary>
         </member>

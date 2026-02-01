@@ -1,6 +1,8 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-namespace Parser.Tokens;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Common;
 
 public struct Section () : IEquatable<Section>, IComparable<Section>
 {
@@ -39,6 +41,14 @@ public struct Section () : IEquatable<Section>, IComparable<Section>
     Length = length,
     FullContent = input
   };
+  [SetsRequiredMembers]
+  public Section (Capture c, string input) : this()
+  {
+    c.ThrowIfNull();
+    Start = c.Index;
+    Length = c.Length;
+    FullContent = input;
+  }
 
   public readonly bool IsWithin (int point) => point <= End && point >= Start;
   public readonly bool Overlaps (Section other) => End >= other.Start && Start <= other.End;

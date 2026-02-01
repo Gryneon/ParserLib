@@ -1,11 +1,13 @@
 using Common.Extensions;
 
+using Parser.Tokens;
+
 namespace Specification.XML;
 
 /// <summary>
 /// Represents text content in the XML file.
 /// </summary>
-public sealed class XMLContent () : IGeneratable<MatchDataSet, XMLContent>, IXMLObject
+public sealed class XMLContent () : IGeneratable<TokenTypedValue, XMLContent>, IXMLObject
 {
   /// <summary>
   /// Text content between tags.
@@ -15,12 +17,12 @@ public sealed class XMLContent () : IGeneratable<MatchDataSet, XMLContent>, IXML
   string IXMLObject.Tag => Content;
 
   /// <inheritdoc/>
-  public static XMLContent Generate (MatchDataSet mdd)
+  public static XMLContent Generate (TokenTypedValue ttv)
   {
-    mdd.ThrowIfNull();
+    ttv.ThrowIfNull();
     XMLContent result = new()
     {
-      Content = mdd["content"].Content,
+      Content = ttv.Content,
     };
 
     return result;
