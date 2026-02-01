@@ -29,7 +29,7 @@ public static partial class RX
   public static RxS G_WS => field = Nm("ws", WS);
   public static RxS G_Name => field = Nm("name", Name);
   public static RxS G_CString => field = Nm("string", CString);
-  public static RxS G_Int => field = Nm("int", Integers);
+  public static RxS G_Int => field = Nm("int", IntegerRx);
 
   // C-Style Common Parts
   public static RxS CLnComment => field = Gp(@"\/\/[^\n\r]*");
@@ -42,8 +42,8 @@ public static partial class RX
   public static RxS Name => field = Rx(@"[a-zA-Z_][\w]*");
   public static RxS WS => field = Rx(@"\s+");
   public static RxS WSO => field = Rx(@"\s*");
-  public static RxS Integers => field = Rx(@"-?\d+");
-  public static RxS Decimals => field = Or(@"-?\d*\.\d+", Integers);
+  public static RxS IntegerRx => field = Rx(@"-?\d+");
+  public static RxS DecimalRx => field = Or(@"-?\d*\.\d+", IntegerRx);
   public static RxS Boolean => field = Rx(@"(?n:\b(false|true)\b)");
 
   // Modifiers

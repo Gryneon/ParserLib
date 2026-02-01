@@ -42,9 +42,9 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
       Section section = _sections[i];
       Section? next = i + 1 < _sections.Count ? _sections[i + 1] : null;
 
-      if (next is not null && section.End + 1 >= next.Value.Start)
+      if (next is not null && section.End + 1 >= next.Start)
       {
-        section.End = int.Max(next.Value.End, section.End);
+        section.End = next.End;
         _sections.RemoveAt(i + 1);
         result = true;
       }
@@ -52,7 +52,8 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
     return result;
   }
   public bool IsWithin (int point) => _sections.Any(item => item.IsWithin(point));
-  public bool Overlaps (Section section) => section.Overlaps(_sections);
+  public bool Overlaps (Section section) => _sections.Any(ea => ea.Start <= section.End && ea.End >= section.Start);
+
   public string? FullText { get; private set; }
   public int TextLength => FullText?.Length ?? -1;
   public int Count => _sections.Count;
@@ -60,6 +61,7 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
   public Section this[int index] => _sections[index];
   public void Add (Section item)
   {
+    item.ThrowIfNull();
     _sections.Add(item);
     _sections.Sort();
 

@@ -248,7 +248,7 @@ public sealed class TokenFactory
     while (next >= 0 && cursor <= Input.Length)
     {
       Section match = Section.ByLength(next, length, Input);
-      if (!match.Overlaps(CannotMatch))
+      if (!CannotMatch.Overlaps(match))
       {
         if (Type is RT.TokenExact)
         {
@@ -273,15 +273,15 @@ public sealed class TokenFactory
 
       if (!CannotMatch.Overlaps(rng))
       {
-        if (ExemptAllWithin)
-          CannotMatch.Add(rng);
-
         if (Type is RT.TokenExtract)
           foreach (Section c in match.Groups["keep"].Captures.Select(c => new Section(c, Input)))
             SaveResult(MakeToken(c));
 
         else if (Type is RT.TokenMatch)
           SaveResult(MakeToken(rng));
+
+        if (ExemptAllWithin)
+          CannotMatch.Add(rng);
       }
     }
   }
@@ -299,11 +299,11 @@ public sealed class TokenFactory
 
       _currentRule = contestants[index].Rule;
 
-      if (ExemptAllWithin)
-        CannotMatch.Add(rng);
-
       if (!IgnoredToken)
         SaveResult(MakeToken(rng));
+
+      if (ExemptAllWithin)
+        CannotMatch.Add(rng);
     }
   }
 }

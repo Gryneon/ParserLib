@@ -84,23 +84,25 @@ public static class Definition
       IfN(HeadSt, "<?xm")
     ],
     Name = "xml",
-    RxOpt = ROML | ROEC | ROIPW,
+    RxOpt = ROML | ROEC | ROIPW | ROIC,
     IsTextFile = true,
     SC = SCO,
     TokenType = typeof(XTT),
     TokenRules = [
       new(Competitive, XTT.DString, @"""[^""]*"""),
       new(Competitive, XTT.SString, @"'[^']*'"),
-      new(Competitive, XTT.Comment, @"\<\!\s*--([^-]|(?<!-)-(?!-))*--\s*\>"),
+      new(Competitive, XTT.Comment, @"\<\!\s*\-\-([^\-]|(?<!\-)\-(?!\-))*\-\-\s*\>"),
       .. TokenRule.MakeSingleCharRules("<>/?;&:=!-", TokenExact, new Collection<XTT>() { XTT.Ao, XTT.Ac, XTT.Sl, XTT.Qm, XTT.Sc, XTT.An, XTT.Co, XTT.Eq, XTT.Em, XTT.Hy }),
       new (TokenMatch, XTT.NamespaceAttr, @"\bxmlns\b"),
-      new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*[=])"),
-      new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=:)"),
-      new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |:)\s* )\b[a-z]\w*\b(?=\s*[^=])"),
+      new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*\=)"),
+      new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=\:)"),
+      new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
     ],
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
     GroupTokenRules = [
-      new (BuildProperty, XTT.Attribute, "tin:AttrKey tx:Eq tiv:String")
+      new (BuildProperty, XTT.Attribute, "tin:AttrKey tx:Eq tiv:String"),
+      new (BuildObject, XTT.ElementSingle, "tx:Ao tin:ElementName tipmo:Attribute tx:Sl tx:Ac"),
+      new (BuildLabel, XTT.ElementEnd, "tx:Ao tx:Sl tiyo:Namespace txo:Co tin:ElementName tx:Ac"),
     ],
     TokenCompatLookup = {
       [XTT.String] = [XTT.DString, XTT.SString]

@@ -1,3 +1,8 @@
+ 
+ # Operation Reference
+
+ A listing of all the currently available operations.
+
  ## Byte Operations
     
     index = byte position

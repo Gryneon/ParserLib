@@ -46,8 +46,11 @@ public static class ObjectExtensions
       throw new InvalidOperationException(msg);
     ANEx.ThrowIfNull(obj);
   }
-  public static T ThrowIfInvalid<T> (bool condition, string? msg = null)
+  public static T? ThrowIfFalse<T> (this object? obj, bool condition, string? msg = null)
   {
+    if (condition)
+      return default;
+
     if (msg is not null)
       throw new InvalidOperationException(msg);
     throw new InvalidOperationException();

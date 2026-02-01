@@ -2,7 +2,7 @@
 
 namespace Common.Extensions;
 
-public static class EnumExtensions
+public static class IConvertibleExtensions
 {
   /// <summary>
   /// Gets a numeric integer from any enumeration.

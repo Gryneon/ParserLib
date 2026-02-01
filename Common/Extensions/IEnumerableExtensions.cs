@@ -29,7 +29,8 @@ public static class IEnumerableExtensions
   }
   public static int LastIndex<T> (this IEnumerable<T> list) => list is null ? -1 : list.Count() - 1;
   public static int LastIndex<T> (this IReadOnlyCollection<T> list) => list is null ? -1 : list.Count - 1;
-
+  public static Collection<T> Condense<T> (this IEnumerable<IEnumerable<T>> listlist) =>
+  [.. listlist.Aggregate((list1, list2) => list1.Concat(list2))];
   // IEnumerable
   public static int Count (this IEnumerable list)
   {
@@ -59,7 +60,5 @@ public static class IEnumerableExtensions
   public static bool IsEmpty (this IEnumerable? list) => list is null || list.Count() == 0;
 
   // IEnumerable<string>
-  public static Collection<string> Condense (this IEnumerable<IEnumerable<string>> listlist) =>
-    [.. listlist.Aggregate((list1, list2) => list1.Concat(list2))];
   public static RxS AggregateRegex (this IEnumerable<string> list) => list.TextJoin("|");
 }

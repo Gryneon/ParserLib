@@ -65,11 +65,11 @@
         </member>
         <member name="M:Specification.INI.INIDocument.Add(Specification.INI.INISection)">
             <summary>Adds a section if it does not exist.
-            If it does exist, it adds or updates all the values contained in the provided <see cref="T:Common.Section"/>.</summary>
+            If it does exist, it adds or updates all the values contained in the provided <see cref="T:Specification.INI.INISection"/>.</summary>
             <param name="section">The section to add.</param>
         </member>
         <member name="M:Specification.INI.INIDocument.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.INISection})">
-            <summary>Adds a collection of child INISections to the current document.</summary>
+            <summary>Adds a collection of child sections to the current document.</summary>
             <param name="children">An enumerable collection of <see cref="T:Specification.INI.INISection"/> objects to add as children. Cannot be null.</param>
         </member>
         <member name="M:Specification.INI.INIDocument.Add(System.String)">
@@ -103,10 +103,10 @@
             <summary>
             Creates a INISection from a string.
             </summary>
-            <param name="name">The name of the INISection.</param>
+            <param name="name">The name of the section.</param>
         </member>
         <member name="P:Specification.INI.INISection.Name">
-            <summary>The name of the INISection.</summary>
+            <summary>The name of the section.</summary>
         </member>
         <member name="P:Specification.INI.INISection.Properties">
             <summary>

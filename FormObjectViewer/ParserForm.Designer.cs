@@ -38,6 +38,7 @@ partial class ParserForm : Form
     StatusStrip = new StatusStrip();
     ParseProgressBar = new ToolStripProgressBar();
     OpenParseFileDialog = new OpenFileDialog();
+    SaveRuleFileDialog = new SaveFileDialog();
     TheMenuStrip = new MenuStrip();
     FileMenu = new ToolStripMenuItem();
     OpenFileMenuItem = new ToolStripMenuItem();
@@ -66,6 +67,7 @@ partial class ParserForm : Form
     TokenizerPage = new TabPage();
     TokenTableLabel = new Label();
     LoadParseFileButton = new Button();
+    LoadSpecButton = new Button();
     RuleTableLabel = new Label();
     ParsePathLabel = new Label();
     ClearTokensButton = new Button();
@@ -90,6 +92,7 @@ partial class ParserForm : Form
     LoadRulesFileButton = new Button();
     ClearRulesButton = new Button();
     LoadRulesButton = new Button();
+    ShowUnparsedButton = new Button();
     ((ISupportInitialize) SpecBindingSource).BeginInit();
     ((ISupportInitialize) TokenRuleBindingSource).BeginInit();
     ItemTabs.SuspendLayout();
