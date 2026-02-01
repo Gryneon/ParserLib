@@ -103,7 +103,7 @@ public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, 
     other ??= [];
     foreach (INISection section in other.Sections)
     {
-      Add(iniSection);
+      Add(section);
     }
   }
   public string Serialize ()

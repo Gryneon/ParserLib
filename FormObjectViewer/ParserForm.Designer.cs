@@ -90,14 +90,6 @@ partial class ParserForm : Form
     LoadRulesFileButton = new Button();
     ClearRulesButton = new Button();
     LoadRulesButton = new Button();
-    readOnlyDictionaryGrid1 = new Parser.Forms.ReadOnlyDictionaryGrid();
-    DataDictionaryGrid = new Parser.Forms.ReadOnlyDictionaryGrid();
-    checkBox1 = new CheckBox();
-    checkBox2 = new CheckBox();
-    checkBox3 = new CheckBox();
-    SpecLoadedCheck = new CheckBox();
-    button1 = new Button();
-    textBox1 = new TextBox();
     ((ISupportInitialize) SpecBindingSource).BeginInit();
     ((ISupportInitialize) TokenRuleBindingSource).BeginInit();
     ItemTabs.SuspendLayout();
@@ -214,7 +206,6 @@ partial class ParserForm : Form
     loadFromSpecToolStripMenuItem.Name = "loadFromSpecToolStripMenuItem";
     loadFromSpecToolStripMenuItem.Size = new Size(180, 22);
     loadFromSpecToolStripMenuItem.Text = "Load From Spec";
-    loadFromSpecToolStripMenuItem.Click += this.LoadFromSpecToolStripMenuItem_Click;
     // 
     // loadFromFilToolStripMenuItem
     // 
