@@ -19,9 +19,13 @@ public sealed class TokenFactory
   public SectionCollection CannotMatch { get; } = [];
   #endregion
   #region Constructors
-  public TokenFactory (IEnumerable<TokenRule> rules, Spec spec)
+  public TokenFactory (IEnumerable<TokenRule> rules, Spec spec, bool no_rules_from_spec = false)
   {
     SetSpec(spec);
+    if (no_rules_from_spec)
+    {
+      _rules.Clear();
+    }
     _rules.AddRange(rules);
   }
   public TokenFactory (Spec spec)
@@ -71,26 +75,10 @@ public sealed class TokenFactory
     Ignored = (rule is null) ? IgnoredToken : rule.Type.HasFlag(RT.IgnoredToken),
     Exempt = (rule is null) ? ExemptAllWithin : rule.Type.HasFlag(RT.ExemptAllWithin),
   };
-  internal Token MakeToken (Match match, TokenRule? rule = null) => new()
-  {
-    Index = match.Index,
-    Content = match.Value,
-    Type = (rule is null) ? AssignType : rule.TypeToAssign,
-    Ignored = (rule is null) ? IgnoredToken : rule.Type.HasFlag(RT.IgnoredToken),
-    Exempt = (rule is null) ? ExemptAllWithin : rule.Type.HasFlag(RT.ExemptAllWithin),
-  };
   internal Token MakeToken (Section match, TokenRule? rule = null) => new()
   {
     Index = match.Start,
     Content = match.Content,
-    Type = (rule is null) ? AssignType : rule.TypeToAssign,
-    Ignored = (rule is null) ? IgnoredToken : rule.Type.HasFlag(RT.IgnoredToken),
-    Exempt = (rule is null) ? ExemptAllWithin : rule.Type.HasFlag(RT.ExemptAllWithin),
-  };
-  internal Token MakeToken (Capture capture, TokenRule? rule = null) => new()
-  {
-    Index = capture.Index,
-    Content = capture.Value,
     Type = (rule is null) ? AssignType : rule.TypeToAssign,
     Ignored = (rule is null) ? IgnoredToken : rule.Type.HasFlag(RT.IgnoredToken),
     Exempt = (rule is null) ? ExemptAllWithin : rule.Type.HasFlag(RT.ExemptAllWithin),
@@ -281,15 +269,15 @@ public sealed class TokenFactory
 
     foreach (Match match in mc)
     {
-      Section rng = Section.ByMatch(match, Input);
+      Section rng = new(match, Input);
 
-      if (!rng.Overlaps(CannotMatch))
+      if (!CannotMatch.Overlaps(rng))
       {
         if (ExemptAllWithin)
           CannotMatch.Add(rng);
 
         if (Type is RT.TokenExtract)
-          foreach (Capture c in match.Groups["keep"].Captures)
+          foreach (Section c in match.Groups["keep"].Captures.Select(c => new Section(c, Input)))
             SaveResult(MakeToken(c));
 
         else if (Type is RT.TokenMatch)
@@ -300,7 +288,6 @@ public sealed class TokenFactory
   internal void Tokens_Compete ()
   {
     Collection<(TokenRule Rule, int Index)> contestants = [.. _rules.Where(r => r.Type.HasFlag(RT.Competitive) && r.RuleStringData is not null).Select((r, i) => (r, i))];
-    int contestant_count = contestants.Count;
     string regexPatterns = contestants.Select(r => GetRuleRegex(r.Rule, r.Index)).TextJoin("|");
     Regex regex = new(regexPatterns, _spec.RxOpt.RemoveBit<RegexOptions>(ROIC));
 
@@ -308,7 +295,7 @@ public sealed class TokenFactory
     foreach (Match match in mc)
     {
       int index = GetRuleGroupIndex(match);
-      Section rng = Section.ByMatch(match, Input);
+      Section rng = new(match, Input);
 
       _currentRule = contestants[index].Rule;
 

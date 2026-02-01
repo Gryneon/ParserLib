@@ -3,8 +3,8 @@ namespace Parser.Tokens;
 
 public class TokenRule
 {
-  public required RT Type { get; init; }
-  public string? RuleStringData { get; init; }
+  public required RT Type { get; set; }
+  public string? RuleStringData { get; set; }
   public string TypeToAssign { get; set; }
 
   [SetsRequiredMembers]
@@ -36,6 +36,17 @@ public class TokenRule
   public TokenRule ()
   {
     TypeToAssign = SE;
+  }
+  public static TokenRule[] CopyOfRuleSet (TokenRuleCollection rules)
+  {
+    Collection<TokenRule> new_rules = [];
+    rules ??= [];
+    foreach (TokenRule rule in rules)
+    {
+      TokenRule new_rule = new(rule.Type, rule.TypeToAssign, rule.RuleStringData);
+      new_rules.Add(new_rule);
+    }
+    return [.. new_rules];
   }
   /// <summary>Makes a series of single character TokenExact styled rules.</summary>
   /// <param name="chars">The characters to use.</param>
@@ -74,10 +85,12 @@ public class TokenRule
 
     foreach ((string word, dynamic type) in rules)
     {
-      TokenRule r = new(RT.TokenMatch | RT.ExemptAllWithin | (ignore_case ? RT.IgnoreCase : RT.None), type, $"\b{word}\b");
+      TokenRule r = new(RT.TokenMatch | RT.ExemptAllWithin | (ignore_case ? RT.IgnoreCase : RT.None), type, @$"\b{word}\b");
       tokenRules.Add(r);
     }
 
     return [.. tokenRules];
   }
+
+  public override string ToString () => $"TokenRule ({Type} => {TypeToAssign})";
 }

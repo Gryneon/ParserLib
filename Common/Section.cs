@@ -41,19 +41,12 @@ public struct Section () : IEquatable<Section>, IComparable<Section>
     Length = length,
     FullContent = input
   };
-  public static Section ByMatch (Match m, string input) => new()
-  {
-    Start = m.Index,
-    Length = m.Length,
-    FullContent = input
-  };
-
   [SetsRequiredMembers]
-  public Section (Match m, string input) : this()
+  public Section (Capture c, string input) : this()
   {
-    m.ThrowIfNull();
-    Start = m.Index;
-    Length = m.Length;
+    c.ThrowIfNull();
+    Start = c.Index;
+    Length = c.Length;
     FullContent = input;
   }
 

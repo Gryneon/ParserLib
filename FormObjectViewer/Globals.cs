@@ -7,8 +7,8 @@ global using System.Windows.Forms;
 
 global using Parser;
 
-global using DSVA = System.ComponentModel.DesignerSerializationVisibilityAttribute;
 global using DSV = System.ComponentModel.DesignerSerializationVisibility;
+global using DSVA = System.ComponentModel.DesignerSerializationVisibilityAttribute;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -23,10 +23,3 @@ using System.Resources;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0.0-Pre")]
 [assembly: NeutralResourcesLanguage("en-US")]
-[assembly: SuppressMessage(
-  "Interoperability",
-  "CA1416:Validate platform compatibility",
-  Justification = "<Pending>",
-  Scope = "member",
-  Target = "~M:FormObjectViewer.UnparsedViewer.UnparsedViewer_Load(System.Object,System.EventArgs)"
-)]

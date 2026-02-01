@@ -1,4 +1,5 @@
 #pragma warning disable RE0001 // Invalid regex pattern
+#pragma warning disable CA1720 // Identifier contains type name
 
 using Parser;
 using Parser.Ops;
@@ -30,6 +31,9 @@ public enum XMLTokenType
   Content,
   DString,
   SString,
+
+  // Groups
+  String,
 
   // Structures
   Attribute,
@@ -91,22 +95,19 @@ public static class Definition
       .. TokenRule.MakeSingleCharRules("<>/?;&:=!-", TokenExact, new Collection<XTT>() { XTT.Ao, XTT.Ac, XTT.Sl, XTT.Qm, XTT.Sc, XTT.An, XTT.Co, XTT.Eq, XTT.Em, XTT.Hy }),
       new (TokenMatch, XTT.NamespaceAttr, @"\bxmlns\b"),
       new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*[=])"),
-      new (TokenMatch, XTT.ElementName, @"\b[a-z]\w*\b(?=\s*[^=])"),
+      new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=:)"),
+      new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |:)\s* )\b[a-z]\w*\b(?=\s*[^=])"),
     ],
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
     GroupTokenRules = [
-      new (BuildProperty, XTT.Attribute, "ti:AttrKey")
+      new (BuildProperty, XTT.Attribute, "tin:AttrKey tx:Eq tiv:String")
     ],
+    TokenCompatLookup = {
+      [XTT.String] = [XTT.DString, XTT.SString]
+    },
     Operations = [
       new TokenizeOperation(),
-      new GenerateFromObjectOperation<TokenObject, XMLElementSingle>("tokens", "xml_single", "noinsidetag"),
-      new GenerateFromObjectOperation<TokenLabel, XMLElementClose>("tokens", "xml_close", "endtag"),
-      new GenerateFromObjectOperation<TokenObject, XMLElementOpen>("tokens", "xml_open", "tagname"),
-      new GenerateFromObjectOperation<TokenTypedValue, XMLContent>("tokens", "xml_content", "content"),
-      new GenerateFromObjectOperation<TokenObject, XMLHeader>("tokens", "xml_header", "header"),
-      new GenerateFromObjectOperation<TokenLabel, XMLComment>("tokens", "xml_comment", "header"),
-      new ConsolidateOperation<IXMLObject>(["xml_single", "xml_close", "xml_open", "xml_content", "xml_header", "xml_comment"], "xml"),
-      new XMLStackOperation("xml", "result"),
+      new TokenAssembleOperation(),
       Operation.End,
     ],
   };

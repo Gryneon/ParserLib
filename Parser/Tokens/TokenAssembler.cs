@@ -361,4 +361,6 @@ public sealed class TokenAssembler
 
     Log(Area, "Token Assembly Complete");
   }
+
+  public override string ToString () => $"TokenAssembler ({_spec.Name})";
 }

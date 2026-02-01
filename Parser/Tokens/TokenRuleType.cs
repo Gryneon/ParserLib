@@ -9,70 +9,70 @@ public enum TokenRuleType
   /// <summary>No type, Rule will be ignored.</summary>
   None = 0,
   /// <summary>This Token Rule will exactly match the string provided.</summary>
-  TokenExact = 1,
+  TokenExact = 0x1,
   /// <summary>This Token Rule will match to the regex provided.</summary>
-  TokenMatch = 2,
+  TokenMatch = 0x2,
   /// <summary>This Token Rule will split the input at the regex provided, limiting future matches.</summary>
-  SplitMatch = 4,
+  SplitMatch = 0x4,
   /// <summary>This Token Rule will split the input at the exact string provided, limiting future matches.</summary>
-  SplitExact = 8,
+  SplitExact = 0x8,
   /// <summary>This Token Rule will store the unmatched data parts that match the regex provided as tokens with this type.</summary>
-  StoreExtra = 16,
+  StoreExtra = 0x10,
   /// <summary>This Token Rule will store the unmatched data parts as tokens with this type.</summary>
-  StoreOther = 32,
+  StoreOther = 0x20,
   /// <summary>This token or sequence means the parsed content is not valid.</summary>
-  ErrorMatch = 64,
+  ErrorMatch = 0x40,
   /// <summary>Extracts and uses the value(s) stored in the group named 'keep'.
   /// If there are multiple captures, they will be stored as additional tokens of this type.</summary>
   /// <remarks>The entire match is exempted if flagged as exempt, but the value of the created tokens will ONLY be what is in the named matching group 'keep'.</remarks>
-  TokenExtract = 64 * 2,
+  TokenExtract = 0x80,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenProperty"/>.</summary>
-  BuildProperty = 64 * 4,
+  BuildProperty = 0x100,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenArray"/>.</summary>
-  BuildArray = 64 * 4 * 2,
+  BuildArray = 0x200,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenObject"/>.</summary>
-  BuildObject = 64 * 16,
+  BuildObject = 0x400,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenFlag"/>.</summary>
-  BuildFlag = 32 * 16 * 4,
+  BuildFlag = 0x800,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenTypedValue"/>.</summary>
-  BuildTypedValue = 64 * 16 * 4,
+  BuildTypedValue = 0x1000,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel"/>.</summary>
-  BuildLabel = 64 * 8 * 16,
+  BuildLabel = 0x2000,
   /// <summary>This Token Group Rule will assemble a <see cref="TokenStatement"/>.</summary>
-  BuildStatement = 0x20000000,
+  BuildStatement = 0x4000,
   /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty"/>, <see cref="TokenTypedValue"/>, or <see cref="TokenArray"/>.</summary>
-  AssignValue = 64 * 64 * 4,
+  AssignValue = 0x8000,
   /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty"/> or <see cref="TokenObject"/>.</summary>
-  AssignName = 64 * 64 * 8,
+  AssignName = 0x10000,
   /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject"/> or <see cref="TokenTypedValue"/>.</summary>
-  AssignType = 64 * 64 * 8 * 2,
+  AssignType = 0x20000,
   /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject"/>.</summary>
-  AddProperty = 64 * 64 * 8 * 4,
+  AddProperty = 0x40000,
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag"/>.</summary>
-  AddFlag = 64 * 64 * 64,
+  AddFlag = 0x80000,
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag"/>.</summary>
-  RemFlag = 64 * 64 * 64 * 2,
+  RemFlag = 0x100000,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>
-  FromTokens = 64 * 64 * 64 * 4,
+  FromTokens = 0x200000,
   /// <summary>This Token Rule will exempt all matches from being checked.</summary>
   /// <remarks>This is useful for strings, comments, and quoted or escaped items.</remarks>
-  ExemptAllWithin = 64 * 64 * 64 * 8,
+  ExemptAllWithin = 0x400000,
   /// <summary>Flags the created token as ignored.</summary>
   /// <remarks>This is useful for whitespace and comments.</remarks>
-  IgnoredToken = 64 * 64 * 64 * 8 * 2,
+  IgnoredToken = 0x800000,
   /// <summary>Exact matches and regex will ignore case.</summary>
   /// <remarks>This is useful for languages that are not case sensitive.</remarks>
-  IgnoreCase = 64 * 64 * 64 * 32,
+  IgnoreCase = 0x1000000,
   /// <summary>All Token Match Rules with this flag will run concurrently and exclusively.</summary>
   /// <remarks>This is useful for strings and comments.</remarks>
-  Competitive = 64 * 64 * 64 * 64,
+  Competitive = 0x2000000,
   /// <summary>The rule will execute until no more matches occur.</summary>
-  Recursive = 64 * 64 * 64 * 64 * 2,
+  Recursive = 0x4000000,
   /// <summary>This token sequence entry is not required, but will be consumed if present.</summary>
-  Opt = 64 * 64 * 64 * 64 * 4,
+  Opt = 0x8000000,
   /// <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
-  Mult = 64 * 64 * 64 * 64 * 8,
+  Mult = 0x10000000,
   /// <summary>The bits to remove to get the type correctly.</summary>
-  FlagBits = Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
+  FlagBits = Mult | Opt | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
 }

@@ -203,18 +203,5 @@
             The contents of this XML node.
             </summary>
         </member>
-        <member name="T:Specification.XML.XMLStackOperation">
-            <summary>
-            Operation to stack the nodes inside each other.
-            </summary>
-        </member>
-        <member name="M:Specification.XML.XMLStackOperation.#ctor(System.String,System.String)">
-            <summary>
-            Operation to stack the nodes inside each other.
-            </summary>
-        </member>
-        <member name="M:Specification.XML.XMLStackOperation.Execute">
-            <inheritdoc/>
-        </member>
     </members>
 </doc>

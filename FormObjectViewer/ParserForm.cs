@@ -48,6 +48,7 @@ internal sealed partial class ParserForm : Form
   private Spec LoadedSpec => SpecComboBox.SelectedIndex >= 0 ? SpecList[SpecComboBox.SelectedIndex] : DefaultSpec.Unknown;
   private readonly BindingList<TokenRule> _workingRules = [];
   private readonly BindingList<IToken> _currentTokens = [];
+  private SectionCollection _sections = [];
   private string _parseFile = "";
   private TokenFactory? _factory = new();
 
@@ -56,6 +57,8 @@ internal sealed partial class ParserForm : Form
   private void ParserForm_Load (object sender, EventArgs e)
   {
     TokenDataGrid.DataSource = _currentTokens;
+    TokenRuleDataGrid.DataSource = _workingRules;
+    TokenRuleBindingSource.DataSource = _workingRules;
   }
 
   private void OpenParseFileDialog_FileOk (object sender, CancelEventArgs e)
@@ -69,7 +72,9 @@ internal sealed partial class ParserForm : Form
     List<string> specNames = [.. SpecList.Select(i => i.Name)];
     SpecComboBox.DataSource = specNames;
     LoadParseFileButton.Enabled = true;
-    LoadSpecButton.Enabled = true;
+    LoadRulesButton.Enabled = true;
+    LoadRulesFileButton.Enabled = true;
+    ClearRulesButton.Enabled = true;
   }
 
   private void Exit (object sender, EventArgs e)
@@ -90,13 +95,12 @@ internal sealed partial class ParserForm : Form
 
   private void LoadRules (object sender, EventArgs e)
   {
-    TokenRuleDataGrid.DataSource = _workingRules;
-    TokenRuleBindingSource.DataSource = _workingRules;
 
     foreach (TokenRule rule in LoadedSpec.TokenRules)
     {
       _workingRules.Add(rule);
     }
+    TokenRuleDataGrid.Refresh();
   }
   private void SaveRuleDialog (object sender, EventArgs e)
   {
@@ -139,13 +143,18 @@ internal sealed partial class ParserForm : Form
       return;
     }
 
-    _factory = new(_workingRules, LoadedSpec);
+    _factory = new(_workingRules, LoadedSpec, no_rules_from_spec: true);
 
     foreach (IToken token in _factory.Produce(contents))
     {
       _currentTokens.Add(token);
     }
+
+    _sections = _factory.CannotMatch;
+
     TokenDataGrid.Refresh();
+    ClearTokensButton.Enabled = true;
+    ShowUnparsedButton.Enabled = true;
   }
 
   private void TokenRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e)
@@ -169,7 +178,7 @@ internal sealed partial class ParserForm : Form
   {
     UnparsedViewer viewer = new()
     {
-      Sections = _factory?.CannotMatch ?? []
+      Sections = _sections
     };
     _ = viewer.ShowDialog();
     viewer.Dispose();
@@ -219,5 +228,36 @@ internal sealed partial class ParserForm : Form
   {
     TokenRuleDataGrid[e.ColumnIndex, e.RowIndex].Style.BackColor = Color.Pink;
     ItemsChanged = true;
+  }
+
+  private void TokenRuleDataGrid_RowEnter (object sender, DataGridViewCellEventArgs e)
+  {
+    RuleEditForm editForm;
+    if (e.RowIndex >= _workingRules.Count)
+    {
+      _workingRules.Add(new() { TypeToAssign = "None", Type = TokenRuleType.None, RuleStringData = SE });
+      editForm = new()
+      {
+        Original = _workingRules.Last(),
+        Spec = LoadedSpec,
+      };
+    }
+    else
+    {
+      editForm = new()
+      {
+        Original = _workingRules[e.RowIndex],
+        Spec = LoadedSpec,
+      };
+    }
+    DialogResult result = editForm.ShowDialog();
+
+    if (result is DialogResult.OK)
+      _workingRules[e.RowIndex] = editForm.Original;
+    else
+      this.DoNothing();
+
+    editForm.Dispose();
+    TokenRuleDataGrid.Refresh();
   }
 }

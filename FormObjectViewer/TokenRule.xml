@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet xmlns="Parser/TokenRule" spec="zdoom.acs">
+
+<Rule name="script">
+  <AssignType>Script</AssignType>
+  <RuleType>
+    <Flag>TokenMatch</Flag>
+  </RuleType>
+  <Data>\b(script)\b</Data>
+</Rule>
+
+</RuleSet>

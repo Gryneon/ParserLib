@@ -28,51 +28,62 @@ partial class RuleEditForm
   /// </summary>
   private void InitializeComponent ()
   {
-    radioButton1 = new RadioButton();
-    radioButton2 = new RadioButton();
+    CompetitiveRadio = new RadioButton();
+    TokenMatchRadio = new RadioButton();
     radioButton3 = new RadioButton();
     radioButton4 = new RadioButton();
     radioButton5 = new RadioButton();
-    groupBox1 = new GroupBox();
+    TokenTypeGroup = new GroupBox();
     radioButton9 = new RadioButton();
     radioButton8 = new RadioButton();
     radioButton7 = new RadioButton();
     radioButton6 = new RadioButton();
     TypeToAssignListBox = new ListBox();
     label1 = new Label();
-    CancelButton = new Button();
+    TheCancelButton = new Button();
     SaveButton = new Button();
-    groupBox1.SuspendLayout();
+    IgnoreCaseCheck = new CheckBox();
+    IgnoreTokenCheck = new CheckBox();
+    FromTokensCheck = new CheckBox();
+    RecursiveCheck = new CheckBox();
+    OptCheck = new CheckBox();
+    MultCheck = new CheckBox();
+    button1 = new Button();
+    StringDataBox = new TextBox();
+    StringDataLabel = new Label();
+    textBox1 = new TextBox();
+    label2 = new Label();
+    TokenTypeGroup.SuspendLayout();
     SuspendLayout();
     // 
-    // radioButton1
+    // CompetitiveRadio
     // 
-    radioButton1.AutoSize = true;
-    radioButton1.Location = new Point(16, 32);
-    radioButton1.Name = "radioButton1";
-    radioButton1.Size = new Size(90, 19);
-    radioButton1.TabIndex = 0;
-    radioButton1.TabStop = true;
-    radioButton1.Text = "Competitive";
-    radioButton1.UseVisualStyleBackColor = true;
+    CompetitiveRadio.AutoSize = true;
+    CompetitiveRadio.Location = new Point(8, 32);
+    CompetitiveRadio.Name = "CompetitiveRadio";
+    CompetitiveRadio.Size = new Size(95, 21);
+    CompetitiveRadio.TabIndex = 0;
+    CompetitiveRadio.TabStop = true;
+    CompetitiveRadio.Text = "Competitive";
+    CompetitiveRadio.UseVisualStyleBackColor = true;
     // 
-    // radioButton2
+    // TokenMatchRadio
     // 
-    radioButton2.AutoSize = true;
-    radioButton2.Location = new Point(16, 56);
-    radioButton2.Name = "radioButton2";
-    radioButton2.Size = new Size(94, 19);
-    radioButton2.TabIndex = 0;
-    radioButton2.TabStop = true;
-    radioButton2.Text = "Token Match";
-    radioButton2.UseVisualStyleBackColor = true;
+    TokenMatchRadio.AutoSize = true;
+    TokenMatchRadio.Location = new Point(8, 59);
+    TokenMatchRadio.Name = "TokenMatchRadio";
+    TokenMatchRadio.Size = new Size(100, 21);
+    TokenMatchRadio.TabIndex = 0;
+    TokenMatchRadio.TabStop = true;
+    TokenMatchRadio.Text = "Token Match";
+    TokenMatchRadio.UseVisualStyleBackColor = true;
     // 
     // radioButton3
     // 
     radioButton3.AutoSize = true;
-    radioButton3.Location = new Point(16, 80);
+    radioButton3.Location = new Point(8, 87);
     radioButton3.Name = "radioButton3";
-    radioButton3.Size = new Size(87, 19);
+    radioButton3.Size = new Size(94, 21);
     radioButton3.TabIndex = 0;
     radioButton3.TabStop = true;
     radioButton3.Text = "Token Exact";
@@ -81,9 +92,9 @@ partial class RuleEditForm
     // radioButton4
     // 
     radioButton4.AutoSize = true;
-    radioButton4.Location = new Point(16, 104);
+    radioButton4.Location = new Point(8, 114);
     radioButton4.Name = "radioButton4";
-    radioButton4.Size = new Size(85, 19);
+    radioButton4.Size = new Size(91, 21);
     radioButton4.TabIndex = 0;
     radioButton4.TabStop = true;
     radioButton4.Text = "Split Match";
@@ -92,38 +103,38 @@ partial class RuleEditForm
     // radioButton5
     // 
     radioButton5.AutoSize = true;
-    radioButton5.Location = new Point(16, 128);
+    radioButton5.Location = new Point(8, 141);
     radioButton5.Name = "radioButton5";
-    radioButton5.Size = new Size(78, 19);
+    radioButton5.Size = new Size(85, 21);
     radioButton5.TabIndex = 0;
     radioButton5.TabStop = true;
     radioButton5.Text = "Split Exact";
     radioButton5.UseVisualStyleBackColor = true;
     // 
-    // groupBox1
+    // TokenTypeGroup
     // 
-    groupBox1.Controls.Add(radioButton1);
-    groupBox1.Controls.Add(radioButton9);
-    groupBox1.Controls.Add(radioButton8);
-    groupBox1.Controls.Add(radioButton7);
-    groupBox1.Controls.Add(radioButton6);
-    groupBox1.Controls.Add(radioButton5);
-    groupBox1.Controls.Add(radioButton2);
-    groupBox1.Controls.Add(radioButton4);
-    groupBox1.Controls.Add(radioButton3);
-    groupBox1.Location = new Point(8, 8);
-    groupBox1.Name = "groupBox1";
-    groupBox1.Size = new Size(128, 248);
-    groupBox1.TabIndex = 1;
-    groupBox1.TabStop = false;
-    groupBox1.Text = "Token Rule Type";
+    TokenTypeGroup.Controls.Add(CompetitiveRadio);
+    TokenTypeGroup.Controls.Add(radioButton9);
+    TokenTypeGroup.Controls.Add(radioButton8);
+    TokenTypeGroup.Controls.Add(radioButton7);
+    TokenTypeGroup.Controls.Add(radioButton6);
+    TokenTypeGroup.Controls.Add(radioButton5);
+    TokenTypeGroup.Controls.Add(TokenMatchRadio);
+    TokenTypeGroup.Controls.Add(radioButton4);
+    TokenTypeGroup.Controls.Add(radioButton3);
+    TokenTypeGroup.Location = new Point(8, 9);
+    TokenTypeGroup.Name = "TokenTypeGroup";
+    TokenTypeGroup.Size = new Size(128, 281);
+    TokenTypeGroup.TabIndex = 1;
+    TokenTypeGroup.TabStop = false;
+    TokenTypeGroup.Text = "Token Rule Type";
     // 
     // radioButton9
     // 
     radioButton9.AutoSize = true;
-    radioButton9.Location = new Point(16, 224);
+    radioButton9.Location = new Point(8, 250);
     radioButton9.Name = "radioButton9";
-    radioButton9.Size = new Size(85, 19);
+    radioButton9.Size = new Size(94, 21);
     radioButton9.TabIndex = 0;
     radioButton9.TabStop = true;
     radioButton9.Text = "Store Other";
@@ -132,9 +143,9 @@ partial class RuleEditForm
     // radioButton8
     // 
     radioButton8.AutoSize = true;
-    radioButton8.Location = new Point(16, 200);
+    radioButton8.Location = new Point(8, 223);
     radioButton8.Name = "radioButton8";
-    radioButton8.Size = new Size(80, 19);
+    radioButton8.Size = new Size(90, 21);
     radioButton8.TabIndex = 0;
     radioButton8.TabStop = true;
     radioButton8.Text = "Store Extra";
@@ -143,9 +154,9 @@ partial class RuleEditForm
     // radioButton7
     // 
     radioButton7.AutoSize = true;
-    radioButton7.Location = new Point(16, 176);
+    radioButton7.Location = new Point(8, 195);
     radioButton7.Name = "radioButton7";
-    radioButton7.Size = new Size(87, 19);
+    radioButton7.Size = new Size(96, 21);
     radioButton7.TabIndex = 0;
     radioButton7.TabStop = true;
     radioButton7.Text = "Error Match";
@@ -154,9 +165,9 @@ partial class RuleEditForm
     // radioButton6
     // 
     radioButton6.AutoSize = true;
-    radioButton6.Location = new Point(16, 152);
+    radioButton6.Location = new Point(8, 168);
     radioButton6.Name = "radioButton6";
-    radioButton6.Size = new Size(95, 19);
+    radioButton6.Size = new Size(103, 21);
     radioButton6.TabIndex = 0;
     radioButton6.TabStop = true;
     radioButton6.Text = "Token Extract";
@@ -164,10 +175,12 @@ partial class RuleEditForm
     // 
     // TypeToAssignListBox
     // 
+    TypeToAssignListBox.Font = new Font("Segoe Fluent Icons", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
     TypeToAssignListBox.FormattingEnabled = true;
-    TypeToAssignListBox.Location = new Point(144, 32);
+    TypeToAssignListBox.IntegralHeight = false;
+    TypeToAssignListBox.Location = new Point(144, 40);
     TypeToAssignListBox.Name = "TypeToAssignListBox";
-    TypeToAssignListBox.Size = new Size(120, 214);
+    TypeToAssignListBox.Size = new Size(120, 168);
     TypeToAssignListBox.TabIndex = 2;
     // 
     // label1
@@ -175,40 +188,156 @@ partial class RuleEditForm
     label1.AutoSize = true;
     label1.Location = new Point(144, 16);
     label1.Name = "label1";
-    label1.Size = new Size(84, 15);
+    label1.Size = new Size(93, 17);
     label1.TabIndex = 3;
     label1.Text = "Type to Assign";
     // 
-    // CancelButton
+    // TheCancelButton
     // 
-    CancelButton.Location = new Point(616, 216);
-    CancelButton.Name = "CancelButton";
-    CancelButton.Size = new Size(64, 32);
-    CancelButton.TabIndex = 4;
-    CancelButton.Text = "Cancel";
-    CancelButton.UseVisualStyleBackColor = true;
+    TheCancelButton.Location = new Point(600, 248);
+    TheCancelButton.Name = "TheCancelButton";
+    TheCancelButton.Size = new Size(64, 36);
+    TheCancelButton.TabIndex = 4;
+    TheCancelButton.Text = "Cancel";
+    TheCancelButton.UseVisualStyleBackColor = true;
+    TheCancelButton.Click += CancelButton_Click;
     // 
     // SaveButton
     // 
-    SaveButton.Location = new Point(272, 216);
+    SaveButton.Location = new Point(400, 248);
     SaveButton.Name = "SaveButton";
-    SaveButton.Size = new Size(64, 32);
+    SaveButton.Size = new Size(64, 36);
     SaveButton.TabIndex = 4;
     SaveButton.Text = "Save";
     SaveButton.UseVisualStyleBackColor = true;
+    SaveButton.Click += SaveButton_Click;
+    // 
+    // IgnoreCaseCheck
+    // 
+    IgnoreCaseCheck.AutoSize = true;
+    IgnoreCaseCheck.Location = new Point(288, 56);
+    IgnoreCaseCheck.Name = "IgnoreCaseCheck";
+    IgnoreCaseCheck.Size = new Size(97, 21);
+    IgnoreCaseCheck.TabIndex = 5;
+    IgnoreCaseCheck.Text = "Ignore Case";
+    IgnoreCaseCheck.UseVisualStyleBackColor = true;
+    IgnoreCaseCheck.CheckedChanged += IgnoreCaseCheck_CheckedChanged;
+    // 
+    // IgnoreTokenCheck
+    // 
+    IgnoreTokenCheck.AutoSize = true;
+    IgnoreTokenCheck.Location = new Point(288, 80);
+    IgnoreTokenCheck.Name = "IgnoreTokenCheck";
+    IgnoreTokenCheck.Size = new Size(111, 21);
+    IgnoreTokenCheck.TabIndex = 5;
+    IgnoreTokenCheck.Text = "Ignored Token";
+    IgnoreTokenCheck.UseVisualStyleBackColor = true;
+    // 
+    // FromTokensCheck
+    // 
+    FromTokensCheck.AutoSize = true;
+    FromTokensCheck.Location = new Point(288, 104);
+    FromTokensCheck.Name = "FromTokensCheck";
+    FromTokensCheck.Size = new Size(101, 21);
+    FromTokensCheck.TabIndex = 5;
+    FromTokensCheck.Text = "From Tokens";
+    FromTokensCheck.UseVisualStyleBackColor = true;
+    // 
+    // RecursiveCheck
+    // 
+    RecursiveCheck.AutoSize = true;
+    RecursiveCheck.Location = new Point(288, 128);
+    RecursiveCheck.Name = "RecursiveCheck";
+    RecursiveCheck.Size = new Size(82, 21);
+    RecursiveCheck.TabIndex = 5;
+    RecursiveCheck.Text = "Recursive";
+    RecursiveCheck.UseVisualStyleBackColor = true;
+    // 
+    // OptCheck
+    // 
+    OptCheck.AutoSize = true;
+    OptCheck.Location = new Point(288, 152);
+    OptCheck.Name = "OptCheck";
+    OptCheck.Size = new Size(77, 21);
+    OptCheck.TabIndex = 5;
+    OptCheck.Text = "Optional";
+    OptCheck.UseVisualStyleBackColor = true;
+    // 
+    // MultCheck
+    // 
+    MultCheck.AutoSize = true;
+    MultCheck.Location = new Point(288, 176);
+    MultCheck.Name = "MultCheck";
+    MultCheck.Size = new Size(104, 21);
+    MultCheck.TabIndex = 5;
+    MultCheck.Text = "One or Many";
+    MultCheck.UseVisualStyleBackColor = true;
+    // 
+    // button1
+    // 
+    button1.Location = new Point(144, 248);
+    button1.Name = "button1";
+    button1.Size = new Size(120, 32);
+    button1.TabIndex = 6;
+    button1.Text = "Add Type";
+    button1.UseVisualStyleBackColor = true;
+    // 
+    // StringDataBox
+    // 
+    StringDataBox.BorderStyle = BorderStyle.FixedSingle;
+    StringDataBox.Location = new Point(400, 40);
+    StringDataBox.Multiline = true;
+    StringDataBox.Name = "StringDataBox";
+    StringDataBox.Size = new Size(264, 200);
+    StringDataBox.TabIndex = 7;
+    // 
+    // StringDataLabel
+    // 
+    StringDataLabel.AutoSize = true;
+    StringDataLabel.Location = new Point(400, 16);
+    StringDataLabel.Name = "StringDataLabel";
+    StringDataLabel.Size = new Size(73, 17);
+    StringDataLabel.TabIndex = 3;
+    StringDataLabel.Text = "String Data";
+    // 
+    // textBox1
+    // 
+    textBox1.Location = new Point(144, 216);
+    textBox1.Name = "textBox1";
+    textBox1.Size = new Size(120, 25);
+    textBox1.TabIndex = 8;
+    // 
+    // label2
+    // 
+    label2.AutoSize = true;
+    label2.Location = new Point(280, 16);
+    label2.Name = "label2";
+    label2.Size = new Size(67, 17);
+    label2.TabIndex = 3;
+    label2.Text = "Rule Flags";
     // 
     // RuleEditForm
     // 
     AcceptButton = SaveButton;
-    AutoScaleDimensions = new SizeF(7F, 15F);
+    AutoScaleDimensions = new SizeF(7F, 17F);
     AutoScaleMode = AutoScaleMode.Font;
-    CancelButton = CancelButton;
-    ClientSize = new Size(689, 261);
+    ClientSize = new Size(689, 296);
+    Controls.Add(textBox1);
+    Controls.Add(StringDataBox);
+    Controls.Add(button1);
+    Controls.Add(MultCheck);
+    Controls.Add(OptCheck);
+    Controls.Add(RecursiveCheck);
+    Controls.Add(FromTokensCheck);
+    Controls.Add(IgnoreTokenCheck);
+    Controls.Add(IgnoreCaseCheck);
     Controls.Add(SaveButton);
-    Controls.Add(CancelButton);
+    Controls.Add(TheCancelButton);
+    Controls.Add(StringDataLabel);
+    Controls.Add(label2);
     Controls.Add(label1);
     Controls.Add(TypeToAssignListBox);
-    Controls.Add(groupBox1);
+    Controls.Add(TokenTypeGroup);
     FormBorderStyle = FormBorderStyle.FixedSingle;
     MaximizeBox = false;
     MinimizeBox = false;
@@ -219,26 +348,37 @@ partial class RuleEditForm
     Text = "RuleEditForm";
     TopMost = true;
     Load += RuleEditForm_Load;
-    groupBox1.ResumeLayout(false);
-    groupBox1.PerformLayout();
+    TokenTypeGroup.ResumeLayout(false);
+    TokenTypeGroup.PerformLayout();
     ResumeLayout(false);
     PerformLayout();
   }
 
   #endregion
 
-  private RadioButton radioButton1;
-  private RadioButton radioButton2;
+  private RadioButton CompetitiveRadio;
+  private RadioButton TokenMatchRadio;
   private RadioButton radioButton3;
   private RadioButton radioButton4;
   private RadioButton radioButton5;
-  private GroupBox groupBox1;
+  private GroupBox TokenTypeGroup;
   private RadioButton radioButton6;
   private RadioButton radioButton9;
   private RadioButton radioButton8;
   private RadioButton radioButton7;
   private ListBox TypeToAssignListBox;
   private Label label1;
-  private Button CancelButton;
+  private Button TheCancelButton;
   private Button SaveButton;
+  private CheckBox IgnoreCaseCheck;
+  private CheckBox IgnoreTokenCheck;
+  private CheckBox FromTokensCheck;
+  private CheckBox RecursiveCheck;
+  private CheckBox OptCheck;
+  private CheckBox MultCheck;
+  private Button button1;
+  private TextBox StringDataBox;
+  private Label StringDataLabel;
+  private TextBox textBox1;
+  private Label label2;
 }

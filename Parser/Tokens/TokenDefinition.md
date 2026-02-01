@@ -18,30 +18,32 @@
 * <code>StoreOther</code> - This Token Rule will store the unmatched data parts as tokens with this type.
 * <code>TokenExtract</code> - This Token Rule will store the unmatched data parts as tokens with this type.
 * <code>ErrorMatch</code> - This Token Rule will fail the assembly if matched.
+* <code>Competitive</code> - All Token Rules with this flag will run concurrently and exclusively as a TokenMatch. You do not need to include TokenMatch.
 ### These specify the type of assembly for the Token Assembler.
-* <code>BuildProperty</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty\<T\></font></b></code>.
-* <code>BuildArray</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenArray\<T\></font></b></code>.
-* <code>BuildObject</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>.
-* <code>BuildFlag</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag\<T\></font></b></code>.
-* <code>BuildTypedValue</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenTypedValue\<T\></font></b></code>.<br/>
+* <code>BuildProperty</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty</font></b></code>.
+* <code>BuildArray</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenArray</font></b></code>.
+* <code>BuildObject</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject</font></b></code>.
+* <code>BuildFlag</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag</font></b></code>.
+* <code>BuildTypedValue</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenTypedValue</font></b></code>.<br/>
+* <code>BuildStatement</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenStatement</font></b></code>.<br/>
+* <code>BuildLabel</code> - This Token Group Rule will assemble a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenLabel</font></b></code>.<br/>
 ### These specify the type of assembly each ChkToken in a Token Assembly string.
-* <code>AssignValue</code> - This Token Group Token Code will store the value as the 'Value' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty\<T\></font></b></code> or <code><b><font name="cascadia code" size=3 color=#5588FF>TokenArray\<T\></font></b></code>.
-* <code>AssignName</code> - This Token Group Token Code will store the value as the 'Name' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty\<T\></font></b></code> or <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>.
-* <code>AssignType</code> - This Token Group Token Code will store the value as the 'Type' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>.
-* <code>AddProperty</code> - This Token Group Token Code will store the value as a 'Property' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>.
-* <code>AddFlag</code> - This Token Group Token Code will set AddFlag to <font name="cascadia code" size=3 color=#2233FF>true</font> in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag\<T\></font></b></code>.
-* <code>RemFlag</code> - This Token Group Token Code will set AddFlag to <font color="#2233FF">false</font> in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag\<T\></font></b></code>.<br/>
+* <code>AssignValue</code> - This Token Group Token Code will store the value as the 'Value' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty</font></b></code> or <code><b><font name="cascadia code" size=3 color=#5588FF>TokenArray\<T\></font></b></code>.
+* <code>AssignName</code> - This Token Group Token Code will store the value as the 'Name' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty</font></b></code> or <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>.
+* <code>AssignType</code> - This Token Group Token Code will store the value as the 'Type' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject</font></b></code>.
+* <code>AddProperty</code> - This Token Group Token Code will store the value as a 'Property' in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject</font></b></code> or <code><b><font name="cascadia code" size=3 color=#5588FF>TokenStatement</font></b></code>.
+* <code>AddFlag</code> - This Token Group Token Code will set AddFlag to <font name="cascadia code" size=3 color=#2233FF>true</font> in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag</font></b></code>.
+* <code>RemFlag</code> - This Token Group Token Code will set AddFlag to <font color="#2233FF">false</font> in a <code><b><font name="cascadia code" size=3 color=#5588FF>TokenFlag</font></b></code>.<br/>
 ### These are flags and modifiers.
 * <code>FromTokens</code> - This Token Rule will only match from existing tokens.
 * <code>ExemptAllWithin</code> - This Token Rule will exempt all matches from being checked.
 * <code>IgnoredToken</code> - Flags the created token as ignored.
 * <code>IgnoreCase</code> - Exact matches and regex will ignore case.
-* <code>Competitive</code> - All Token Match Rules with this flag will run concurrently and exclusively.
 * <code>Recursive</code> - The rule will execute until no matches occur.
 * <code>Opt</code> - This token sequence entry is not required, but will be consumed if present.
 * <code>Mult</code> - This token sequence entry can have additional entries, and will consume them if present.
 ### This is the mask to remove all of the flags to get the type.
-* <code>FlagBits</code> = <code>Mult | Opt | Recursive | Competitive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens</code>
+* <code>FlagBits</code> = <code>Mult | Opt | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens</code>
 
 
 ## Token Assembly Syntax
