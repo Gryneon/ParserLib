@@ -19,6 +19,6 @@ public class JSONTests
     OpStatus result = parser.Parse(content);
 
     Assert.Equal(OpStatus.Pass, result);
-    Assert.NotNull(parser.Result);
+    Assert.True(parser.Data.Keys.Count > 3);
   }
 }

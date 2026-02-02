@@ -60,19 +60,48 @@ internal sealed partial class RuleEditForm : Form
         TypeToAssignListBox.SelectedItem = WorkingCopy.TypeToAssign;
     }
 
-    if (WorkingCopy.Type.HasFlag(TokenRuleType.FromTokens))
-      FromTokensCheck.Checked = true;
-
-    if (WorkingCopy.Type.HasFlag(TokenRuleType.Mult))
-      MultCheck.Checked = true;
-
-    if (WorkingCopy.Type.HasFlag(TokenRuleType.Opt))
-      OptCheck.Checked = true;
+    FromTokensCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.FromTokens);
+    RecursiveCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Recursive);
+    ExemptCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.ExemptAllWithin);
+    IgnoreCaseCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.IgnoreCase);
+    IgnoreTokenCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.IgnoredToken);
+    MultCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Mult);
+    OptCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Opt);
   }
+  private void UpdateCopy ()
+  {
+    WorkingCopy.RuleStringData = StringDataBox.Text;
+    if (TypeToAssignListBox.SelectedIndex != -1 && TypeToAssignListBox.Items.Count > 1)
+    {
+      WorkingCopy.TypeToAssign = TypeToAssignListBox.SelectedItem?.ToString() ?? SE;
+    }
+    TokenRuleType assembled = TokenRuleType.None;
 
+    assembled |= FromTokensCheck.Checked ? TokenRuleType.FromTokens : TokenRuleType.None;
+    assembled |= RecursiveCheck.Checked ? TokenRuleType.Recursive : TokenRuleType.None;
+    assembled |= ExemptCheck.Checked ? TokenRuleType.ExemptAllWithin : TokenRuleType.None;
+    assembled |= IgnoreCaseCheck.Checked ? TokenRuleType.IgnoreCase : TokenRuleType.None;
+    assembled |= MultCheck.Checked ? TokenRuleType.Mult : TokenRuleType.None;
+    assembled |= OptCheck.Checked ? TokenRuleType.Opt : TokenRuleType.None;
+    assembled |= IgnoreTokenCheck.Checked ? TokenRuleType.IgnoredToken : TokenRuleType.None;
+
+    assembled |= TokenMatchRadio.Checked ? TokenRuleType.TokenMatch : TokenRuleType.None;
+    assembled |= TokenExactRadio.Checked ? TokenRuleType.TokenExact : TokenRuleType.None;
+    assembled |= TokenExtractRadio.Checked ? TokenRuleType.TokenExtract : TokenRuleType.None;
+    assembled |= SplitMatchRadio.Checked ? TokenRuleType.SplitMatch : TokenRuleType.None;
+    assembled |= SplitExactRadio.Checked ? TokenRuleType.SplitExact : TokenRuleType.None;
+    assembled |= StoreOtherRadio.Checked ? TokenRuleType.StoreOther : TokenRuleType.None;
+    assembled |= StoreExtraRadio.Checked ? TokenRuleType.StoreExtra : TokenRuleType.None;
+    assembled |= ErrorMatchRadio.Checked ? TokenRuleType.ErrorMatch : TokenRuleType.None;
+    assembled |= CompetitiveRadio.Checked ? TokenRuleType.Competitive : TokenRuleType.None;
+
+    WorkingCopy.Type = assembled;
+
+  }
   [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Nobody uses windows < 6.1")]
   private void SaveButton_Click (object sender, EventArgs e)
   {
+    UpdateCopy();
     Original.RuleStringData = WorkingCopy.RuleStringData;
     Original.Type = WorkingCopy.Type;
     Original.TypeToAssign = WorkingCopy.TypeToAssign;
@@ -83,10 +112,5 @@ internal sealed partial class RuleEditForm : Form
   private void CancelButton_Click (object sender, EventArgs e)
   {
     Close();
-  }
-
-  private void IgnoreCaseCheck_CheckedChanged (object sender, EventArgs e)
-  {
-
   }
 }

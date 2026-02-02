@@ -75,7 +75,7 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
     void initializeCursor ()
     {
       Parser.AddCursor(CursorKey);
-      Parser.NextOpIndex = OpIndex;
+      Parser.SetNextOperationIndex(OpIndex);
     }
 
     switch (Type)
@@ -83,11 +83,11 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
       case LoopType.While when Condition is not null:
         if (Condition.Evaluate())
         {
-          Parser.NextOpIndex = OpIndex;
+          Parser.SetNextOperationIndex(OpIndex);
         }
         goto Pass;
       case LoopType.None:
-        Parser.NextOpIndex = OpIndex;
+        Parser.SetNextOperationIndex(OpIndex);
         goto Pass;
       case LoopType.ForEach when CursorKey is not null:
         initializeCursor();
@@ -95,7 +95,7 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
       case LoopType.Until when Condition is not null:
         if (!Condition.Evaluate())
         {
-          Parser.NextOpIndex = OpIndex;
+          Parser.SetNextOperationIndex(OpIndex);
         }
         goto Pass;
       case LoopType.ForCount when Count is not null:

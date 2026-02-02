@@ -17,12 +17,13 @@ internal sealed partial class UnparsedViewer : Form
 
   private void UnparsedViewer_Load (object sender, EventArgs e)
   {
-    SectionCollection inverse = Sections.Inverse();
-
-    if (Sections.Count == 0)
+    if (Sections is null || Sections.Count == 0)
     {
       VisualRichBox.Text = "No sections to preview.";
+      return;
     }
+    SectionCollection inverse = Sections.Inverse();
+
     int count = Sections.Count;
     int inverse_count = inverse.Count;
     int inverse_chars = inverse.Sum(s => s.Length);

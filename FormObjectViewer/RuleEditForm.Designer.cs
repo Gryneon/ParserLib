@@ -28,18 +28,19 @@ partial class RuleEditForm
   /// </summary>
   private void InitializeComponent ()
   {
+    components = new Container();
     CompetitiveRadio = new RadioButton();
     TokenMatchRadio = new RadioButton();
-    radioButton3 = new RadioButton();
-    radioButton4 = new RadioButton();
-    radioButton5 = new RadioButton();
+    TokenExactRadio = new RadioButton();
+    SplitMatchRadio = new RadioButton();
+    SplitExactRadio = new RadioButton();
     TokenTypeGroup = new GroupBox();
-    radioButton9 = new RadioButton();
-    radioButton8 = new RadioButton();
-    radioButton7 = new RadioButton();
-    radioButton6 = new RadioButton();
+    StoreOtherRadio = new RadioButton();
+    StoreExtraRadio = new RadioButton();
+    ErrorMatchRadio = new RadioButton();
+    TokenExtractRadio = new RadioButton();
     TypeToAssignListBox = new ListBox();
-    label1 = new Label();
+    TypeToAssignLabel = new Label();
     TheCancelButton = new Button();
     SaveButton = new Button();
     IgnoreCaseCheck = new CheckBox();
@@ -48,12 +49,16 @@ partial class RuleEditForm
     RecursiveCheck = new CheckBox();
     OptCheck = new CheckBox();
     MultCheck = new CheckBox();
-    button1 = new Button();
+    AddTypeButton = new Button();
     StringDataBox = new TextBox();
     StringDataLabel = new Label();
-    textBox1 = new TextBox();
-    label2 = new Label();
+    AddTypeBox = new TextBox();
+    RuleFlagsLabel = new Label();
+    ExemptCheck = new CheckBox();
+    StringDataContextMenu = new ContextMenuStrip(components);
+    SelectAllContextMenuItem = new ToolStripMenuItem();
     TokenTypeGroup.SuspendLayout();
+    StringDataContextMenu.SuspendLayout();
     SuspendLayout();
     // 
     // CompetitiveRadio
@@ -78,50 +83,50 @@ partial class RuleEditForm
     TokenMatchRadio.Text = "Token Match";
     TokenMatchRadio.UseVisualStyleBackColor = true;
     // 
-    // radioButton3
+    // TokenExactRadio
     // 
-    radioButton3.AutoSize = true;
-    radioButton3.Location = new Point(8, 87);
-    radioButton3.Name = "radioButton3";
-    radioButton3.Size = new Size(94, 21);
-    radioButton3.TabIndex = 0;
-    radioButton3.TabStop = true;
-    radioButton3.Text = "Token Exact";
-    radioButton3.UseVisualStyleBackColor = true;
+    TokenExactRadio.AutoSize = true;
+    TokenExactRadio.Location = new Point(8, 87);
+    TokenExactRadio.Name = "TokenExactRadio";
+    TokenExactRadio.Size = new Size(94, 21);
+    TokenExactRadio.TabIndex = 0;
+    TokenExactRadio.TabStop = true;
+    TokenExactRadio.Text = "Token Exact";
+    TokenExactRadio.UseVisualStyleBackColor = true;
     // 
-    // radioButton4
+    // SplitMatchRadio
     // 
-    radioButton4.AutoSize = true;
-    radioButton4.Location = new Point(8, 114);
-    radioButton4.Name = "radioButton4";
-    radioButton4.Size = new Size(91, 21);
-    radioButton4.TabIndex = 0;
-    radioButton4.TabStop = true;
-    radioButton4.Text = "Split Match";
-    radioButton4.UseVisualStyleBackColor = true;
+    SplitMatchRadio.AutoSize = true;
+    SplitMatchRadio.Location = new Point(8, 114);
+    SplitMatchRadio.Name = "SplitMatchRadio";
+    SplitMatchRadio.Size = new Size(91, 21);
+    SplitMatchRadio.TabIndex = 0;
+    SplitMatchRadio.TabStop = true;
+    SplitMatchRadio.Text = "Split Match";
+    SplitMatchRadio.UseVisualStyleBackColor = true;
     // 
-    // radioButton5
+    // SplitExactRadio
     // 
-    radioButton5.AutoSize = true;
-    radioButton5.Location = new Point(8, 141);
-    radioButton5.Name = "radioButton5";
-    radioButton5.Size = new Size(85, 21);
-    radioButton5.TabIndex = 0;
-    radioButton5.TabStop = true;
-    radioButton5.Text = "Split Exact";
-    radioButton5.UseVisualStyleBackColor = true;
+    SplitExactRadio.AutoSize = true;
+    SplitExactRadio.Location = new Point(8, 141);
+    SplitExactRadio.Name = "SplitExactRadio";
+    SplitExactRadio.Size = new Size(85, 21);
+    SplitExactRadio.TabIndex = 0;
+    SplitExactRadio.TabStop = true;
+    SplitExactRadio.Text = "Split Exact";
+    SplitExactRadio.UseVisualStyleBackColor = true;
     // 
     // TokenTypeGroup
     // 
     TokenTypeGroup.Controls.Add(CompetitiveRadio);
-    TokenTypeGroup.Controls.Add(radioButton9);
-    TokenTypeGroup.Controls.Add(radioButton8);
-    TokenTypeGroup.Controls.Add(radioButton7);
-    TokenTypeGroup.Controls.Add(radioButton6);
-    TokenTypeGroup.Controls.Add(radioButton5);
+    TokenTypeGroup.Controls.Add(StoreOtherRadio);
+    TokenTypeGroup.Controls.Add(StoreExtraRadio);
+    TokenTypeGroup.Controls.Add(ErrorMatchRadio);
+    TokenTypeGroup.Controls.Add(TokenExtractRadio);
+    TokenTypeGroup.Controls.Add(SplitExactRadio);
     TokenTypeGroup.Controls.Add(TokenMatchRadio);
-    TokenTypeGroup.Controls.Add(radioButton4);
-    TokenTypeGroup.Controls.Add(radioButton3);
+    TokenTypeGroup.Controls.Add(SplitMatchRadio);
+    TokenTypeGroup.Controls.Add(TokenExactRadio);
     TokenTypeGroup.Location = new Point(8, 9);
     TokenTypeGroup.Name = "TokenTypeGroup";
     TokenTypeGroup.Size = new Size(128, 281);
@@ -129,53 +134,53 @@ partial class RuleEditForm
     TokenTypeGroup.TabStop = false;
     TokenTypeGroup.Text = "Token Rule Type";
     // 
-    // radioButton9
+    // StoreOtherRadio
     // 
-    radioButton9.AutoSize = true;
-    radioButton9.Location = new Point(8, 250);
-    radioButton9.Name = "radioButton9";
-    radioButton9.Size = new Size(94, 21);
-    radioButton9.TabIndex = 0;
-    radioButton9.TabStop = true;
-    radioButton9.Text = "Store Other";
-    radioButton9.UseVisualStyleBackColor = true;
+    StoreOtherRadio.AutoSize = true;
+    StoreOtherRadio.Location = new Point(8, 250);
+    StoreOtherRadio.Name = "StoreOtherRadio";
+    StoreOtherRadio.Size = new Size(94, 21);
+    StoreOtherRadio.TabIndex = 0;
+    StoreOtherRadio.TabStop = true;
+    StoreOtherRadio.Text = "Store Other";
+    StoreOtherRadio.UseVisualStyleBackColor = true;
     // 
-    // radioButton8
+    // StoreExtraRadio
     // 
-    radioButton8.AutoSize = true;
-    radioButton8.Location = new Point(8, 223);
-    radioButton8.Name = "radioButton8";
-    radioButton8.Size = new Size(90, 21);
-    radioButton8.TabIndex = 0;
-    radioButton8.TabStop = true;
-    radioButton8.Text = "Store Extra";
-    radioButton8.UseVisualStyleBackColor = true;
+    StoreExtraRadio.AutoSize = true;
+    StoreExtraRadio.Location = new Point(8, 223);
+    StoreExtraRadio.Name = "StoreExtraRadio";
+    StoreExtraRadio.Size = new Size(90, 21);
+    StoreExtraRadio.TabIndex = 0;
+    StoreExtraRadio.TabStop = true;
+    StoreExtraRadio.Text = "Store Extra";
+    StoreExtraRadio.UseVisualStyleBackColor = true;
     // 
-    // radioButton7
+    // ErrorMatchRadio
     // 
-    radioButton7.AutoSize = true;
-    radioButton7.Location = new Point(8, 195);
-    radioButton7.Name = "radioButton7";
-    radioButton7.Size = new Size(96, 21);
-    radioButton7.TabIndex = 0;
-    radioButton7.TabStop = true;
-    radioButton7.Text = "Error Match";
-    radioButton7.UseVisualStyleBackColor = true;
+    ErrorMatchRadio.AutoSize = true;
+    ErrorMatchRadio.Location = new Point(8, 195);
+    ErrorMatchRadio.Name = "ErrorMatchRadio";
+    ErrorMatchRadio.Size = new Size(96, 21);
+    ErrorMatchRadio.TabIndex = 0;
+    ErrorMatchRadio.TabStop = true;
+    ErrorMatchRadio.Text = "Error Match";
+    ErrorMatchRadio.UseVisualStyleBackColor = true;
     // 
-    // radioButton6
+    // TokenExtractRadio
     // 
-    radioButton6.AutoSize = true;
-    radioButton6.Location = new Point(8, 168);
-    radioButton6.Name = "radioButton6";
-    radioButton6.Size = new Size(103, 21);
-    radioButton6.TabIndex = 0;
-    radioButton6.TabStop = true;
-    radioButton6.Text = "Token Extract";
-    radioButton6.UseVisualStyleBackColor = true;
+    TokenExtractRadio.AutoSize = true;
+    TokenExtractRadio.Location = new Point(8, 168);
+    TokenExtractRadio.Name = "TokenExtractRadio";
+    TokenExtractRadio.Size = new Size(103, 21);
+    TokenExtractRadio.TabIndex = 0;
+    TokenExtractRadio.TabStop = true;
+    TokenExtractRadio.Text = "Token Extract";
+    TokenExtractRadio.UseVisualStyleBackColor = true;
     // 
     // TypeToAssignListBox
     // 
-    TypeToAssignListBox.Font = new Font("Segoe Fluent Icons", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+    TypeToAssignListBox.Font = new Font("Segoe Fluent Icons", 12F, FontStyle.Regular, GraphicsUnit.Point,  0);
     TypeToAssignListBox.FormattingEnabled = true;
     TypeToAssignListBox.IntegralHeight = false;
     TypeToAssignListBox.Location = new Point(144, 40);
@@ -183,14 +188,14 @@ partial class RuleEditForm
     TypeToAssignListBox.Size = new Size(120, 168);
     TypeToAssignListBox.TabIndex = 2;
     // 
-    // label1
+    // TypeToAssignLabel
     // 
-    label1.AutoSize = true;
-    label1.Location = new Point(144, 16);
-    label1.Name = "label1";
-    label1.Size = new Size(93, 17);
-    label1.TabIndex = 3;
-    label1.Text = "Type to Assign";
+    TypeToAssignLabel.AutoSize = true;
+    TypeToAssignLabel.Location = new Point(144, 16);
+    TypeToAssignLabel.Name = "TypeToAssignLabel";
+    TypeToAssignLabel.Size = new Size(93, 17);
+    TypeToAssignLabel.TabIndex = 3;
+    TypeToAssignLabel.Text = "Type to Assign";
     // 
     // TheCancelButton
     // 
@@ -221,7 +226,6 @@ partial class RuleEditForm
     IgnoreCaseCheck.TabIndex = 5;
     IgnoreCaseCheck.Text = "Ignore Case";
     IgnoreCaseCheck.UseVisualStyleBackColor = true;
-    IgnoreCaseCheck.CheckedChanged += IgnoreCaseCheck_CheckedChanged;
     // 
     // IgnoreTokenCheck
     // 
@@ -273,21 +277,27 @@ partial class RuleEditForm
     MultCheck.Text = "One or Many";
     MultCheck.UseVisualStyleBackColor = true;
     // 
-    // button1
+    // AddTypeButton
     // 
-    button1.Location = new Point(144, 248);
-    button1.Name = "button1";
-    button1.Size = new Size(120, 32);
-    button1.TabIndex = 6;
-    button1.Text = "Add Type";
-    button1.UseVisualStyleBackColor = true;
+    AddTypeButton.Location = new Point(144, 248);
+    AddTypeButton.Name = "AddTypeButton";
+    AddTypeButton.Size = new Size(120, 32);
+    AddTypeButton.TabIndex = 6;
+    AddTypeButton.Text = "Add Type";
+    AddTypeButton.UseVisualStyleBackColor = true;
     // 
     // StringDataBox
     // 
+    StringDataBox.AcceptsReturn = true;
+    StringDataBox.AcceptsTab = true;
+    StringDataBox.AllowDrop = true;
     StringDataBox.BorderStyle = BorderStyle.FixedSingle;
+    StringDataBox.ContextMenuStrip = StringDataContextMenu;
+    StringDataBox.Font = new Font("Cascadia Code SemiBold", 12F, FontStyle.Bold, GraphicsUnit.Point,  0);
     StringDataBox.Location = new Point(400, 40);
     StringDataBox.Multiline = true;
     StringDataBox.Name = "StringDataBox";
+    StringDataBox.ScrollBars = ScrollBars.Both;
     StringDataBox.Size = new Size(264, 200);
     StringDataBox.TabIndex = 7;
     // 
@@ -300,21 +310,44 @@ partial class RuleEditForm
     StringDataLabel.TabIndex = 3;
     StringDataLabel.Text = "String Data";
     // 
-    // textBox1
+    // AddTypeBox
     // 
-    textBox1.Location = new Point(144, 216);
-    textBox1.Name = "textBox1";
-    textBox1.Size = new Size(120, 25);
-    textBox1.TabIndex = 8;
+    AddTypeBox.Location = new Point(144, 216);
+    AddTypeBox.Name = "AddTypeBox";
+    AddTypeBox.Size = new Size(120, 25);
+    AddTypeBox.TabIndex = 8;
     // 
-    // label2
+    // RuleFlagsLabel
     // 
-    label2.AutoSize = true;
-    label2.Location = new Point(280, 16);
-    label2.Name = "label2";
-    label2.Size = new Size(67, 17);
-    label2.TabIndex = 3;
-    label2.Text = "Rule Flags";
+    RuleFlagsLabel.AutoSize = true;
+    RuleFlagsLabel.Location = new Point(280, 16);
+    RuleFlagsLabel.Name = "RuleFlagsLabel";
+    RuleFlagsLabel.Size = new Size(67, 17);
+    RuleFlagsLabel.TabIndex = 3;
+    RuleFlagsLabel.Text = "Rule Flags";
+    // 
+    // ExemptCheck
+    // 
+    ExemptCheck.AutoSize = true;
+    ExemptCheck.Location = new Point(288, 200);
+    ExemptCheck.Name = "ExemptCheck";
+    ExemptCheck.Size = new Size(108, 21);
+    ExemptCheck.TabIndex = 5;
+    ExemptCheck.Text = "Exempt Token";
+    ExemptCheck.UseVisualStyleBackColor = true;
+    // 
+    // StringDataContextMenu
+    // 
+    StringDataContextMenu.Items.AddRange(new ToolStripItem[] { SelectAllContextMenuItem });
+    StringDataContextMenu.Name = "StringDataContextMenu";
+    StringDataContextMenu.Size = new Size(174, 26);
+    // 
+    // SelectAllContextMenuItem
+    // 
+    SelectAllContextMenuItem.Name = "SelectAllContextMenuItem";
+    SelectAllContextMenuItem.ShortcutKeys =  Keys.Control | Keys.A;
+    SelectAllContextMenuItem.Size = new Size(173, 22);
+    SelectAllContextMenuItem.Text = "Select All";
     // 
     // RuleEditForm
     // 
@@ -322,20 +355,21 @@ partial class RuleEditForm
     AutoScaleDimensions = new SizeF(7F, 17F);
     AutoScaleMode = AutoScaleMode.Font;
     ClientSize = new Size(689, 296);
-    Controls.Add(textBox1);
+    Controls.Add(AddTypeBox);
     Controls.Add(StringDataBox);
-    Controls.Add(button1);
+    Controls.Add(AddTypeButton);
     Controls.Add(MultCheck);
     Controls.Add(OptCheck);
     Controls.Add(RecursiveCheck);
     Controls.Add(FromTokensCheck);
     Controls.Add(IgnoreTokenCheck);
+    Controls.Add(ExemptCheck);
     Controls.Add(IgnoreCaseCheck);
     Controls.Add(SaveButton);
     Controls.Add(TheCancelButton);
     Controls.Add(StringDataLabel);
-    Controls.Add(label2);
-    Controls.Add(label1);
+    Controls.Add(RuleFlagsLabel);
+    Controls.Add(TypeToAssignLabel);
     Controls.Add(TypeToAssignListBox);
     Controls.Add(TokenTypeGroup);
     FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -350,6 +384,7 @@ partial class RuleEditForm
     Load += RuleEditForm_Load;
     TokenTypeGroup.ResumeLayout(false);
     TokenTypeGroup.PerformLayout();
+    StringDataContextMenu.ResumeLayout(false);
     ResumeLayout(false);
     PerformLayout();
   }
@@ -358,16 +393,16 @@ partial class RuleEditForm
 
   private RadioButton CompetitiveRadio;
   private RadioButton TokenMatchRadio;
-  private RadioButton radioButton3;
-  private RadioButton radioButton4;
-  private RadioButton radioButton5;
+  private RadioButton TokenExactRadio;
+  private RadioButton SplitMatchRadio;
+  private RadioButton SplitExactRadio;
   private GroupBox TokenTypeGroup;
-  private RadioButton radioButton6;
-  private RadioButton radioButton9;
-  private RadioButton radioButton8;
-  private RadioButton radioButton7;
+  private RadioButton TokenExtractRadio;
+  private RadioButton StoreOtherRadio;
+  private RadioButton StoreExtraRadio;
+  private RadioButton ErrorMatchRadio;
   private ListBox TypeToAssignListBox;
-  private Label label1;
+  private Label TypeToAssignLabel;
   private Button TheCancelButton;
   private Button SaveButton;
   private CheckBox IgnoreCaseCheck;
@@ -376,9 +411,12 @@ partial class RuleEditForm
   private CheckBox RecursiveCheck;
   private CheckBox OptCheck;
   private CheckBox MultCheck;
-  private Button button1;
+  private Button AddTypeButton;
   private TextBox StringDataBox;
   private Label StringDataLabel;
-  private TextBox textBox1;
-  private Label label2;
+  private TextBox AddTypeBox;
+  private Label RuleFlagsLabel;
+  private CheckBox ExemptCheck;
+  private ContextMenuStrip StringDataContextMenu;
+  private ToolStripMenuItem SelectAllContextMenuItem;
 }

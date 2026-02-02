@@ -5,17 +5,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage(
-  "Globalization",
-  "CA1303:Do not pass literals as localized parameters",
-  Justification = "No localization.",
-  Scope = "member",
-  Target = "~M:FormObjectViewer.UnparsedViewer.UnparsedViewer_Load(System.Object,System.EventArgs)"
-)]
-[assembly: SuppressMessage(
-  "Interoperability",
-  "CA1416:Validate platform compatibility",
-  Justification = "Annoying.",
-  Scope = "member",
-  Target = "~M:FormObjectViewer.UnparsedViewer.UnparsedViewer_Load(System.Object,System.EventArgs)"
-)]
+[assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "No localization.", Scope = "member", Target = "~M:FormObjectViewer.UnparsedViewer.UnparsedViewer_Load(System.Object,System.EventArgs)")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Annoying.", Scope = "member", Target = "~M:FormObjectViewer.UnparsedViewer.UnparsedViewer_Load(System.Object,System.EventArgs)")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:FormObjectViewer.RuleEditForm.UpdateCopy")]
