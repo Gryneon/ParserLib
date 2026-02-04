@@ -7,7 +7,7 @@ namespace Specification.XML;
 /// <summary>
 /// Represents a closing XML element.
 /// </summary>
-public class XMLElementClose () : XMLNode, IGeneratable<TokenLabel, XMLElementClose>, IXMLObject
+public class XMLElementClose () : XMLNode, IGeneratable, IXMLObject
 {
   /// <inheritdoc/>
   public static XMLElementClose Generate (TokenLabel label)

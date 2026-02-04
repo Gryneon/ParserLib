@@ -3,7 +3,7 @@ namespace Common.Regex;
 /// A collection of groups and their captures from a regex match. This object includes additional functions and properties to make working with regex matches easier.</summary>
 public sealed class MatchDataSet : GroupDataSet,
   ICollection<GroupDataSet>,
-  IGeneratable<MatchDataSet, MatchDataSet>,
+  IGeneratable,
   IEquatable<MatchDataSet>,
   IEquatable<string>
 {

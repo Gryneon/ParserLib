@@ -939,14 +939,6 @@
             <returns>Nothing.</returns>
             <exception cref="T:System.NotImplementedException"/>
         </member>
-        <member name="T:Common.Regex.IGeneratable`2">
-            <summary>Represents a type that can be generated from an input object.</summary>
-        </member>
-        <member name="M:Common.Regex.IGeneratable`2.Generate(`0)">
-            <summary>Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.</summary>
-            <param name="input">The object to generate from.</param>
-            <returns>The generated <typeparamref name="TOut"/>.</returns>
-        </member>
         <member name="T:Common.Regex.IMatchItem">
             <summary>
             An item that matches a regex pattern.

@@ -1,7 +1,7 @@
 namespace Specification.INI;
 
 /// <summary>A key and value pair in an INI file.</summary>
-public class PropertyObj : PropertyBase<string>, IGeneratable<MatchDataSet, PropertyObj>, ITextSerializer
+public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
 {
   /// <summary>The key name.</summary>
   public override required string Key { get; set; } = SE;

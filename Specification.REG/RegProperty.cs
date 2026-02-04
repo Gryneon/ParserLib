@@ -5,7 +5,7 @@ namespace Specification.REG;
 /// <summary>
 /// A registry key, type, and value, with an option to delete the entry.
 /// </summary>
-public sealed class RegProperty : IProperty<string>, IGeneratable<MatchDataSet, RegProperty>
+public sealed class RegProperty : IProperty<string>, IGeneratable
 {
   /// <summary>
   /// A blank property.

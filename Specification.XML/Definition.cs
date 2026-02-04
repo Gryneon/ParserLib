@@ -41,7 +41,13 @@ public enum XMLTokenType
   ElementEnd,
   ElementSingle,
   Header,
-  NamespaceAttr
+  NamespaceAttr,
+  FullElementName,
+  NamespaceSchemaRef,
+  AttributeWithNamespace,
+  ElementEndWithNamespace,
+  ElementSingleWithNamespace,
+  ElementStartWithNamespace,
 }
 
 /// <summary>
@@ -100,9 +106,14 @@ public static class Definition
     ],
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
     GroupTokenRules = [
-      new (BuildProperty, XTT.Attribute, "tin:AttrKey tx:Eq tiv:String"),
-      new (BuildObject, XTT.ElementSingle, "tx:Ao tin:ElementName tipmo:Attribute tx:Sl tx:Ac"),
-      new (BuildLabel, XTT.ElementEnd, "tx:Ao tx:Sl tiyo:Namespace txo:Co tin:ElementName tx:Ac"),
+      new (BuildProperty, XTT.Attribute, "tn:AttrKey tx:Eq tv:String"),
+      new (BuildObject, XTT.Header, "tx:Ao tx:Qm tn:ElementName tpmo:Attribute tx:Qm tx:Ac"),
+      new (BuildProperty, XTT.AttributeWithNamespace, "ty:Namespace tx:Co tn:AttrKey tx:Eq tv:String"),
+      new (BuildLabel, XTT.ElementEndWithNamespace, "tx:Ao tx:Sl ty:Namespace tx:Co tn:ElementName tx:Ac"),
+      new (BuildLabel, XTT.ElementEnd, "tx:Ao tx:Sl tn:ElementName tx:Ac"),
+      new (BuildObject, XTT.ElementSingleWithNamespace, "tx:Ao ty:Namespace tx:Co tn:ElementName tpmo:Attribute tx:Sl tx:Ac"),
+      new (BuildObject, XTT.ElementSingle, "tx:Ao tn:ElementName tpmo:Attribute tx:Sl tx:Ac"),
+
     ],
     TokenCompatLookup = {
       [XTT.String] = [XTT.DString, XTT.SString]

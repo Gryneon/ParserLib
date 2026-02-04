@@ -7,7 +7,7 @@ namespace Specification.XML;
 /// <summary>
 /// Represents an opening XML tag.
 /// </summary>
-public class XMLElementOpen () : XMLNodeAttr, IGeneratable<TokenObject, XMLElementOpen>, IXMLObject
+public class XMLElementOpen () : XMLNodeAttr, IGeneratable, IXMLObject
 {
   /// <inheritdoc/>
   public static XMLElementOpen Generate (TokenObject obj)

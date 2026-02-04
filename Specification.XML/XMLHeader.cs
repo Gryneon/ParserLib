@@ -7,7 +7,7 @@ namespace Specification.XML;
 /// <summary>
 /// Represents an XML header.
 /// </summary>
-public class XMLHeader () : XMLNodeAttr, IGeneratable<TokenObject, XMLHeader>, IXMLObject
+public class XMLHeader () : XMLNodeAttr, IGeneratable, IXMLObject
 {
   /// <inheritdoc/>
   public static XMLHeader Generate (TokenObject obj)

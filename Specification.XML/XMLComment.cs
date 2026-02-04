@@ -4,7 +4,7 @@ using Parser.Tokens;
 
 namespace Specification.XML;
 
-public sealed class XMLComment () : IGeneratable<TokenLabel, XMLComment>, IXMLObject
+public sealed class XMLComment () : IGeneratable, IXMLObject
 {
   /// <summary>Comment content.</summary>
   public string Content { get; set; } = SE;

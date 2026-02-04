@@ -25,7 +25,7 @@ namespace Parser.Ops.Text;
 /// </code>
 /// </remarks>
 public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, string output_key, string group_name) : Operation(input_key, output_key)
-  where TOutput : IGeneratable<TInput, TOutput>
+  where TOutput : IGeneratable
 {
   /// <inheritdoc/>
   protected override void Execute ()

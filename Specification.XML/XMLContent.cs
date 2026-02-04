@@ -7,7 +7,7 @@ namespace Specification.XML;
 /// <summary>
 /// Represents text content in the XML file.
 /// </summary>
-public sealed class XMLContent () : IGeneratable<TokenTypedValue, XMLContent>, IXMLObject
+public sealed class XMLContent () : IGeneratable, IXMLObject
 {
   /// <summary>
   /// Text content between tags.
