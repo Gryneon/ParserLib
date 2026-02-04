@@ -28,8 +28,3 @@ internal static class Program
     start.Dispose();
   }
 }
-
-internal class TokenRuleGenerator : IGeneratable
-{
-
-}
