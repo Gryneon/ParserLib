@@ -41,12 +41,12 @@ public sealed class IfOperation (ICondition condition, IOperation ifTrue, IOpera
     if (result)
     {
       Status = OpStatus.ConditionPass;
-      parser_ref.NextOpIndex = IfTrueIndex;
+      parser_ref.SetNextOperationIndex(IfTrueIndex);
     }
     else
     {
       Status = OpStatus.ConditionFail;
-      parser_ref.NextOpIndex = IfFalseIndex;
+      parser_ref.SetNextOperationIndex(IfFalseIndex);
     }
 
     return Status;

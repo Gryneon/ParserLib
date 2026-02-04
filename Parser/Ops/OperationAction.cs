@@ -46,19 +46,19 @@ public sealed class OperationAction : IOperation
 
         // Jumps
         case OAT.GotoLabel:
-          Parser.NextOpIndex = Parser.Labels[SData[0]];
+          Parser.SetNextOperationIndex(Parser.Labels[SData[0]]);
           goto Pass;
         case OAT.GotoIndex:
           if (IData[0] >= Parser.OpCount)
             goto default;
-          Parser.NextOpIndex = IData[0];
+          Parser.SetNextOperationIndex(IData[0]);
           goto Pass;
         case OAT.GotoFirst:
-          Parser.NextOpIndex = 0;
+          Parser.SetNextOperationIndex(0);
           goto Pass;
         case OAT.JumpIf:
           if (OData[0] is ICondition c && c.Evaluate())
-            Parser.NextOpIndex = IData[0];
+            Parser.SetNextOperationIndex(IData[0]);
           goto Pass;
 
         // State Setters
@@ -91,7 +91,7 @@ public sealed class OperationAction : IOperation
           return OpStatus.FailNoSuchVarName;
         // State actions
         case OAT.BreakLoop:
-          Parser.NextOpIndex = LoopBreak;
+          Parser.SetNextOperationIndex(LoopBreak);
           Parser.Cursors.Drop();
           goto Pass;
         case OAT.StartLoop:
@@ -100,11 +100,11 @@ public sealed class OperationAction : IOperation
           goto Pass;
         case OAT.NextLoop:
           Parser.GetCursorByKey(SData[0]).Index += IData[0];
-          Parser.NextOpIndex = LoopStart;
+          Parser.SetNextOperationIndex(LoopStart);
           goto Pass;
         case OAT.ContinueLoop:
           Parser.GetCursorByKey(SData[0]).Index += IData[0];
-          Parser.NextOpIndex = LoopStart;
+          Parser.SetNextOperationIndex(LoopStart);
           goto Pass;
 
         // Cursor actions

@@ -71,20 +71,20 @@ partial class UnparsedViewer
     SectionsTotalLabel.TabIndex = 1;
     SectionsTotalLabel.Text = "Sections Total";
     // 
-    // label1
+    // InverseTotalLabel
     // 
     InverseTotalLabel.AutoSize = true;
     InverseTotalLabel.Location = new Point(112, 40);
-    InverseTotalLabel.Name = "label1";
+    InverseTotalLabel.Name = "InverseTotalLabel";
     InverseTotalLabel.Size = new Size(107, 17);
     InverseTotalLabel.TabIndex = 1;
     InverseTotalLabel.Text = "Inverted Sections";
     // 
-    // label2
+    // InverseCharsLabel
     // 
     InverseCharsLabel.AutoSize = true;
     InverseCharsLabel.Location = new Point(112, 72);
-    InverseCharsLabel.Name = "label2";
+    InverseCharsLabel.Name = "InverseCharsLabel";
     InverseCharsLabel.Size = new Size(182, 17);
     InverseCharsLabel.TabIndex = 1;
     InverseCharsLabel.Text = "Inverted Unparsed Characters";
@@ -109,8 +109,10 @@ partial class UnparsedViewer
     // 
     // UnparsedViewer
     // 
+    AcceptButton = CloseButton;
     AutoScaleDimensions = new SizeF(7F, 17F);
     AutoScaleMode = AutoScaleMode.Font;
+    CancelButton = CloseButton;
     ClientSize = new Size(454, 359);
     ControlBox = false;
     Controls.Add(CloseButton);
@@ -122,8 +124,11 @@ partial class UnparsedViewer
     Controls.Add(InverseCountTextBox);
     Controls.Add(SectionCountTextBox);
     FormBorderStyle = FormBorderStyle.FixedToolWindow;
+    MaximizeBox = false;
+    MdiChildrenMinimizedAnchorBottom = false;
     MinimizeBox = false;
     Name = "UnparsedViewer";
+    ShowIcon = false;
     ShowInTaskbar = false;
     SizeGripStyle = SizeGripStyle.Hide;
     StartPosition = FormStartPosition.CenterParent;

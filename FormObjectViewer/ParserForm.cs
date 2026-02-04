@@ -9,6 +9,8 @@ using Common.Extensions;
 
 using Parser.Tokens;
 
+using Specification.XML;
+
 using static Common.Names;
 
 using XMLMaker = Specification.XML.XMLString;
@@ -84,11 +86,15 @@ internal sealed partial class ParserForm : Form
       DialogResult ask = MessageBox.Show(this, "Rules have been modified.", "Save changes?", MessageBoxButtons.YesNoCancel);
       if (ask == DialogResult.Yes)
       {
-        //TODO: Save File Dialog;
+        SaveRuleDialog(ExitMenuItem, e);
       }
       else if (ask == DialogResult.No)
       {
         Close();
+      }
+      else if (ask == DialogResult.Cancel)
+      {
+        // Do Nothing.
       }
     }
   }
@@ -151,7 +157,7 @@ internal sealed partial class ParserForm : Form
     }
 
     _sections = _factory.CannotMatch;
-
+    ItemTabs.SelectTab(1);
     TokenDataGrid.Refresh();
     ClearTokensButton.Enabled = true;
     ShowUnparsedButton.Enabled = true;
@@ -198,7 +204,7 @@ internal sealed partial class ParserForm : Form
     foreach (TokenRule rule in _workingRules)
     {
 
-      maker.AddElementOpen("Rule", [new PropertyBase<string>() { Key = "index", Value = $"{counter++}" }]);
+      maker.AddElementOpen("Rule", [new XMLProperty() { Key = "index", Value = $"{counter++}" }]);
       maker.AddLineFeed();
       maker.AddElementOpen("Type");
       maker.AddContent($"{rule.Type}");
@@ -232,6 +238,12 @@ internal sealed partial class ParserForm : Form
 
   private void TokenRuleDataGrid_RowEnter (object sender, DataGridViewCellEventArgs e)
   {
+    if (e.RowIndex == -1)
+      return;
+
+    if (e.ColumnIndex != 0)
+      return;
+
     RuleEditForm editForm;
     if (e.RowIndex >= _workingRules.Count)
     {
@@ -253,7 +265,11 @@ internal sealed partial class ParserForm : Form
     DialogResult result = editForm.ShowDialog();
 
     if (result is DialogResult.OK)
-      _workingRules[e.RowIndex] = editForm.Original;
+    {
+      _workingRules[e.RowIndex].RuleStringData = editForm.Original.RuleStringData;
+      _workingRules[e.RowIndex].Type = editForm.Original.Type;
+      _workingRules[e.RowIndex].TypeToAssign = editForm.Original.TypeToAssign;
+    }
     else
       this.DoNothing();
 
