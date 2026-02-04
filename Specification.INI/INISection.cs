@@ -9,7 +9,7 @@ namespace Specification.INI;
 /// <summary>
 /// Represents a INISection heading in an INI formatted file.
 /// </summary>
-public sealed class INISection : IGeneratable<TokenProperty, INISection>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
+public sealed class INISection : IGeneratable<TokenObject, INISection>, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
 {
   /// <summary>
   /// Creates an empty INISection.
@@ -52,36 +52,15 @@ public sealed class INISection : IGeneratable<TokenProperty, INISection>, IEnume
   /// <item><c>name</c></item> : The name of the INISection.<item></item><br/>
   /// </list>
   /// </remarks>
-  public static INISection Generate (MatchDataSet input)
-  {
-    input.ThrowIfNull();
-    Collection<string> keys = input["key"].Captures.Select(c => c.Content).ToCollection();
-    Collection<string> values = input["value"].Captures.Select(c => c.Content).ToCollection();
-    Collection<PropertyObj> props = [];
-    for (int i = 0; i < keys.Count; i++)
-    {
-      if (i >= values.Count)
-        throw new ArgumentOutOfRangeException(nameof(input), "The number of values must match the number of keys.");
-      props = [.. keys.Zip(values).Select<(string, string), PropertyObj>(item => new(item.Item1, item.Item2))];
-    }
-    INISection result = new()
-    {
-      Name = input["name"].Content,
-      Properties = [.. props]
-    };
-    return result;
-  }
   public static INISection Generate (TokenObject input)
   {
     input.ThrowIfNull();
-
-    IEnumerable<PropertyObj> prop_obj = input.Properties.OfType<TokenProperty>().Select(token_prop => new PropertyObj(token_prop.Name ?? SE, token_prop.Value ?? SE));
-
-    return new()
+    INISection result = new()
     {
       Name = input.Name,
-      Properties = [.. prop_obj],
+      Properties = [.. input.Properties.Select(item => ((KeyValuePair<string, string>) (item as TokenProperty)))]
     };
+    return result;
   }
   /// <summary>
   /// Sets the given property to the given value.
