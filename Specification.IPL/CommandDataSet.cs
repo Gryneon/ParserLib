@@ -10,7 +10,7 @@ namespace Specification.IPL;
 /// <summary>
 /// Contains the details of an IPL command.
 /// </summary>
-public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGeneratable<MatchDataSet, CommandDataSet>, IComparable<CommandDataSet>, IReadOnlyCollection<object>
+public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGeneratable, IComparable<CommandDataSet>, IReadOnlyCollection<object>
 {
   /// <summary>
   /// The data that created this object.

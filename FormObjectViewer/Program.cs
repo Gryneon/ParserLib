@@ -3,6 +3,12 @@
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 
+using Common.Regex;
+
+using Parser.Tokens;
+
+using Specification.XML;
+
 namespace FormObjectViewer;
 
 internal static class Program
@@ -21,4 +27,9 @@ internal static class Program
     Application.Run(start);
     start.Dispose();
   }
+}
+
+internal class TokenRuleGenerator : IGeneratable
+{
+
 }

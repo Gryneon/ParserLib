@@ -7,7 +7,7 @@ namespace Common.Excel;
 /// <summary>
 /// A node within a range.
 /// </summary>
-public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGeneratable<MatchDataSet, RangeNode>
+public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGeneratable
 {
   #region Static Members
   public static RangeNode Empty => new();

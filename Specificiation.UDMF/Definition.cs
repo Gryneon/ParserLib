@@ -92,7 +92,7 @@ public abstract class ZMapObj
   }
 }
 
-public class ZVertex : ZMapObj, IGeneratable<TokenObject, ZVertex>
+public class ZVertex : ZMapObj, IGeneratable
 {
   public string? X => Properties.Single(item => item.Key.Like("x")).Value;
   public string? Y => Properties.Single(item => item.Key.Like("y")).Value;
@@ -105,7 +105,7 @@ public class ZVertex : ZMapObj, IGeneratable<TokenObject, ZVertex>
   public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 
-public class ZThing : ZMapObj, IGeneratable<TokenObject, ZThing>
+public class ZThing : ZMapObj, IGeneratable
 {
   public string? X => Properties.Single(item => item.Key.Like("x")).Value;
   public string? Y => Properties.Single(item => item.Key.Like("y")).Value;
@@ -117,7 +117,7 @@ public class ZThing : ZMapObj, IGeneratable<TokenObject, ZThing>
   public static bool CanGenerate (TokenObject input) => CanGenerate(input);
 }
 
-public class ZLineDef : ZMapObj, IGeneratable<TokenObject, ZLineDef>
+public class ZLineDef : ZMapObj, IGeneratable
 {
   public static ZLineDef Generate (TokenObject input)
   {
@@ -131,7 +131,7 @@ public class ZLineDef : ZMapObj, IGeneratable<TokenObject, ZLineDef>
   }
 }
 
-public class ZSideDef : ZMapObj, IGeneratable<TokenObject, ZSideDef>
+public class ZSideDef : ZMapObj, IGeneratable
 {
   public static ZSideDef Generate (TokenObject input)
   {
@@ -145,7 +145,7 @@ public class ZSideDef : ZMapObj, IGeneratable<TokenObject, ZSideDef>
   }
 }
 
-public class ZSector : ZMapObj, IGeneratable<TokenObject, ZSector>
+public class ZSector : ZMapObj, IGeneratable
 {
   public static ZSector Generate (TokenObject input)
   {

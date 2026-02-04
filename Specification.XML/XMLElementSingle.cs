@@ -7,7 +7,7 @@ namespace Specification.XML;
 /// <summary>
 /// Represents a single self closing XML tag.
 /// </summary>
-public class XMLElementSingle () : XMLNodeAttr, IGeneratable<TokenObject, XMLElementSingle>, IXMLObject
+public class XMLElementSingle () : XMLNodeAttr, IGeneratable, IXMLObject
 {
   /// <inheritdoc/>
   public static XMLElementSingle Generate (TokenObject obj)
