@@ -4,9 +4,7 @@ using Parser.Tokens;
 
 namespace Specification.XML;
 
-/// <summary>
-/// Represents a single self closing XML tag.
-/// </summary>
+/// <summary>Represents a single self closing XML tag.</summary>
 public class XMLElementSingle () : XMLNodeAttr, IGeneratable<TokenObject, XMLElementSingle>, IXMLObject
 {
   /// <inheritdoc/>

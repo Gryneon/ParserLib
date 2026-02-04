@@ -147,14 +147,10 @@
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLElementSingle">
-            <summary>
-            Represents a single self closing XML tag.
-            </summary>
+            <summary>Represents a single self closing XML tag.</summary>
         </member>
         <member name="M:Specification.XML.XMLElementSingle.#ctor">
-            <summary>
-            Represents a single self closing XML tag.
-            </summary>
+            <summary>Represents a single self closing XML tag.</summary>
         </member>
         <member name="M:Specification.XML.XMLElementSingle.Generate(Parser.Tokens.TokenObject)">
             <inheritdoc/>

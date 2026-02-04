@@ -16,6 +16,7 @@ public class UDMFTests
 {
   [Theory]
   [InlineData("C:\\Users\\$user$\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf")]
+  [InlineData("C:\\Users\\$user$\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\sample.udmf")]
   public void UDMF_TokenFactoryTest (string file)
   {
     //Load Data
@@ -25,7 +26,7 @@ public class UDMFTests
     Spec spec = Definition.Spec;
     TokenRuleCollection rules = [];
     rules.AddRange(spec.TokenRules);
-    TokenFactory factory = new(rules, spec);
+    TokenFactory factory = new(spec);
     TokenCollection result = [.. factory.Produce(input)];
     TokenAssembler assembler = new([.. spec.GroupTokenRules], spec);
     int count = result.Count;

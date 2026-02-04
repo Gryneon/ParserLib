@@ -56,18 +56,18 @@ public static class Definition
       // Preprocessor
       Ex(Preprocessor, @"\# (lib(define|rary)|import|include|define)"),
       Tm(Bool, @"\b(true|false|on|off|yes|no)\b"),
-      Tm(Int, @"-?(\d+|0x[a-f0-9]+)(?!\.)"),
-      Tm(Fixed, @"-?(\d+\.\d*|\d*\.\d+)"),
+      Tm(Int, @"-?(?<!\.|\d)(\d+|0x[a-f0-9]+)(?!\.|\d)"),
+      Tm(Fixed, @"-?(\d+\.\d*|\.\d+)"),
 
       // Keywords
       .. TokenRule.MakeWordMatchRules(true, [
-        ("script", Script),     ("Function", Function),
+        ("script", Script),     ("function", Function),
         ("net", Net),
         ("if", If),             ("else", Else),
         ("global", MapVar),     ("world", MapVar),
-        ("do", Do),             ("For", For),
+        ("do", Do),             ("for", For),
         ("while", Loop),        ("until", Loop),
-        
+
         ]
       ),
       Tm(ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
@@ -86,7 +86,7 @@ public static class Definition
       Tm(Assign, @"(<<|>>| \|\| |&&)="),
       Tm(Binary, @"[!<>-]="),
       Tm(Binary, @"(&&| \|\| |<<|>>)(?!=)"),
-      Tm(Binary, @"[+/%|&^*-]"),
+      Tm(Binary, @"[+/%|&^*-><]"),
 
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;", TExact ,new ATT[] { Ao, Ac, Bo, Bc, Po, Pc, Eq, Cm, Co, Sc }),
 

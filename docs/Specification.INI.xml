@@ -123,7 +123,7 @@
         <member name="P:Specification.INI.INISection.Count">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.INI.INISection.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.INI.INISection.Generate(Parser.Tokens.TokenObject)">
             <inheritdoc/>
             <remarks>
             <list type="table">

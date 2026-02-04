@@ -88,7 +88,7 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
           continue;
         else
         {
-          result.Add(new() { Start = start, End = i, FullContent = _sections[0].FullContent });
+          result.Add(new() { Start = start, End = i - 1, FullContent = _sections[0].FullContent });
           start = -1;
           continue;
         }

@@ -32,6 +32,6 @@ public static class IConvertibleExtensions
   /// <returns><see langword="true"/> if the enum contains any of the bits provided, <see langword="false"/> otherwise.</returns>
   public static bool HasAnyFlag (this IConvertible e, IConvertible check) => ((int) e & (int) check) > 0;
   public static bool IsWithin (this IConvertible e, IConvertible low, IConvertible high) =>
-    (int) e <= (int) high && (int) e >= (int) low;
+    (decimal) e <= (decimal) high && (decimal) e >= (decimal) low;
   public static T Mask<T> (this IConvertible value, IConvertible mask) where T : IConvertible => (T) (IConvertible) ((int) value & (int) mask);
 }

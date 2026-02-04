@@ -7,6 +7,8 @@ namespace FormObjectViewer;
 
 internal sealed partial class UnparsedViewer : Form
 {
+  private SectionCollection Inverse => Sections.Inverse();
+
   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
   public SectionCollection Sections { get; internal set; } = [];
 
@@ -22,7 +24,7 @@ internal sealed partial class UnparsedViewer : Form
       VisualRichBox.Text = "No sections to preview.";
       return;
     }
-    SectionCollection inverse = Sections.Inverse();
+    SectionCollection inverse = Inverse;
 
     int count = Sections.Count;
     int inverse_count = inverse.Count;
@@ -34,11 +36,25 @@ internal sealed partial class UnparsedViewer : Form
 
     VisualRichBox.Text = Sections.FullText;
 
-    Collection<bool> colorList = inverse.GetGetParsedFromSections();
+    Highlight(Inverse, Color.Red, Color.LightPink);
+  }
 
-    Color falseColor = Color.Red;
-    Color trueColor = VisualRichBox.ForeColor;
+  private void ParsedButton_Click (object sender, EventArgs e)
+  {
+    VisualRichBox.Text = Sections.FullText;
 
+    Highlight(Sections, Color.Blue, Color.LightBlue);
+  }
+
+  private void UnparsedButton_Click (object sender, EventArgs e)
+  {
+    VisualRichBox.Text = Sections.FullText;
+
+    Highlight(Inverse, Color.Red, Color.LightPink);
+  }
+
+  private void Highlight (SectionCollection sections, Color text, Color back)
+  {
     VisualRichBox.SuspendLayout();
     VisualRichBox.HideSelection = true;
     VisualRichBox.WordWrap = false;
@@ -46,13 +62,14 @@ internal sealed partial class UnparsedViewer : Form
     VisualRichBox.ReadOnly = false;
     try
     {
-      foreach (Section section in inverse)
+      foreach (Section section in sections)
       {
         VisualRichBox.Select(section.Start, section.Length);
-        VisualRichBox.SelectionColor = falseColor;
+        VisualRichBox.SelectionColor = text;
+        VisualRichBox.SelectionBackColor = back;
       }
       VisualRichBox.Select(0, 0);
-      VisualRichBox.SelectionColor = trueColor;
+      VisualRichBox.SelectionColor = VisualRichBox.ForeColor;
     }
     finally
     {

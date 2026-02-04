@@ -36,6 +36,8 @@ partial class UnparsedViewer
     InverseCharsLabel = new Label();
     VisualRichBox = new RichTextBox();
     CloseButton = new Button();
+    UnparsedButton = new Button();
+    ParsedButton = new Button();
     SuspendLayout();
     // 
     // SectionCountTextBox
@@ -107,6 +109,26 @@ partial class UnparsedViewer
     CloseButton.Text = "Close";
     CloseButton.UseVisualStyleBackColor = true;
     // 
+    // UnparsedButton
+    // 
+    UnparsedButton.Location = new Point(368, 8);
+    UnparsedButton.Name = "UnparsedButton";
+    UnparsedButton.Size = new Size(75, 32);
+    UnparsedButton.TabIndex = 4;
+    UnparsedButton.Text = "Unparsed";
+    UnparsedButton.UseVisualStyleBackColor = true;
+    UnparsedButton.Click += UnparsedButton_Click;
+    // 
+    // ParsedButton
+    // 
+    ParsedButton.Location = new Point(288, 8);
+    ParsedButton.Name = "ParsedButton";
+    ParsedButton.Size = new Size(75, 32);
+    ParsedButton.TabIndex = 4;
+    ParsedButton.Text = "Parsed";
+    ParsedButton.UseVisualStyleBackColor = true;
+    ParsedButton.Click += ParsedButton_Click;
+    // 
     // UnparsedViewer
     // 
     AcceptButton = CloseButton;
@@ -115,6 +137,8 @@ partial class UnparsedViewer
     CancelButton = CloseButton;
     ClientSize = new Size(454, 359);
     ControlBox = false;
+    Controls.Add(ParsedButton);
+    Controls.Add(UnparsedButton);
     Controls.Add(CloseButton);
     Controls.Add(VisualRichBox);
     Controls.Add(InverseCharsLabel);
@@ -132,7 +156,7 @@ partial class UnparsedViewer
     ShowInTaskbar = false;
     SizeGripStyle = SizeGripStyle.Hide;
     StartPosition = FormStartPosition.CenterParent;
-    Text = "UnparsedViewer";
+    Text = "Parse Viewer";
     TopMost = true;
     Load += UnparsedViewer_Load;
     ResumeLayout(false);
@@ -149,4 +173,6 @@ partial class UnparsedViewer
   private Label InverseCharsLabel;
   private RichTextBox VisualRichBox;
   private Button CloseButton;
+  private Button UnparsedButton;
+  private Button ParsedButton;
 }
