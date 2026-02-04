@@ -2,7 +2,7 @@
 
 namespace Common;
 
-public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren<Section>
+public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren<Section>, ICanAccessChildren<int, Section>
 {
   private readonly List<Section> _sections = [];
   private readonly Dictionary<int, bool> _bit_array = [];
