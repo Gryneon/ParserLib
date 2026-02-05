@@ -7,6 +7,7 @@ namespace Parser.Tokens;
 public sealed class TokenAssembler
 {
   private const string Area = "TokenAssembler";
+  private string _method = SE;
   private readonly TokenGroupRuleCollection _rules;
 
   // Temp fields
@@ -26,16 +27,18 @@ public sealed class TokenAssembler
     _rules = spec.GroupTokenRules;
     _spec = spec;
   }
+  private void LogInfo (string message) => Log(MsgClass.Informational, Area, _method, message);
 
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
   internal void Validate ()
   {
     _tokens.ThrowIfNull();
     _rule.ThrowIfNull();
-    //Log(Area, "Validation Passed");
   }
   internal void Parse ()
   {
+    _method = "Parse";
+
     Validate();
     if (_rule.Sequence.IsEmpty())
     {
@@ -51,11 +54,11 @@ public sealed class TokenAssembler
         string post = item[(colon + 1)..];
 
         RT rule = RT.None;
-        rule |= pre.Contains('x', SCOIC) ? RT.IgnoredToken : RT.None;
         rule |= pre.Contains('m', SCOIC) ? RT.Mult : RT.None;
         rule |= pre.Contains('o', SCOIC) ? RT.Opt : RT.None;
+        rule |= pre.Contains('a', SCOIC) ? RT.Any : RT.None;
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
-        pre = pre.RemoveChars("xmoi");
+        pre = pre.RemoveChars("moai");
 
         if (!pre.ContainsAny(['t', 'c']))
           throw new InvalidOperationException("Prefix does not contain a valueIs identifier 't' or 'c'.");
@@ -70,6 +73,7 @@ public sealed class TokenAssembler
           "p" => RT.AddProperty,
           "f" => RT.AddFlag,
           "r" => RT.RemFlag,
+          "d" => RT.Descendant,
           "x" => RT.IgnoredToken,
           "" => RT.None,
           _ => throw new InvalidOperationException("Unknown letter encountered.")
@@ -151,6 +155,32 @@ public sealed class TokenAssembler
       }
       return token_result;
     }
+    (IToken, IToken) getTokenPair<TToken> (RT flag) where TToken : IToken
+    {
+      IToken? first = null, second = null;
+      Validate();
+      IToken? token_result = null;
+      for (int i = 0; i < tokens_to_assemble.Count; i++)
+      {
+        IToken token = tokens_to_assemble[i];
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken ttoken)
+        {
+          token_result = ttoken;
+        }
+
+        if (token_result is not null && first is null)
+        {
+          first = token_result;
+        }
+        else if (token_result is not null && first is not null && second is null)
+        {
+          second = token_result;
+
+          return (first, second);
+        }
+      }
+      throw new InvalidOperationException("Did not find a second value token.");
+    }
     bool hasToken (RT flag)
     {
       Validate();
@@ -163,8 +193,38 @@ public sealed class TokenAssembler
       }
       return false;
     }
+    TokenObject buildObject ()
+    {
+      IToken? originalType = null;
+
+      if (hasToken(RT.Descendant))
+      {
+        IToken baseToken = getToken<IToken>(RT.Descendant);
+
+        if (baseToken is ITypeToken)
+        {
+          originalType = baseToken;
+        }
+      }
+
+      TokenObject result = new()
+      {
+        NameToken = getToken<IToken>(RT.AssignName),
+        TypeToken = originalType,
+        Type = _rule.TypeToAssign,
+        Index = tokens_to_assemble[0].Index,
+        Properties = getTokens<TokenProperty>(RT.AddProperty),
+        Children = [.. tokens_to_assemble],
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
+      };
+
+      result.TypeToken = getTokenOrDefault<IToken>(RT.AssignType) ?? result.TypeToken;
+      return result;
+    }
     _constructed_items++;
-    IToken constructed_obj = _rule.Type switch
+
+    RT switch_safe = _rule.Type.RemoveBit<RT>(RT.Recursive);
+    IToken constructed_obj = switch_safe switch
     {
       RT.BuildProperty => new TokenProperty()
       {
@@ -175,16 +235,7 @@ public sealed class TokenAssembler
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
       },
-      RT.BuildObject => new TokenObject()
-      {
-        NameToken = getToken<IToken>(RT.AssignName),
-        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        Properties = getTokens<TokenProperty>(RT.AddProperty),
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      },
+      RT.BuildObject => buildObject(),
       RT.BuildArray => new TokenArray()
       {
         Type = _rule.TypeToAssign,
@@ -216,6 +267,25 @@ public sealed class TokenAssembler
         Index = tokens_to_assemble[0].Index,
         TypeToken = getToken<IToken>(RT.AssignType),
         ValueToken = getToken<IToken>(RT.AssignValue),
+        Children = [.. tokens_to_assemble],
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
+      },
+      RT.BuildExpression => new TokenExpression()
+      {
+        Type = _rule.TypeToAssign,
+        Index = tokens_to_assemble[0].Index,
+        TypeToken = getToken<IToken>(RT.AssignType),
+        LeftRightValueToken = getTokenPair<IToken>(RT.AssignValue),
+        Children = [.. tokens_to_assemble],
+        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
+      },
+      RT.BuildStatement => new TokenStatement()
+      {
+        Type = _rule.TypeToAssign,
+        Index = tokens_to_assemble[0].Index,
+        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
+        NameToken = getToken<IToken>(RT.AssignName),
+        Parameters = getTokens<IToken>(RT.AddProperty),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },

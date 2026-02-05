@@ -15,17 +15,17 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
 public interface ITypeToken
 {
   string? ObjType { get; }
-  IToken? TypeToken { get; init; }
+  IToken? TypeToken { get; set; }
 }
 
 public interface INameToken
 {
   string? Name { get; }
-  IToken? NameToken { get; init; }
+  IToken? NameToken { get; set; }
 }
 
 public interface IValueToken
 {
   string? Value { get; }
-  IToken? ValueToken { get; init; }
+  IToken? ValueToken { get; set; }
 }

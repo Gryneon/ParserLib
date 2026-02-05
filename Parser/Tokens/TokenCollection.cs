@@ -67,6 +67,7 @@ public class TokenCollection () : IList<IToken>
   {
     _tokens.Sort((item, item2) => item.CompareTo(item2));
   }
+  internal string GetContent () => _tokens.Select(s => s.Content).Aggregate((first, second) => first + " " + second);
 
-  public override string ToString () => $"TokenCollection ({Count} Tokens)";
+  public override string ToString () => $"TokenCollection ({GetContent()})";
 }

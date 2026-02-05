@@ -156,14 +156,10 @@
             <inheritdoc/>
         </member>
         <member name="T:Specification.XML.XMLHeader">
-            <summary>
-            Represents an XML header.
-            </summary>
+            <summary>Represents an XML header.</summary>
         </member>
         <member name="M:Specification.XML.XMLHeader.#ctor">
-            <summary>
-            Represents an XML header.
-            </summary>
+            <summary>Represents an XML header.</summary>
         </member>
         <member name="M:Specification.XML.XMLHeader.Generate(Parser.Tokens.TokenObject)">
             <inheritdoc/>

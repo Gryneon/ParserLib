@@ -72,7 +72,7 @@ public abstract class Operation : IOperation
 
   public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
   {
-    Operations = [..operations],
+    Operations = [.. operations],
     Type = LoopType.While,
     Condition = condition,
     Count = null
@@ -109,7 +109,7 @@ public abstract class Operation : IOperation
   /// <summary>
   /// A built in operation that ends the operation sequence.
   /// </summary>
-  public static IOperation End => new OperationAction(OperationActionType.ForcePass);
+  public static IOperation End => new OperationAction(OAT.ForcePass);
   #endregion
   #region Stored Keys & Data
   /// <summary>
@@ -333,11 +333,11 @@ public abstract class Operation : IOperation
   #endregion
   #region State Properties
   /// <summary>
-  /// The jump target of any <see cref="OperationActionType.BreakLoop"/> action that is called.
+  /// The jump target of any <see cref="OAT.BreakLoop"/> action that is called.
   /// </summary>
   public int LoopBreak { get; set; }
   /// <summary>
-  /// The jump target of any <see cref="OperationActionType.ContinueLoop"/> and the beginning of the loop section.
+  /// The jump target of any <see cref="OAT.ContinueLoop"/> and the beginning of the loop section.
   /// </summary>
   public int LoopStart { get; set; }
   #endregion
@@ -389,8 +389,8 @@ public abstract class Operation : IOperation
     return AdjustedStatus;
   }
   /// <summary>
-  /// Performs the operation and stores the value in <c><see cref="Operation.WorkToReturn"/></c>,
-  /// and the <see cref="OpStatus"/> in <c><see cref="Operation.Status"/></c><br/>
+  /// Performs the operation and stores the value in <c><see cref="WorkToReturn"/></c>,
+  /// and the <see cref="OpStatus"/> in <c><see cref="Status"/></c><br/>
   /// Use <c><see cref="CheckInput{T}(out T)"/></c> or <see cref="CheckArray{T}(out IEnumerable{T})"/> to validate single variables.
   /// Use <see cref="CheckInputs{T}(out Collection{T})"/> to validate mulitple.
   /// </summary>
@@ -402,9 +402,7 @@ public abstract class Operation : IOperation
     Status = OpStatus.FailBadOpDefinition;
     WorkToReturn = data;
   }
-  /// <summary>
-  /// Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.
-  /// </summary>
+  /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
   protected void Initialize (XParser parser)
   {
@@ -446,7 +444,7 @@ public abstract class Operation : IOperation
       }
     }
   }
-  protected void AssignResult (DictionaryMode mode = DictionaryMode.Overwrite)
+  protected void AssignResult (DM mode = DM.Overwrite)
   {
     if (WorkToReturn is null) return;
     Parser.Data.Add(OutputKey, WorkToReturn);

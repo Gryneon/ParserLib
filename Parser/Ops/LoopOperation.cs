@@ -10,12 +10,8 @@ public enum LoopType
   ForCount = 4
 }
 
-/// <summary>
-/// Creates an iterative loop within the parser. This can iterate through data, or a binary file.
-/// </summary>
-/// <remarks>
-/// <see cref="OpIndex"/> must be set in the operation loader in the parser. This is the loop's position the operation list.
-/// </remarks>
+/// <summary>Creates an iterative loop within the parser. This can iterate through data, or a binary file.</summary>
+/// <remarks><see cref="OpIndex"/> must be set in the operation loader in the parser. This is the loop's position the operation list.</remarks>
 public sealed class LoopOperation : Operation, IPlaceholderOperation
 {
   /// <summary>The type of loop to perform.</summary>

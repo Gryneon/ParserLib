@@ -4,9 +4,7 @@ using Parser.Tokens;
 
 namespace Specification.XML;
 
-/// <summary>
-/// Represents an XML header.
-/// </summary>
+/// <summary>Represents an XML header.</summary>
 public class XMLHeader () : XMLNodeAttr, IGeneratable, IXMLObject
 {
   /// <inheritdoc/>

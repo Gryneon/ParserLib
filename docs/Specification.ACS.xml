@@ -12,9 +12,7 @@
             </summary>
         </member>
         <member name="P:Specification.ACS.Definition.ACS">
-            <summary>
-            Defined Specification
-            </summary>
+            <summary>Defined Specification</summary>
         </member>
     </members>
 </doc>

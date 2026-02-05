@@ -17,7 +17,6 @@ public enum ACSTokenType
   Script,
   Function,
   MapVar,
-  World,
   ScriptType,
   Value,
   Bo, Bc,
@@ -28,7 +27,6 @@ public enum ACSTokenType
   Ao, Ac,
   Preprocessor,
   Eq,
-  DataType,
   If,
   For,
   IncDec,
@@ -49,9 +47,19 @@ public enum ACSTokenType
   Type,
   Wait,
   PreprocessorFull,
+  IfBlock,
+  ElseBlock,
+  ElseIfBlock,
+  VarDecl,
+  VarDeclAssn,
+  ArrayDecl,
+  VarAssn,
   Else,
+  Statement,
+  BasicCmd,
+  VarInc,
+  Parameter,
 }
-
 
 public enum ModelDefTokenType
 {

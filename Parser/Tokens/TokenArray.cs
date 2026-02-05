@@ -6,7 +6,7 @@ public sealed class TokenArray : TokenBase, ICollection<IToken>, ITypeToken
 {
   // Tokens Kept
   public string? ObjType => TypeToken?.Content;
-  public IToken? TypeToken { get; init; }
+  public IToken? TypeToken { get; set; }
   public required TokenCollection Items { get; init; }
   public override int Count => Items.Count;
 

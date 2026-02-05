@@ -19,7 +19,8 @@ public sealed class TokenFlag : TokenBase, INameToken
     init => _activate = !value;
   }
   public string? Name => NameToken?.Content;
-  public required IToken? NameToken { get; init; }
-  public override bool Equals (object? obj) => obj is TokenFlag flag && (Name?.Equals(flag.Name, SCO) ?? false)&& AddFlag == flag.AddFlag;
+  public required IToken? NameToken { get; set; }
+  public override bool Equals (object? obj) => obj is TokenFlag flag && (Name?.Equals(flag.Name, SCO) ?? false) && AddFlag == flag.AddFlag;
   public override int GetHashCode () => HashCode.Combine(Name, AddFlag);
+  public override string ToString () => (_activate ? "+" : "-") + Name;
 }

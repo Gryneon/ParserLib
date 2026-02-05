@@ -26,9 +26,7 @@ public static class Definition
   internal static TokenRule Op ([SS("regex")] string regex) => Tm(ATT.Op, regex);
   internal static TokenRule Ex (ATT tokenType, [SS("regex")] string regex) => new(TExact, tokenType, regex);
 
-  /// <summary>
-  /// Defined Specification
-  /// </summary>
+  /// <summary>Defined Specification</summary>
   [Export("zdoom.acs")]
   public static Spec ACS => new()
   {
@@ -43,7 +41,9 @@ public static class Definition
     SC = SCOIC,
     TokenType = typeof(ATT),
     TokenCompatLookup = {
-      [Fixed] = [Int, Bool]
+      [Fixed] = [Int, Bool, Char, Str],
+      [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall],
+      [Statement] = [VarDecl, BasicCmd, FunctionCall, VarAssn, VarInc, IfBlock, ElseBlock, ElseIfBlock, ArrayDecl, ]
     },
     TokenRules = [
 
@@ -54,9 +54,9 @@ public static class Definition
       new(Ignore, None, @"\/\*.*?\*\/"),
 
       // Preprocessor
-      Ex(Preprocessor, @"\# (lib(define|rary)|import|include|define)"),
+      Tm(Preprocessor, @"\# (lib(define|rary)|import|include|define)"),
       Tm(Bool, @"\b(true|false|on|off|yes|no)\b"),
-      Tm(Int, @"-?(?<!\.|\d)(\d+|0x[a-f0-9]+)(?!\.|\d)"),
+      Tm(Int, @"-?(?<!\.|\w)(\d+|0x[a-f0-9]+)(?!\.|\w)"),
       Tm(Fixed, @"-?(\d+\.\d*|\.\d+)"),
 
       // Keywords
@@ -67,14 +67,11 @@ public static class Definition
         ("global", MapVar),     ("world", MapVar),
         ("do", Do),             ("for", For),
         ("while", Loop),        ("until", Loop),
-
+        ("switch", Switch),     ("case", Case),
+        ("default", Default),   ("return", Return)
         ]
       ),
       Tm(ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
-      Tm(Switch, @"\bswitch\b"),
-      Tm(Case, @"\bcase\b"),
-      Tm(Default, @"\bdefault\b"),
-      Tm(Return, @"\breturn\b"),
       Tm(SimpleJump, @"\b(break|continue|terminate)\b"),
       Tm(Wait, @"\b(delay|scriptwait|tagwait)\b"),
 
@@ -95,7 +92,14 @@ public static class Definition
       Tm(Name, @"\b[a-z_][\w]*\b"),
     ],
     GroupTokenRules = [
-      new(RT.BuildProperty, PreprocessorFull, "tiy:Preprocessor tin:Name tiv:Expression")
+      new(RT.BuildExpression | RT.Recursive, Expression, "tv:Value ty:Binary tv:Value"),
+      new(RT.BuildStatement, VarDecl, "ty:Type tn:Name tx:Sc"),
+      new(RT.BuildStatement, VarDeclAssn, "ty:Type tn:Name tx:Eq tv:Value tx:Sc"),
+      new(RT.BuildStatement, Statement, "tn:SimpleJump tx:Sc"),
+      new(RT.BuildStatement, Parameter, "ty:Type tn:Name txo:Cm"),
+      new(RT.BuildStatement, FunctionCall, "tn:Name tx:Po tpa:Parameter tx:Pc"),
+      new(RT.BuildProperty, PreprocessorFull, "ty:Preprocessor tn:Name tv:Value"),
+
     ],
   };
   [Export("zdoom.modeldef")]

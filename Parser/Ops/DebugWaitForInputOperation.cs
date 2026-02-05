@@ -1,13 +1,12 @@
 namespace Parser.Ops;
 
+/// <summary></summary>
 public class DebugWaitForInputOperation : Operation
 {
   private readonly ConsoleKey? _key;
   private const string Area = "DebugWaitForInputOperation";
 
-  /// <summary>
-  /// Constructs an operation that waits for a specific key press or the enter key.
-  /// </summary>
+  /// <summary>Constructs an operation that waits for a specific key press or the enter key.</summary>
   /// <param name="key">The key to wait for.</param>
   public DebugWaitForInputOperation (ConsoleKey? key = null) : base()
   {

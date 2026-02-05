@@ -20,7 +20,7 @@ public abstract class TokenBase : IToken
   internal string ContentNoNewLine => Content.
     Replace("\n", "<LF>", SCO).
     Replace("\r", "<CR>", SCO);
-  public override string ToString () => $"{Index} : {Type} = \"{ContentNoNewLine}\"";
+  public override string ToString () => $"{Type} = \"{ContentNoNewLine}\"";
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);

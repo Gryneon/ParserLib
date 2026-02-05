@@ -11,8 +11,8 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
   public string? ObjType => TypeToken?.Content;
 
   // Tokens Kept
-  public required IToken? NameToken { get; init; }
-  public IToken? TypeToken { get; init; }
+  public required IToken? NameToken { get; set; }
+  public IToken? TypeToken { get; set; }
 
   public TokenCollection Properties { get; init; } = [];
   public TokenCollection Flags { get; init; } = [];
@@ -26,7 +26,7 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
       Type.Equals(ips.Type, SCOIC),
     _ => false
   };
-  public override string ToString () => $"{Name} {(ObjType is not null ? ": " + ObjType + " " : "")}{{{Properties.ToString2()}}}";
+  public override string ToString () => $"{Name}{(ObjType is not null ? " as " + ObjType : " ")}{{{Properties.Select(i => i.ToString()).TextJoin(", ")}}}";
   public override int GetHashCode () => HashCode.Combine(Name, Type, ObjType, Properties, Flags);
   public IEnumerator<IReadOnlyProperty<string>> GetEnumerator () => Properties.OfType<TokenProperty>().GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();

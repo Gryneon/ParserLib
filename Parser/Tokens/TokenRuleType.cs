@@ -73,6 +73,13 @@ public enum TokenRuleType
   Opt = 0x8000000,
   /// <summary>This token sequence entry can have additional entries, and will consume them if present.</summary>
   Mult = 0x10000000,
+  Any = Opt | Mult,
   /// <summary>The bits to remove to get the type correctly.</summary>
   FlagBits = Mult | Opt | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
+  /// <summary>This Token Group Rule will assemble a <see cref="TokenExpression"/> differently than normal. It will store the left hand, the operator, and the right hand values.</summary>
+  BuildExpression = 0x20000000,
+  /// <summary>This token sequence entry will supply any fields not already filled by other definitions from its own respective values.</summary>
+  /// <remarks>If a <see cref="TokenObject"/> was passed to any field of a <see cref="TokenObject"/> with this flag assigned, it would copy all of its fields to the parent <see cref="TokenObject"/>.
+  /// These properties would be overwritten by any defined token sequence entries.</remarks>
+  Descendant = 0x40000000,
 }

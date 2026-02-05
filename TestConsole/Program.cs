@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 
-using Parser;
 using Parser.Tokens;
 
 using Specification.WAD;
@@ -9,9 +8,11 @@ using Specification.WAD;
 using static Parser.Debug;
 
 using CK = System.ConsoleKey;
+using SpecACS = Specification.ACS.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecMapInfo = Specification.MapInfo.Definition;
 using SpecXML = Specification.XML.Definition;
+using SpecZScript = Specification.ZScript.Definition;
 
 namespace TestConsole;
 
@@ -39,11 +40,16 @@ internal sealed class Program
   internal static string? UserInput;
   internal static XParser Parser = new();
   internal static OpStatus Status = OpStatus.AtStart;
+  private static string s_method = SE;
   #endregion
   #region Basic Methods
   [MemberNotNull(nameof(UserInput))]
   internal static void UserLine () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
   internal static string UserLineReturn () => Console.ReadLine() ?? SE;
+  internal static void LogError (string message) => Log(MsgClass.Error, Area, s_method, message);
+  internal static void LogDebug (string message) => Log(MsgClass.Debug, Area, s_method, message);
+  internal static void LogInfo (string message) => Log(MsgClass.Informational, Area, s_method, message);
+  internal static void LogWarn (string message) => Log(MsgClass.Warning, Area, s_method, message);
   #endregion
   #region Menu Definition
   internal static Action<IList<object>> DoTest => item => _ = item[0] is string s && item[1] is Spec sp ? TestTextParser(s, sp) : throw new InvalidOperationException("Invalid data passed to TestTextParser");
@@ -74,13 +80,14 @@ internal sealed class Program
 
     //InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
     //InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
-    //InitialTest(Specification.ACS.Definition.ACS, Paths.acs_rpgmfunc);
+    InitialTest(SpecACS.ACS, Paths.acs_rpgmfunc);
     //InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
     InitialTest(SpecXML.Spec, Paths.xsd_specification);
     InitialTest(Definition.WAD, Paths.wad_pl2);
     //InitialTest(Definition.WAD, Resources.wad_tnt);
     InitialTest(SpecMapInfo.Spec, Paths.mapinfo_common);
     InitialTest(SpecIPL.Spec, Paths.ipl_simple);
+    InitialTest(SpecZScript.Spec, Specification.ZScript.Properties.Resources.zs_demon);
 
     if (args.Length == 0)
     {
@@ -98,31 +105,33 @@ internal sealed class Program
 
   internal static void ProcessArgs (string[] args)
   {
+    s_method = "ProcessArgs";
     foreach (string path in args)
     {
       string content;
       try { content = File.ReadAllText(path); }
       catch (DirectoryNotFoundException) { content = "<STX><ESC>P<ESC>C<ETX>"; }
 
-      Log("Program", "Main", "Loading File : " + path);
+      LogInfo("Loading File : " + path);
 
       Parser = new XParser(Specification.IPL.Definition.Spec);
       Status = Parser.Parse(content);
 
-      Log("Program.Main", "OpStatus is " + Status);
+      LogDebug("OpStatus is " + Status);
 
-      Log("Program.Main", "Result is " + Parser.Result);
+      LogDebug("Result is " + Parser.Result);
       Collection<Specification.IPL.CommandDataSet> objects = Parser.Result as Collection<Specification.IPL.CommandDataSet> ?? [];
-      Log("Program.Main", "Result count = " + objects.Count);
+      LogDebug("Result count = " + objects.Count);
       foreach (object item in objects)
       {
-        Log("Program.Main", $"{item}");
+        LogDebug($">{item}");
       }
     }
   }
 
   internal static void InitialTest (Spec spec, string file)
   {
+    s_method = "InitialTest";
     Log(MsgClass.Warning, Area, "InitialTest", $"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
     Parser = new(spec);
     if (spec.IsTextFile)
@@ -132,14 +141,17 @@ internal sealed class Program
       //int libcount = Library.SpecList.Count;
       TokenFactory factory = new(spec);
       TokenCollection result = [.. factory.Produce(input)];
-      Log(MsgClass.Warning, Area, "InitialTest", $"Tokens Created : {result.Count}");
+      LogWarn($"Tokens Created : {result.Count}");
       //Debug.Log(Area, result.ToString2());
       TokenAssembler assembler = new(spec);
       TokenCollection tokens = [.. result];
       assembler.Execute(tokens);
-      Log(MsgClass.Warning, Area, "InitialTest", $"Tokens After Assembly : {tokens.Count}");
-      Log(MsgClass.Debug, Area, "InitialTest", tokens.ToString2());
-      Log(MsgClass.Warning, Area, "InitialTest", $"Token Log Complete");
+      LogWarn($"Tokens After Assembly : {tokens.Count}");
+      foreach (IToken token in tokens)
+      {
+        LogDebug(token.ToString()!);
+      }
+      LogInfo($"Token Log Complete");
     }
     else
     {
@@ -166,19 +178,24 @@ internal sealed class Program
       Status = Parser.StepThrough(bytes);
     }
 
-    Log("Program", "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
+    Log(MsgClass.Informational, Area, "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
     return Parser;
   }
   internal static void DisplayOpOrder ()
   {
-    Log("Parser Operation Order:");
+    s_method = "DisplayOpOrder";
+    LogDebug("Parser Operation Order:");
     foreach (IOperation op in Parser?.Operations ?? [])
     {
-      Log(op.ToString() ?? "Error: Bad Op");
+      if (op.ToString() is not null)
+        LogDebug(">" + op.ToString()!);
+      else
+        LogError("Error: Bad Op");
     }
   }
   internal static void Load ()
   {
+    s_method = "Load";
     Spec userSpec;
     string userPath;
     string? specName;
@@ -211,7 +228,7 @@ internal sealed class Program
 
     else if (Library.Lookup(UserInput) is not null)
     {
-      Log("Program.Load", $"Invalid Spec {UserInput}");
+      LogError($"Invalid Spec {UserInput}");
       goto GetSpec;
     }
     else
@@ -225,9 +242,9 @@ internal sealed class Program
       OpStatus status = parser.Parse(fileContent);
 
       if (status.IsFail())
-        Log("Program.Load", $"Failed, status is {status}");
+        LogError($"Failed, status is {status}");
       else
-        Log("Program.Load", $"Good, status is {status}");
+        LogInfo($"Good, status is {status}");
     }
     else
     {

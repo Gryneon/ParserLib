@@ -5,7 +5,7 @@ namespace Parser.Tokens;
 public sealed class TokenLabel : TokenBase, INameToken
 {
   public string? Name => NameToken?.Content;
-  public required IToken? NameToken { get; init; }
+  public required IToken? NameToken { get; set; }
 
   public static explicit operator TokenFlag (TokenLabel label)
   {

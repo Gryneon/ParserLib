@@ -1,8 +1,6 @@
 namespace Parser.Ops;
 
-/// <summary>
-/// The interface for all operations in the parser.
-/// </summary>
+/// <summary>The interface for all operations in the parser.</summary>
 public interface IOperation
 {
   #region Operation Flags
@@ -33,9 +31,7 @@ public interface IOperation
   /// </summary>
   int LoopStart { get; set; }
   #endregion
-  /// <summary>
-  /// Calls the operation with the parser provided.
-  /// </summary>
+  /// <summary>Calls the operation with the parser provided.</summary>
   /// <param name="parser_ref">The parser to pull data from and to store data in.</param>
   /// <returns>An <see cref="OpStatus"/> that represents the result status.</returns>
   OpStatus DoOperation (XParser parser_ref);
