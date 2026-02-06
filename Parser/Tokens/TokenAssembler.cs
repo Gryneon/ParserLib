@@ -9,6 +9,7 @@ public sealed class TokenAssembler
   private const string Area = "TokenAssembler";
   private string _method = SE;
   private readonly TokenGroupRuleCollection _rules;
+  private readonly Dictionary<int, RT> _tokenRuleLookup = [];
 
   // Temp fields
   private TokenCollection? _tokens;
@@ -128,7 +129,7 @@ public sealed class TokenAssembler
       }
     }
   }
-  internal void Construct (int first_token_index, TokenCollection tokens_to_assemble, IList<int> sequence_ids)
+  internal void Construct (int first_token_index, TokenCollection tokens_to_assemble)
   {
     //Log(Area, "Calling Construct with tokens { " + tokens_to_assemble.TextJoin(" ") + " }");
     Validate();
@@ -140,7 +141,7 @@ public sealed class TokenAssembler
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
+        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag))
         {
           return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
         }
@@ -339,7 +340,6 @@ public sealed class TokenAssembler
   {
     Validate();
     TokenCollection assembly = [];
-    Collection<int> sequence_ids = [];
     int first_token_index = -1;
     _constructed_items = 0;
     int node_index = 0, token_index = 0;
@@ -357,14 +357,13 @@ public sealed class TokenAssembler
       {
         node_index = 0;
         assembly.Clear();
-        sequence_ids.Clear();
         first_token_index = -1;
       }
 
       if (node is null)
       {
         // End of sequence? Pass
-        Construct(first_token_index, assembly, sequence_ids);
+        Construct(first_token_index, assembly);
         token_index = first_token_index + 1;
         reset_match();
         continue;
@@ -372,7 +371,7 @@ public sealed class TokenAssembler
       // End of Tokens and all remaining are optional
       if (token is null && _rule.Sequence[node_index..].AllOptional)
       {
-        Construct(first_token_index, assembly, sequence_ids);
+        Construct(first_token_index, assembly);
         token_index = first_token_index + 1;
         reset_match();
         continue;
@@ -390,7 +389,7 @@ public sealed class TokenAssembler
           first_token_index = token_index;
 
         assembly.Add(token);
-        sequence_ids.Add(node_index);
+        _tokenRuleLookup[token_index] = node.TokenRule;
 
         if (isMult)
           allow_fail = true;
