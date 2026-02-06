@@ -114,9 +114,9 @@ public sealed class DataDictionary : IDictionary<string, object>
     }
     else if (initial is IEnumerable<byte> bytes)
     {
-      Collection<byte> list = [.. bytes];
+      Memory<byte> list = bytes.ToArray().AsMemory();
       _ = Save("bytes", list);
-      _ = Save<int>("file_size", list.Count);
+      _ = Save<int>("file_size", list.Length);
     }
     else if (initial is IEnumerable list)
     {

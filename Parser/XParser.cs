@@ -68,7 +68,7 @@ public sealed class XParser
       int oldCount = Operations.Count;
       if (op is IPlaceholderOperation ipo)
       {
-        int newCount = ipo.Unpack(Operations, i);
+        int newCount = ipo.Unpack(Operations, i, this);
         Log(Area, "OperationLoad", $"Operation Group Expanded From {oldCount} to {newCount}.", ConsoleColor.Black, ConsoleColor.Cyan);
       }
     }
@@ -78,8 +78,10 @@ public sealed class XParser
     if (Spec.Name.Like("unknown"))
     {
       Spec = data is string
-        ? DefaultSpec.TextByLines
-        : data is IEnumerable<byte> ? DefaultSpec.Binary : throw new InvalidDataException("Data must by a byte array or a string.");
+          ? DefaultSpec.TextByLines
+        : data is IEnumerable<byte>
+          ? DefaultSpec.Binary
+        : throw new InvalidDataException("Data must by a byte array or a string.");
     }
     OperationLoad();
     data.ThrowIfNull();

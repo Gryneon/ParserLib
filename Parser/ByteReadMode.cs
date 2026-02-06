@@ -2,14 +2,10 @@
 
 namespace Parser;
 
-[Flags]
 public enum ByteReadMode
 {
-  None = 0,
+  Error = 0,
   Text = 1,
   Value = 2,
-  Binary = 4,
-
-  Increment = 256,
-  UseVarSize = 1024,
+  Binary = 3,
 }

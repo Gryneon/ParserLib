@@ -25,6 +25,6 @@ public class CursorData
   public DataDictionary Data { get; }
   /// <summary>The object referenced.</summary>
   public object Cursor => Data[Key].AsCollection()[Index];
-  /// <summary>The last accessed cursor.</summary>
+  /// <summary>The outermost created cursor.</summary>
   public static CursorData? Last { get; private set; }
 }

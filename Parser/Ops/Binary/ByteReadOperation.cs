@@ -6,9 +6,9 @@ namespace Parser.Ops.Binary;
 
 public sealed class ByteReadOperation : Operation, IOperation
 {
-  [NotNull] public string? CursorKey { get; }
-  private int Size { get; set; }
-  private ByteReadMode Mode { get; }
+  public string CursorKey { get; }
+  public int Size { get; set; }
+  public ByteReadMode Mode { get; }
 
   private ByteReadOperation (string output_key, int size, ByteReadMode mode, string cursor_key) : base(SE, output_key)
   {
@@ -27,22 +27,21 @@ public sealed class ByteReadOperation : Operation, IOperation
   public static ByteReadOperation ReadLong (string output_key, string cursor_key = "bytes") => new(output_key, 8, ByteReadMode.Value, cursor_key);
   public static ByteReadOperation ReadByte (string output_key, string cursor_key = "bytes") => new(output_key, 1, ByteReadMode.Value, cursor_key);
   public static ByteReadOperation ReadString (string output_key, int length, string cursor_key = "bytes") => new(output_key, length, ByteReadMode.Text, cursor_key);
-  public static ByteReadOperation ReadString (string input_key, string output_key, string cursor_key = "bytes") => new(input_key, output_key, ByteReadMode.Text | ByteReadMode.UseVarSize, cursor_key);
+  public static ByteReadOperation ReadString (string input_key, string output_key, string cursor_key = "bytes") => new(input_key, output_key, ByteReadMode.Text, cursor_key);
   public static ByteReadOperation ReadBinary (string output_key, int size, string cursor_key = "bytes") => new(output_key, size, ByteReadMode.Binary, cursor_key);
-  public static ByteReadOperation ReadBinary (string input_key, string output_key, string cursor_key = "bytes") => new(input_key, output_key, ByteReadMode.Binary | ByteReadMode.UseVarSize, cursor_key);
+  public static ByteReadOperation ReadBinary (string input_key, string output_key, string cursor_key = "bytes") => new(input_key, output_key, ByteReadMode.Binary, cursor_key);
   public static ByteReadOperation ReadRemainingBin (string output_key, string cursor_key = "bytes") => new(output_key, -1, ByteReadMode.Binary, cursor_key);
   public static ByteReadOperation ReadRemainingStr (string output_key, string cursor_key = "bytes") => new(output_key, -1, ByteReadMode.Text, cursor_key);
 
-  private Span<byte> ReadBytes (string cursorName, int count)
+  private Memory<byte> ReadBytes (string cursorName, int count)
   {
-    if (CursorKey is null)
-      throw new InvalidOperationException();
-
-    Span<byte> result = new([.. Data[CursorKey].AsCollection<byte>()], Parser.GetCursorByKey(cursorName).Index, count);
-    Parser.GetCursorByKey(cursorName).Index += count;
-    return result;
+    Memory<byte> mem = (Memory<byte>) Data[CursorKey];
+    int index = Parser.GetCursorByKey(cursorName).Index;
+    Memory<byte> slice = mem.Slice(index, count);
+    Parser.IncCursorByKey(CursorKey, count);
+    return slice;
   }
-  private string ReadChars (string cursorName, int count) => ReadBytes(cursorName, count).ByteArrToString();
+  private string ReadChars (string cursorName, int count) => ReadBytes(cursorName, count).Span.ByteArrToString();
   protected override void Execute ()
   {
     if (!IgnoreAllLoads && CheckInput(out int size))
@@ -58,22 +57,22 @@ public sealed class ByteReadOperation : Operation, IOperation
     int remaining = Data.FileSize - Parser.GetCursorByKey(CursorKey).Index;
     object? value = Size switch
     {
-      1 when Mode.HasFlag(ByteReadMode.Value) => ReadBytes(CursorKey, Size)[0],
-      2 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).ToInt16(),
-      4 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).ToInt32(),
-      8 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).ToInt64(),
+      1 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span[0],
+      2 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt16(),
+      4 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt32(),
+      8 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt64(),
       > 0 when Mode is ByteReadMode.Text => ReadChars(CursorKey, Size),
-      > 0 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size).ToArray(),
+      > 0 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size),
       -1 when Mode is ByteReadMode.Text => ReadChars(CursorKey, remaining),
-      -1 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining).ToArray(),
+      -1 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining),
       _ => null
     };
-    if (value != null)
+    if (value is null)
     {
-      Data[OutputKey] = value;
-      Status = Pass;
+      Status = FailBadOpDefinition;
       return;
     }
-    Status = FailBadOpDefinition;
+    WorkToReturn = value;
+    Status = Pass;
   }
 }

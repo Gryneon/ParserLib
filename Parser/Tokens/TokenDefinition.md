@@ -48,11 +48,11 @@
 
 ## Token Assembly Syntax
 
-    (1) prefix:content
+    (1) prefix:token_type
     (2) prefix:(type1-type2-type3)
-    (3) prefix:(type1|type2|type3)
-    (4) prefix:token_type
-    (5) prefix:token_type{content}
+    (3) prefix:(type1|type2|type3){literal1|literal2}
+    (4) prefix:{literal}
+    (5) prefix:token_type{literal}
 
 No spaces (or tabs, or line feeds) can be between any single token assembly structure.
 The hyphens in the 2nd example can be interchanged with '&', '|', or '+', like in the 3rd example. <br><br>
@@ -60,21 +60,16 @@ If you classify many tokens specifically, but need a general token to represent 
 
 ## Prefix Letters
 
-Some letters are optional. You must have at least 2 letters to make a valid definition. You can have a maximum of 5, both the start, the end, and all 3 options.<br><br>
-Your prefix must contain one of these letters.
+Some letters are optional. You must have at least 1 letter to make a valid definition.
 
-    t - Value is Token Type (see syntax line 2,3,4)
-    c - Value is String Literal (see syntax line 1)
-    b - Value contains Both (see syntax line 5)
-
-They specify what the value is, so they are important.
 Your prefix can have one of each of these:
 
     i - Ignore Case (String Literal Only)
     m - One or many, this token will repeat as long as it can, Possessive, Greedy.
     o - Optional, this token does not trigger a fail if it does not match. Greedy.
+    a - Any, this token does not trigger a fail if it does not match, and can consume as many as it can. Greedy, Possessive.
 
-If 'm' and 'o' are both specified, it acts as the '*' operator, meaning zero or many, but it stays Greedy.
+If 'm' and 'o' (or 'a') are both specified, it acts as the '*' operator, meaning zero or many, but it stays Greedy.
 Defining 'm' alone or 'im' makes it Possessive, meaning it will not give any matches back, to attempt to find a more suitable match.
 It will simply fail the match entirely, like an atomic group.
 
@@ -90,9 +85,8 @@ Must have only one of these:
 
 ### Example
 
-    tv:typename
+    v:typename
 
-    * t : typename is the token type
     * v : it is stored in the value field
 
     cvi:null

@@ -65,7 +65,8 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
     if (OpIndex == 0)
     {
       Log(MsgClass.Error, "LoopOperation", "Loop Pre-processing not complete.");
-      Status = OpStatus.Error;
+      Status = OpStatus.FailBadOpImpossible;
+      return;
     }
 
     void initializeCursor ()

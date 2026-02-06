@@ -113,8 +113,8 @@ r - Token is 'Name' in flag and AddFlag is false.
         throw new InvalidOperationException("No valid data in rule.");
 
       string data = _rule.RuleStringData;
-      string literal = GetLiteral(data, out data);
-      string[] data_strings = data.Split([' ', '\t', '\n'], 255, SSORT);
+
+      string[] data_strings = data.Split([' ', '\t'], 255, SSORT);
       foreach (string item in data_strings)
       {
         int colon = item.IndexOf(':', SCO);
@@ -128,35 +128,67 @@ r - Token is 'Name' in flag and AddFlag is false.
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
         pre = pre.RemoveChars("moai");
 
-        RT sample = LetterReference[pre[0]];
-
-        if (sample is RT.None or RT.Error)
-          throw new InvalidOperationException("Invalid character encountered.");
+        RT sample = pre.RemoveChars("btc") switch
+        {
+          "y" => RT.AssignType,
+          "v" => RT.AssignValue,
+          "n" => RT.AssignName,
+          "p" => RT.AddProperty,
+          "f" => RT.AddFlag,
+          "r" => RT.RemFlag,
+          "d" => RT.Descendant,
+          "x" => RT.IgnoredToken,
+          "" => RT.None,
+          _ => throw new InvalidOperationException("Unknown letter encountered.")
+        };
 
         rule |= sample;
-        Collection<string> allowed = [];
+        bool types_done = false;
+        Collection<string> allowed_types = [];
+        Collection<string> allowed_literals = [];
 
-        if (post.StartsWith('(') && post.EndsWith(')'))
+        if (post.Contains('(', SCO))
         {
-          post = post[1..^1];
-          IEnumerable<string> strs = post.Split(['-', '|', '+', '&'], 0, SSORT);
+          string types = post[(post.IndexOf('(', SCO) + 1)..post.LastIndexOf(')')];
+          IEnumerable<string> strs1 = types.Split(['-', '|', '+', '&'], 0, SSORT);
 
-          foreach (string s in strs)
+          foreach (string s in strs1)
           {
-            allowed.Add(s);
+            allowed_types.Add(s);
+          }
+          types_done = true;
+        }
+        if (post.Contains('{', SCO))
+        {
+          int st = post.IndexOf('{', SCO);
+          int en = post.LastIndexOf('}');
+          string literals = post[(st + 1)..en];
+          IEnumerable<string> strs2 = literals.Split(['-', '|', '+', '&'], 0, SSORT);
+
+          foreach (string s in strs2)
+          {
+            allowed_literals.Add(s);
+          }
+
+          if (!types_done)
+          {
+            post = post.Remove(st, en - st);
+            allowed_types.Add(post);
+            types_done = true;
           }
         }
-        else
+        if (!types_done)
         {
-          allowed.Add(post);
+          allowed_types.Add(post);
         }
 
-        ChkToken temp = new()
+        allowed_types.AddRange(AllAllowedTypes(allowed_types));
+
+        ChkToken temp = new(item)
         {
           TokenRule = rule,
-          
-          LiteralMatch = literal,
-          AllowedTypes = AllAllowedTypes(allowed),
+          AllowedContents = allowed_literals,
+          AllowedTypes = allowed_types
         };
 
         _rule.Sequence.Add(temp);
@@ -209,27 +241,22 @@ r - Token is 'Name' in flag and AddFlag is false.
       }
       return token_result;
     }
-    (IToken, IToken) getTokenPair<TToken> (RT flag) where TToken : IToken
+    (TToken, TToken) getTokenPair<TToken> (RT flag) where TToken : IToken
     {
-      IToken? first = null, second = null;
+      TToken? first = default, second;
       Validate();
-      IToken? token_result = null;
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken ttoken)
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken t1 && first is null)
         {
-          token_result = ttoken;
+          first = t1;
+          continue;
         }
 
-        if (token_result is not null && first is null)
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken t2 && first is not null)
         {
-          first = token_result;
-        }
-        else if (token_result is not null && first is not null && second is null)
-        {
-          second = token_result;
-
+          second = t2;
           return (first, second);
         }
       }
@@ -480,6 +507,10 @@ r - Token is 'Name' in flag and AddFlag is false.
       if (times > 0)
       {
         Log(Area, $"Rule {r} Executed {times} Times.");
+      }
+      else
+      {
+
       }
     }
 
