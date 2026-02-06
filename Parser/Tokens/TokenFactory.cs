@@ -1,7 +1,5 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
 namespace Parser.Tokens;
 
 public sealed class TokenFactory
@@ -166,7 +164,7 @@ public sealed class TokenFactory
 
     return regex;
   }
-  private static RT GetMaskedType (RT type) => type.RemoveBit<RT>(RT.FlagBits);
+  private static RT GetMaskedType (RT type) => type.RemoveBitLong<RT>(RT.FlagBits);
   private static int GetRuleGroupIndex (Match match)
   {
     s_method = "GetRuleGroupIndex";

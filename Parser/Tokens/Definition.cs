@@ -32,7 +32,7 @@ internal static class Definition
     new(TExact, CTT.Colon, @":"),
     new(TExact, CTT.Po, @"("),
     new(TExact, CTT.Pc, @")"),
-    new(TMatch, CTT.Prefix, @"\b\w+(?=\:)"),
+    new(TMatch, CTT.Prefix, @"\b[a-y]+(?=\:)"),
     new(TMatch, CTT.Content, @"(?<=c.*?\:)\w+\b"),
     new(TMatch, CTT.TypeName, @"(?<=t.*?\:)\w+\b"),
   ], Dummy);

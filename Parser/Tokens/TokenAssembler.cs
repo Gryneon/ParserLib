@@ -1,10 +1,11 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace Parser.Tokens;
 
-public sealed class TokenAssembler
+public sealed partial class TokenAssembler
 {
   private const string Area = "TokenAssembler";
   private string _method = SE;
@@ -16,6 +17,58 @@ public sealed class TokenAssembler
   private TokenGroupRule? _rule;
   private int _constructed_items;
   private readonly Spec _spec;
+
+  /*
+   * t - Value is Token Type (see syntax line 2,3,4)
+c - Value is String Literal (see syntax line 1)
+b - Value contains Both (see syntax line 5)
+They specify what the value is, so they are important. Your prefix can have one of each of these:
+
+i - Ignore Case (String Literal Only)
+m - One or many, this token will repeat as long as it can, Possessive, Greedy.
+o - Optional, this token does not trigger a fail if it does not match. Greedy.
+If 'm' and 'o' are both specified, it acts as the '*' operator, meaning zero or many, but it stays Greedy. Defining 'm' alone or 'im' makes it Possessive, meaning it will not give any matches back, to attempt to find a more suitable match. It will simply fail the match entirely, like an atomic group.
+
+Must have only one of these:
+
+x - Ignore Token
+n - Token is 'Name' in object, property, or label
+y - Token is 'Type' in object, typedvalue, or array
+v - Token is 'Value' in array, property, or typedvalue
+p - Token is 'Property' in object
+f - Token is 'Name' in flag and AddFlag is true.
+r - Token is 'Name' in flag and AddFlag is false.
+   */
+
+  internal Dictionary<char, RT> LetterReference { get; } = new()
+  {
+    ['a'] = RT.Any,
+    ['b'] = RT.Error,
+    ['c'] = RT.Error,
+    ['d'] = RT.Descendant,
+    ['e'] = RT.Error,
+    ['f'] = RT.AddFlag,
+    ['g'] = RT.Error,
+    ['h'] = RT.Error,
+    ['i'] = RT.IgnoreCase,
+    ['j'] = RT.Error,
+    ['k'] = RT.Error,
+    ['l'] = RT.Error,
+    ['m'] = RT.Mult,
+    ['n'] = RT.AssignName,
+    ['o'] = RT.Opt,
+    ['p'] = RT.AddProperty,
+    ['q'] = RT.Error,
+    ['r'] = RT.RemFlag,
+    ['s'] = RT.Error,
+    ['t'] = RT.Error,
+    ['u'] = RT.Error,
+    ['v'] = RT.AssignValue,
+    ['w'] = RT.Error,
+    ['x'] = RT.IgnoredToken,
+    ['y'] = RT.AssignType,
+    ['z'] = RT.Error,
+  };
 
   public TokenAssembler (TokenGroupRuleCollection rules, Spec spec)
   {
@@ -35,6 +88,21 @@ public sealed class TokenAssembler
   {
     _tokens.ThrowIfNull();
     _rule.ThrowIfNull();
+  }
+
+  internal static string GetLiteral (string data, out string data_after)
+  {
+    if (!data.Contains('{', SCO))
+    {
+      data_after = data;
+      return SE;
+    }
+
+    Match m = StringLiteral().Match(data);
+
+    string literal = m.Groups["actual"].Value;
+    data_after = data.Remove(m);
+    return literal;
   }
   internal void Parse ()
   {
@@ -62,19 +130,10 @@ public sealed class TokenAssembler
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
         pre = pre.RemoveChars("moai");
 
-        RT sample = pre.RemoveChars("btc") switch
-        {
-          "y" => RT.AssignType,
-          "v" => RT.AssignValue,
-          "n" => RT.AssignName,
-          "p" => RT.AddProperty,
-          "f" => RT.AddFlag,
-          "r" => RT.RemFlag,
-          "d" => RT.Descendant,
-          "x" => RT.IgnoredToken,
-          "" => RT.None,
-          _ => throw new InvalidOperationException("Unknown letter encountered.")
-        };
+        RT sample = LetterReference[pre[0]];
+
+        if (sample is RT.Error)
+          throw new InvalidOperationException("Unknown letter encountered.");
 
         rule |= sample;
         bool types_done = false;
@@ -106,7 +165,7 @@ public sealed class TokenAssembler
 
           if (!types_done)
           {
-            post = post.Remove(st, en - st);
+            post = post.Remove(st, en - st + 1);
             allowed_types.Add(post);
             types_done = true;
           }
@@ -238,14 +297,14 @@ public sealed class TokenAssembler
     }
     _constructed_items++;
 
-    RT switch_safe = _rule.Type.RemoveBit<RT>(RT.Recursive);
+    RT switch_safe = _rule.Type.RemoveBitLong<RT>(RT.Recursive);
     IToken constructed_obj = switch_safe switch
     {
       RT.BuildProperty => new TokenProperty()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        NameToken = getToken<IToken>(RT.AssignName),
+        NameToken = getTokenOrDefault<IToken>(RT.AssignName),
         ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
@@ -280,8 +339,8 @@ public sealed class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        TypeToken = getToken<IToken>(RT.AssignType),
-        ValueToken = getToken<IToken>(RT.AssignValue),
+        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
+        ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -289,7 +348,7 @@ public sealed class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        TypeToken = getToken<IToken>(RT.AssignType),
+        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
         LeftRightValueToken = getTokenPair<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
@@ -308,33 +367,27 @@ public sealed class TokenAssembler
     };
     _tokens.Insert(first_token_index, constructed_obj);
   }
-  internal Collection<string> AllAllowedTypes (IEnumerable<string> base_types)
+  internal Collection<string> AllAllowedTypes (IEnumerable<string> types)
   {
-    Collection<string> all_types_allowed = [.. base_types];
-    for (int i = 0; i < all_types_allowed.Count; i++)
+    HashSet<string> all_types_allowed = [.. types];
+
+    foreach (string item in types)
     {
-      string type = all_types_allowed[i];
-      dynamic value = _spec.GetTokenTypeValue(type);
+      dynamic value = _spec.GetTokenTypeValue(item);
       if (_spec.TokenCompatLookup.ContainsKey(value))
       {
-        dynamic list = _spec.TokenCompatLookup[value];
-        foreach (dynamic item in list)
+        Collection<object> list = _spec.TokenCompatLookup[value];
+
+        foreach (object lookup_value in list)
         {
-          string back = _spec.GetTokenTypeString(item);
-          all_types_allowed.Add(back);
+          if (all_types_allowed.Add(lookup_value.ToString()!))
+          {
+            return AllAllowedTypes(all_types_allowed);
+          }
         }
-      }
-      else if (_spec.TokenCompatLookup.ContainsKey(type))
-      {
-        dynamic list = _spec.TokenCompatLookup[type];
-        foreach (dynamic item in list)
-        {
-          string back = _spec.GetTokenTypeString(item);
-          all_types_allowed.Add(back);
-        }
-      }
+      }  
     }
-    return all_types_allowed;
+    return [.. all_types_allowed];
   }
   internal int ExecRule ()
   {
@@ -450,4 +503,6 @@ public sealed class TokenAssembler
   }
 
   public override string ToString () => $"TokenAssembler ({_spec.Name})";
+  [GeneratedRegex(@"\{(?'actual'.+)\}", RON)]
+  private static partial Regex StringLiteral ();
 }

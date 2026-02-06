@@ -4,7 +4,7 @@ namespace Parser.Tokens;
 
 /// <summary>The type of rule to enforce.</summary>
 [Flags]
-public enum TokenRuleType
+public enum TokenRuleType : long
 {
   /// <summary>No type, Rule will be ignored.</summary>
   None = 0,
@@ -82,4 +82,6 @@ public enum TokenRuleType
   /// <remarks>If a <see cref="TokenObject"/> was passed to any field of a <see cref="TokenObject"/> with this flag assigned, it would copy all of its fields to the parent <see cref="TokenObject"/>.
   /// These properties would be overwritten by any defined token sequence entries.</remarks>
   Descendant = 0x40000000,
+  /// <summary>This flag means a character was not recognized.</summary>
+  Error = 0x80000000L,
 }
