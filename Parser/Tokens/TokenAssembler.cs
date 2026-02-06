@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Parser.Tokens;
 
-public sealed class TokenAssembler
+public sealed partial class TokenAssembler
 {
   private const string Area = "TokenAssembler";
   private string _method = SE;
@@ -15,6 +15,58 @@ public sealed class TokenAssembler
   private TokenGroupRule? _rule;
   private int _constructed_items;
   private readonly Spec _spec;
+
+  /*
+   * t - Value is Token Type (see syntax line 2,3,4)
+c - Value is String Literal (see syntax line 1)
+b - Value contains Both (see syntax line 5)
+They specify what the value is, so they are important. Your prefix can have one of each of these:
+
+i - Ignore Case (String Literal Only)
+m - One or many, this token will repeat as long as it can, Possessive, Greedy.
+o - Optional, this token does not trigger a fail if it does not match. Greedy.
+If 'm' and 'o' are both specified, it acts as the '*' operator, meaning zero or many, but it stays Greedy. Defining 'm' alone or 'im' makes it Possessive, meaning it will not give any matches back, to attempt to find a more suitable match. It will simply fail the match entirely, like an atomic group.
+
+Must have only one of these:
+
+x - Ignore Token
+n - Token is 'Name' in object, property, or label
+y - Token is 'Type' in object, typedvalue, or array
+v - Token is 'Value' in array, property, or typedvalue
+p - Token is 'Property' in object
+f - Token is 'Name' in flag and AddFlag is true.
+r - Token is 'Name' in flag and AddFlag is false.
+   */
+
+  internal Dictionary<char, RT> LetterReference { get; } = new()
+  {
+    ['a'] = RT.Any,
+    ['b'] = RT.None,
+    ['c'] = RT.None,
+    ['d'] = RT.Descendant,
+    ['e'] = RT.Error,
+    ['f'] = RT.AddFlag,
+    ['g'] = RT.Error,
+    ['h'] = RT.Error,
+    ['i'] = RT.IgnoreCase,
+    ['j'] = RT.Error,
+    ['k'] = RT.Error,
+    ['l'] = RT.Error,
+    ['m'] = RT.Mult,
+    ['n'] = RT.AssignName,
+    ['o'] = RT.Opt,
+    ['p'] = RT.AddProperty,
+    ['q'] = RT.Error,
+    ['r'] = RT.RemFlag,
+    ['s'] = RT.Error,
+    ['t'] = RT.None,
+    ['u'] = RT.Error,
+    ['v'] = RT.AssignValue,
+    ['w'] = RT.Error,
+    ['x'] = RT.IgnoredToken,
+    ['y'] = RT.AssignType,
+    ['z'] = RT.Error,
+  };
 
   public TokenAssembler (TokenGroupRuleCollection rules, Spec spec)
   {
@@ -35,6 +87,21 @@ public sealed class TokenAssembler
     _tokens.ThrowIfNull();
     _rule.ThrowIfNull();
   }
+
+  internal static string GetLiteral (string data, out string data_after)
+  {
+    if (!data.Contains('{', SCO))
+    {
+      data_after = data;
+      return SE;
+    }
+
+    Match m = StringLiteral().Match(data);
+
+    string literal = m.Groups["actual"].Value;
+    data_after = data.Remove(m);
+    return literal;
+  }
   internal void Parse ()
   {
     _method = "Parse";
@@ -46,6 +113,7 @@ public sealed class TokenAssembler
         throw new InvalidOperationException("No valid data in rule.");
 
       string data = _rule.RuleStringData;
+      string literal = GetLiteral(data, out data);
       string[] data_strings = data.Split([' ', '\t', '\n'], 255, SSORT);
       foreach (string item in data_strings)
       {
@@ -60,24 +128,10 @@ public sealed class TokenAssembler
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
         pre = pre.RemoveChars("moai");
 
-        if (!pre.ContainsAny(['t', 'c']))
-          throw new InvalidOperationException("Prefix does not contain a valueIs identifier 't' or 'c'.");
+        RT sample = LetterReference[pre[0]];
 
-        bool useLiteral = pre.Contains('c', SCOIC);
-
-        RT sample = pre.RemoveChars("tc") switch
-        {
-          "y" => RT.AssignType,
-          "v" => RT.AssignValue,
-          "n" => RT.AssignName,
-          "p" => RT.AddProperty,
-          "f" => RT.AddFlag,
-          "r" => RT.RemFlag,
-          "d" => RT.Descendant,
-          "x" => RT.IgnoredToken,
-          "" => RT.None,
-          _ => throw new InvalidOperationException("Unknown letter encountered.")
-        };
+        if (sample is RT.None or RT.Error)
+          throw new InvalidOperationException("Invalid character encountered.");
 
         rule |= sample;
         Collection<string> allowed = [];
@@ -97,12 +151,12 @@ public sealed class TokenAssembler
           allowed.Add(post);
         }
 
-        ChkToken temp = new(item)
+        ChkToken temp = new()
         {
-          UseAsLiteral = useLiteral,
           TokenRule = rule,
-          AllowedContents = useLiteral ? allowed : [],
-          AllowedTypes = useLiteral ? [] : AllAllowedTypes(allowed),
+          
+          LiteralMatch = literal,
+          AllowedTypes = AllAllowedTypes(allowed),
         };
 
         _rule.Sequence.Add(temp);
@@ -433,4 +487,6 @@ public sealed class TokenAssembler
   }
 
   public override string ToString () => $"TokenAssembler ({_spec.Name})";
+  [GeneratedRegex(@"\{(?'actual'.+)\}", RON)]
+  private static partial Regex StringLiteral ();
 }

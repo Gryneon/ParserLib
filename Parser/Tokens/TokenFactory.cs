@@ -1,7 +1,5 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
 namespace Parser.Tokens;
 
 public sealed class TokenFactory
