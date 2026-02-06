@@ -1,6 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace Parser.Tokens;
 
@@ -41,8 +42,8 @@ r - Token is 'Name' in flag and AddFlag is false.
   internal Dictionary<char, RT> LetterReference { get; } = new()
   {
     ['a'] = RT.Any,
-    ['b'] = RT.None,
-    ['c'] = RT.None,
+    ['b'] = RT.Error,
+    ['c'] = RT.Error,
     ['d'] = RT.Descendant,
     ['e'] = RT.Error,
     ['f'] = RT.AddFlag,
@@ -59,7 +60,7 @@ r - Token is 'Name' in flag and AddFlag is false.
     ['q'] = RT.Error,
     ['r'] = RT.RemFlag,
     ['s'] = RT.Error,
-    ['t'] = RT.None,
+    ['t'] = RT.Error,
     ['u'] = RT.Error,
     ['v'] = RT.AssignValue,
     ['w'] = RT.Error,
@@ -128,19 +129,10 @@ r - Token is 'Name' in flag and AddFlag is false.
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
         pre = pre.RemoveChars("moai");
 
-        RT sample = pre.RemoveChars("btc") switch
-        {
-          "y" => RT.AssignType,
-          "v" => RT.AssignValue,
-          "n" => RT.AssignName,
-          "p" => RT.AddProperty,
-          "f" => RT.AddFlag,
-          "r" => RT.RemFlag,
-          "d" => RT.Descendant,
-          "x" => RT.IgnoredToken,
-          "" => RT.None,
-          _ => throw new InvalidOperationException("Unknown letter encountered.")
-        };
+        RT sample = LetterReference[pre[0]];
+
+        if (sample is RT.Error)
+          throw new InvalidOperationException("Unknown letter encountered.");
 
         rule |= sample;
         bool types_done = false;
@@ -172,7 +164,7 @@ r - Token is 'Name' in flag and AddFlag is false.
 
           if (!types_done)
           {
-            post = post.Remove(st, en - st);
+            post = post.Remove(st, en - st + 1);
             allowed_types.Add(post);
             types_done = true;
           }
@@ -304,14 +296,14 @@ r - Token is 'Name' in flag and AddFlag is false.
     }
     _constructed_items++;
 
-    RT switch_safe = _rule.Type.RemoveBit<RT>(RT.Recursive);
+    RT switch_safe = _rule.Type.RemoveBitLong<RT>(RT.Recursive);
     IToken constructed_obj = switch_safe switch
     {
       RT.BuildProperty => new TokenProperty()
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        NameToken = getToken<IToken>(RT.AssignName),
+        NameToken = getTokenOrDefault<IToken>(RT.AssignName),
         ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
@@ -346,8 +338,8 @@ r - Token is 'Name' in flag and AddFlag is false.
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        TypeToken = getToken<IToken>(RT.AssignType),
-        ValueToken = getToken<IToken>(RT.AssignValue),
+        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
+        ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -355,7 +347,7 @@ r - Token is 'Name' in flag and AddFlag is false.
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        TypeToken = getToken<IToken>(RT.AssignType),
+        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
         LeftRightValueToken = getTokenPair<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
@@ -374,33 +366,27 @@ r - Token is 'Name' in flag and AddFlag is false.
     };
     _tokens.Insert(first_token_index, constructed_obj);
   }
-  internal Collection<string> AllAllowedTypes (IEnumerable<string> base_types)
+  internal Collection<string> AllAllowedTypes (IEnumerable<string> types)
   {
-    Collection<string> all_types_allowed = [.. base_types];
-    for (int i = 0; i < all_types_allowed.Count; i++)
+    HashSet<string> all_types_allowed = [.. types];
+
+    foreach (string item in types)
     {
-      string type = all_types_allowed[i];
-      dynamic value = _spec.GetTokenTypeValue(type);
+      dynamic value = _spec.GetTokenTypeValue(item);
       if (_spec.TokenCompatLookup.ContainsKey(value))
       {
-        dynamic list = _spec.TokenCompatLookup[value];
-        foreach (dynamic item in list)
+        Collection<object> list = _spec.TokenCompatLookup[value];
+
+        foreach (object lookup_value in list)
         {
-          string back = _spec.GetTokenTypeString(item);
-          all_types_allowed.Add(back);
+          if (all_types_allowed.Add(lookup_value.ToString()!))
+          {
+            return AllAllowedTypes(all_types_allowed);
+          }
         }
-      }
-      else if (_spec.TokenCompatLookup.ContainsKey(type))
-      {
-        dynamic list = _spec.TokenCompatLookup[type];
-        foreach (dynamic item in list)
-        {
-          string back = _spec.GetTokenTypeString(item);
-          all_types_allowed.Add(back);
-        }
-      }
+      }  
     }
-    return all_types_allowed;
+    return [.. all_types_allowed];
   }
   internal int ExecRule ()
   {

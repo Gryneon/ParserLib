@@ -24,6 +24,7 @@ public static class IConvertibleExtensions
   /// <param name="bit">The flags to remove.</param>
   /// <returns>An enum of the given type with the given flags removed.</returns>
   public static T RemoveBit<T> (this IConvertible i, IConvertible bit) where T : IConvertible => (T) (IConvertible) ((int) i & ~(int) bit);
+  public static T RemoveBitLong<T> (this IConvertible i, IConvertible bit) where T : IConvertible => (T) (IConvertible) ((long) i & ~(long) bit);
   /// <summary>
   /// Checks if the enum contains any of the provided bits.
   /// </summary>

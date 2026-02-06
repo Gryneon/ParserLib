@@ -37,9 +37,9 @@ public sealed class ChkToken : IEquatable<IToken>
   }
 
   internal bool Check_Type (IToken? token) => token is not null && token.HasType && AllowedTypes.Any(type => token.Type.Like(type)) || AllowedTypes.Count == 0;
-  internal bool Check_Content (IToken? token) => (token is not null && token.Content.Length > 0 && LiteralMatch.Length > 0 && token.Content.Equals(LiteralMatch, SC)) || LiteralMatch.Length == 0;
+  internal bool Check_Content (IToken? token) => (token is not null && token.Content.Length > 0 && AllowedContents.Count > 0 && (AllowedTypes.Any(i => i.Equals(token.Content, SC)))) || AllowedContents.Count == 0;
   public bool Equals (IToken? other) =>
     Check_Content(other) && Check_Type(other);
-  public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (LiteralMatch.Length > 0 ? $"{{{LiteralMatch}}}" : "");
+  public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (AllowedContents.Count > 0 ? $"{{{AllowedContents.TextJoin("|")}}}" : "");
 
 }
