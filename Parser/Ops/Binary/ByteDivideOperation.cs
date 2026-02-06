@@ -6,38 +6,47 @@ namespace Parser.Ops.Binary;
 
 public class ByteDivideOperation : Operation
 {
-  private readonly int _divisor;
+  private int _divisor, _dividend;
   private bool UseVar => _divisor_key is not null;
   private readonly string? _divisor_key;
-  private readonly string? _dividend_key;
 
   public ByteDivideOperation (int divisor, string dividend_key, string output_key) : base(dividend_key, output_key)
   {
     _divisor = divisor;
-    _dividend_key = dividend_key;
   }
 
-  public ByteDivideOperation (string divisor_key, string dividend_key, string output_key) : base(divisor_key, output_key)
+  public ByteDivideOperation (string divisor_key, string dividend_key, string output_key) : base([divisor_key, dividend_key], output_key)
   {
     _divisor_key = divisor_key;
-    _dividend_key = dividend_key;
   }
 
   protected override void Execute ()
   {
-    if (!CheckInput(out int? dividend))
+    if (!CheckInputs(out Collection<int>? inputs))
     {
       Status = FailBadInputType;
       return;
     }
+
+    if (UseVar)
+    {
+      _divisor = inputs[0];
+      _dividend = inputs[1];
+    }
+    else
+    {
+      _dividend = inputs[0];
+    }
+
     if (_divisor == 0)
     {
-      Status = FailBadOpDefinition;
+      Status = FailBadOpResult;
       return;
     }
-    int quotient = dividend.Value / _divisor;
+
+    int quotient = _dividend / _divisor;
     WorkToReturn = quotient;
-    Log("ByteDivideOperation", $"{dividend} / {_divisor} = {quotient}");
+    Log("ByteDivideOperation", $"{_dividend} / {_divisor} = {quotient}");
     Status = Pass;
   }
 }

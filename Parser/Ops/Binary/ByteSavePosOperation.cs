@@ -4,13 +4,14 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops.Binary;
 
-public class ByteSavePosOperation (string cursor_key, string output_key = "recall_pos") : Operation(cursor_key, output_key)
+public class ByteSavePosOperation (string cursor_key = "bytes", string output_key = "recall_pos") : Operation(SE, output_key)
 {
+  private readonly string _cursor_key = cursor_key;
+
   protected override void Execute ()
   {
-    if (InputKey is null) throw new InvalidOperationException();
-    _ = Data.Save<int>(OutputKey, Parser.GetCursorByKey(InputKey).Index);
-    Log("ByteSavePosOperation:", $"Position saved, {Parser.GetCursorByKey(InputKey).Index} in '{OutputKey}'.");
+    WorkToReturn = Parser.GetCursorByKey(_cursor_key).Index;
+    Log("ByteSavePosOperation", $"Position saved, {WorkToReturn} in '{OutputKey}'.");
     Status = Pass;
   }
 }

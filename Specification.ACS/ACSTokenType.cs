@@ -59,6 +59,7 @@ public enum ACSTokenType
   BasicCmd,
   VarInc,
   Parameter,
+  ArrayValue,
 }
 
 public enum ModelDefTokenType

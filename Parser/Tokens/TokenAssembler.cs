@@ -46,7 +46,8 @@ public sealed class TokenAssembler
         throw new InvalidOperationException("No valid data in rule.");
 
       string data = _rule.RuleStringData;
-      string[] data_strings = data.Split([' ', '\t', '\n'], 255, SSORT);
+
+      string[] data_strings = data.Split([' ', '\t'], 255, SSORT);
       foreach (string item in data_strings)
       {
         int colon = item.IndexOf(':', SCO);
@@ -60,12 +61,7 @@ public sealed class TokenAssembler
         rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
         pre = pre.RemoveChars("moai");
 
-        if (!pre.ContainsAny(['t', 'c']))
-          throw new InvalidOperationException("Prefix does not contain a valueIs identifier 't' or 'c'.");
-
-        bool useLiteral = pre.Contains('c', SCOIC);
-
-        RT sample = pre.RemoveChars("tc") switch
+        RT sample = pre.RemoveChars("btc") switch
         {
           "y" => RT.AssignType,
           "v" => RT.AssignValue,
@@ -80,29 +76,52 @@ public sealed class TokenAssembler
         };
 
         rule |= sample;
-        Collection<string> allowed = [];
+        bool types_done = false;
+        Collection<string> allowed_types = [];
+        Collection<string> allowed_literals = [];
 
-        if (post.StartsWith('(') && post.EndsWith(')'))
+        if (post.Contains('(', SCO))
         {
-          post = post[1..^1];
-          IEnumerable<string> strs = post.Split(['-', '|', '+', '&'], 0, SSORT);
+          string types = post[(post.IndexOf('(', SCO) + 1)..post.LastIndexOf(')')];
+          IEnumerable<string> strs1 = types.Split(['-', '|', '+', '&'], 0, SSORT);
 
-          foreach (string s in strs)
+          foreach (string s in strs1)
           {
-            allowed.Add(s);
+            allowed_types.Add(s);
+          }
+          types_done = true;
+        }
+        if (post.Contains('{', SCO))
+        {
+          int st = post.IndexOf('{', SCO);
+          int en = post.LastIndexOf('}');
+          string literals = post[(st + 1)..en];
+          IEnumerable<string> strs2 = literals.Split(['-', '|', '+', '&'], 0, SSORT);
+
+          foreach (string s in strs2)
+          {
+            allowed_literals.Add(s);
+          }
+
+          if (!types_done)
+          {
+            post = post.Remove(st, en - st);
+            allowed_types.Add(post);
+            types_done = true;
           }
         }
-        else
+        if (!types_done)
         {
-          allowed.Add(post);
+          allowed_types.Add(post);
         }
+
+        allowed_types.AddRange(AllAllowedTypes(allowed_types));
 
         ChkToken temp = new(item)
         {
-          UseAsLiteral = useLiteral,
           TokenRule = rule,
-          AllowedContents = useLiteral ? allowed : [],
-          AllowedTypes = useLiteral ? [] : AllAllowedTypes(allowed),
+          AllowedContents = allowed_literals,
+          AllowedTypes = allowed_types
         };
 
         _rule.Sequence.Add(temp);
@@ -155,27 +174,22 @@ public sealed class TokenAssembler
       }
       return token_result;
     }
-    (IToken, IToken) getTokenPair<TToken> (RT flag) where TToken : IToken
+    (TToken, TToken) getTokenPair<TToken> (RT flag) where TToken : IToken
     {
-      IToken? first = null, second = null;
+      TToken? first = default, second;
       Validate();
-      IToken? token_result = null;
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken ttoken)
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken t1 && first is null)
         {
-          token_result = ttoken;
+          first = t1;
+          continue;
         }
 
-        if (token_result is not null && first is null)
+        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken t2 && first is not null)
         {
-          first = token_result;
-        }
-        else if (token_result is not null && first is not null && second is null)
-        {
-          second = token_result;
-
+          second = t2;
           return (first, second);
         }
       }
@@ -426,6 +440,10 @@ public sealed class TokenAssembler
       if (times > 0)
       {
         Log(Area, $"Rule {r} Executed {times} Times.");
+      }
+      else
+      {
+
       }
     }
 

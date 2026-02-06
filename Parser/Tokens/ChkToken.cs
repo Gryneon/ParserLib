@@ -11,8 +11,6 @@ public sealed class ChkToken : IEquatable<IToken>
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
   private StringComparison SC => IgnoreCase ? SCOIC : SCO;
 
-  public bool UseAsLiteral { get; internal set; }
-
   /// <summary>Builds a <see cref="ChkToken"/> from a <see langword="string"/>.<br/>
   /// <list type="bullet">
   /// <listheader>Syntax</listheader>

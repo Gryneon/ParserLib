@@ -41,8 +41,10 @@ public static class Definition
     SC = SCOIC,
     TokenType = typeof(ATT),
     TokenCompatLookup = {
+      [Bool] = [Int, Fixed, Char, Str],
+      [Int] = [Fixed, Bool, Char, Str],
       [Fixed] = [Int, Bool, Char, Str],
-      [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall],
+      [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall, ArrayValue],
       [Statement] = [VarDecl, BasicCmd, FunctionCall, VarAssn, VarInc, IfBlock, ElseBlock, ElseIfBlock, ArrayDecl, ]
     },
     TokenRules = [
@@ -83,7 +85,7 @@ public static class Definition
       Tm(Assign, @"(<<|>>| \|\| |&&)="),
       Tm(Binary, @"[!<>-]="),
       Tm(Binary, @"(&&| \|\| |<<|>>)(?!=)"),
-      Tm(Binary, @"[+/%|&^*-><]"),
+      Tm(Binary, @"[+/%|&^*><-]"),
 
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;", TExact ,new ATT[] { Ao, Ac, Bo, Bc, Po, Pc, Eq, Cm, Co, Sc }),
 
@@ -92,14 +94,15 @@ public static class Definition
       Tm(Name, @"\b[a-z_][\w]*\b"),
     ],
     GroupTokenRules = [
-      new(RT.BuildExpression | RT.Recursive, Expression, "tv:Value ty:Binary tv:Value"),
-      new(RT.BuildStatement, VarDecl, "ty:Type tn:Name tx:Sc"),
-      new(RT.BuildStatement, VarDeclAssn, "ty:Type tn:Name tx:Eq tv:Value tx:Sc"),
-      new(RT.BuildStatement, Statement, "tn:SimpleJump tx:Sc"),
-      new(RT.BuildStatement, Parameter, "ty:Type tn:Name txo:Cm"),
-      new(RT.BuildStatement, FunctionCall, "tn:Name tx:Po tpa:Parameter tx:Pc"),
-      new(RT.BuildProperty, PreprocessorFull, "ty:Preprocessor tn:Name tv:Value"),
-
+      new(RT.BuildExpression | RT.Recursive, Expression, "v:Value y:Binary v:Value"),
+      new(RT.BuildStatement, VarDecl, "y:Type n:Name x:Sc"),
+      new(RT.BuildStatement, VarDeclAssn, "y:Type n:Name x:Eq v:Value x:Sc"),
+      new(RT.BuildStatement, Statement, "n:SimpleJump x:Sc"),
+      new(RT.BuildStatement, Parameter, "y:Type n:Name xo:Cm"),
+      new(RT.BuildStatement, FunctionCall, "n:Name x:Po pa:Parameter x:Pc"),
+      new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Define|#LibDefine} n:Name v:Value"),
+      new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Import|#Library|#Include} v:Str"),
+      new(RT.BuildTypedValue, ArrayValue, "n:Name x:Ao v:Value x:Ac")
     ],
   };
   [Export("zdoom.modeldef")]
