@@ -106,13 +106,13 @@ public static class Definition
     ],
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
     GroupTokenRules = [
-      new (BuildProperty, XTT.Attribute, "tn:AttrKey tx:Eq tv:String"),
-      new (BuildObject, XTT.Header, "tx:Ao tx:Qm tn:ElementName tpmo:Attribute tx:Qm tx:Ac"),
-      new (BuildProperty, XTT.AttributeWithNamespace, "ty:Namespace tx:Co tn:AttrKey tx:Eq tv:String"),
-      new (BuildLabel, XTT.ElementEndWithNamespace, "tx:Ao tx:Sl ty:Namespace tx:Co tn:ElementName tx:Ac"),
-      new (BuildLabel, XTT.ElementEnd, "tx:Ao tx:Sl tn:ElementName tx:Ac"),
-      new (BuildObject, XTT.ElementSingleWithNamespace, "tx:Ao ty:Namespace tx:Co tn:ElementName tpmo:Attribute tx:Sl tx:Ac"),
-      new (BuildObject, XTT.ElementSingle, "tx:Ao tn:ElementName tpmo:Attribute tx:Sl tx:Ac"),
+      new (BuildProperty, XTT.Attribute, "n:AttrKey x:Eq v:String"),
+      new (BuildObject, XTT.Header, "x:Ao x:Qm n:ElementName pa:Attribute x:Qm x:Ac"),
+      new (BuildProperty, XTT.AttributeWithNamespace, "y:Namespace x:Co n:AttrKey x:Eq v:String"),
+      new (BuildLabel, XTT.ElementEndWithNamespace, "x:Ao x:Sl y:Namespace x:Co n:ElementName x:Ac"),
+      new (BuildLabel, XTT.ElementEnd, "x:Ao x:Sl n:ElementName x:Ac"),
+      new (BuildObject, XTT.ElementSingleWithNamespace, "x:Ao y:Namespace x:Co n:ElementName pa:Attribute x:Sl x:Ac"),
+      new (BuildObject, XTT.ElementSingle, "x:Ao n:ElementName pa:Attribute x:Sl x:Ac"),
 
     ],
     TokenCompatLookup = {

@@ -213,7 +213,7 @@ r - Token is 'Name' in flag and AddFlag is false.
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
+        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag))
         {
           return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
         }
@@ -227,7 +227,7 @@ r - Token is 'Name' in flag and AddFlag is false.
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken ttoken)
+        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag) && token is TToken ttoken)
         {
           token_result.Add(ttoken);
         }
@@ -241,13 +241,13 @@ r - Token is 'Name' in flag and AddFlag is false.
       for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         IToken token = tokens_to_assemble[i];
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken t1 && first is null)
+        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag) && token is TToken t1 && first is null)
         {
           first = t1;
           continue;
         }
 
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag) && token is TToken t2 && first is not null)
+        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag) && token is TToken t2 && first is not null)
         {
           second = t2;
           return (first, second);
@@ -260,7 +260,7 @@ r - Token is 'Name' in flag and AddFlag is false.
       Validate();
       for (int i = 0; i < _tokens.Count; i++)
       {
-        if (_rule.Sequence[sequence_ids[i]].TokenRule.HasFlag(flag))
+        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag))
         {
           return true;
         }
