@@ -10,7 +10,7 @@ public sealed class TokenArray : TokenBase, ICollection<IToken>, ITypeToken
   public required TokenCollection Items { get; init; }
   public override int Count => Items.Count;
 
-  public bool IsReadOnly => Items.IsReadOnly;
+  bool ICollection<IToken>.IsReadOnly => false;
 
   public bool Equals (IReadOnlyCollection<IToken>? other) => other is not null && Items.SequenceEqual(other);
   public override bool Equals (object? obj) => obj switch
@@ -25,6 +25,6 @@ public sealed class TokenArray : TokenBase, ICollection<IToken>, ITypeToken
   public void Add (IToken item) => Items.Add(item);
   public void Clear () => Items.Clear();
   public bool Contains (IToken item) => Items.Contains(item);
-  public void CopyTo (IToken[] array, int arrayIndex) => Items.CopyTo(array, arrayIndex);
+  void ICollection<IToken>.CopyTo (IToken[] array, int arrayIndex) => this.NotSupported<ICollection<IToken>>("Operation Not Supported");
   public bool Remove (IToken item) => Items.Remove(item);
 }

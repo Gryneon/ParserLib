@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Specification.JSON;
 
-public sealed class JSONObject : IJSONNode, IDictionary<string, IJSONNode>
+public sealed class JSONObject : IJSONNode, IDictionary<string, IJSONNode>, ICanAccessChildren<string, IJSONNode>
 {
   public JsonValueKind Type => JsonValueKind.Object;
   public Dictionary<string, IJSONNode> Properties { get; init; } = [];
@@ -20,6 +20,8 @@ public sealed class JSONObject : IJSONNode, IDictionary<string, IJSONNode>
   public bool IsReadOnly => false;
 
   object? IJSONNode.Value => Properties;
+
+  int ICanAccessChildren<string, IJSONNode>.Count { get; }
 
   public IJSONNode this[string key]
   {
@@ -38,4 +40,5 @@ public sealed class JSONObject : IJSONNode, IDictionary<string, IJSONNode>
   public bool Remove (KeyValuePair<string, IJSONNode> item) => ((ICollection<KeyValuePair<string, IJSONNode>>) Properties).Remove(item);
   public IEnumerator<KeyValuePair<string, IJSONNode>> GetEnumerator () => Properties.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
+  IEnumerator<IJSONNode> IEnumerable<IJSONNode>.GetEnumerator () => (IEnumerator<IJSONNode>) GetEnumerator();
 }

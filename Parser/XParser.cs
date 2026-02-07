@@ -54,6 +54,15 @@ public sealed class XParser
   #endregion
   #region Constructor
   public XParser (Spec? spec = null) => InitializeParser(spec ?? LocalDefaultSpec);
+  public XParser (string file)
+  {
+    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+    foreach (Assembly assembly in assemblies)
+    {
+      Type[] types = assembly.GetTypes()
+    }
+  }
   #endregion
   #region Private Methods
   /// <summary>Loads the operations into a flat pattern.</summary>
