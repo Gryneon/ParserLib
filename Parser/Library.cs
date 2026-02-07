@@ -15,29 +15,20 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
 
   private Library ()
   {
-    Collection<AttributeLinkedType<DefinitionExportAttribute>> types = ReflectionHelper.GetAttributedClasses<DefinitionExportAttribute>(BFS | BFP);
-    foreach (AttributeLinkedType<DefinitionExportAttribute> type in types)
-    {
-      if (type.Attribute.Multiple)
-      {
-        Collection<(Spec? Data, ExportAttribute? Attribute)> specdatas = ReflectionHelper.GetStaticPropertiesByAttribute<Spec, ExportAttribute>(type.Type);
+    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-        foreach ((Spec? Data, ExportAttribute? Attribute) specdata in specdatas)
-        {
-          if (specdata.Data is not null)
-          {
-            string name = specdata.Attribute!.FormatName;
-            Spec spec = specdata.Data;
-            _specs.Add(name, spec);
-          }
-        }
-      }
-      else
+    foreach (Assembly assembly in assemblies)
+    {
+      Type[] types = assembly.GetTypes();
+
+      Type[] relevant_types = [.. types.Where(t => t.CustomAttributes.Any(ca => ca.AttributeType == typeof(DefinitionExportAttribute)))];
+
+      foreach (Type type in relevant_types)
       {
-        (Spec? spec, ExportAttribute? attribute) = ReflectionHelper.GetStaticPropertyByAttribute<Spec, ExportAttribute>(type.Type);
-        if (spec is not null)
+        foreach (var prop in type.GetProperties().Where(prop => prop.PropertyType == typeof(Spec) && prop.PropertyType.CustomAttributes.Any(prop_ca => prop_ca.AttributeType == typeof(ExportAttribute))))
         {
-          _specs.Add(attribute!.FormatName, spec);
+          Spec check = (Spec) prop.GetValue(null)!;
+          _specs.Add(check.Name, check);
         }
       }
     }

@@ -56,12 +56,10 @@ public sealed class XParser
   public XParser (Spec? spec = null) => InitializeParser(spec ?? LocalDefaultSpec);
   public XParser (string file)
   {
-    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+    string? name = Library.CheckFile(file);
 
-    foreach (Assembly assembly in assemblies)
-    {
-      Type[] types = assembly.GetTypes()
-    }
+    Spec spec = Library.Lookup(name) ?? throw new InvalidOperationException("Library Error");
+    InitializeParser(spec);
   }
   #endregion
   #region Private Methods

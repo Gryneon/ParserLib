@@ -6,10 +6,10 @@ using static Parser.Ops.Operation;
 
 namespace Specification.WAD;
 /// <summary>A static class containing the WAD, WAD2, and PAK specificiations.</summary>
-[DefinitionExport(true)]
+[DefinitionExport]
 public static class Definition
 {
-  [Export("wad")]
+  [Export]
   public static Spec WAD => new()
   {
     IsTextFile = false,
@@ -35,7 +35,7 @@ public static class Definition
       ], "numlumps")
     ]
   };
-  [Export("pack")]
+  [Export]
   public static Spec PAK => new()
   {
     Name = "pack",
@@ -60,7 +60,7 @@ public static class Definition
       ], "entrycount")
     ]
   };
-  [Export("wad2")]
+  [Export]
   public static Spec WAD2 => new()
   {
     Name = "wad2",

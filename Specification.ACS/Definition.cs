@@ -15,7 +15,7 @@ namespace Specification.ACS;
 /// <see href="https://regex101.com/r/mTwORe/1">Regex</see>
 /// https://regex101.com/r/FCoqFI/1
 /// </summary>
-[DefinitionExport(true)]
+[DefinitionExport]
 public static class Definition
 {
   internal static RT Compet = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
@@ -27,7 +27,7 @@ public static class Definition
   internal static TokenRule Ex (ATT tokenType, [SS("regex")] string regex) => new(TExact, tokenType, regex);
 
   /// <summary>Defined Specification</summary>
-  [Export("zdoom.acs")]
+  [Export]
   public static Spec ACS => new()
   {
     FileInferences = [IfN(ExtIs, "acs")],
@@ -105,7 +105,7 @@ public static class Definition
       new(RT.BuildTypedValue, ArrayValue, "n:Name x:Ao v:Value x:Ac")
     ],
   };
-  [Export("zdoom.modeldef")]
+  [Export]
   public static Spec ModelDef => new()
   {
     FileInferences = [IfNOr(

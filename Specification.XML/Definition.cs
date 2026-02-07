@@ -81,7 +81,7 @@ public static class Definition
   /// <summary>
   /// The XML specification.
   /// </summary>
-  [Export("xml")]
+  [Export]
   public static Spec Spec => new()
   {
     FileInferences = [

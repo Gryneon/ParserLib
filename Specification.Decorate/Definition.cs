@@ -7,7 +7,7 @@ namespace Specification.Decorate;
 [DefinitionExport]
 public static class Definition
 {
-  [Export("zdoom.decorate")]
+  [Export]
   public static Spec Spec => new()
   {
     FileInferences = [],

@@ -8,7 +8,7 @@ public static class InternalSpec
 {
   private const RT Match = RT.TokenMatch | RT.ExemptAllWithin | RT.IgnoreCase;
   private const string CmdList = "(read|jump|save|loop|if|switch|end|fail)";
-  private const string CmdTypeList = "(int|short|byte|text|binary|end|long|is|each|count|break|position|)";
+  private const string CmdTypeList = "(int|short|byte|text|binary|end|long|is|each|count|break|position)";
 
   public static Spec BinaryOpSpec => new()
   {

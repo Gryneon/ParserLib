@@ -7,11 +7,11 @@ using Parser.Ops.Text;
 
 namespace Parser;
 
-[DefinitionExport(multiple: true)]
+[DefinitionExport]
 public static class DefaultSpec
 {
   /// <summary>The default spec.</summary>
-  [Export("unknown")]
+  [Export]
   public static Spec Unknown { get; } = new()
   {
     Name = "unknown",
@@ -19,7 +19,7 @@ public static class DefaultSpec
     Operations = [Ops.Operation.End],
   };
   /// <summary>The spec assigned if the parser gets a binary file.</summary>
-  [Export("binary")]
+  [Export]
   public static Spec Binary { get; } = new()
   {
     Name = "binary",
@@ -27,7 +27,7 @@ public static class DefaultSpec
     Operations = [ByteReadOperation.ReadRemainingBin("result", "bytes")]
   };
   /// <summary>Splits a string on newlines into a <see cref="Collection{T}"/> of <see langword="string"/> objects.</summary>
-  [Export("textbylines")]
+  [Export]
   public static Spec TextByLines { get; } = new()
   {
     FileInferences = [],

@@ -1,6 +1,8 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 #pragma warning disable IDE1006 // Naming Styles
 
+using System.Xml.Linq;
+
 namespace Parser.Tokens;
 
 public abstract class TokenBase : IToken
@@ -20,7 +22,11 @@ public abstract class TokenBase : IToken
   internal string ContentNoNewLine => Content.
     Replace("\n", "<LF>", SCO).
     Replace("\r", "<CR>", SCO);
-  public override string ToString () => $"{Type} = \"{ContentNoNewLine}\"";
+  public override string ToString () => this switch
+  {
+    TokenFlag f => (f.AddFlag ? "+" : "-") + f.Name,
+    _ => $"{Type} = \"{ContentNoNewLine}\"",
+  };
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);

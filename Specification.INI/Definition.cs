@@ -11,7 +11,7 @@ namespace Specification.INI;
 public static class Definition
 {
   /// <summary>The INI Spec</summary>
-  [Export("ini")]
+  [Export]
   public static Spec Spec => new()
   {
     Name = "ini",
