@@ -44,6 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="TokenSequenceNode.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Console.Menu\Terminal.Menu.csproj" />
     <ProjectReference Include="..\Parser.Forms\Parser.Forms.csproj" />

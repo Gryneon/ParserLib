@@ -15,10 +15,8 @@ namespace Specification.UDMF;
 public static class Definition
 {
   // Flags
-  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
-  internal const RT RT_String = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
-  internal const RT RT_IgnoreCase = RT.TokenMatch | RT.IgnoreCase | RT.ExemptAllWithin;
-  internal const RT RT_Exact = RT.TokenExact | RT.IgnoreCase | RT.ExemptAllWithin;
+  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.IgnoredToken;
+  internal const RT RT_String = RT.TokenMatch | RT.Competitive;
 
   [Export("zdoom.udmf")]
   public static Spec Spec => new()
@@ -30,33 +28,34 @@ public static class Definition
       new TokenizeOperation(),
       new TokenAssembleOperation(),
     ],
+    DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
     TokenRules = [
       new(RT_String,  Str,     Rx(@"""(?:[^""\\\n\r]|\\.)*""")),
       new(RT_Comment, None, Rx(@"//[^\n\r]*")),
       new(RT_Comment, None, Rx(@"/\*.*?\*/")),
-      new(RT_Exact, Bo, "{"),
-      new(RT_Exact, Bc, "}"),
-      new(RT_Exact, Eq, "="),
-      new(RT_Exact, Sc, ";"),
-      new(RT_IgnoreCase, Bool,  @"\b(true|false)\b"),
-      new(RT_IgnoreCase, Dec,  Rx(@"-?\b(\d+\.\d+|\.?\d+)\b")),
-      new(RT_IgnoreCase, Namespace, @"\bnamespace\b"),
-      new(RT_IgnoreCase, Vertex,    @"\bvertex\b"),
-      new(RT_IgnoreCase, Thing,     @"\bthing\b"),
-      new(RT_IgnoreCase, SideDef,   @"\bsidedef\b"),
-      new(RT_IgnoreCase, LineDef,   @"\blinedef\b"),
-      new(RT_IgnoreCase, Sector,    @"\bsector\b(?=[^=}]*\{)"),
-      new(RT_IgnoreCase, Name, Rx(@"\b[a-z]\w*\b"))],
+      new(RT.TokenExact, Bo, "{"),
+      new(RT.TokenExact, Bc, "}"),
+      new(RT.TokenExact, Eq, "="),
+      new(RT.TokenExact, Sc, ";"),
+      new(RT.TokenMatch, Bool,  @"\b(true|false)\b"),
+      new(RT.TokenMatch, Dec,  Rx(@"-?\b(\d+\.\d+|\.?\d+)\b")),
+      new(RT.TokenMatch, Namespace, @"\bnamespace\b"),
+      new(RT.TokenMatch, Vertex,    @"\bvertex\b"),
+      new(RT.TokenMatch, Thing,     @"\bthing\b"),
+      new(RT.TokenMatch, SideDef,   @"\bsidedef\b"),
+      new(RT.TokenMatch, LineDef,   @"\blinedef\b"),
+      new(RT.TokenMatch, Sector,    @"\bsector\b(?=[^=}]*\{)"),
+      new(RT.TokenMatch, Name, Rx(@"\b[a-z]\w*\b"))],
     // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
     //new(RT.StoreOther, None)],
     GroupTokenRules = [
-      new(RT.BuildProperty, Structure, "tn:Namespace tx:Eq tv:Str tx:Sc"),
-      new(RT.BuildProperty, Property, "tn:Name tx:Eq tv:Value tx:Sc"),
-      new(RT.BuildObject, Structure, "tn:Vertex tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Structure, "tn:Thing tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Structure, "tn:Sector tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Structure, "tn:LineDef tx:Bo tpm:Property tx:Bc"),
-      new(RT.BuildObject, Structure, "tn:SideDef tx:Bo tpm:Property tx:Bc"),
+      new(RT.BuildProperty, Structure, "n:Namespace x:Eq v:Str x:Sc"),
+      new(RT.BuildProperty, Property, "n:Name x:Eq v:Value x:Sc"),
+      new(RT.BuildObject, Structure, "n:Vertex x:Bo pm:Property x:Bc"),
+      new(RT.BuildObject, Structure, "n:Thing x:Bo pm:Property x:Bc"),
+      new(RT.BuildObject, Structure, "n:Sector x:Bo pm:Property x:Bc"),
+      new(RT.BuildObject, Structure, "n:LineDef x:Bo pm:Property x:Bc"),
+      new(RT.BuildObject, Structure, "n:SideDef x:Bo pm:Property x:Bc"),
       ],
     SC = SCOIC,
     IsTextFile = true,
@@ -84,11 +83,6 @@ public abstract class ZMapObj
   {
     value = Properties.First(p => p.Key.Equals(key, SCOIC)).Value ?? SE;
     return true;
-  }
-  protected static bool CanGenerate (MatchDataSet input, string groupName)
-  {
-    input.ThrowIfNull();
-    return input.HasGroup(groupName);
   }
 }
 

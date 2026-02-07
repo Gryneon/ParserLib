@@ -4,7 +4,7 @@ using System.Collections;
 using System.Text.Json;
 namespace Specification.JSON;
 
-public sealed class JSONArray : IJSONNode, IEnumerable<IJSONNode>, ICanAddChildren<IJSONNode>
+public sealed class JSONArray : IJSONNode, IEnumerable<IJSONNode>, ICanAddChildren<IJSONNode>, ICanAccessChildren<int, IJSONNode>
 {
   public JsonValueKind Type => JsonValueKind.Array;
   object? IJSONNode.Value => Values;

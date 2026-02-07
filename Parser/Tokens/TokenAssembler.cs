@@ -40,36 +40,6 @@ f - Token is 'Name' in flag and AddFlag is true.
 r - Token is 'Name' in flag and AddFlag is false.
    */
 
-  internal Dictionary<char, RT> LetterReference { get; } = new()
-  {
-    ['a'] = RT.Any,
-    ['b'] = RT.Error,
-    ['c'] = RT.Error,
-    ['d'] = RT.Descendant,
-    ['e'] = RT.Error,
-    ['f'] = RT.AddFlag,
-    ['g'] = RT.Error,
-    ['h'] = RT.Error,
-    ['i'] = RT.IgnoreCase,
-    ['j'] = RT.Error,
-    ['k'] = RT.Error,
-    ['l'] = RT.Error,
-    ['m'] = RT.Mult,
-    ['n'] = RT.AssignName,
-    ['o'] = RT.Opt,
-    ['p'] = RT.AddProperty,
-    ['q'] = RT.Error,
-    ['r'] = RT.RemFlag,
-    ['s'] = RT.Error,
-    ['t'] = RT.Error,
-    ['u'] = RT.Error,
-    ['v'] = RT.AssignValue,
-    ['w'] = RT.Error,
-    ['x'] = RT.IgnoredToken,
-    ['y'] = RT.AssignType,
-    ['z'] = RT.Error,
-  };
-
   public TokenAssembler (TokenGroupRuleCollection rules, Spec spec)
   {
     _rules = rules;
@@ -84,27 +54,12 @@ r - Token is 'Name' in flag and AddFlag is false.
   private void LogInfo (string message) => Log(MsgClass.Informational, Area, _method, message);
 
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
-  internal void Validate ()
+  private void Validate ()
   {
     _tokens.ThrowIfNull();
     _rule.ThrowIfNull();
   }
-
-  internal static string GetLiteral (string data, out string data_after)
-  {
-    if (!data.Contains('{', SCO))
-    {
-      data_after = data;
-      return SE;
-    }
-
-    Match m = StringLiteral().Match(data);
-
-    string literal = m.Groups["actual"].Value;
-    data_after = data.Remove(m);
-    return literal;
-  }
-  internal void Parse ()
+  public void Parse ()
   {
     _method = "Parse";
 
@@ -119,76 +74,11 @@ r - Token is 'Name' in flag and AddFlag is false.
       string[] data_strings = data.Split([' ', '\t'], 255, SSORT);
       foreach (string item in data_strings)
       {
-        int colon = item.IndexOf(':', SCO);
-        string pre = item[..colon];
-        string post = item[(colon + 1)..];
-
-        RT rule = RT.None;
-        rule |= pre.Contains('m', SCOIC) ? RT.Mult : RT.None;
-        rule |= pre.Contains('o', SCOIC) ? RT.Opt : RT.None;
-        rule |= pre.Contains('a', SCOIC) ? RT.Any : RT.None;
-        rule |= pre.Contains('i', SCOIC) ? RT.IgnoreCase : RT.None;
-        pre = pre.RemoveChars("moai");
-
-        RT sample = LetterReference[pre[0]];
-
-        if (sample is RT.Error)
-          throw new InvalidOperationException("Unknown letter encountered.");
-
-        rule |= sample;
-        bool types_done = false;
-        Collection<string> allowed_types = [];
-        Collection<string> allowed_literals = [];
-
-        if (post.Contains('(', SCO))
-        {
-          string types = post[(post.IndexOf('(', SCO) + 1)..post.LastIndexOf(')')];
-          IEnumerable<string> strs1 = types.Split(['-', '|', '+', '&'], 0, SSORT);
-
-          foreach (string s in strs1)
-          {
-            allowed_types.Add(s);
-          }
-          types_done = true;
-        }
-        if (post.Contains('{', SCO))
-        {
-          int st = post.IndexOf('{', SCO);
-          int en = post.LastIndexOf('}');
-          string literals = post[(st + 1)..en];
-          IEnumerable<string> strs2 = literals.Split(['-', '|', '+', '&'], 0, SSORT);
-
-          foreach (string s in strs2)
-          {
-            allowed_literals.Add(s);
-          }
-
-          if (!types_done)
-          {
-            post = post.Remove(st, en - st + 1);
-            allowed_types.Add(post);
-            types_done = true;
-          }
-        }
-        if (!types_done)
-        {
-          allowed_types.Add(post);
-        }
-
-        allowed_types.AddRange(AllAllowedTypes(allowed_types));
-
-        ChkToken temp = new(item)
-        {
-          TokenRule = rule,
-          AllowedContents = allowed_literals,
-          AllowedTypes = allowed_types
-        };
-
-        _rule.Sequence.Add(temp);
+        _rule.Sequence.Add(ChkToken.Parse(item));
       }
     }
   }
-  internal void Construct (int first_token_index, TokenCollection tokens_to_assemble)
+  private void Construct (int first_token_index, TokenCollection tokens_to_assemble)
   {
     //Log(Area, "Calling Construct with tokens { " + tokens_to_assemble.TextJoin(" ") + " }");
     Validate();
@@ -385,7 +275,7 @@ r - Token is 'Name' in flag and AddFlag is false.
             return AllAllowedTypes(all_types_allowed);
           }
         }
-      }  
+      }
     }
     return [.. all_types_allowed];
   }
@@ -475,6 +365,7 @@ r - Token is 'Name' in flag and AddFlag is false.
 
   public void Execute (TokenCollection tokens)
   {
+    _method = "Execute";
     _tokens = tokens;
 
     for (int r = 0; r < _rules.Count; r++)
@@ -491,7 +382,7 @@ r - Token is 'Name' in flag and AddFlag is false.
 
       if (times > 0)
       {
-        Log(Area, $"Rule {r} Executed {times} Times.");
+        LogInfo($"Rule {r} Executed {times} Times.");
       }
       else
       {
@@ -499,10 +390,8 @@ r - Token is 'Name' in flag and AddFlag is false.
       }
     }
 
-    Log(Area, "Token Assembly Complete");
+    LogInfo("Token Assembly Complete");
   }
 
   public override string ToString () => $"TokenAssembler ({_spec.Name})";
-  [GeneratedRegex(@"\{(?'actual'.+)\}", RON)]
-  private static partial Regex StringLiteral ();
 }

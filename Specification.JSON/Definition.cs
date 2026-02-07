@@ -2,6 +2,8 @@
 
 using Parser.Ops.Binary;
 
+using static Specification.JSON.JSONTokenType;
+
 using RT = Parser.Tokens.TokenRuleType;
 
 namespace Specification.JSON;
@@ -13,10 +15,8 @@ namespace Specification.JSON;
 public static class Definition
 {
   // Flags
-  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
-  internal const RT RT_String = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
-  internal const RT RT_Match = RT.TokenMatch | RT.ExemptAllWithin;
-  internal const RT RT_Exact = RT.TokenExact | RT.ExemptAllWithin;
+  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.IgnoredToken;
+  internal const RT RT_String = RT.TokenMatch | RT.Competitive;
 
   [Export("json")]
   public static Spec Spec => new()
@@ -39,24 +39,28 @@ public static class Definition
     IsTextFile = true,
     SC = SCO,
     GroupTokenRules = [
-      new(RT.AddProperty, JTT.Property, "tk:Str tx:Co tv:Value"),
-      new(RT.AddProperty, JTT.Array, "tx:Ao tvm:Value tx:Ac"),
-      new(RT.AddProperty, JTT.Object, "tx:Bo tvm:Property tx:Bc"),
+      new(RT.AddProperty | RT.Recursive, Property, "n:Str x:Co v:Value"),
+      new(RT.AddProperty | RT.Recursive, JTT.Array, "x:Ao va:Value x:Ac"),
+      new(RT.AddProperty | RT.Recursive, JTT.Object, "x:Bo va:Property x:Bc"),
     ],
     TokenType = typeof(JTT),
     TokenCompatLookup = {
-      [JTT.Value] = [JTT.Null, JTT.Bool, JTT.Array, JTT.Undef, JTT.Num, JTT.Str, JTT.Object],
+      [Value] = [Null, Bool, JTT.Array, Undef, Num, Str, JTT.Object],
     },
     TokenRules = [
-      new(RT_String, JTT.Str, $"\"{Gp(@"[^\\]|\\.").Any.Lazy}\""),
-      new(RT_Match, JTT.Bool, @"\b(true|false)\b"),
-      new(RT_Match, JTT.Null, @"\b(null)\b"),
-      new(RT_Match, JTT.Undef, @"\b(undefined)\b"),
-      new(RT_Match, JTT.Num, @"-?(\d+(\.\d*)?|\.\d+)"),
-      new(RT_Exact, JTT.Bo, "{"),
-      new(RT_Exact, JTT.Bc, "}"),
-      new(RT_Exact, JTT.Ao, "["),
-      new(RT_Exact, JTT.Ac, "]"),
-      new(RT_Exact, JTT.Co, ":")],
+      new(RT_String, Str, $"\"{Gp(@"[^\\]|\\.").Any.Lazy}\""),
+      new(RT.TokenMatch, Bool, @"\b(true|false)\b"),
+      new(RT.TokenMatch, Null, @"\b(null)\b"),
+      new(RT.TokenMatch, Undef, @"\b(undefined)\b"),
+      new(RT.TokenMatch, Num, @"-?(\d+(\.\d*)?|\.\d+)"),
+      .. TokenRule.MakeWordMatchRules(false, [
+        ("true", Bool),
+        ("false", Bool),
+        ("null", Null),
+        ("undefined", Undef)
+      ]),
+      .. TokenRule.MakeSingleCharRules("{}[]:,", RT.TokenExact, new Collection<JTT>() {Bo,Bc,Ao,Ac,Co,Cm})
+      ],
+    DefaultRuleSet = RT.ExemptAllWithin
   };
 }

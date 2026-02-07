@@ -1,7 +1,7 @@
 namespace Parser.Tokens;
 
 /// <summary>A collection of tokens, use this to keep token operations consistent.</summary>
-public class TokenCollection () : IList<IToken>
+public sealed class TokenCollection () : IList<IToken>
 {
   /// <summary>The internal token list.</summary>
   private readonly List<IToken> _tokens = [];
@@ -24,7 +24,7 @@ public class TokenCollection () : IList<IToken>
   }
 
   public int Count => _tokens.Count;
-  public bool IsReadOnly => false;
+  bool ICollection<IToken>.IsReadOnly => false;
 
   public void Add (IToken item)
   {
@@ -35,8 +35,8 @@ public class TokenCollection () : IList<IToken>
       throw new InvalidOperationException("Cannot add token to list.");
   }
   public void Clear () => _tokens.Clear();
-  public bool Contains (IToken item) => _tokens.Contains(item);
-  public void CopyTo (IToken[] array, int arrayIndex) => _tokens.CopyTo(array, arrayIndex);
+  bool ICollection<IToken>.Contains (IToken item) => _tokens.Contains(item);
+  void ICollection<IToken>.CopyTo (IToken[] array, int arrayIndex) => _tokens.CopyTo(array, arrayIndex);
   public IEnumerator<IToken> GetEnumerator () => _tokens.GetEnumerator();
   public int IndexOf (IToken item) => _tokens.IndexOf(item);
   public void Insert (int index, IToken item)
