@@ -98,6 +98,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.Forms", "Parser.Form
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelSequenceHelper", "ExcelSequenceHelper\ExcelSequenceHelper.csproj", "{96A24DCC-6DA3-8A29-C01A-1E21A955A135}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Language Specifications", "Language Specifications", "{8F3611D8-E097-C408-6FFE-4ACCCA582423}"
+	ProjectSection(SolutionItems) = preProject
+		Parser\Tokens\TokenRule.xml = Parser\Tokens\TokenRule.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -421,6 +426,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F60AE9E8-DEC6-417D-9487-81940A3D53D3} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 		{306ADCA7-FB08-E279-8072-1E915F7B2D17} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
+		{8F3611D8-E097-C408-6FFE-4ACCCA582423} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E97FF645-432C-41F1-ACD9-D9EA11D2D32D}

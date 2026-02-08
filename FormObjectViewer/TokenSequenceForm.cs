@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,10 +8,15 @@ using System.Windows.Forms;
 
 namespace FormObjectViewer;
 
-public partial class TokenSequenceForm : Form
+internal sealed partial class TokenSequenceForm : Form
 {
   public TokenSequenceForm ()
   {
     InitializeComponent();
+  }
+
+  private void SplitContainer1_Panel1_Paint (object sender, PaintEventArgs e)
+  {
+
   }
 }

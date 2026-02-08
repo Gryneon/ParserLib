@@ -1,4 +1,4 @@
-﻿//foolib.acs, the script (library) text file
+//foolib.acs, the script (library) text file
 #library "foolib"
 #include "zcommon.acs"
 

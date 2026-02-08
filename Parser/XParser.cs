@@ -114,7 +114,7 @@ public sealed class XParser
     OpIndex = NextOpIndex;
     NextOpIndex++;
   }
-  private void LogResult (OpStatus status, string msg)
+  private void LogIfStatus (OpStatus status, string msg)
   {
     if (status == Any || status == LastStatus)
       Log(Area, msg);
@@ -122,7 +122,7 @@ public sealed class XParser
   private void LogStatus (OpStatus status, string msg)
   {
     if (status == Any || status == LastStatus)
-      Log(Area, $"{OpIndex}-{LastStatus}: {msg}");
+      Log(Area, $"Operation Index {OpIndex} Evaluated to {LastStatus}: {msg}");
   }
   /// <summary>Performs all the operations, ending on a fail or a completion of the sequence.</summary>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
@@ -174,7 +174,7 @@ public sealed class XParser
     }
     if (NextOpIndex == -1)
     {
-      LogResult(EndCommand, "Result has been assigned. Operation complete.");
+      LogIfStatus(EndCommand, "Result has been assigned. Operation complete.");
       Log(Area, _method, "Results");
       Log(Area, _method, Data["result"]?.ToString() ?? "<null data>");
     }

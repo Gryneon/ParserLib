@@ -1,4 +1,4 @@
-﻿(?'lncomment'\/\/.*)|
+(?'lncomment'\/\/.*)|
 (?'blkcomment'\/\*[\s\S]*?\*\/)|
 (?'var_decl'\b(?'var_type'(int|bool|char|str))\s+(?'var_name'[a-z_][\w]*)\s*
   (?#if next is brace open...)(?(\[)

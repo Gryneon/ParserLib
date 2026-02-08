@@ -75,7 +75,7 @@ internal sealed class Program
     Debug.Verbosity = LogClass.Standard;
 #endif
     //MenuController.StartMenu(InitialMenu);
-
+    Library.InitializeLibrary(AppDomain.CurrentDomain);
     Log(MsgClass.Informational, "Program", "Main", "Program Start");
 
     //InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
