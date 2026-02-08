@@ -23,14 +23,21 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
     {
       Type[] types = assembly.GetTypes();
 
-      IEnumerable<Type> relevant_types = types.Where(t => t.CustomAttributes.Any(ca => ca.AttributeType == typeof(DefinitionExportAttribute)));
-
-      foreach (Type type in relevant_types)
+      foreach (Type type in types)
       {
-        foreach (PropertyInfo? prop in type.GetProperties().Where(prop => prop.PropertyType == typeof(Spec) && prop.PropertyType.CustomAttributes.Any(prop_ca => prop_ca.AttributeType == typeof(ExportAttribute))))
+        if (type.GetCustomAttribute<DefinitionExportAttribute>() is null)
+          continue;
+
+        foreach (PropertyInfo? prop in type.GetProperties())
         {
-          Spec check = (Spec) prop.GetValue(null)!;
-          _specs.Add(check.Name, check);
+          bool isSpec = prop.PropertyType.Name.Is(nameof(Spec));
+          bool isMarked = prop.GetCustomAttribute<ExportAttribute>() is not null;
+          if (isSpec && isMarked)
+          {
+            Spec? check = prop.GetValue(null) as Spec;
+            check.ThrowIfNull();
+            _specs.Add(check.Name, check);
+          }
         }
       }
     }
