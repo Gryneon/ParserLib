@@ -28,6 +28,5 @@ public sealed class TokenProperty : TokenBase, IReadOnlyProperty<string>, IPrope
   public bool Equals (IProperty<string>? other) => (Name?.Equals(other?.Key, SCO) ?? false) && (Value?.Equals(other?.Value, SCO) ?? false);
   public override bool Equals (object? obj) => obj is IProperty<string> ips && (Name?.Equals(ips.Key, SCO) ?? false) && (Value?.Equals(ips.Value, SCO) ?? false);
   public override int GetHashCode () => HashCode.Combine(Name, Value);
-  public override string ToString () => Type + " = " + Name + (ObjType is not null ? " as " + ObjType + " " : " ") + ": " + Value;
 
 }

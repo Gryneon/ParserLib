@@ -22,7 +22,6 @@ public class TokenStatement : TokenBase, IEnumerable<IToken>
       Type.Equals(ips.Type, SCOIC),
     _ => false
   };
-  public override string ToString () => $"{Name} {(ObjType is not null ? ": " + ObjType + " " : "")}{{{Parameters.ToString2()}}}";
   public override int GetHashCode () => HashCode.Combine(Name, Type, ObjType, Parameters);
   public IEnumerator<IToken> GetEnumerator () => Parameters.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();

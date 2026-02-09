@@ -22,11 +22,22 @@ public abstract class TokenBase : IToken
   internal string ContentNoNewLine => Content.
     Replace("\n", "<LF>", SCO).
     Replace("\r", "<CR>", SCO);
-  public override string ToString () => this switch
+  public override string ToString ()
   {
-    TokenFlag f => (f.AddFlag ? "+" : "-") + f.Name,
-    _ => $"{Type} = \"{ContentNoNewLine}\"",
-  };
+    string content = this switch
+    {
+      TokenFlag f => $"{(f.AddFlag ? "+" : "-")} {f.Name}",
+      TokenLabel l => $"{l.Name}",
+      TokenTypedValue t => $"{t.ObjType} {t.Value}",
+      TokenObject o => $"{o.Name} {(o.ObjType is not null ? "as " + o.ObjType : "")}{{{o.Properties.Select(i => i.ToString()).TextJoin(", ")}}}",
+      TokenProperty p => $"{p.Name} {(p.ObjType is not null ? "as " + p.ObjType + " " : "")}: {p.Value}",
+      TokenStatement s => $"{s.Name} {(s.ObjType is not null ? ": " + s.ObjType + " " : "")}{{{s.Parameters.Select(i => i.ToString()).TextJoin(", ")}}}",
+      _ => $"`{ContentNoNewLine}`",
+    };
+
+    return $"{Index} : {GetType().Name} is {Type} = {content}";
+  }
+
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
