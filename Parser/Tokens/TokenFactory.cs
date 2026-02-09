@@ -43,6 +43,7 @@ public sealed class TokenFactory
   private bool IgnoredToken => (_currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false) || _default_rule.HasFlag(RT.IgnoredToken);
   private bool FindInTokens => (_currentRule?.Type.HasFlag(RT.FromTokens) ?? false) || _default_rule.HasFlag(RT.FromTokens);
   private bool ExemptAllWithin => (_currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false) || _default_rule.HasFlag(RT.ExemptAllWithin);
+  private bool HasError => _currentRule?.Type.HasFlag(RT.Error) ?? false;
   private RT Type => GetMaskedType(_currentRule?.Type ?? RT.None);
   private string RuleData => _currentRule?.RuleStringData ?? SE;
   private string AssignType => _currentRule?.TypeToAssign ?? SE;
@@ -237,18 +238,20 @@ public sealed class TokenFactory
     Input = input;
     foreach (TokenRule rule in _rules)
     {
-      DebugLog("Rule processing started.");
       _currentRule = rule;
 
       switch (Type)
       {
+        case RT when HasError:
+          Log(MsgClass.Error, "Error in rule. Skipping.");
+          break;
         case RT when Competes && !competed:
           DebugLog("Running competition.");
           RunCompete();
           competed = true;
           break;
         case RT when Competes && competed:
-          DebugLog("Already ran competition.");
+          DebugLog("Already ran competition, Skipping Rule");
           break;
         case RT.None:
           Log(MsgClass.Warning, "Warning: Bad type defined.");
@@ -274,7 +277,7 @@ public sealed class TokenFactory
           StoreOther();
           break;
         case RT.ErrorMatch:
-          //TODO: Fix this, very buggy.
+          //TODO: Implement This.
           DebugLog("Error Matching");
           break;
         default:
