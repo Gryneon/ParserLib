@@ -26,16 +26,17 @@ namespace Parser.Ops.Text;
 public class GenerateOperation<TIn, TOut> : Operation
 {
   protected Dictionary<int, TOut> Results { get; } = [];
-  protected Func<TIn, bool> Predicate { get; }
+  protected Predicate<TIn> Predicate { get; }
   protected Func<TIn, TOut> Function { get; }
   /// <summary>
-  /// TODO: Document this operation.
+  /// Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
+  /// Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result in <paramref name="output_key"/>.
   /// </summary>
   /// <param name="output_key">The key to store the output objects in.</param>
   /// <param name="func">The generation function.</param>
   /// <param name="predicate">The condition that the generation function requires.</param>
   /// <param name="input_key">The key to pull data from.</param>
-  public GenerateOperation (Func<TIn, TOut> func, Func<TIn, bool> predicate, string input_key, string output_key) : base(input_key, output_key)
+  public GenerateOperation (Func<TIn, TOut> func, Predicate<TIn> predicate, string input_key, string output_key) : base(input_key, output_key)
   {
     Predicate = predicate;
     Function = func;
@@ -51,7 +52,7 @@ public class GenerateOperation<TIn, TOut> : Operation
   {
     if (CheckInput(out IEnumerable<TIn>? mdds))
     {
-      Collection<TIn> mddList = mdds.ToCollection();
+      Collection<TIn> mddList = [.. mdds];
       for (int i = 0; i < mddList.Count; i++)
       {
         TIn mdd = mddList[i];

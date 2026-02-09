@@ -24,6 +24,7 @@ public abstract class TokenBase : IToken
     Replace("\r", "<CR>", SCO);
   public override string ToString ()
   {
+
     string content = this switch
     {
       TokenFlag f => $"{(f.AddFlag ? "+" : "-")} {f.Name}",
@@ -31,7 +32,8 @@ public abstract class TokenBase : IToken
       TokenTypedValue t => $"{t.ObjType} {t.Value}",
       TokenObject o => $"{o.Name} {(o.ObjType is not null ? "as " + o.ObjType : "")}{{{o.Properties.Select(i => i.ToString()).TextJoin(", ")}}}",
       TokenProperty p => $"{p.Name} {(p.ObjType is not null ? "as " + p.ObjType + " " : "")}: {p.Value}",
-      TokenStatement s => $"{s.Name} {(s.ObjType is not null ? ": " + s.ObjType + " " : "")}{{{s.Parameters.Select(i => i.ToString()).TextJoin(", ")}}}",
+      TokenStatement s => $"{s.Name} {(s.ObjType is not null ? "as " + s.ObjType + " " : "")}{{{s.Parameters.Select(i => i.ToString()).TextJoin(", ")}}}",
+      Token t => $"{t.Content}",
       _ => $"`{ContentNoNewLine}`",
     };
 

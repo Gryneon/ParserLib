@@ -9,6 +9,7 @@ using static Parser.Debug;
 
 using CK = System.ConsoleKey;
 using SpecACS = Specification.ACS.Definition;
+using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecMapInfo = Specification.MapInfo.Definition;
 using SpecXML = Specification.XML.Definition;
@@ -76,9 +77,9 @@ internal sealed class Program
 #endif
     //MenuController.StartMenu(InitialMenu);
     Library.InitializeLibrary(AppDomain.CurrentDomain);
-    Log(MsgClass.Informational, "Program", "Main", "Program Start");
+    Log(MsgClass.Informational, Area, "Main", "Program Start");
 
-    //InitialTest(Specification.INI.Definition.Spec, Paths.ini_vncdefault);
+    InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
     //InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
     InitialTest(SpecACS.ACS, Paths.acs_rpgmfunc);
     //InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
@@ -91,14 +92,14 @@ internal sealed class Program
 
     if (args.Length == 0)
     {
-      Log(MsgClass.Warning, "Program", "Main", "No files specified.");
+      Log(MsgClass.Warning, Area, "Main", "No files specified.");
     }
     else
     {
       ProcessArgs(args);
     }
 
-    Log(MsgClass.Critical, "Program", "Main", "Press enter to exit.");
+    Log(MsgClass.Critical, Area, "Main", "Press enter to exit.");
     _ = Console.ReadLine();
     return 0;
   }
@@ -128,7 +129,17 @@ internal sealed class Program
       }
     }
   }
-
+  internal static void InitialTest (string spec, string file)
+  {
+    if (!Library.TryLookup(spec, out Spec? lookup_spec))
+    {
+      Log(MsgClass.Error, Area, "InitialTest", $"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.");
+    }
+    else
+    {
+      InitialTest(lookup_spec, file);
+    }
+  }
   internal static void InitialTest (Spec spec, string file)
   {
     s_method = "InitialTest";
@@ -217,23 +228,25 @@ internal sealed class Program
     byteContent = File.ReadAllBytes(userPath);
     specName = Library.CheckFile(userPath);
     userSpec = Library.LookupOrDefault(specName);
-    Log("Program.Load", $"Spec Chosen is {userSpec.Name}");
+    Log(Area, "Load", $"Spec Chosen is {userSpec.Name}");
 
   GetSpec:
-    Log("Program.Load", $"Input a new spec or press enter to use chosen ({userSpec.Name})");
+    Log(Area, "Load", $"Input a new spec or press enter to use chosen ({userSpec.Name})");
     UserInput = UserLineReturn();
 
     if (UserInput.IsEmpty())
       goto ParseFile;
 
-    else if (Library.Lookup(UserInput) is not null)
+    Spec? chosenSpec = Library.Lookup(UserInput);
+
+    if (chosenSpec is null)
     {
       LogError($"Invalid Spec {UserInput}");
       goto GetSpec;
     }
     else
     {
-      userSpec = Library.Lookup(UserInput)!;
+      userSpec = chosenSpec;
     }
   ParseFile:
     if (userSpec.IsTextFile)

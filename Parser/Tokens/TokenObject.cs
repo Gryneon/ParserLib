@@ -1,8 +1,18 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using System.Xml.Linq;
-
 namespace Parser.Tokens;
+
+public enum TokenPieceType
+{
+  Name,
+  Type,
+  Value,
+  Parameter,
+  ParameterList,
+  Property,
+  PropertyList,
+  ValueList,
+}
 
 public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>, ITypeToken, INameToken
 {
@@ -30,4 +40,15 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
   public IEnumerator<IReadOnlyProperty<string>> GetEnumerator () => Properties.OfType<TokenProperty>().GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   IEnumerator<IProperty<string>> IEnumerable<IProperty<string>>.GetEnumerator () => (IEnumerator<IProperty<string>>) GetEnumerator();
+}
+
+public interface IComplexToken : IToken
+{
+  string Content { get; }
+  IEnumerable<string> PiecesPresent { get; }
+  IToken this[string piece_type] { get; }
+  bool HasPieceType (string piece_type);
+  void SetPieceType (string piece_type, IToken token);
+  bool IsPieceRequired (string piece_type);
+  string GetPieceContent (string piece_type);
 }

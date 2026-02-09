@@ -188,6 +188,30 @@
         <member name="M:Specification.INI.INISection.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc/>
         </member>
+        <member name="F:Specification.INI.INITokenType.None">
+            <summary>No type defined.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Section">
+            <summary>A section title.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Property">
+            <summary>A property key and value.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Str">
+            <summary>A string.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Key">
+            <summary>A property key.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Value">
+            <summary>A property value.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.SectionWProps">
+            <summary>A section with properties in it.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Eq">
+            <summary>The equals sign.</summary>
+        </member>
         <member name="T:Specification.INI.PropertyObj">
             <summary>A key and value pair in an INI file.</summary>
         </member>
