@@ -13,37 +13,19 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
     [.. Instance?.Select(
       item => new KeyValuePair<string, ReadOnlyCollection<IInferenceNode>>(item.Key, item.Value.FileInferences)) ?? throw new InvalidOperationException("Library must be initialized.")];
 
-  private Library (AppDomain domain)
-  {
-    List<Assembly> assemblies = [.. domain.GetAssemblies()];
-
-    IOrderedEnumerable<Assembly> sorted = assemblies.OrderBy(static i => i.GetName().Name);
-
-    foreach (Assembly assembly in assemblies)
-    {
-      Type[] types = assembly.GetTypes();
-
-      foreach (Type type in types)
-      {
-        if (type.GetCustomAttribute<DefinitionExportAttribute>() is null)
-          continue;
-
-        foreach (PropertyInfo? prop in type.GetProperties())
-        {
-          bool isSpec = prop.PropertyType.Name.Is(nameof(Spec));
-          bool isMarked = prop.GetCustomAttribute<ExportAttribute>() is not null;
-          if (isSpec && isMarked)
-          {
-            Spec? check = prop.GetValue(null) as Spec;
-            check.ThrowIfNull();
-            _specs.Add(check.Name, check);
-          }
-        }
-      }
-    }
-  }
-
+  private Library () { }
+  public Spec this[string key] { get => _specs[key]; set => _specs[key] = value; }
+  public static ReadOnlyCollection<Spec> SpecList => Instance is null ? throw new InvalidOperationException("Library must be initialized.") : [.. Instance._specs.Values];
   public static Spec? Lookup (string? name) => name is not null && Instance is not null && Instance.ContainsKey(name) ? Instance[name] : null;
+  public static Spec LookupOrDefault (string? name)
+  {
+    if (Instance is null)
+    {
+      Log(MsgClass.Error, "Library", "Must initialize library before using.");
+      return DefaultSpec.Unknown;
+    }
+    return (name is null || !TryLookup(name, out Spec? spec)) ? DefaultSpec.Unknown : spec;
+  }
   public static bool TryLookup (string name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
   {
     if (Instance?.ContainsKey(name) ?? false)
@@ -61,10 +43,35 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
   public static void InitializeLibrary (AppDomain domain)
   {
     domain.ThrowIfNull();
-    Instance = new(domain);
+    Instance = new();
+    List<Assembly> assemblies = [.. domain.GetAssemblies()];
+
+    IOrderedEnumerable<Assembly> sorted = assemblies.OrderBy(static i => i.GetName().Name);
+
+    foreach (Assembly assembly in assemblies)
+    {
+      Log(MsgClass.Debug, "Library", $"Loaded assembly ({assembly.GetName().Name})");
+      Type[] types = assembly.GetTypes();
+
+      foreach (Type type in types)
+      {
+        if (type.GetCustomAttribute<DefinitionExportAttribute>() is null)
+          continue;
+
+        foreach (PropertyInfo? prop in type.GetProperties())
+        {
+          bool isSpec = prop.PropertyType.Name.Is(nameof(Spec));
+          bool isMarked = prop.GetCustomAttribute<ExportAttribute>() is not null;
+          if (isSpec && isMarked)
+          {
+            Spec? check = prop.GetValue(null) as Spec;
+            check.ThrowIfNull();
+            Instance._specs.Add(check.Name, check);
+          }
+        }
+      }
+    }
   }
-  public static Spec LookupOrDefault (string? name) => (name is null || !TryLookup(name, out Spec? spec)) ? DefaultSpec.Unknown : spec;
-  public int Count => _specs.Count;
   /// <summary>Provides the <see cref="Spec"/> for the provided file path.</summary>
   public static string? CheckFile (string path)
   {
@@ -92,10 +99,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
   public void Add (KeyValuePair<string, Spec> item) => _specs.Add(item);
   public IEnumerator<KeyValuePair<string, Spec>> GetEnumerator () => _specs.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => _specs.GetEnumerator();
-  public static ReadOnlyCollection<Spec> SpecList => Instance is null ? throw new InvalidOperationException("Library must be initialized.") : [.. Instance._specs.Values];
-
   IEnumerable<string> IReadOnlyDictionary<string, Spec>.Keys => _specs.Keys;
   IEnumerable<Spec> IReadOnlyDictionary<string, Spec>.Values => _specs.Values;
-
-  public Spec this[string key] { get => _specs[key]; set => _specs[key] = value; }
+  int IReadOnlyCollection<KeyValuePair<string, Spec>>.Count => _specs.Count;
 }
