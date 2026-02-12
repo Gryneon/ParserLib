@@ -27,7 +27,7 @@ public static class Definition
   internal static TokenRule Ex (ATT tokenType, [SS("regex")] string regex) => new(TExact, tokenType, regex);
 
   /// <summary>Defined Specification</summary>
-  [Export]
+  [DefinitionExport]
   public static Spec ACS => new()
   {
     FileInferences = [IfN(ExtIs, "acs")],
@@ -41,9 +41,9 @@ public static class Definition
     SC = SCOIC,
     TokenType = typeof(ATT),
     TokenCompatLookup = {
-      [Bool] = [Int, Fixed, Char, Str],
-      [Int] = [Fixed, Bool, Char, Str],
-      [Fixed] = [Int, Bool, Char, Str],
+      [Bool] = [Int, Fixed, Char, Str, Expression, Name, FunctionCall, ArrayValue],
+      [Int] = [Fixed, Bool, Char, Str, Expression, Name, FunctionCall, ArrayValue],
+      [Fixed] = [Int, Bool, Char, Str, Expression, Name, FunctionCall, ArrayValue],
       [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall, ArrayValue],
       [Statement] = [VarDecl, BasicCmd, FunctionCall, VarAssn, VarInc, IfBlock, ElseBlock, ElseIfBlock, ArrayDecl, ]
     },
@@ -97,15 +97,16 @@ public static class Definition
       new(RT.BuildExpression | RT.Recursive, Expression, "v:Value y:Binary v:Value"),
       new(RT.BuildStatement, VarDecl, "y:Type n:Name x:Sc"),
       new(RT.BuildStatement, VarDeclAssn, "y:Type n:Name x:Eq v:Value x:Sc"),
-      new(RT.BuildStatement, Statement, "n:SimpleJump x:Sc"),
+      new(RT.BuildStatement, BasicCmd, "n:SimpleJump x:Sc"),
       new(RT.BuildStatement, Parameter, "y:Type n:Name xo:Cm"),
       new(RT.BuildStatement, FunctionCall, "n:Name x:Po pa:Parameter x:Pc"),
       new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Define|#LibDefine} n:Name v:Value"),
       new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Import|#Library|#Include} v:Str"),
-      new(RT.BuildTypedValue, ArrayValue, "n:Name x:Ao v:Value x:Ac")
+      new(RT.BuildTypedValue, ArrayValue, "n:Name x:Ao v:Value x:Ac"),
+      new(RT.BuildExpression | RT.Recursive, Expression, "v:Value y:Binary v:Value"),
     ],
   };
-  [Export]
+  [DefinitionExport]
   public static Spec ModelDef => new()
   {
     FileInferences = [IfNOr(

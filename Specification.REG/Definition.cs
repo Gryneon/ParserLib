@@ -57,7 +57,7 @@ public static class Definition
   //Hexval = Nm("type", Or(Nm("hex"), Nm("qword"), Nm("dword"))) + Gp(@"\(" + Nm("hsize", @"\d+") + @"\)").Opt + @"\:" + Nm("value", @"[0-9a-f, ]+"),
   //Prop = Nm("property", Or(Def, Strprop) + @"\=" + Or(Remval, Strval, Hexval));
   /// <summary>Defines the Registry spec.</summary>
-  [Export]
+  [DefinitionExport]
   public static Spec Spec => new()
   {
     Name = "reg",

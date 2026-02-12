@@ -24,7 +24,7 @@ public static class Definition
   /// <summary>
   /// Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see>
   /// </summary>
-  [Export]
+  [DefinitionExport]
   public static Spec Spec { get; } = new()
   {
     DefaultRuleSet = IgnoreCase | ExemptAllWithin,

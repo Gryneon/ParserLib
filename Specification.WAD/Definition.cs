@@ -9,7 +9,7 @@ namespace Specification.WAD;
 [DefinitionExport]
 public static class Definition
 {
-  [Export]
+  [DefinitionExport]
   public static Spec WAD => new()
   {
     IsTextFile = false,
@@ -35,7 +35,7 @@ public static class Definition
       ], "numlumps")
     ]
   };
-  [Export]
+  [DefinitionExport]
   public static Spec PAK => new()
   {
     Name = "pack",
@@ -60,7 +60,7 @@ public static class Definition
       ], "entrycount")
     ]
   };
-  [Export]
+  [DefinitionExport]
   public static Spec WAD2 => new()
   {
     Name = "wad2",

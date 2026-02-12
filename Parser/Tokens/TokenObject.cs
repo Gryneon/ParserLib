@@ -84,8 +84,36 @@ public sealed class ComplexToken : IComplexToken
 
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
-  public string GetPieceContent (TokenPieceType piece_type) => throw new NotImplementedException();
+  public string GetPieceContent (TokenPieceType piece_type) => _token_pieces[piece_type].Content;
   public bool HasPieceType (TokenPieceType piece_type) => throw new NotImplementedException();
+  public void AddPieceType (TokenPieceType piece_type, IToken token)
+  {
+    if(HasPieceType (piece_type))
+    {
+
+    }
+    else
+    {
+      _token_pieces[piece_type] = new TokenCollection() { token };
+    }
+  }
   public bool IsPieceRequired (TokenPieceType piece_type) => throw new NotImplementedException();
   public void SetPieceType (TokenPieceType piece_type, IToken token) => _token_pieces[piece_type] = token;
+
+  public override bool Equals (object? obj) => obj is ComplexToken ct && Equals(ct);
+
+
+  public override int GetHashCode () => _token_pieces.GetHashCode();
+
+  public static bool operator == (ComplexToken left, ComplexToken right) => left is null ? right is null : left.Equals(right);
+
+  public static bool operator != (ComplexToken left, ComplexToken right) => !(left == right);
+
+  public static bool operator < (ComplexToken left, ComplexToken right) => left is null ? right is not null : left.CompareTo(right) < 0;
+
+  public static bool operator <= (ComplexToken left, ComplexToken right) => left is null || left.CompareTo(right) <= 0;
+
+  public static bool operator > (ComplexToken left, ComplexToken right) => left is not null && left.CompareTo(right) > 0;
+
+  public static bool operator >= (ComplexToken left, ComplexToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

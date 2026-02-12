@@ -42,7 +42,7 @@ public static class Definition
     Cmd("playersound") + @"(?:dup)?" + WS + Wd("player") + WS + Wd("gender") + WS + Act + WS + Sndref
   ];
 
-  [Export]
+  [DefinitionExport]
   public static Spec Spec => new()
   {
     Name = "zdoom.sndinfo",

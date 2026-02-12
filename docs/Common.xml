@@ -435,32 +435,24 @@
             </summary>
         </member>
         <member name="M:Common.Extensions.IConvertibleExtensions.ToInt(System.IConvertible)">
-            <summary>
-            Gets a numeric integer from any enumeration.
-            </summary>
+            <summary>Gets a numeric integer from any enumeration.</summary>
             <param name="e">The enumeration to convert.</param>
             <returns>The enumeration value.</returns>
         </member>
         <member name="M:Common.Extensions.IConvertibleExtensions.ToLong(System.IConvertible)">
-            <summary>
-            Gets a 64 bit numeric integer from any enumeration.
-            </summary>
+            <summary>Gets a 64 bit numeric integer from any enumeration.</summary>
             <param name="e">The enumeration to convert.</param>
             <returns>The enumeration value.</returns>
         </member>
         <member name="M:Common.Extensions.IConvertibleExtensions.RemoveBit``1(System.IConvertible,System.IConvertible)">
-            <summary>
-            Removes all of the provided bits from an enum.
-            </summary>
+            <summary>Removes all of the provided bits from an enum.</summary>
             <typeparam name="T">The type of enum to return.</typeparam>
             <param name="i">The field to deflag.</param>
             <param name="bit">The flags to remove.</param>
             <returns>An enum of the given type with the given flags removed.</returns>
         </member>
         <member name="M:Common.Extensions.IConvertibleExtensions.HasAnyFlag(System.IConvertible,System.IConvertible)">
-            <summary>
-            Checks if the enum contains any of the provided bits.
-            </summary>
+            <summary>Checks if the enum contains any of the provided bits.</summary>
             <param name="e">The enum to check.</param>
             <param name="check">The bits to check for.</param>
             <returns><see langword="true"/> if the enum contains any of the bits provided, <see langword="false"/> otherwise.</returns>

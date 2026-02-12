@@ -81,7 +81,7 @@ public static class Definition
   ];
   public static Regex OpRegex => new(Regex, Spec.RxOpt);
   #endregion
-  [Export]
+  [DefinitionExport]
   public static Spec Spec => new()
   {
     Name = "ipl",

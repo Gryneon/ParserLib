@@ -18,7 +18,7 @@ public static class Definition
   internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.IgnoredToken;
   internal const RT RT_String = RT.TokenMatch | RT.Competitive;
 
-  [Export]
+  [DefinitionExport]
   public static Spec Spec => new()
   {
     Name = "json",

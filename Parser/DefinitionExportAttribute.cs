@@ -1,4 +1,4 @@
 namespace Parser;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
 public sealed class DefinitionExportAttribute() : Attribute { }

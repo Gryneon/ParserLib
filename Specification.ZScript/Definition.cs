@@ -14,7 +14,7 @@ public static class Definition
   /// <summary>
   /// https://regex101.com/r/En5C8c/7
   /// </summary>
-  [Export]
+  [DefinitionExport]
   public static Spec Spec => new()
   {
     FileInferences = [],

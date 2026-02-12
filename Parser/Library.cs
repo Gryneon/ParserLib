@@ -61,7 +61,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
         foreach (PropertyInfo? prop in type.GetProperties())
         {
           bool isSpec = prop.PropertyType.Name.Is(nameof(Spec));
-          bool isMarked = prop.GetCustomAttribute<ExportAttribute>() is not null;
+          bool isMarked = prop.GetCustomAttribute<DefinitionExportAttribute>() is not null;
           if (isSpec && isMarked)
           {
             Spec? check = prop.GetValue(null) as Spec;

@@ -1,7 +1,7 @@
 namespace Parser.Tokens;
 
 /// <summary>A collection of tokens, use this to keep token operations consistent.</summary>
-public sealed class TokenCollection () : IList<IToken>
+public sealed class TokenCollection () : IList<IToken>, IToken
 {
   /// <summary>The internal token list.</summary>
   private readonly List<IToken> _tokens = [];
@@ -25,6 +25,17 @@ public sealed class TokenCollection () : IList<IToken>
 
   public int Count => _tokens.Count;
   bool ICollection<IToken>.IsReadOnly => false;
+
+  public string Type { get; set; } = SE;
+  public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
+  bool IToken.Exempt { get; set; }
+  bool IToken.Ignored => false;
+  public IReadOnlyList<IToken> Children
+  {
+    get => _tokens;
+    init => _tokens = [.. value];
+  }
+  public int Index => _tokens.Count > 0 ? _tokens[0].Index : -1;
 
   public void Add (IToken item)
   {
@@ -67,7 +78,25 @@ public sealed class TokenCollection () : IList<IToken>
   {
     _tokens.Sort((item, item2) => item.CompareTo(item2));
   }
-  internal string GetContent () => _tokens.Select(s => s.Content).Aggregate((first, second) => first + " " + second);
+  internal string GetContent () => _tokens.Select(s => s.Content).Aggregate((first, second) => first + second);
 
   public override string ToString () => $"TokenCollection ({GetContent()})";
+  public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public bool Equals (IToken? other) => other is TokenCollection tc && _tokens.SequenceEqual(tc._tokens);
+
+  public override bool Equals (object? obj) => ReferenceEquals(this, obj) || obj is not null && obj is TokenCollection tc && Equals(tc);
+
+  public override int GetHashCode () => _tokens.GetHashCode();
+
+  public static bool operator == (TokenCollection left, TokenCollection right) => left is null ? right is null : left.Equals(right);
+
+  public static bool operator != (TokenCollection left, TokenCollection right) => !(left == right);
+
+  public static bool operator < (TokenCollection left, TokenCollection right) => left is null ? right is not null : left.CompareTo(right) < 0;
+
+  public static bool operator <= (TokenCollection left, TokenCollection right) => left is null || left.CompareTo(right) <= 0;
+
+  public static bool operator > (TokenCollection left, TokenCollection right) => left is not null && left.CompareTo(right) > 0;
+
+  public static bool operator >= (TokenCollection left, TokenCollection right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

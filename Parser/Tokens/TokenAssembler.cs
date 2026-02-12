@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Security;
 
 namespace Parser.Tokens;
 
@@ -263,17 +264,11 @@ r - Token is 'Name' in flag and AddFlag is false.
 
     foreach (string item in types)
     {
-      dynamic value = _spec.GetTokenTypeValue(item);
-      if (_spec.TokenCompatLookup.ContainsKey(value))
+      if (_spec.TokenCompatLookup.ContainsKey(item))
       {
-        Collection<object> list = _spec.TokenCompatLookup[value];
-
-        foreach (object lookup_value in list)
+        foreach (var f in _spec.TokenCompatLookup[item])
         {
-          if (all_types_allowed.Add(lookup_value.ToString()!))
-          {
-            return AllAllowedTypes(all_types_allowed);
-          }
+          all_types_allowed.Add(f);
         }
       }
     }
