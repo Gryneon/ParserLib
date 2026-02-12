@@ -4,14 +4,27 @@ namespace Parser.Tokens;
 
 public enum TokenPieceType
 {
+  /// <summary>The token representing this object's name.</summary>
   Name,
+  /// <summary>The token representing this object's type.</summary>
   Type,
+  /// <summary>The token representing this object's value.</summary>
   Value,
-  Parameter,
+  /// <summary>The tokens representing this object's paramenters.</summary>
+  /// <remarks>This will be a TokenCollection</remarks>
   ParameterList,
-  Property,
+  /// <summary>The tokens representing this object's properties.</summary>
+  /// <remarks>This will be a TokenCollection</remarks>
   PropertyList,
+  FlagList,
+  /// <summary>The tokens representing this object's values.</summary>
   ValueList,
+  /// <summary>The token representing this object's left item.</summary>
+  Left,
+  /// <summary>The token representing this object's right item.</summary>
+  Right,
+  /// <summary>The token representing this object's center item.</summary>
+  Center
 }
 
 public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>, ITypeToken, INameToken
@@ -44,11 +57,35 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
 
 public interface IComplexToken : IToken
 {
-  string Content { get; }
-  IEnumerable<string> PiecesPresent { get; }
-  IToken this[string piece_type] { get; }
-  bool HasPieceType (string piece_type);
-  void SetPieceType (string piece_type, IToken token);
-  bool IsPieceRequired (string piece_type);
-  string GetPieceContent (string piece_type);
+  new string Content { get; }
+  string IToken.Content => Content;
+  IEnumerable<TokenPieceType> PiecesPresent { get; }
+  IToken this[TokenPieceType piece_type] { get; }
+  bool HasPieceType (TokenPieceType piece_type);
+  void SetPieceType (TokenPieceType piece_type, IToken token);
+  bool IsPieceRequired (TokenPieceType piece_type);
+  string GetPieceContent (TokenPieceType piece_type);
+}
+
+public sealed class ComplexToken : IComplexToken
+{
+  private readonly Dictionary<TokenPieceType, IToken> _token_pieces = [];
+
+  public IToken this[TokenPieceType piece_type] => _token_pieces[piece_type];
+
+  public string Content => Children.Select(i => i.Content).TextJoin();
+  public IEnumerable<TokenPieceType> PiecesPresent => _token_pieces.Keys;
+  public string Type { get; set; } = SE;
+  public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
+  public bool Exempt { get; set; }
+  public bool Ignored => false;
+  public IReadOnlyList<IToken> Children { get; init; } = [];
+  public int Index { get; }
+
+  public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
+  public string GetPieceContent (TokenPieceType piece_type) => throw new NotImplementedException();
+  public bool HasPieceType (TokenPieceType piece_type) => throw new NotImplementedException();
+  public bool IsPieceRequired (TokenPieceType piece_type) => throw new NotImplementedException();
+  public void SetPieceType (TokenPieceType piece_type, IToken token) => _token_pieces[piece_type] = token;
 }

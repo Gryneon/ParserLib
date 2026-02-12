@@ -19,7 +19,8 @@ public sealed class OperationAction : IOperation
 
   bool IOperation.ContinueOnFail { get; set; }
   bool IOperation.SkipOperation { get; set; }
-  bool IOperation.IgnoreAllLoads => true;
+  bool IOperation.NoInput => true;
+  bool IOperation.NoOutput => true;
   public int LoopBreak { get; set; }
   public int LoopStart { get; set; }
   public Collection<int> IData { get; } = [];
@@ -28,7 +29,7 @@ public sealed class OperationAction : IOperation
   public Collection<object> OData { get; } = [];
   [NotNull] private XParser? Parser { get; set; }
   public OAT Type { get; set; }
-  public bool NeverExecutes { get; }
+  public bool NoExecution { get; }
 
   public OpStatus DoOperation (XParser parser_ref)
   {

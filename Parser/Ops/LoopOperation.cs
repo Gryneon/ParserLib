@@ -37,10 +37,9 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
   {
     Collection<IOperation> additions = [];
     OpIndex = operations.Count;
-    additions.Add(StartLoop(this));
+    additions.Add(StartLoop(this, OpIndex, index));
     additions.AddRange(Operations);
     additions.Add(NextLoop(inc));
-    additions = [.. additions.Select(op => op.SetLoopInfo(OpIndex, index))];
     operations.AddRange(additions);
     return operations.Count;
   }

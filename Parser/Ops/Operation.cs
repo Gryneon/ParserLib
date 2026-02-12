@@ -62,7 +62,7 @@ public abstract class Operation : IOperation
   public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
 
   public static IOperation BreakLoop () => new OperationAction(OAT.BreakLoop);
-  public static IOperation StartLoop (LoopOperation loopOperation) => new OperationAction(OAT.StartLoop, loopOperation);
+  public static IOperation StartLoop (LoopOperation loopOperation, int continue_index, int loop_) => new OperationAction(OAT.StartLoop, loopOperation);
   public static IOperation NextLoop (int increment = 1) => new OperationAction(OAT.NextLoop, increment);
   public static IOperation ContinueLoop (int increment = 1) => new OperationAction(OAT.ContinueLoop, increment);
 
@@ -140,17 +140,11 @@ public abstract class Operation : IOperation
       }
     }
   }
-  /// <summary>
-  /// The output key provided.
-  /// </summary>
+  /// <summary>The output key provided.</summary>
   protected string OutputKey { get; set; }
-  /// <summary>
-  /// The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.
-  /// </summary>
+  /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
   protected object? WorkToReturn { get; set; }
-  /// <summary>
-  /// The status of the operation.
-  /// </summary>
+  /// <summary>The status of the operation.</summary>
   protected OpStatus Status { get; set; } = OpStatus.Skipped;
   #endregion
   #region Calculated Properties
@@ -161,17 +155,16 @@ public abstract class Operation : IOperation
     Status is OpStatus.Skipped ? OpStatus.Skipped : Status.IsFail() && ContinueOnFail ? OpStatus.FailOverride : Status;
   #endregion
   #region Operation Flags
-  /// <inheritdoc/>
   public bool ContinueOnFail { get; set; }
-  /// <inheritdoc/>
   public bool SkipOperation { get; set; }
-  public bool NeverExecutes { get; }
+  public virtual bool NoOutput { get; }
+  public virtual bool NoExecution { get; }
   /// <summary>
   /// Whether or not this operation loads any data.
   /// </summary>
 
   [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkToReturn))]
-  public bool IgnoreAllLoads => InputKey.IsEmpty();
+  public bool NoInput => InputKey.IsEmpty();
   #endregion
   #region Input Checks
   /// <summary>
@@ -181,7 +174,7 @@ public abstract class Operation : IOperation
 
   protected void CheckInputNull ()
   {
-    if (InputKey == SE || IgnoreAllLoads)
+    if (InputKey == SE || NoInput)
     {
       Log("Operation.CheckInputNull", $"No key checked.");
       Status = OpStatus.Skipped;
@@ -254,7 +247,7 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
-    if (!IgnoreAllLoads && Parser.Data.TryLoad(InputKey, out T? temp))
+    if (!NoInput && Parser.Data.TryLoad(InputKey, out T? temp))
     {
       Status = OpStatus.Pass;
       casted = temp;
@@ -267,7 +260,7 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected virtual bool CheckArray<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable<T> casted)
   {
-    if (!IgnoreAllLoads && Parser.Data.TryLoadArray(InputKey, out IEnumerable<T>? temp))
+    if (!NoInput && Parser.Data.TryLoadArray(InputKey, out IEnumerable<T>? temp))
     {
       Status = OpStatus.Pass;
       casted = temp;
@@ -280,7 +273,7 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected virtual bool CheckArray ([NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable casted)
   {
-    if (!IgnoreAllLoads && Parser.Data.TryLoadArray(InputKey, out IEnumerable? temp))
+    if (!NoInput && Parser.Data.TryLoadArray(InputKey, out IEnumerable? temp))
     {
       Status = OpStatus.Pass;
       casted = temp;
@@ -331,20 +324,8 @@ public abstract class Operation : IOperation
   /// </summary>
   [AllowNull] protected Spec Spec { get; set; }
   #endregion
-  #region State Properties
-  /// <summary>
-  /// The jump target of any <see cref="OAT.BreakLoop"/> action that is called.
-  /// </summary>
-  public int LoopBreak { get; set; }
-  /// <summary>
-  /// The jump target of any <see cref="OAT.ContinueLoop"/> and the beginning of the loop section.
-  /// </summary>
-  public int LoopStart { get; set; }
-  #endregion
   #region Constructors
-  /// <summary>
-  /// Multiple input keys.
-  /// </summary>
+  /// <summary>Multiple input keys.</summary>
   protected Operation (IEnumerable<string> input_keys, string output_key)
   {
     InputKeys = [.. input_keys];
@@ -365,7 +346,7 @@ public abstract class Operation : IOperation
   /// </summary>
   protected Operation (string input_key, string output_key)
   {
-    InputKeys = IgnoreAllLoads ? [] : [input_key];
+    InputKeys = NoInput ? [] : [input_key];
     InputKey = input_key;
     OutputKey = output_key;
   }
@@ -376,6 +357,7 @@ public abstract class Operation : IOperation
       return OpStatus.Skipped;
 
     Initialize(parser_ref);
+
     CheckInputNull();
 
     if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
@@ -396,21 +378,21 @@ public abstract class Operation : IOperation
   /// </summary>
   protected virtual void Execute ()
   {
-    ThrowIf(WorkToReturn is null, "This needs to be overridden by the inheriting class.");
+    if (NoExecution)
+      return;
 
-    object data = WorkToReturn;
+    ThrowIf(WorkToReturn is null, "This needs to be overridden by the inheriting class.");
     Status = OpStatus.FailBadOpDefinition;
-    WorkToReturn = data;
   }
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
-  protected void Initialize (XParser parser)
+  private void Initialize (XParser parser)
   {
     parser.ThrowIfNull();
     Parser = parser;
     Spec = parser.Spec;
 
-    if (IgnoreAllLoads)
+    if (NoInput)
     {
       WorkToReturn = null;
       return;
@@ -444,9 +426,9 @@ public abstract class Operation : IOperation
       }
     }
   }
-  protected void AssignResult (DM mode = DM.Overwrite)
+  private void AssignResult ()
   {
-    if (WorkToReturn is null) return;
+    if (WorkToReturn is null || NoOutput) return;
     Parser.Data.Add(OutputKey, WorkToReturn);
   }
 }

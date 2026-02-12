@@ -44,11 +44,11 @@ public sealed class ByteReadOperation : Operation, IOperation
   private string ReadChars (string cursorName, int count) => ReadBytes(cursorName, count).Span.ByteArrToString();
   protected override void Execute ()
   {
-    if (!IgnoreAllLoads && CheckInput(out int size))
+    if (!NoInput && CheckInput(out int size))
     {
       Size = size;
     }
-    else if (!IgnoreAllLoads)
+    else if (!NoInput)
     {
       Status = FailBadInputType;
       return;

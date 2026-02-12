@@ -149,7 +149,7 @@ public sealed class XParser
       AdvanceOperation();
       return LastStatus;
     }
-    if (CurrentOp is IfOperation ifop)
+    if (CurrentOp is IfElseOperation ifop)
     {
       Log(MsgClass.Debug, Area, _method, "If Operation Encountered");
       LastStatus = ifop.DoOperation(this);

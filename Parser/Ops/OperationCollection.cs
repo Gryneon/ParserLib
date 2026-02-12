@@ -9,12 +9,12 @@ public sealed class OperationCollection : IOperation, IReadOnlyCollection<IOpera
   public bool SkipOperation { get; set; }
 
   public int Count => Operations.Count;
-  public bool NeverExecutes => true;
+  public bool NoExecution => true;
 
   public int LoopBreak { get; set; }
   public int LoopStart { get; set; }
-  bool IOperation.IgnoreAllLoads => true;
-
+  bool IOperation.NoInput => true;
+  bool IOperation.NoOutput => true;
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     int nextOrEnd = index + 1 >= operations.Count ? -1 : index + 1;
@@ -27,8 +27,11 @@ public sealed class OperationCollection : IOperation, IReadOnlyCollection<IOpera
   public OperationCollection (IEnumerable<IOperation> ops)
   {
     ops.ThrowIfNull();
-    ops = ops.Select(item => item.ApplyProperties(ContinueOnFail, SkipOperation));
-    Operations = [.. ops];
+    Operations = [..ops];
+    foreach (var op in Operations)
+    {
+      op.ApplyProperties(ContinueOnFail, SkipOperation);
+    }
   }
   OpStatus IOperation.DoOperation (XParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
   public IEnumerator<IOperation> GetEnumerator () => Operations.GetEnumerator();
