@@ -19,28 +19,6 @@ public sealed partial class TokenAssembler
   private int _constructed_items;
   private readonly Spec _spec;
 
-  /*
-   * t - Value is Token Type (see syntax line 2,3,4)
-c - Value is String Literal (see syntax line 1)
-b - Value contains Both (see syntax line 5)
-They specify what the value is, so they are important. Your prefix can have one of each of these:
-
-i - Ignore Case (String Literal Only)
-m - One or many, this token will repeat as long as it can, Possessive, Greedy.
-o - Optional, this token does not trigger a fail if it does not match. Greedy.
-If 'm' and 'o' are both specified, it acts as the '*' operator, meaning zero or many, but it stays Greedy. Defining 'm' alone or 'im' makes it Possessive, meaning it will not give any matches back, to attempt to find a more suitable match. It will simply fail the match entirely, like an atomic group.
-
-Must have only one of these:
-
-x - Ignore Token
-n - Token is 'Name' in object, property, or label
-y - Token is 'Type' in object, typedvalue, or array
-v - Token is 'Value' in array, property, or typedvalue
-p - Token is 'Property' in object
-f - Token is 'Name' in flag and AddFlag is true.
-r - Token is 'Name' in flag and AddFlag is false.
-   */
-
   public TokenAssembler (TokenGroupRuleCollection rules, Spec spec)
   {
     _rules = rules;
@@ -75,13 +53,12 @@ r - Token is 'Name' in flag and AddFlag is false.
       string[] data_strings = data.Split([' ', '\t'], 255, SSORT);
       foreach (string item in data_strings)
       {
-        _rule.Sequence.Add(ChkToken.Parse(item));
+        _rule.Sequence.Add(ChkToken.Parse(item, _spec));
       }
     }
   }
   private void Construct (int first_token_index, TokenCollection tokens_to_assemble)
   {
-    //Log(Area, "Calling Construct with tokens { " + tokens_to_assemble.TextJoin(" ") + " }");
     Validate();
     _tokens.Remove(first_token_index, tokens_to_assemble.Count);
 
@@ -257,22 +234,6 @@ r - Token is 'Name' in flag and AddFlag is false.
       _ => throw new InvalidOperationException("Unknown rule type"),
     };
     _tokens.Insert(first_token_index, constructed_obj);
-  }
-  internal Collection<string> AllAllowedTypes (IEnumerable<string> types)
-  {
-    HashSet<string> all_types_allowed = [.. types];
-
-    foreach (string item in types)
-    {
-      if (_spec.TokenCompatLookup.ContainsKey(item))
-      {
-        foreach (var f in _spec.TokenCompatLookup[item])
-        {
-          all_types_allowed.Add(f);
-        }
-      }
-    }
-    return [.. all_types_allowed];
   }
   internal int ExecRule ()
   {

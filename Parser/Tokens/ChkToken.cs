@@ -57,7 +57,7 @@ public sealed class ChkToken () : IEquatable<IToken>
   public Collection<string> AllowedContents { get; init; } = [];
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
   private StringComparison SC => IgnoreCase ? SCOIC : SCO;
-  public static ChkToken Parse (string definition)
+  public static ChkToken Parse (string definition, Spec spec)
   {
     RxS regex = RxS.Rx(@"^(?'prefix'\w+)\:(?:\((?'type_def'[^,&|+}-]+)([,&+|-](?'type_def'[^,&+|}-]+))*\)|\{(?'literal_def'[^,&|+}-]+)([,&+|-](?'literal_def'[^,&+|}-]+))*\}|(?'type_def'\w+))+");
     Regex regexobj = new(regex, ROEC, new TimeSpan(0, 0, 1));
@@ -77,7 +77,7 @@ public sealed class ChkToken () : IEquatable<IToken>
 
     if (rule.HasFlag(RT.Error))
     {
-      throw new ArgumentException($"Bad Prefix Char. {prefix}");
+      throw new ArgumentException($"Bad Prefix Char. ({prefix})");
     }
 
     if (m.Groups.ContainsKey("type_def"))
@@ -88,17 +88,40 @@ public sealed class ChkToken () : IEquatable<IToken>
       foreach (Capture c in m.Groups["literal_def"].Captures)
         allowed_literals.Add(c.Value);
 
+    Collection<string> expanded_types = spec is null ? allowed_types : AllAllowedTypes(allowed_types, spec);
+
     ChkToken result = new()
     {
       AllowedContents = allowed_literals,
-      AllowedTypes = allowed_types,
+      AllowedTypes = expanded_types,
       TokenRule = rule
     };
 
     return result;
   }
+  internal static Collection<string> AllAllowedTypes (IEnumerable<string> types, Spec spec)
+  {
+    HashSet<string> all_types_allowed = [.. types];
+
+    foreach (string item in types)
+    {
+      if (spec.TokenCompatLookup.ContainsKey(item))
+      {
+        foreach (dynamic f in spec.TokenCompatLookup[item])
+        {
+          bool added = all_types_allowed.Add(f);
+
+          if (added)
+          {
+            all_types_allowed = [.. AllAllowedTypes(all_types_allowed, spec)];
+          }
+        }
+      }
+    }
+    return [.. all_types_allowed];
+  }
   internal bool Check_Type (IToken? token) => token is not null && token.HasType && AllowedTypes.Any(type => token.Type.Like(type)) || AllowedTypes.Count == 0;
-  internal bool Check_Content (IToken? token) => token is not null && token.Content.Length > 0 && AllowedContents.Count > 0 && AllowedTypes.Any(i => i.Equals(token.Content, SC)) || AllowedContents.Count == 0;
+  internal bool Check_Content (IToken? token) => token is not null && token.Content.Length > 0 && AllowedContents.Count > 0 && AllowedContents.Any(i => i.Equals(token.Content, SC)) || AllowedContents.Count == 0;
   public bool Equals (IToken? other) =>
     Check_Content(other) && Check_Type(other);
   public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (AllowedContents.Count > 0 ? $"{{{AllowedContents.TextJoin("|")}}}" : "");

@@ -1,8 +1,6 @@
 namespace Parser;
 
-/// <summary>
-/// The data for a loop or cursor object.
-/// </summary>
+/// <summary>The data for a loop or cursor object.</summary>
 public class CursorData
 {
   /// <summary>Creates a new cursor and sets itself as the last accessed.</summary>
