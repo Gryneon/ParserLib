@@ -27,7 +27,7 @@ public enum TokenPieceType
   Center
 }
 
-public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>, ITypeToken, INameToken
+public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>, ITypeToken, INameToken, IToken
 {
   // Assigned Properties
   public string Name => NameToken?.Content ?? SE;
@@ -36,6 +36,8 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
   // Tokens Kept
   public required IToken? NameToken { get; set; }
   public IToken? TypeToken { get; set; }
+  public bool HasProperties => true;
+  public bool HasFlags => true;
 
   public TokenCollection Properties { get; init; } = [];
   public TokenCollection Flags { get; init; } = [];
@@ -53,6 +55,7 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
   public IEnumerator<IReadOnlyProperty<string>> GetEnumerator () => Properties.OfType<TokenProperty>().GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   IEnumerator<IProperty<string>> IEnumerable<IProperty<string>>.GetEnumerator () => (IEnumerator<IProperty<string>>) GetEnumerator();
+
 }
 
 public interface IComplexToken : IToken
@@ -67,7 +70,7 @@ public interface IComplexToken : IToken
   string GetPieceContent (TokenPieceType piece_type);
 }
 
-public sealed class ComplexToken : IComplexToken
+public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
 {
   private readonly Dictionary<TokenPieceType, IToken> _token_pieces = [];
 
@@ -81,14 +84,40 @@ public sealed class ComplexToken : IComplexToken
   public bool Ignored => false;
   public IReadOnlyList<IToken> Children { get; init; } = [];
   public int Index { get; }
+  #region INameToken
+  public string? Name { get; }
+  public IToken? NameToken
+  {
+    get => _token_pieces[TokenPieceType.Name];
+    set
+    {
+      value.ThrowIfNull();
+      _token_pieces[TokenPieceType.Name] = value;
+    }
+  }
+  #endregion
+  #region ITypeToken
+  public string? ObjType { get; }
+  public IToken? TypeToken
+  {
+    get => _token_pieces[TokenPieceType.Type];
+    set
+    {
+      value.ThrowIfNull();
+      _token_pieces[TokenPieceType.Type] = value;
+    }
+  }
+  #endregion
+  public static explicit operator TokenObject (ComplexToken complex) => ToTokenObject(complex);
 
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
+  public IToken GetPieceToken (TokenPieceType piece_type) => _token_pieces[piece_type];
   public string GetPieceContent (TokenPieceType piece_type) => _token_pieces[piece_type].Content;
   public bool HasPieceType (TokenPieceType piece_type) => throw new NotImplementedException();
   public void AddPieceType (TokenPieceType piece_type, IToken token)
   {
-    if(HasPieceType (piece_type))
+    if (HasPieceType(piece_type))
     {
 
     }
@@ -99,21 +128,30 @@ public sealed class ComplexToken : IComplexToken
   }
   public bool IsPieceRequired (TokenPieceType piece_type) => throw new NotImplementedException();
   public void SetPieceType (TokenPieceType piece_type, IToken token) => _token_pieces[piece_type] = token;
-
   public override bool Equals (object? obj) => obj is ComplexToken ct && Equals(ct);
-
-
   public override int GetHashCode () => _token_pieces.GetHashCode();
-
   public static bool operator == (ComplexToken left, ComplexToken right) => left is null ? right is null : left.Equals(right);
-
   public static bool operator != (ComplexToken left, ComplexToken right) => !(left == right);
-
   public static bool operator < (ComplexToken left, ComplexToken right) => left is null ? right is not null : left.CompareTo(right) < 0;
-
   public static bool operator <= (ComplexToken left, ComplexToken right) => left is null || left.CompareTo(right) <= 0;
-
   public static bool operator > (ComplexToken left, ComplexToken right) => left is not null && left.CompareTo(right) > 0;
-
   public static bool operator >= (ComplexToken left, ComplexToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
+
+  public static TokenObject ToTokenObject (ComplexToken complex)
+  {
+    complex.ThrowIfNull();
+    return new()
+    {
+      NameToken = complex.NameToken,
+      TypeToken = complex.TypeToken,
+      Properties = (TokenCollection) complex.GetPieceToken(TokenPieceType.PropertyList),
+      Flags = (TokenCollection) complex.GetPieceToken(TokenPieceType.FlagList),
+      Children = complex.Children,
+      Exempt = complex.Exempt,
+      Ignored = complex.Ignored,
+      Content = complex.Content,
+      Index = complex.Index,
+      Type = complex.Type
+    };
+  }
 }

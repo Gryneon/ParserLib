@@ -8,10 +8,14 @@ using Specification.WAD;
 using static Parser.Debug;
 
 using CK = System.ConsoleKey;
+using ResWAD = Specification.WAD.Resources;
+using ResZScript = Specification.ZScript.Properties.Resources;
 using SpecACS = Specification.ACS.Definition;
 using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecMapInfo = Specification.MapInfo.Definition;
+using SpecUDMF = Specification.UDMF.Definition;
+using SpecWAD = Specification.WAD.Definition;
 using SpecXML = Specification.XML.Definition;
 using SpecZScript = Specification.ZScript.Definition;
 
@@ -69,6 +73,7 @@ internal sealed class Program
   [STAThread]
   internal static int Main (string[] args)
   {
+    s_method = "Main";
     Console.Clear();
 #if DEBUG
     Common.Debug.Verbosity = LogClass.DebugAll;
@@ -77,22 +82,22 @@ internal sealed class Program
 #endif
     //MenuController.StartMenu(InitialMenu);
     Library.InitializeLibrary(AppDomain.CurrentDomain);
-    Log(MsgClass.Informational, Area, "Main", "Program Start");
+    LogInfo("Program Start");
 
-    InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
-    //InitialTest(Specification.UDMF.Definition.Spec, Paths.udmf_sample);
+    //InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
+    //InitialTest(SpecUDMF.Spec, Paths.udmf_sample);
     InitialTest(SpecACS.ACS, Paths.acs_rpgmfunc);
-    //InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
+    InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
     InitialTest(SpecXML.Spec, Paths.xsd_specification);
-    InitialTest(Definition.WAD, Paths.wad_pl2);
-    //InitialTest(Definition.WAD, Resources.wad_tnt);
+    InitialTest(SpecWAD.WAD, ResWAD.wad_pl2);
+    InitialTest(SpecWAD.WAD, ResWAD.wad_tnt);
     InitialTest(SpecMapInfo.Spec, Paths.mapinfo_common);
     InitialTest(SpecIPL.Spec, Paths.ipl_simple);
-    InitialTest(SpecZScript.Spec, Specification.ZScript.Properties.Resources.zs_demon);
+    InitialTest(SpecZScript.Spec, ResZScript.zs_demon);
 
     if (args.Length == 0)
     {
-      Log(MsgClass.Warning, Area, "Main", "No files specified.");
+      LogWarn("No files specified.");
     }
     else
     {
@@ -115,7 +120,7 @@ internal sealed class Program
 
       LogInfo("Loading File : " + path);
 
-      Parser = new XParser(Specification.IPL.Definition.Spec);
+      Parser = new XParser(SpecIPL.Spec);
       Status = Parser.Parse(content);
 
       LogDebug("OpStatus is " + Status);
@@ -131,9 +136,10 @@ internal sealed class Program
   }
   internal static void InitialTest (string spec, string file)
   {
+    s_method = "InitialTest";
     if (!Library.TryLookup(spec, out Spec? lookup_spec))
     {
-      Log(MsgClass.Error, Area, "InitialTest", $"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.");
+      LogError($"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.");
     }
     else
     {
@@ -143,7 +149,7 @@ internal sealed class Program
   internal static void InitialTest (Spec spec, string file)
   {
     s_method = "InitialTest";
-    Log(MsgClass.Warning, Area, "InitialTest", $"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
+    LogWarn($"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
     Parser = new(spec);
     if (spec.IsTextFile)
     {
@@ -176,6 +182,7 @@ internal sealed class Program
 
   internal static XParser TestTextParser (string path, Spec spec)
   {
+    s_method = "TestTextParser";
     if (spec.IsTextFile)
     {
       string content = File.ReadAllText(path);
@@ -189,7 +196,7 @@ internal sealed class Program
       Status = Parser.StepThrough(bytes);
     }
 
-    Log(MsgClass.Informational, Area, "TestTextParser", $"The {spec.Name} test resulted in {Status}.");
+    LogInfo($"The {spec.Name} test resulted in {Status}.");
     return Parser;
   }
   internal static void DisplayOpOrder ()

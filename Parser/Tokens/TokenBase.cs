@@ -22,6 +22,10 @@ public abstract class TokenBase : IToken
   internal string ContentNoNewLine => Content.
     Replace("\n", "<LF>", SCO).
     Replace("\r", "<CR>", SCO);
+  private static string GetProps (TokenObject to) =>
+  to is null || to.Properties.Count == 0 ? SE : $"{{{to.Properties.Select(i => i.ToString()).TextJoin(", ")}}}";
+  private static string GetParams (TokenStatement ts) =>
+  ts is null || ts.Parameters.Count == 0 ? SE : $"{{{ts.Parameters.Select(i => i.ToString()).TextJoin(", ")}}}";
   public override string ToString ()
   {
 
@@ -30,24 +34,24 @@ public abstract class TokenBase : IToken
       TokenFlag f => $"{(f.AddFlag ? "+" : "-")} {f.Name}",
       TokenLabel l => $"{l.Name}",
       TokenTypedValue t => $"{t.ObjType} {t.Value}",
-      TokenObject o => $"{o.Name} {(o.ObjType is not null ? "as " + o.ObjType : "")}{{{o.Properties.Select(i => i.ToString()).TextJoin(", ")}}}",
-      TokenProperty p => $"{p.Name} {(p.ObjType is not null ? "as " + p.ObjType + " " : "")}: {p.Value}",
-      TokenStatement s => $"{s.Name} {(s.ObjType is not null ? "as " + s.ObjType + " " : "")}{{{s.Parameters.Select(i => i.ToString()).TextJoin(", ")}}}",
+      TokenObject o => $"{o.Name} {(o.ObjType.IsNotEmpty() ? "as " + o.ObjType : "")}{GetProps(o)}",
+      TokenProperty p => $"{p.Name} {(p.ObjType.IsNotEmpty() ? "as " + p.ObjType + " " : "")}: {p.Value}",
+      TokenStatement s => $"{s.Name} {(s.ObjType.IsNotEmpty() ? "as " + s.ObjType + " " : "")}{GetParams(s)}",
+      TokenExpression s => $"{s.LeftValue} {s.Type} {s.RightValue}",
       Token t => $"{t.Content}",
-      _ => $"`{ContentNoNewLine}`",
+      _ => $"`{ContentNoNewLine}`"
     };
 
     return $"{Index} : {GetType().Name} is {Type} = {content}";
   }
-
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public virtual bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
-  public static bool operator == (TokenBase left, TokenBase right) => left is null ? right is null : left.Equals(right);
-  public static bool operator != (TokenBase left, TokenBase right) => !(left == right);
-  public static bool operator < (TokenBase left, TokenBase right) => left is null ? right is not null : left.CompareTo(right) < 0;
-  public static bool operator <= (TokenBase left, TokenBase right) => left is null || left.CompareTo(right) <= 0;
-  public static bool operator > (TokenBase left, TokenBase right) => left is not null && left.CompareTo(right) > 0;
-  public static bool operator >= (TokenBase left, TokenBase right) => left is null ? right is null : left.CompareTo(right) >= 0;
+  public static bool operator == (TokenBase left, IToken right) => left is null ? right is null : left.Equals(right);
+  public static bool operator != (TokenBase left, IToken right) => !(left == right);
+  public static bool operator < (TokenBase left, IToken right) => left is null ? right is not null : left.CompareTo(right) < 0;
+  public static bool operator <= (TokenBase left, IToken right) => left is null || left.CompareTo(right) <= 0;
+  public static bool operator > (TokenBase left, IToken right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator >= (TokenBase left, IToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

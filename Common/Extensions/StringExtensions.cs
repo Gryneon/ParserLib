@@ -8,14 +8,10 @@ using SysRegex = System.Text.RegularExpressions.Regex;
 
 namespace Common.Extensions;
 
-/// <summary>
-/// Extensions for string objects.
-/// </summary>
+/// <summary>Extensions for string objects.</summary>
 public static class StringExtensions
 {
-  /// <summary>
-  /// Case sensitive comparison.
-  /// </summary>
+  /// <summary>Case sensitive comparison.</summary>
   /// <param name="text">This text.</param>
   /// <param name="other">The other text.</param>
   /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
@@ -25,12 +21,13 @@ public static class StringExtensions
   public static bool IsControl (this string s) => s.All(item => item.IsControl());
   public static bool IsWhitespace (this string s) => s.All(item => item.IsWhitespace());
   public static bool IsNumber (this string s) => decimal.TryParse(s, out decimal _);
-  public static bool IsPosInteger (this string s) => int.TryParse(s, out int _) && s.All(item => item.IsPosInteger());
-  /// <summary>
-  /// Checks if a string is null or empty.
-  /// </summary>
-  /// <param name="text"></param>
-  /// <returns><see langword="true"/> if the string is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
+  /// <summary>Checks if this string is a positive integer.</summary>
+  /// <param name="text">The string to check.</param>
+  /// <returns><see langword="true"/> if the <see langword="string"/> is a positive integer, <see langword="false"/> otherwise.</returns>
+  public static bool IsPosInteger (this string text) => int.TryParse(text, out int i) && int.IsPositive(i);
+  /// <summary>Checks if a <see langword="string"/> is <see langword="null"/> or empty.</summary>
+  /// <param name="text">The <see langword="string"/> to check.</param>
+  /// <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
   public static bool IsEmpty ([NotNullWhen(false)][MaybeNullWhen(true)] this string? text) => string.IsNullOrEmpty(text);
   public static bool IsNotEmpty ([NotNullWhen(true)] this string? text) => !text.IsEmpty();
   public static bool IsNamedGroup (this string text) => !text.IsPosInteger();
@@ -189,7 +186,11 @@ public static class StringExtensions
     list.All(s2 => s.Equals(s2, sc));
   public static bool StartsWithAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
     list.Any(s2 => s.StartsWith(s2, sc));
+  public static bool StartsWithAny (this string s, StringComparison sc = SCO, params IEnumerable<string> list) =>
+    list.Any(s2 => s.StartsWith(s2, sc));
   public static bool EndsWithAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
+    list.Any(s2 => s.EndsWith(s2, sc));
+  public static bool EndsWithAny (this string s, StringComparison sc = SCO, params IEnumerable<string> list) =>
     list.Any(s2 => s.EndsWith(s2, sc));
   public static string PreReplace (this string text, int changed_pos) => text[..(changed_pos - 1)];
   public static string PostReplace (this string text, int changed_pos, int replace_length) => text[(changed_pos + replace_length)..];

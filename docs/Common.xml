@@ -549,24 +549,23 @@
             <param name="reader">The <see cref="T:System.IO.StreamReader"/> to return to the beginning.</param>
         </member>
         <member name="T:Common.Extensions.StringExtensions">
-            <summary>
-            Extensions for string objects.
-            </summary>
+            <summary>Extensions for string objects.</summary>
         </member>
         <member name="M:Common.Extensions.StringExtensions.Is(System.String,System.String)">
-            <summary>
-            Case sensitive comparison.
-            </summary>
+            <summary>Case sensitive comparison.</summary>
             <param name="text">This text.</param>
             <param name="other">The other text.</param>
             <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
         </member>
+        <member name="M:Common.Extensions.StringExtensions.IsPosInteger(System.String)">
+            <summary>Checks if this string is a positive integer.</summary>
+            <param name="text">The string to check.</param>
+            <returns><see langword="true"/> if the <see langword="string"/> is a positive integer, <see langword="false"/> otherwise.</returns>
+        </member>
         <member name="M:Common.Extensions.StringExtensions.IsEmpty(System.String)">
-            <summary>
-            Checks if a string is null or empty.
-            </summary>
-            <param name="text"></param>
-            <returns><see langword="true"/> if the string is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
+            <summary>Checks if a <see langword="string"/> is <see langword="null"/> or empty.</summary>
+            <param name="text">The <see langword="string"/> to check.</param>
+            <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Common.Extensions.StringExtensions.Like(System.String,System.String)">
             <summary>

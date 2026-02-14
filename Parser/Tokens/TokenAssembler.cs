@@ -75,7 +75,7 @@ public sealed partial class TokenAssembler
       }
       throw new ArgumentException("No data with the specified flag");
     }
-    TToken? getTokenOrDefault<TToken> (RT flag)
+    TToken? getOptionalToken<TToken> (RT flag)
     {
       Validate();
       for (int i = 0; i < tokens_to_assemble.Count; i++)
@@ -102,27 +102,6 @@ public sealed partial class TokenAssembler
       }
       return token_result;
     }
-    (TToken, TToken) getTokenPair<TToken> (RT flag) where TToken : IToken
-    {
-      TToken? first = default, second;
-      Validate();
-      for (int i = 0; i < tokens_to_assemble.Count; i++)
-      {
-        IToken token = tokens_to_assemble[i];
-        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag) && token is TToken t1 && first is null)
-        {
-          first = t1;
-          continue;
-        }
-
-        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag) && token is TToken t2 && first is not null)
-        {
-          second = t2;
-          return (first, second);
-        }
-      }
-      throw new InvalidOperationException("Did not find a second value token.");
-    }
     bool hasToken (RT flag)
     {
       Validate();
@@ -138,29 +117,45 @@ public sealed partial class TokenAssembler
     TokenObject buildObject ()
     {
       IToken? originalType = null;
+      IToken? originalName = null;
+      TokenCollection? originalProps = null;
+      TokenCollection? originalFlags = null;
 
       if (hasToken(RT.Descendant))
       {
         IToken baseToken = getToken<IToken>(RT.Descendant);
 
-        if (baseToken is ITypeToken)
+        if (baseToken is ITypeToken itt)
         {
-          originalType = baseToken;
+          originalType = itt.TypeToken;
+        }
+        if (baseToken is INameToken itn)
+        {
+          originalName = itn.NameToken;
+        }
+        if (baseToken is TokenObject to)
+        {
+          originalProps = [.. to.Properties];
+          originalFlags = [.. to.Flags];
         }
       }
 
       TokenObject result = new()
       {
-        NameToken = getToken<IToken>(RT.AssignName),
+        NameToken = originalName,
         TypeToken = originalType,
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        Properties = getTokens<TokenProperty>(RT.AddProperty),
+        Properties = originalProps ?? [],
+        Flags = originalFlags ?? [],
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       };
 
-      result.TypeToken = getTokenOrDefault<IToken>(RT.AssignType) ?? result.TypeToken;
+      result.NameToken = getOptionalToken<IToken>(RT.AssignName) ?? result.NameToken;
+      result.TypeToken = getOptionalToken<IToken>(RT.AssignType) ?? result.TypeToken;
+      result.Properties.AddRange(getTokens<IToken>(RT.AddProperty));
+      result.Flags.AddRange(getTokens<IToken>(RT.AddProperty));
       return result;
     }
     _constructed_items++;
@@ -172,8 +167,8 @@ public sealed partial class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        NameToken = getTokenOrDefault<IToken>(RT.AssignName),
-        ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
+        NameToken = getOptionalToken<IToken>(RT.AssignName),
+        ValueToken = getOptionalToken<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
       },
@@ -207,8 +202,8 @@ public sealed partial class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
-        ValueToken = getTokenOrDefault<IToken>(RT.AssignValue),
+        TypeToken = getOptionalToken<IToken>(RT.AssignType),
+        ValueToken = getOptionalToken<IToken>(RT.AssignValue),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -216,8 +211,9 @@ public sealed partial class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
-        LeftRightValueToken = getTokenPair<IToken>(RT.AssignValue),
+        TypeToken = getOptionalToken<IToken>(RT.AssignType),
+        LeftValueToken = getOptionalToken<IToken>(RT.AssignLeft),
+        RightValueToken = getOptionalToken<IToken>(RT.AssignRight),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       },
@@ -225,8 +221,8 @@ public sealed partial class TokenAssembler
       {
         Type = _rule.TypeToAssign,
         Index = tokens_to_assemble[0].Index,
-        TypeToken = getTokenOrDefault<IToken>(RT.AssignType),
-        NameToken = getToken<IToken>(RT.AssignName),
+        TypeToken = getOptionalToken<IToken>(RT.AssignType),
+        NameToken = getOptionalToken<IToken>(RT.AssignName),
         Parameters = getTokens<IToken>(RT.AddProperty),
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
@@ -262,7 +258,14 @@ public sealed partial class TokenAssembler
       if (node is null)
       {
         // End of sequence? Pass
-        Construct(first_token_index, assembly);
+        if (assembly.Count == 0)
+        {
+          LogInfo("Empty Construct Prevented");
+        }
+        else
+        {
+          Construct(first_token_index, assembly);
+        }
         token_index = first_token_index + 1;
         reset_match();
         continue;
@@ -329,6 +332,7 @@ public sealed partial class TokenAssembler
       _rule = (TokenGroupRule?) _rules[r];
       _rule.ThrowIfNull();
       Parse();
+
       int times = ExecRule();
 
       while (_rule.Type.HasFlag(RT.Recursive) && times > 0)

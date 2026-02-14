@@ -41,11 +41,8 @@ public static class Definition
     SC = SCOIC,
     TokenType = typeof(ATT),
     TokenCompatLookup = {
-      [Bool] = [Int, Fixed, Char, Str, Expression, Name, FunctionCall, ArrayValue],
-      [Int] = [Fixed, Bool, Char, Str, Expression, Name, FunctionCall, ArrayValue],
-      [Fixed] = [Int, Bool, Char, Str, Expression, Name, FunctionCall, ArrayValue],
-      [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall, ArrayValue],
-      [Statement] = [VarDecl, BasicCmd, FunctionCall, VarAssn, VarInc, IfBlock, ElseBlock, ElseIfBlock, ArrayDecl, ]
+      [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall, ArrayValue, ParenExpression, ParameterValue],
+      [Statement] = [VarDecl, BasicCmd, FunctionCall, VarAssn, VarInc, IfBlock, ElseBlock, ElseIfBlock, ArrayDecl]
     },
     TokenRules = [
 
@@ -80,30 +77,37 @@ public static class Definition
       // Operators
       Tm(IncDec, @"(\+\+|--)"),
       Tm(Unary, @"!(?!=)|~"),
-      Tm(Minus, @"-"),
       Tm(Assign, @"[-+*^/%|&]="),
+      Tm(Minus, @"-"),
       Tm(Assign, @"(<<|>>| \|\| |&&)="),
       Tm(Binary, @"[!<>-]="),
       Tm(Binary, @"(&&| \|\| |<<|>>)(?!=)"),
-      Tm(Binary, @"[+/%|&^*><-]"),
-
-      .. TokenRule.MakeSingleCharRules("[]{}()=,:;", TExact ,new ATT[] { Ao, Ac, Bo, Bc, Po, Pc, Eq, Cm, Co, Sc }),
+      .. TokenRule.MakeSingleCharRules("+/%|&^*><-", TExact , Binary),
+      .. TokenRule.MakeSingleCharRules("[]{}()=,:;", TExact , new ATT[] { Ao, Ac, Bo, Bc, Po, Pc, Eq, Cm, Co, Sc }),
 
       Tm(Void, @"\bvoid\b"),
       Tm(Type, @"\b(int|str|char|bool)\b"),
       Tm(Name, @"\b[a-z_][\w]*\b"),
     ],
     GroupTokenRules = [
-      new(RT.BuildExpression | RT.Recursive, Expression, "v:Value y:Binary v:Value"),
+      new(RT.BuildExpression | RT.Recursive, Expression, "l:Value y:Binary r:Value"),
+      new(RT.BuildExpression, Expression, "l:Value y:IncDec"),
+      new(RT.BuildExpression, Expression, "y:IncDec r:Value"),
       new(RT.BuildStatement, VarDecl, "y:Type n:Name x:Sc"),
       new(RT.BuildStatement, VarDeclAssn, "y:Type n:Name x:Eq v:Value x:Sc"),
+      new(RT.BuildStatement, ArrayDecl, "y:Type n:Name x:Ao v:Value x:Ac x:Sc"),
       new(RT.BuildStatement, BasicCmd, "n:SimpleJump x:Sc"),
+      new(RT.BuildTypedValue, ParenExpression, "x:Po v:Expression x:Pc"),
       new(RT.BuildStatement, Parameter, "y:Type n:Name xo:Cm"),
-      new(RT.BuildStatement, FunctionCall, "n:Name x:Po pa:Parameter x:Pc"),
+      new(RT.BuildTypedValue, ParameterValue, "v:Expression xo:Cm"),
+      new(RT.BuildStatement, FunctionHeader, "x:Function y:(Type|Void) n:Name x:Po x:Void x:Pc"),
+      new(RT.BuildStatement, FunctionHeader, "x:Function y:(Type|Void) n:Name x:Po pm:Parameter x:Pc"),
+      new(RT.BuildStatement, WaitCall, "y:Wait x:Po pm:ParameterValue x:Pc x:Sc"),
+      new(RT.BuildStatement, FunctionCall, "n:Name x:Po pa:ParameterValue x:Pc"),
       new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Define|#LibDefine} n:Name v:Value"),
       new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Import|#Library|#Include} v:Str"),
       new(RT.BuildTypedValue, ArrayValue, "n:Name x:Ao v:Value x:Ac"),
-      new(RT.BuildExpression | RT.Recursive, Expression, "v:Value y:Binary v:Value"),
+      new(RT.BuildExpression | RT.Recursive, Expression, "l:Value y:Binary r:Value"),
     ],
   };
   [DefinitionExport]

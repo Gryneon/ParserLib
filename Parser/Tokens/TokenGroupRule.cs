@@ -24,7 +24,8 @@ public class TokenGroupRule : TokenRule
     TypeToAssign = SE;
   }
 
-  public static Dictionary<char, RT> CharacterReference => new() {
+  public static Dictionary<char, RT> CharacterReference => new()
+  {
     ['v'] = RT.AssignValue,
     ['i'] = RT.IgnoreCase,
     ['m'] = RT.Mult,
@@ -34,9 +35,11 @@ public class TokenGroupRule : TokenRule
     ['y'] = RT.AssignType,
     ['p'] = RT.AddProperty,
     ['f'] = RT.AddFlag,
-    ['r'] = RT.RemFlag,
+    ['s'] = RT.SubFlag,
+    ['r'] = RT.AssignRight,
+    ['l'] = RT.AssignLeft,
     ['t'] = RT.None,
-    ['c'] = RT.None,
+    ['c'] = RT.AssignCenter,
     ['b'] = RT.None,
   };
 }

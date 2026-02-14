@@ -4,7 +4,7 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
 {
   public ICondition Condition { get; init; } = condition;
   public IOperation IfTrue { get; set; } = ifTrue;
-  public IOperation IfElse { get; set; } = ifFalse ?? Operation.End;
+  public IOperation IfElse { get; set; } = ifFalse ?? Op.End;
   public OpStatus Status { get; set; }
   public bool NoExecution => false;
   bool IOperation.ContinueOnFail { get; set; }
@@ -19,10 +19,10 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
 
     IfTrueIndex = operations.Count;
     operations.Add(IfTrue);
-    operations.Add(Operation.JumpTo(nextOrEnd(index)));
-    IfElseIndex = operations.Count;
+    operations.Add(Op.JumpTo(nextOrEnd(index)));
     operations.Add(IfElse);
-    operations.Add(Operation.JumpTo(nextOrEnd(index)));
+    IfElseIndex = operations.Count;
+    operations.Add(Op.JumpTo(nextOrEnd(index)));
     return operations.Count;
   }
   public OpStatus DoOperation (XParser parser_ref)
@@ -30,7 +30,7 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
     if (parser_ref is null)
       return OpStatus.FailBadOpImpossible;
 
-    bool result = Condition.Evaluate();
+    bool result = Condition.Evaluate(parser_ref);
 
     if (result)
     {

@@ -125,7 +125,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      Operation.End,
+      Op.End,
     ],
   };
 }

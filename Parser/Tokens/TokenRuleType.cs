@@ -51,7 +51,7 @@ public enum TokenRuleType : long
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag"/>.</summary>
   AddFlag = 0x80000,
   /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag"/>.</summary>
-  RemFlag = 0x100000,
+  SubFlag = 0x100000,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>
   FromTokens = 0x200000,
@@ -84,4 +84,10 @@ public enum TokenRuleType : long
   Descendant = 0x40000000,
   /// <summary>This flag means a character was not recognized.</summary>
   Error = 0x80000000L,
+  /// <summary>This flag means a character was not recognized.</summary>
+  AssignLeft = 0x100000000L,
+  /// <summary>This flag means a character was not recognized.</summary>
+  AssignRight = 0x200000000L,
+  /// <summary>This flag means a character was not recognized.</summary>
+  AssignCenter = 0x400000000L,
 }

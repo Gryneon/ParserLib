@@ -60,6 +60,11 @@ public enum ACSTokenType
   VarInc,
   Parameter,
   ArrayValue,
+  ParenExpression,
+  FunctionHeader,
+  ScriptHeader,
+  ParameterValue,
+  WaitCall
 }
 
 public enum ModelDefTokenType

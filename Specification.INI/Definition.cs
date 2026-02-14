@@ -27,7 +27,7 @@ public static class Definition
       new TokenizeOperation(),
       new TokenAssembleOperation(),
       new GenerateOperation<TokenObject, INISection>(INISection.Generate, static item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
-      Operation.End
+      Op.End
     ],
     TokenRules = [
       new(Competitive | IgnoredToken, ITT.None, @";.*?$"),

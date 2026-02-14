@@ -10,4 +10,7 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
   bool Ignored { get; }
   IReadOnlyList<IToken> Children { get; init; }
   string Content => Children.Select(static t => t.Content).TextJoin();
+  bool HasProperties => false;
+  bool HasFlags => false;
+  bool HasLeftRight => false;
 }

@@ -15,7 +15,7 @@ public enum ZScriptTokenType
   Class,
   Include,
   Num,
-  Str,
+  String,
   Name,
   State,
   Keyword,
@@ -27,5 +27,11 @@ public enum ZScriptTokenType
   StateCmd,
   Value,
   Array,
-  ClassRef
+  ClassRef,
+  Bo, Bc,
+  Po, Pc,
+  Default,
+  Sc, Cm,
+  Co, Eq,
+  Pl, Mn,
 }

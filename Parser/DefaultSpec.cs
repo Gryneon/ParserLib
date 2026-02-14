@@ -16,7 +16,7 @@ public static class DefaultSpec
   {
     Name = "unknown",
     FileInferences = [],
-    Operations = [Ops.Operation.End],
+    Operations = [Op.End],
   };
   /// <summary>The spec assigned if the parser gets a binary file.</summary>
   [DefinitionExport]
@@ -34,7 +34,7 @@ public static class DefaultSpec
     Name = "textbylines",
     Operations = [
       new SplitOperation("text", "result"),
-      Operation.End
+      Op.End
     ]
   };
 }

@@ -27,7 +27,7 @@ public sealed class ChkToken () : IEquatable<IToken>
   {
     ['a'] = RT.Any,
     ['b'] = RT.Error,
-    ['c'] = RT.Error,
+    ['c'] = RT.AssignCenter,
     ['d'] = RT.Descendant,
     ['e'] = RT.Error,
     ['f'] = RT.AddFlag,
@@ -36,14 +36,14 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['i'] = RT.IgnoreCase,
     ['j'] = RT.Error,
     ['k'] = RT.Error,
-    ['l'] = RT.Error,
+    ['l'] = RT.AssignLeft,
     ['m'] = RT.Mult,
     ['n'] = RT.AssignName,
     ['o'] = RT.Opt,
     ['p'] = RT.AddProperty,
     ['q'] = RT.Error,
-    ['r'] = RT.RemFlag,
-    ['s'] = RT.Error,
+    ['r'] = RT.AssignRight,
+    ['s'] = RT.SubFlag,
     ['t'] = RT.Error,
     ['u'] = RT.Error,
     ['v'] = RT.AssignValue,
@@ -105,11 +105,15 @@ public sealed class ChkToken () : IEquatable<IToken>
 
     foreach (string item in types)
     {
-      if (spec.TokenCompatLookup.ContainsKey(item))
+      if (spec.TokenCompatLookup.Keys.Any(i => i.ToString().Equals(item, SCOIC)))
       {
-        foreach (dynamic f in spec.TokenCompatLookup[item])
+        dynamic key = spec.TokenCompatLookup.Keys.Single(i => i.ToString().Equals(item, SCOIC));
+        Collection<object> list = spec.TokenCompatLookup[key];
+        foreach (string? s in list.Select(obj => obj.ToString()))
         {
-          bool added = all_types_allowed.Add(f);
+          if (s is null) continue;
+
+          bool added = all_types_allowed.Add(s);
 
           if (added)
           {
@@ -122,6 +126,9 @@ public sealed class ChkToken () : IEquatable<IToken>
   }
   internal bool Check_Type (IToken? token) => token is not null && token.HasType && AllowedTypes.Any(type => token.Type.Like(type)) || AllowedTypes.Count == 0;
   internal bool Check_Content (IToken? token) => token is not null && token.Content.Length > 0 && AllowedContents.Count > 0 && AllowedContents.Any(i => i.Equals(token.Content, SC)) || AllowedContents.Count == 0;
+  /// <summary>Checks if the specified token satisfies this object's conditions.</summary>
+  /// <param name="other">The token to check.</param>
+  /// <returns><see langword="true"/> if the token satisfies this object's conditions, <see langword="false"/> otherwise.</returns>
   public bool Equals (IToken? other) =>
     Check_Content(other) && Check_Type(other);
   public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (AllowedContents.Count > 0 ? $"{{{AllowedContents.TextJoin("|")}}}" : "");

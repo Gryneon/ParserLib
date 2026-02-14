@@ -58,7 +58,7 @@ public sealed class OperationAction : IOperation
           Parser.SetNextOperationIndex(0);
           goto Pass;
         case OAT.JumpIf:
-          if (OData[0] is ICondition c && c.Evaluate())
+          if (OData[0] is ICondition c && c.Evaluate(Parser))
             Parser.SetNextOperationIndex(IData[0]);
           goto Pass;
 
