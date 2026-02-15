@@ -50,7 +50,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
 
     foreach (Assembly assembly in sorted)
     {
-      if (assembly.GetName().Name?.StartsWithAny(SCO, "System", "Microsoft") ?? false)
+      if (assembly.GetName().Name?.StartsWithAny(SCO, "System", "Microsoft", "Common") ?? false)
         continue;
 
       Log(MsgClass.Debug, "Library", $"Loaded assembly ({assembly.GetName().Name})");
