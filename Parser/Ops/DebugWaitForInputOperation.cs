@@ -1,17 +1,12 @@
 namespace Parser.Ops;
 
 /// <summary></summary>
-public class DebugWaitForInputOperation : Operation
+/// <remarks>Constructs an operation that waits for a specific key press or the enter key.</remarks>
+/// <param name="key">The key to wait for.</param>
+public class DebugWaitForInputOperation (ConsoleKey? key = null) : Operation()
 {
-  private readonly ConsoleKey? _key;
+  private readonly ConsoleKey? _key = key;
   private const string Area = "DebugWaitForInputOperation";
-
-  /// <summary>Constructs an operation that waits for a specific key press or the enter key.</summary>
-  /// <param name="key">The key to wait for.</param>
-  public DebugWaitForInputOperation (ConsoleKey? key = null) : base()
-  {
-    _key = key;
-  }
 
   protected override void Execute ()
   {
@@ -19,18 +14,15 @@ public class DebugWaitForInputOperation : Operation
 
     if (_key is null)
     {
-      Log(Area, "Execute", "Press the enter key to continue.");
-      keyInfo = Console.ReadKey(true);
-      while (keyInfo.Key != ConsoleKey.Enter)
-        keyInfo = Console.ReadKey(true);
+      Log(MsgClass.Critical, Area, "Execute", "Press the enter key to continue.");
+      do keyInfo = Console.ReadKey(true);
+      while (keyInfo.Key != ConsoleKey.Enter);
     }
     else
     {
-      Log(Area, "Execute", $"Press the {_key.Value} key to continue.");
-      do
-      {
-        keyInfo = Console.ReadKey(true);
-      } while (keyInfo.Key != _key);
+      Log(MsgClass.Critical, Area, "Execute", $"Press the {_key.Value} key to continue.");
+      do keyInfo = Console.ReadKey(true);
+      while (keyInfo.Key != _key);
     }
   }
 }

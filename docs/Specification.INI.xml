@@ -84,34 +84,24 @@
             <summary>Clears and removes all INISections.</summary>
         </member>
         <member name="T:Specification.INI.INISection">
-            <summary>
-            Represents a INISection heading in an INI formatted file.
-            </summary>
+            <summary>Represents a INISection heading in an INI formatted file.</summary>
         </member>
         <member name="M:Specification.INI.INISection.#ctor">
-            <summary>
-            Creates an empty INISection.
-            </summary>
+            <summary>Creates an empty INISection.</summary>
         </member>
         <member name="M:Specification.INI.INISection.#ctor(System.String)">
-            <summary>
-            Creates a <see cref="T:Specification.INI.INISection"/> with the provided name.
-            </summary>
+            <summary>Creates a <see cref="T:Specification.INI.INISection"/> with the provided name.</summary>
             <param name="name">The name of the INISection.</param>
         </member>
         <member name="M:Specification.INI.INISection.op_Explicit(System.String)~Specification.INI.INISection">
-            <summary>
-            Creates a INISection from a string.
-            </summary>
+            <summary>Creates a INISection from a string.</summary>
             <param name="name">The name of the section.</param>
         </member>
         <member name="P:Specification.INI.INISection.Name">
             <summary>The name of the section.</summary>
         </member>
         <member name="P:Specification.INI.INISection.Properties">
-            <summary>
-            The properties within the INISection.
-            </summary>
+            <summary>The properties within the INISection.</summary>
         </member>
         <member name="P:Specification.INI.INISection.Item(System.String)">
             <summary>
@@ -121,7 +111,7 @@
             <returns>The value of the property.</returns>
         </member>
         <member name="P:Specification.INI.INISection.Count">
-            <inheritdoc/>
+            <summary>The number of properties this section contains.</summary>
         </member>
         <member name="M:Specification.INI.INISection.Generate(Parser.Tokens.TokenObject)">
             <inheritdoc/>
@@ -132,10 +122,14 @@
             </list>
             </remarks>
         </member>
-        <member name="M:Specification.INI.INISection.Set(System.String,System.String)">
+        <member name="M:Specification.INI.INISection.SerializeProp(System.Collections.Generic.KeyValuePair{System.String,System.String})">
             <summary>
-            Sets the given property to the given value.
+            Gets the <see langword="string"/> representation of the object for serialization.
             </summary>
+            <returns>The <see langword="string"/> representation of the object.</returns>
+        </member>
+        <member name="M:Specification.INI.INISection.Set(System.String,System.String)">
+            <summary>Sets the given property to the given value.</summary>
             <param name="key">The key name.</param>
             <param name="value">The value to set it to.</param>
         </member>
@@ -146,15 +140,11 @@
             <param name="prop">The property to add or apply.</param>
         </member>
         <member name="M:Specification.INI.INISection.Add(Specification.INI.PropertyObj)">
-            <summary>
-            Adds the property, or sets the value of the property if it already exists.
-            </summary>
+            <summary>Adds the property, or sets the value of the property if it already exists.</summary>
             <param name="child">The property to add.</param>
         </member>
         <member name="M:Specification.INI.INISection.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.PropertyObj})">
-            <summary>
-            Adds multiple properties, or sets the values for any that already exist.
-            </summary>
+            <summary>Adds multiple properties, or sets the values for any that already exist.</summary>
             <param name="children">The properties to add.</param>
         </member>
         <member name="M:Specification.INI.INISection.GetEnumerator">
@@ -173,9 +163,7 @@
             <inheritdoc/>
         </member>
         <member name="M:Specification.INI.INISection.Remove(System.String)">
-            <summary>
-            Removes the property with the provided name.
-            </summary>
+            <summary>Removes the property with the provided name.</summary>
             <param name="name">The name of the property to remove.</param>
             <returns><see langword="true"/> if the property was removed, <see langword="false"/> otherwise.</returns>
         </member>

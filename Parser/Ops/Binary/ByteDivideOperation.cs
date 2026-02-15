@@ -10,15 +10,9 @@ public class ByteDivideOperation : Operation
   private bool UseVar => _divisor_key is not null;
   private readonly string? _divisor_key;
 
-  public ByteDivideOperation (int divisor, string dividend_key, string output_key) : base(dividend_key, output_key)
-  {
-    _divisor = divisor;
-  }
+  public ByteDivideOperation (int divisor, string dividend_key, string output_key) : base(dividend_key, output_key) => _divisor = divisor;
 
-  public ByteDivideOperation (string divisor_key, string dividend_key, string output_key) : base([divisor_key, dividend_key], output_key)
-  {
-    _divisor_key = divisor_key;
-  }
+  public ByteDivideOperation (string divisor_key, string dividend_key, string output_key) : base([divisor_key, dividend_key], output_key) => _divisor_key = divisor_key;
 
   protected override void Execute ()
   {

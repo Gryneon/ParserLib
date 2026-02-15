@@ -19,10 +19,7 @@ public class TokenGroupRule : TokenRule
     RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign?.ToString() ?? SE;
   }
-  public TokenGroupRule ()
-  {
-    TypeToAssign = SE;
-  }
+  public TokenGroupRule () => TypeToAssign = SE;
 
   public static Dictionary<char, RT> CharacterReference => new()
   {

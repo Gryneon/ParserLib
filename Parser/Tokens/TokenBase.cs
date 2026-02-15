@@ -1,8 +1,6 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 #pragma warning disable IDE1006 // Naming Styles
 
-using System.Xml.Linq;
-
 namespace Parser.Tokens;
 
 public abstract class TokenBase : IToken

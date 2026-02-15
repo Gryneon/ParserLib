@@ -14,10 +14,12 @@ public enum ACSTokenType
   Bool,
   Name,
   FunctionCall,
+  FunctionCallStatement,
   Script,
   Function,
   MapVar,
   ScriptType,
+  /// <summary>Placeholder representing any value, expression, or function call.</summary>
   Value,
   Bo, Bc,
   Po, Pc,
@@ -44,7 +46,9 @@ public enum ACSTokenType
   Return,
   SimpleJump,
   Void,
+  /// <summary>Keyword only. Any type object, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
   Type,
+  /// <summary>Keyword Only - Wait Functions</summary>
   Wait,
   PreprocessorFull,
   IfBlock,
@@ -60,7 +64,8 @@ public enum ACSTokenType
   VarInc,
   Parameter,
   ArrayValue,
-  ParenExpression,
+  /// <summary>An expression that can also be used as an independent statement.</summary>
+  ExpressionStatement,
   FunctionHeader,
   ScriptHeader,
   ParameterValue,
@@ -71,8 +76,26 @@ public enum ModelDefTokenType
 {
   None,
 
-  //Structures
+  //Keywords
   Model,
   Skin,
+  Path,
+  Scale,
+  FrameIndex,
 
+  //Flags
+  PitchFromMomentum,
+  InheritActorPitch,
+
+  //Basic Structures
+  Int,
+  Decimal,
+  String,
+  Frame,
+  FrameLetter,
+
+  //Objects
+  ModelFull,
+  PropertyLine,
+  FrameLine,
 }

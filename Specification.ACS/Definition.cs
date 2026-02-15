@@ -41,8 +41,8 @@ public static class Definition
     SC = SCOIC,
     TokenType = typeof(ATT),
     TokenCompatLookup = {
-      [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall, ArrayValue, ParenExpression, ParameterValue],
-      [Statement] = [VarDecl, BasicCmd, FunctionCall, VarAssn, VarInc, IfBlock, ElseBlock, ElseIfBlock, ArrayDecl]
+      [Value] = [Int, Bool, Char, Str, Fixed, Expression, Name, FunctionCall, ArrayValue, ExpressionStatement, ParameterValue],
+      [Statement] = [VarDecl, BasicCmd, FunctionCallStatement, VarAssn, VarInc, IfBlock, ElseBlock, ElseIfBlock, ArrayDecl, WaitCall]
     },
     TokenRules = [
 
@@ -53,7 +53,7 @@ public static class Definition
       new(Ignore, None, @"\/\*.*?\*\/"),
 
       // Preprocessor
-      Tm(Preprocessor, @"\# (lib(define|rary)|import|include|define)"),
+      Tm(Preprocessor, @"\# \w+"),
       Tm(Bool, @"\b(true|false|on|off|yes|no)\b"),
       Tm(Int, @"-?(?<!\.|\w)(\d+|0x[a-f0-9]+)(?!\.|\w)"),
       Tm(Fixed, @"-?(\d+\.\d*|\.\d+)"),
@@ -90,24 +90,34 @@ public static class Definition
       Tm(Name, @"\b[a-z_][\w]*\b"),
     ],
     GroupTokenRules = [
+      // Expressions
       new(RT.BuildExpression | RT.Recursive, Expression, "l:Value y:Binary r:Value"),
-      new(RT.BuildExpression, Expression, "l:Value y:IncDec"),
-      new(RT.BuildExpression, Expression, "y:IncDec r:Value"),
+      new(RT.BuildExpression, ExpressionStatement, "l:Value y:IncDec"),
+      new(RT.BuildExpression, ExpressionStatement, "y:IncDec r:Value"),
+      new(RT.BuildExpression, Expression, "y:Unary r:Value"),
+      new(RT.BuildExpression | RT.Recursive, Expression, "l:Value y:Binary r:Value"),
+      new(RT.BuildTypedValue, Expression, "x:Po v:Expression x:Pc"),
+      new(RT.BuildTypedValue, ArrayValue, "n:Name x:Ao v:Value x:Ac"),
+      new(RT.BuildStatement, FunctionCall, "n:Name x:Po pa:ParameterValue x:Pc"),
+
+      // Statements
       new(RT.BuildStatement, VarDecl, "y:Type n:Name x:Sc"),
       new(RT.BuildStatement, VarDeclAssn, "y:Type n:Name x:Eq v:Value x:Sc"),
       new(RT.BuildStatement, ArrayDecl, "y:Type n:Name x:Ao v:Value x:Ac x:Sc"),
       new(RT.BuildStatement, BasicCmd, "n:SimpleJump x:Sc"),
-      new(RT.BuildTypedValue, ParenExpression, "x:Po v:Expression x:Pc"),
+      new(RT.BuildStatement, BasicCmd, "n:Return x:Sc"),
+      new(RT.BuildProperty, BasicCmd, "n:Return v:value x:Sc"),
+      new(RT.BuildStatement, WaitCall, "y:Wait x:Po pm:ParameterValue x:Pc x:Sc"),
+      new(RT.BuildStatement, FunctionCallStatement, "d:FunctionCall x:Sc"),
+
       new(RT.BuildStatement, Parameter, "y:Type n:Name xo:Cm"),
       new(RT.BuildTypedValue, ParameterValue, "v:Expression xo:Cm"),
       new(RT.BuildStatement, FunctionHeader, "x:Function y:(Type|Void) n:Name x:Po x:Void x:Pc"),
       new(RT.BuildStatement, FunctionHeader, "x:Function y:(Type|Void) n:Name x:Po pm:Parameter x:Pc"),
-      new(RT.BuildStatement, WaitCall, "y:Wait x:Po pm:ParameterValue x:Pc x:Sc"),
-      new(RT.BuildStatement, FunctionCall, "n:Name x:Po pa:ParameterValue x:Pc"),
+
       new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Define|#LibDefine} n:Name v:Value"),
       new(RT.BuildProperty, PreprocessorFull, "yi:Preprocessor{#Import|#Library|#Include} v:Str"),
-      new(RT.BuildTypedValue, ArrayValue, "n:Name x:Ao v:Value x:Ac"),
-      new(RT.BuildExpression | RT.Recursive, Expression, "l:Value y:Binary r:Value"),
+
     ],
   };
   [DefinitionExport]

@@ -1,14 +1,11 @@
 using System.IO;
 
 using Common;
-using Common.Extensions;
 
 using Parser;
 using Parser.Tokens;
 
 using Specification.UDMF;
-
-using UTT = Specification.UDMF.UDMFTokenType;
 
 namespace UnitTest;
 

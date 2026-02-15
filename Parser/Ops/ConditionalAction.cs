@@ -17,7 +17,7 @@ public sealed class ConditionalAction : IOperation
   private ICondition Condition { get; }
   private OperationAction Action { get; }
   public bool NoInput { get; } = true;
-  public bool NoOutput { get; }
+  public bool NoOutput { get; } = true;
   public bool NoExecution { get; }
 
   public ConditionalAction (ICondition condition, OperationAction action)
@@ -26,8 +26,6 @@ public sealed class ConditionalAction : IOperation
     Action = action;
   }
 
-  public OpStatus DoOperation (XParser parser_ref)
-  {
-    return !Condition.Evaluate(parser_ref) ? OpStatus.Skipped : Action.DoOperation(parser_ref);
-  }
+  public OpStatus DoOperation (XParser parser_ref) =>
+    !Condition.Evaluate(parser_ref) ? OpStatus.Skipped : Action.DoOperation(parser_ref);
 }

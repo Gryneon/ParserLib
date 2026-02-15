@@ -1,14 +1,5 @@
 #pragma warning disable CA1416 // Validate platform compatibility
 
-using System.Collections.ObjectModel;
-using System.Windows.Forms;
-
-using Common.Regex;
-
-using Parser.Tokens;
-
-using Specification.XML;
-
 namespace FormObjectViewer;
 
 internal static class Program

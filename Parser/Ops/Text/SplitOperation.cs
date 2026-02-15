@@ -55,10 +55,7 @@ public class SplitOperation : Operation
     _items = [.. regexes];
     _options = regex_options;
   }
-  public SplitOperation (string input_key = "text", string output_key = "textparts") : base(input_key, output_key)
-  {
-    _type = Type.None;
-  }
+  public SplitOperation (string input_key = "text", string output_key = "textparts") : base(input_key, output_key) => _type = Type.None;
   #endregion
   /// <inheritdoc/>>
   protected override void Execute ()

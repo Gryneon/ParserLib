@@ -1,7 +1,5 @@
 #pragma warning disable CA1822 // Mark members as static
 
-using System.Runtime.Intrinsics.Arm;
-
 using Parser.Ops.Binary;
 using Parser.Ops.Text;
 

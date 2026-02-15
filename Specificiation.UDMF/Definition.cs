@@ -1,9 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-
-using Parser;
-using Parser.Inference;
-using Parser.Ops.Text;
 using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;

@@ -1,8 +1,6 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Rule Violation
 
-using System;
-
 using Parser.Ops;
 using Parser.Tokens;
 
@@ -10,7 +8,6 @@ using static Common.Names;
 using static Parser.Tokens.TokenRuleType;
 using static Specification.ZScript.ZScriptTokenType;
 
-using RT = Parser.Tokens.TokenRuleType;
 using ZT = Specification.ZScript.ZScriptTokenType;
 
 namespace Specification.ZScript;

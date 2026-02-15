@@ -1,7 +1,5 @@
 #pragma warning disable RE0001 // Invalid regex pattern
 
-using Parser.Ops.Binary;
-
 using static Specification.JSON.JSONTokenType;
 
 using RT = Parser.Tokens.TokenRuleType;

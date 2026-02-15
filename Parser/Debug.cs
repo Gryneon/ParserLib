@@ -92,22 +92,21 @@ public static class Debug
     MsgClass.Critical => C_Black,
     MsgClass.None or MsgClass.Informational or _ => C_White,
   };
+#pragma warning disable IDE0072 // Add missing cases
   public static ConsoleColor GetBackColor (MsgClass msg) => msg switch
   {
     MsgClass.Error => C_DarkRed,
     MsgClass.Critical => C_Red,
     _ => C_Black,
   };
-  public static void Log (MsgClass msgClass, string className, string methodName, string msg)
-  {
+#pragma warning restore IDE0072 // Add missing cases
+  public static void Log (MsgClass msgClass, string className, string methodName, string msg) =>
     Log(className, methodName, msg, GetBackColor(msgClass), GetTextColor(msgClass));
-  }
-  public static void Log (MsgClass msgClass, string className, string msg)
-  {
+  public static void Log (MsgClass msgClass, string className, string msg) =>
     Log(className, msg, GetBackColor(msgClass), GetTextColor(msgClass));
-  }
   [DoesNotReturn]
-  internal static void Throw<T> (ExceptionMsg msg, params Collection<string> values) where T : Exception => _ = Throw<T, object>(msg, values);
+  internal static void Throw<T> (ExceptionMsg msg, params Collection<string> values) where T : Exception =>
+    _ = Throw<T, object>(msg, values);
   [DoesNotReturn]
   internal static TReturn Throw<T, TReturn> (ExceptionMsg msg, params Collection<string> values) where T : Exception
   {
@@ -137,20 +136,16 @@ public static class Debug
   /// <param name="msg">The message to log.</param>
   /// <param name="back">The background color.</param>
   /// <param name="text">The foreground color.</param>
-  public static void Log (string src, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White)
-  {
+  public static void Log (string src, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White) =>
     DoLog($"{src} : {msg}", back, text);
-  }
   /// <summary>Logs a message to the output stream.</summary>
   /// <param name="src">The orignating class.</param>
   /// <param name="target">The originating method.</param>
   /// <param name="msg">The message to log.</param>
   /// <param name="back">The background color.</param>
   /// <param name="text">The foreground color.</param>
-  public static void Log (string src, string target, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White)
-  {
+  public static void Log (string src, string target, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White) =>
     DoLog($"{src}.{target} : {msg}", back, text);
-  }
   public static void LogException (Exception e)
   {
     e.ThrowIfNull();

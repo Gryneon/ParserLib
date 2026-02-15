@@ -3,18 +3,14 @@ using System.IO;
 
 using Parser.Tokens;
 
-using Specification.WAD;
-
 using static Parser.Debug;
 
 using CK = System.ConsoleKey;
 using ResWAD = Specification.WAD.Resources;
 using ResZScript = Specification.ZScript.Properties.Resources;
 using SpecACS = Specification.ACS.Definition;
-using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecMapInfo = Specification.MapInfo.Definition;
-using SpecUDMF = Specification.UDMF.Definition;
 using SpecWAD = Specification.WAD.Definition;
 using SpecXML = Specification.XML.Definition;
 using SpecZScript = Specification.ZScript.Definition;

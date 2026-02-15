@@ -27,14 +27,8 @@ public sealed class TokenFactory
     }
     _rules.AddRange(rules);
   }
-  public TokenFactory (Spec spec)
-  {
-    SetSpec(spec);
-  }
-  public TokenFactory ()
-  {
-    SetSpec(DefaultSpec.Unknown);
-  }
+  public TokenFactory (Spec spec) => SetSpec(spec);
+  public TokenFactory () => SetSpec(DefaultSpec.Unknown);
   #endregion
   #region Private Helper Properties
   private bool IgnoreCase => (_currentRule?.Type.HasFlag(RT.IgnoreCase) ?? false) || _default_rule.HasFlag(RT.IgnoreCase);

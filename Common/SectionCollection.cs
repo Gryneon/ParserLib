@@ -25,7 +25,7 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
     Collection<bool> result = [];
     for (int i = 0; i < FullText?.Length; i++)
     {
-      if (_bit_array[i] == true)
+      if (_bit_array[i])
         result.Add(true);
       else
         result.Add(false);

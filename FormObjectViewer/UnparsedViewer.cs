@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Linq;
 
 using Common;
@@ -12,10 +11,7 @@ internal sealed partial class UnparsedViewer : Form
   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
   public SectionCollection Sections { get; internal set; } = [];
 
-  public UnparsedViewer ()
-  {
-    InitializeComponent();
-  }
+  public UnparsedViewer () => InitializeComponent();
 
   private void UnparsedViewer_Load (object sender, EventArgs e)
   {

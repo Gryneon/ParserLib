@@ -20,10 +20,7 @@ internal sealed partial class RuleEditForm : Form
   [DSVA(DSV.Hidden)]
   private TokenRule WorkingCopy { get; set; }
 
-  public RuleEditForm ()
-  {
-    InitializeComponent();
-  }
+  public RuleEditForm () => InitializeComponent();
   [MemberNotNull(nameof(Original))]
   private void CheckSetDefaults () => Original ??= new()
   {

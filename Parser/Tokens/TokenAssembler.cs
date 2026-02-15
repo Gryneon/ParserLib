@@ -1,9 +1,5 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Security;
-
 namespace Parser.Tokens;
 
 public sealed partial class TokenAssembler
