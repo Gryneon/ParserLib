@@ -20,12 +20,14 @@ public static class Definition
       IfN(ExtIs, "vnc"),
       IfN(ExtIs, "inf")],
     RxOpt = ROML | ROIPW | ROEC | ROIC,
+    IsTextFile = true,
+    SC = SCOIC,
     TokenType = typeof(ITT),
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
       new GenerateOperation<TokenObject, INISection>(INISection.Generate, static item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
-      Operation.End
+      Op.End
     ],
     TokenRules = [
       new(Competitive | IgnoredToken, ITT.None, @";.*?$"),
@@ -34,8 +36,8 @@ public static class Definition
       .. MakeSingleCharRules("=", TokenExact, new ITT[] { ITT.Eq } ),
       new(TokenExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
-      new(BuildProperty, ITT.Property, "tn:Key tx:Eq tv:Value"),
-      new(BuildObject, ITT.SectionWProps, "tn:INISection tpm:Property")
+      new(BuildProperty, ITT.Property, "n:Key x:Eq v:Value"),
+      new(BuildObject, ITT.SectionWProps, "n:INISection pm:Property")
     ],
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
   };

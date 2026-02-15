@@ -4,6 +4,18 @@
         <name>Specification.ACS</name>
     </assembly>
     <members>
+        <member name="F:Specification.ACS.ACSTokenType.Value">
+            <summary>Placeholder representing any value, expression, or function call.</summary>
+        </member>
+        <member name="F:Specification.ACS.ACSTokenType.Type">
+            <summary>Keyword only. Any type object, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
+        </member>
+        <member name="F:Specification.ACS.ACSTokenType.Wait">
+            <summary>Keyword Only - Wait Functions</summary>
+        </member>
+        <member name="F:Specification.ACS.ACSTokenType.ExpressionStatement">
+            <summary>An expression that can also be used as an independent statement.</summary>
+        </member>
         <member name="T:Specification.ACS.Definition">
             <summary>
             ACS Specification Definition <br/>

@@ -27,5 +27,4 @@ public interface IGeneratable
       return false;
     }
   }
-
 }

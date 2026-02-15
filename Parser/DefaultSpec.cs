@@ -1,7 +1,5 @@
 #pragma warning disable CA1822 // Mark members as static
 
-using System.Runtime.Intrinsics.Arm;
-
 using Parser.Ops.Binary;
 using Parser.Ops.Text;
 
@@ -16,7 +14,7 @@ public static class DefaultSpec
   {
     Name = "unknown",
     FileInferences = [],
-    Operations = [Ops.Operation.End],
+    Operations = [Op.End],
   };
   /// <summary>The spec assigned if the parser gets a binary file.</summary>
   [DefinitionExport]
@@ -34,7 +32,7 @@ public static class DefaultSpec
     Name = "textbylines",
     Operations = [
       new SplitOperation("text", "result"),
-      Operation.End
+      Op.End
     ]
   };
 }

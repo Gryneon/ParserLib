@@ -140,7 +140,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
         string key = row.Cells[0].Value?.ToString() ?? string.Empty;
         object? value = DataDictionary != null && DataDictionary.TryGetValue(key, out object? value1)
             ? value1 : null;
-        RowSelected?.Invoke(this, new DataDictionaryEventArgs(key, value!));
+        RowSelected?.Invoke(this, new DataDictionaryEventArgs(key, value));
       }
     };
   }

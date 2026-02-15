@@ -1,5 +1,3 @@
-using System.Xml.Linq;
-
 using Parser.Tokens;
 
 namespace Specification.XML;

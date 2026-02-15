@@ -2,15 +2,15 @@
 
 namespace Parser.Tokens;
 
-public class TokenStatement : TokenBase, IEnumerable<IToken>
+public class TokenStatement : TokenBase, IEnumerable<IToken>, ITypeToken, INameToken
 {
   // Assigned Properties
-  public string Name => NameToken.Content;
+  public string? Name => NameToken?.Content;
   public string? ObjType => TypeToken is IToken t ? t.Content : null;
 
   // Tokens Kept
-  public required IToken NameToken { get; init; }
-  public IToken? TypeToken { get; init; }
+  public IToken? NameToken { get; set; }
+  public IToken? TypeToken { get; set; }
 
   public TokenCollection Parameters { get; init; } = [];
   public override bool Equals (object? obj) => obj switch

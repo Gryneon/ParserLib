@@ -1,37 +1,25 @@
-using System.Linq;
-
 //using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 using Parser.Tokens;
 
 namespace Specification.INI;
 
-/// <summary>
-/// Represents a INISection heading in an INI formatted file.
-/// </summary>
-public sealed class INISection : IGeneratable, IEnumerable<PropertyObj>, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
+/// <summary>Represents a INISection heading in an INI formatted file.</summary>
+public sealed class INISection : IGeneratable, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
 {
-  /// <summary>
-  /// Creates an empty INISection.
-  /// </summary>
+  /// <summary>Creates an empty INISection.</summary>
   private INISection () { }
-  /// <summary>
-  /// Creates a <see cref="INISection"/> with the provided name.
-  /// </summary>
+  /// <summary>Creates a <see cref="INISection"/> with the provided name.</summary>
   /// <param name="name">The name of the INISection.</param>
   [SetsRequiredMembers]
   public INISection (string name) => Name = name;
 
-  /// <summary>
-  /// Creates a INISection from a string.
-  /// </summary>
+  /// <summary>Creates a INISection from a string.</summary>
   /// <param name="name">The name of the section.</param>
   public static explicit operator INISection (string name) => new() { Name = name };
   /// <summary>The name of the section.</summary>
   public string Name { get; set; } = SE;
-  /// <summary>
-  /// The properties within the INISection.
-  /// </summary>
+  /// <summary>The properties within the INISection.</summary>
   private Dictionary<string, string> Properties { get; init; } = [];
   /// <summary>
   /// Gets the value of a property from a given key.
@@ -43,7 +31,7 @@ public sealed class INISection : IGeneratable, IEnumerable<PropertyObj>, IEnumer
     get => Properties[key];
     set => Set(key, value ?? SE);
   }
-  /// <inheritdoc/>
+  /// <summary>The number of properties this section contains.</summary>
   public int Count => Properties.Count;
   /// <inheritdoc/>
   /// <remarks>
@@ -55,16 +43,24 @@ public sealed class INISection : IGeneratable, IEnumerable<PropertyObj>, IEnumer
   public static INISection Generate (TokenObject input)
   {
     input.ThrowIfNull();
-    INISection result = new()
+    return new INISection()
     {
-      Name = input.Name,
-      Properties = [.. input.Properties.Select(item => ((KeyValuePair<string, string>) (item as TokenProperty)))]
+      Name = input.Name ?? SE,
+      Properties = input.Properties.GetProperties(),
     };
-    return result;
   }
   /// <summary>
-  /// Sets the given property to the given value.
+  /// Gets the <see langword="string"/> representation of the object for serialization.
   /// </summary>
+  /// <returns>The <see langword="string"/> representation of the object.</returns>
+  public static string SerializeProp (KeyValuePair<string, string> k) => $"  {k.Key}={k.Value}";
+  public static PropertyBase<string> GenerateProp (TokenProperty input)
+  {
+    input.ThrowIfNull();
+    input.Name.ThrowIfNull();
+    return new() { Key = input.Name, Value = input.Value ?? SE };
+  }
+  /// <summary>Sets the given property to the given value.</summary>
   /// <param name="key">The key name.</param>
   /// <param name="value">The value to set it to.</param>
   public void Set (string key, string value)
@@ -93,19 +89,15 @@ public sealed class INISection : IGeneratable, IEnumerable<PropertyObj>, IEnumer
       Set(child);
     }
   }
-  /// <summary>
-  /// Adds the property, or sets the value of the property if it already exists.
-  /// </summary>
+  /// <summary>Adds the property, or sets the value of the property if it already exists.</summary>
   /// <param name="child">The property to add.</param>
   public void Add (PropertyObj child) => Set(child);
-  /// <summary>
-  /// Adds multiple properties, or sets the values for any that already exist.
-  /// </summary>
+  /// <summary>Adds multiple properties, or sets the values for any that already exist.</summary>
   /// <param name="children">The properties to add.</param>
   public void AddRange (IEnumerable<PropertyObj> children) => SetRange(children);
   /// <inheritdoc/>
-  public IEnumerator<PropertyObj> GetEnumerator () =>
-    (from prop in Properties select new PropertyObj(prop.Key, prop.Value)).GetEnumerator();
+  public IEnumerator<IProperty<string>> GetEnumerator () =>
+    (from prop in Properties select new PropertyBase<string>() { Key = prop.Key, Value = prop.Value }).GetEnumerator();
   /// <inheritdoc/>
   IEnumerator<IProperty<string>> IEnumerable<IProperty<string>>.GetEnumerator () => GetEnumerator();
   /// <inheritdoc/>
@@ -115,9 +107,7 @@ public sealed class INISection : IGeneratable, IEnumerable<PropertyObj>, IEnumer
   /// <inheritdoc/>
   public bool Remove (PropertyObj item) => !(item is null || item.Key is null || !Properties.Remove(item.Key));
 
-  /// <summary>
-  /// Removes the property with the provided name.
-  /// </summary>
+  /// <summary>Removes the property with the provided name.</summary>
   /// <param name="name">The name of the property to remove.</param>
   /// <returns><see langword="true"/> if the property was removed, <see langword="false"/> otherwise.</returns>
   public bool Remove (string name) => Properties.Remove(name);

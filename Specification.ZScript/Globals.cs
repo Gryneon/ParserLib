@@ -2,8 +2,6 @@
 //global using System.Collections.ObjectModel;
 
 //global using Common;
-global using Common.Regex;
-
 global using Parser;
 global using Parser.Ops.Text;
 

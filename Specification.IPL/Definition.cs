@@ -95,6 +95,8 @@ public static class Definition
       IfN(ExtIs, "pr1"),
       IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
+    IsTextFile = true,
+    TokenType = typeof(ITT),
     TokenRules = [
       new(TokenMatch | IgnoredToken, ITT.None, $"(?<={Etx}).*?(?={Stx})"),
       new(TokenMatch | IgnoredToken, ITT.None, $@"\A.*?(?={Stx})"),

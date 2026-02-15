@@ -60,7 +60,7 @@ public static class Definition
     GroupTokenRules = [],
     Operations = [
       new TokenizeOperation(),
-      Operation.End
+      Op.End
     ],
   };
 }

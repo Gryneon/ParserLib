@@ -2,11 +2,8 @@
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
 #pragma warning disable CA2000 // Dispose objects before losing scope
 
-using System;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace FormObjectViewer;
 

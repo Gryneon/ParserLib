@@ -27,7 +27,7 @@ public class TokenRuleCollection : IList<TokenRule>, ICanAddChildren<TokenRule>,
     if (children is null)
       return;
 
-    foreach (var child in children)
+    foreach (TokenRule child in children)
     {
       Add(child);
     }

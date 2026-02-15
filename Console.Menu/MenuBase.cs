@@ -30,8 +30,5 @@ public abstract class MenuBase
   public void WriteData (string key, object value) => MData[key] = value;
   public object ReadData (string key) => MData[key];
 
-  protected MenuBase ()
-  {
-    MenuController.AddNewMenu(this);
-  }
+  protected MenuBase () => MenuController.AddNewMenu(this);
 }

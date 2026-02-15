@@ -33,10 +33,7 @@ public class TokenRule
     Type = type;
     TypeToAssign = typeToAssign?.ToString() ?? SE;
   }
-  public TokenRule ()
-  {
-    TypeToAssign = SE;
-  }
+  public TokenRule () => TypeToAssign = SE;
   public static TokenRule[] CopyOfRuleSet (TokenRuleCollection rules)
   {
     Collection<TokenRule> new_rules = [];

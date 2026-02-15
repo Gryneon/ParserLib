@@ -10,8 +10,6 @@ public class Spec
   #region Static Members
   /// <summary>The currently active specififcation. Used for objects that cannot see the parser.</summary>
   public static Spec Active { get => field ?? DefaultSpec.Unknown; protected set; }
-  /// <summary>Use this in operations that support it to load the values defined in the <see cref="Spec"/>.</summary>
-  public const int LoadFromSpec = 0x7fffffff;
   #endregion
   /// <summary>The name of this Spec.</summary>
   public required string Name { get; init; }

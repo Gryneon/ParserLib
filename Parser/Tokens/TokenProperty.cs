@@ -22,7 +22,7 @@ public sealed class TokenProperty : TokenBase, IReadOnlyProperty<string>, IPrope
 
   string IReadOnlyProperty<string>.Key => Name ?? SE;
 
-  public static explicit operator KeyValuePair<string, string> (TokenProperty? property) => new(property?.Name! ?? SE, property?.Value! ?? SE);
+  public static explicit operator KeyValuePair<string, string> (TokenProperty? property) => new(property?.Name ?? SE, property?.Value ?? SE);
 
   int IComparable<IProperty<string>>.CompareTo (IProperty<string>? other) => Name.CompareTo(other?.Key, SCO);
   public bool Equals (IProperty<string>? other) => (Name?.Equals(other?.Key, SCO) ?? false) && (Value?.Equals(other?.Value, SCO) ?? false);

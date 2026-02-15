@@ -19,5 +19,5 @@ public abstract class AndCondition (OperationConditionType type, params Collecti
   }
 
   /// <inheritdoc/>
-  public bool Evaluate () => Conditions.All(item => item.Evaluate());
+  public bool Evaluate (XParser parser) => Conditions.All(item => item.Evaluate(parser));
 }

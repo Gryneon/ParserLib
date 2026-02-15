@@ -19,5 +19,5 @@ public abstract class OrCondition (OperationConditionType type, params Collectio
   }
 
   /// <inheritdoc/>
-  public bool Evaluate () => Conditions.Any(item => item.Evaluate());
+  public bool Evaluate (XParser parser) => Conditions.Any(item => item.Evaluate(parser));
 }

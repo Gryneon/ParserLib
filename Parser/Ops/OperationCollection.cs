@@ -19,16 +19,16 @@ public sealed class OperationCollection : IOperation, IReadOnlyCollection<IOpera
   {
     int nextOrEnd = index + 1 >= operations.Count ? -1 : index + 1;
     int first = operations.Count;
-    operations.AddRange([.. Operations, Operation.JumpTo(nextOrEnd)]);
-    operations.Replace(index, [Operation.JumpTo(first)]);
+    operations.AddRange([.. Operations, Op.JumpTo(nextOrEnd)]);
+    operations.Replace(index, [Op.JumpTo(first)]);
     return operations.Count;
   }
 
   public OperationCollection (IEnumerable<IOperation> ops)
   {
     ops.ThrowIfNull();
-    Operations = [..ops];
-    foreach (var op in Operations)
+    Operations = [.. ops];
+    foreach (IOperation op in Operations)
     {
       op.ApplyProperties(ContinueOnFail, SkipOperation);
     }

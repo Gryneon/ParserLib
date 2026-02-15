@@ -16,5 +16,5 @@ public interface ICondition
   /// <summary>
   /// Evalutates the condition and stores the result.
   /// </summary>
-  bool Evaluate ();
+  bool Evaluate (XParser parser);
 }

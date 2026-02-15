@@ -48,8 +48,11 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
 
     IOrderedEnumerable<Assembly> sorted = assemblies.OrderBy(static i => i.GetName().Name);
 
-    foreach (Assembly assembly in assemblies)
+    foreach (Assembly assembly in sorted)
     {
+      if (assembly.GetName().Name?.StartsWithAny(SCO, "System", "Microsoft") ?? false)
+        continue;
+
       Log(MsgClass.Debug, "Library", $"Loaded assembly ({assembly.GetName().Name})");
       Type[] types = assembly.GetTypes();
 

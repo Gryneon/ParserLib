@@ -12,10 +12,7 @@ public sealed class OperationAction : IOperation
     DData.AddRange(args.OfType<decimal>());
     OData.AddRange(args.Where(item => item is not string and not int and not decimal));
   }
-  internal OperationAction (OAT type)
-  {
-    Type = type;
-  }
+  internal OperationAction (OAT type) => Type = type;
 
   bool IOperation.ContinueOnFail { get; set; }
   bool IOperation.SkipOperation { get; set; }
@@ -58,7 +55,7 @@ public sealed class OperationAction : IOperation
           Parser.SetNextOperationIndex(0);
           goto Pass;
         case OAT.JumpIf:
-          if (OData[0] is ICondition c && c.Evaluate())
+          if (OData[0] is ICondition c && c.Evaluate(Parser))
             Parser.SetNextOperationIndex(IData[0]);
           goto Pass;
 

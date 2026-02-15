@@ -22,7 +22,7 @@ namespace Specification.WAD {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -63,7 +63,7 @@ namespace Specification.WAD {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
         /// </summary>
-        internal static string wad_pl2 {
+        public static string wad_pl2 {
             get {
                 return ResourceManager.GetString("wad_pl2", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Specification.WAD {
         /// <summary>
         ///   Looks up a localized string similar to C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD.
         /// </summary>
-        internal static string wad_tnt {
+        public static string wad_tnt {
             get {
                 return ResourceManager.GetString("wad_tnt", resourceCulture);
             }

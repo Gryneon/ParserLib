@@ -19,7 +19,6 @@
     </xs:all>
     <xs:attribute name="name" type="xs:token"/>
   </xs:complexType>
-
   <xs:element name="RuleSet">
     <xs:complexType>
       <xs:sequence>

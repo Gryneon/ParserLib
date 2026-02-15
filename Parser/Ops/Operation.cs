@@ -45,72 +45,6 @@ public abstract class Operation : IOperation
   protected static void ThrowBadParserError (object parser, [NotNull] Type desired_parser) =>
     throw new ArgumentException($"Parser was not a {desired_parser.Name}. Got a {parser?.GetType()}.");
   #endregion
-  #region Static Operation Methods & Properties
-  public static IOperation JumpTo (string label) => new OperationAction(OAT.GotoLabel, label);
-  public static IOperation JumpToFirst () => new OperationAction(OAT.GotoFirst);
-  public static IOperation JumpTo (int index) => new OperationAction(OAT.GotoIndex, index);
-  public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
-
-  public static IOperation Fail () => new OperationAction(OAT.ForceFail);
-  public static IOperation Done () => new OperationAction(OAT.ForcePass);
-  public static IOperation Prompt () => new OperationAction(OAT.Prompt);
-
-  public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
-  public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey, key);
-  public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey, key);
-  public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
-  public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
-
-  public static IOperation BreakLoop () => new OperationAction(OAT.BreakLoop);
-  public static IOperation StartLoop (LoopOperation loopOperation, int continue_index, int loop_) => new OperationAction(OAT.StartLoop, loopOperation);
-  public static IOperation NextLoop (int increment = 1) => new OperationAction(OAT.NextLoop, increment);
-  public static IOperation ContinueLoop (int increment = 1) => new OperationAction(OAT.ContinueLoop, increment);
-
-  public static IOperation ClearCursor () => new OperationAction(OAT.ClearCursor);
-  public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
-  public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
-
-  public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.While,
-    Condition = condition,
-    Count = null
-  };
-  public static IOperation Until (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.Until,
-    Condition = condition,
-    Count = null
-  };
-  public static IOperation ForEach (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.ForEach,
-    CursorKey = cursor_key,
-    Count = null
-  };
-  public static IOperation ForCount (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.ForCount,
-    CursorKey = cursor_key,
-    Count = null
-  };
-  public static IOperation ForCount (IEnumerable<IOperation> operations, string count_key, int count) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.ForCount,
-    CursorKey = count_key,
-    Count = count
-  };
-
-  /// <summary>
-  /// A built in operation that ends the operation sequence.
-  /// </summary>
-  public static IOperation End => new OperationAction(OAT.ForcePass);
-  #endregion
   #region Stored Keys & Data
   /// <summary>
   /// The loaded data from the input keys if there are multiple keys provided.
@@ -311,18 +245,12 @@ public abstract class Operation : IOperation
   }
   #endregion
   #region Reference Properties
-  /// <summary>
-  /// The reference to the parser.
-  /// </summary>
-  [AllowNull] protected XParser Parser { get; set; }
-  /// <summary>
-  /// The reference to the <see cref="DataDictionary"/>.
-  /// </summary>
+  /// <summary>The reference to the parser.</summary>
+  [AllowNull] protected XParser Parser { get; private set; }
+  /// <summary>The reference to the <see cref="DataDictionary"/>.</summary>
   [AllowNull] protected DataDictionary Data => Parser.Data;
-  /// <summary>
-  /// The reference to the specification.
-  /// </summary>
-  [AllowNull] protected Spec Spec { get; set; }
+  /// <summary>The reference to the specification.</summary>
+  [AllowNull] protected Spec Spec => Parser.Spec;
   #endregion
   #region Constructors
   /// <summary>Multiple input keys.</summary>
@@ -333,7 +261,7 @@ public abstract class Operation : IOperation
     OutputKey = output_key;
   }
   /// <summary>
-  /// Constructor for the static <see cref="End"/> object, and for operations that do not touch data.
+  /// Constructor for the static <see cref="Op.End"/> object, and for operations that do not touch data.
   /// </summary>
   protected Operation ()
   {
@@ -351,7 +279,7 @@ public abstract class Operation : IOperation
     OutputKey = output_key;
   }
   #endregion
-  public virtual OpStatus DoOperation (XParser parser_ref)
+  public OpStatus DoOperation (XParser parser_ref)
   {
     if (SkipOperation)
       return OpStatus.Skipped;
@@ -390,7 +318,6 @@ public abstract class Operation : IOperation
   {
     parser.ThrowIfNull();
     Parser = parser;
-    Spec = parser.Spec;
 
     if (NoInput)
     {
@@ -431,4 +358,74 @@ public abstract class Operation : IOperation
     if (WorkToReturn is null || NoOutput) return;
     Parser.Data.Add(OutputKey, WorkToReturn);
   }
+}
+
+public static class Op
+{
+  #region Static Operation Methods & Properties
+  public static IOperation JumpTo (string label) => new OperationAction(OAT.GotoLabel, label);
+  public static IOperation JumpToFirst () => new OperationAction(OAT.GotoFirst);
+  public static IOperation JumpTo (int index) => new OperationAction(OAT.GotoIndex, index);
+  public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
+
+  public static IOperation Fail () => new OperationAction(OAT.ForceFail);
+  public static IOperation Done () => new OperationAction(OAT.ForcePass);
+  public static IOperation Prompt () => new OperationAction(OAT.Prompt);
+
+  public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
+  public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey, key);
+  public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey, key);
+  public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
+  public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
+
+  public static IOperation BreakLoop () => new OperationAction(OAT.BreakLoop);
+  public static IOperation StartLoop (LoopOperation loopOperation, int continue_index, int loop_) => new OperationAction(OAT.StartLoop, loopOperation);
+  public static IOperation NextLoop (int increment = 1) => new OperationAction(OAT.NextLoop, increment);
+  public static IOperation ContinueLoop (int increment = 1) => new OperationAction(OAT.ContinueLoop, increment);
+
+  public static IOperation ClearCursor () => new OperationAction(OAT.ClearCursor);
+  public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
+  public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
+
+  public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
+  {
+    Operations = [.. operations],
+    Type = LoopType.While,
+    Condition = condition,
+    Count = null
+  };
+  public static IOperation Until (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
+  {
+    Operations = [.. operations],
+    Type = LoopType.Until,
+    Condition = condition,
+    Count = null
+  };
+  public static IOperation ForEach (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
+  {
+    Operations = [.. operations],
+    Type = LoopType.ForEach,
+    CursorKey = cursor_key,
+    Count = null
+  };
+  public static IOperation ForCount (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
+  {
+    Operations = [.. operations],
+    Type = LoopType.ForCount,
+    CursorKey = cursor_key,
+    Count = null
+  };
+  public static IOperation ForCount (IEnumerable<IOperation> operations, string count_key, int count) => new LoopOperation()
+  {
+    Operations = [.. operations],
+    Type = LoopType.ForCount,
+    CursorKey = count_key,
+    Count = count
+  };
+
+  /// <summary>
+  /// A built in operation that ends the operation sequence.
+  /// </summary>
+  public static IOperation End => new OperationAction(OAT.ForcePass);
+  #endregion
 }

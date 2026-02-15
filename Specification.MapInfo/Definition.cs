@@ -5,7 +5,6 @@
 
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security;
 
 using static Common.Names;
 using static Parser.DefinitionStaticFunctions;
