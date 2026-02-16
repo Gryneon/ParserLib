@@ -30,14 +30,22 @@ public static class Definition
     ],
     IsTextFile = true,
     SC = SCOIC,
+    TokenCompatLookup = new()
+    {
+      [FrameLump] = [String, Name],
+      [StateCmd] = [GotoCmd, LoopCmd, BasicCmd],
+      [StateEntry] = [StateCmd, State, FrameDef]
+    },
     TokenType = typeof(ZT),
     DefaultRuleSet = IgnoreCase | ExemptAllWithin,
     TokenRules = [
       new(TokenMatch|Competitive|IgnoredToken, ZT.None, @"\/\/[^\n]*"),
       new(TokenMatch|Competitive|IgnoredToken, ZT.None, @"\/\*[\s\S]*?\*\/"),
-      new(TokenMatch|Competitive, ZT.String, @"""([^""\\]|\\.)*"""),
+      new(TokenMatch|Competitive, String, @"""([^""\\]|\\.)*"""),
       .. TokenRule.MakeSingleCharRules("{}();=,:+-", TokenExact, new ZT[] { Bo, Bc, Po, Pc, Sc, Eq, Cm, Co, Pl, Mn })
-
-    ]
+    ],
+    GroupTokenRules = [
+     new(TokenMatch, FrameDef, "n:(name|String) v:Name v:Num fo:Bright "),
+      ]
   };
 }

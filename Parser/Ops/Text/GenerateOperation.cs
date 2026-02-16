@@ -15,12 +15,12 @@ namespace Parser.Ops.Text;
 /// <br/>
 /// Statuses:
 /// <code>
-/// <see cref="OpStatus.Pass"/>: Operation completed successfully.
-/// <see cref="OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
-/// <see cref="OpStatus.FailOverride"/>: Operation failed, but is allowed to continue.
-/// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
-/// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataDictionary"/>.
+/// <see cref="OS.Pass"/>: Operation completed successfully.
+/// <see cref="OS.Skipped"/>: Operation completed successfully, but no work was done.
+/// <see cref="OS.FailOverride"/>: Operation failed, but is allowed to continue.
+/// <see cref="OS.FailBadInputType"/>: Operation was provided the wrong type as input.
+/// <see cref="OS.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+/// <see cref="OS.FailNoSuchVarName"/>: The key was not found in the <see cref="DataDictionary"/>.
 /// </code>
 /// </remarks>
 public class GenerateOperation<TIn, TOut> : Operation

@@ -49,185 +49,137 @@ public sealed partial class TokenAssembler
       string[] data_strings = data.Split([' ', '\t'], 255, SSORT);
       foreach (string item in data_strings)
       {
-        _rule.Sequence.Add(ChkToken.Parse(item, _spec));
+        try
+        {
+          _rule.Sequence.Add(ChkToken.Parse(item, _spec));
+        }
+        catch (ArgumentException ae)
+        {
+          Log(MsgClass.Error, "TokenAssembler", "Parse", $"{ae.Message}");
+          continue;
+        }
       }
     }
   }
+  [SuppressMessage("Style", "IDE0072:Add missing cases", Justification = "Irrelevant here.")]
   private void Construct (int first_token_index, TokenCollection tokens_to_assemble)
   {
     Validate();
-    _tokens.Remove(first_token_index, tokens_to_assemble.Count);
 
-    TToken getToken<TToken> (RT flag)
+    if (tokens_to_assemble.IsEmpty()) return;
+
+    bool tryGetTokens (RT flag, [NotNull] out IList<IToken> tokens)
     {
       Validate();
-      for (int i = 0; i < tokens_to_assemble.Count; i++)
-      {
-        IToken token = tokens_to_assemble[i];
-        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag))
-        {
-          return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
-        }
-      }
-      throw new ArgumentException("No data with the specified flag");
-    }
-    TToken? getOptionalToken<TToken> (RT flag)
-    {
-      Validate();
-      for (int i = 0; i < tokens_to_assemble.Count; i++)
-      {
-        IToken token = tokens_to_assemble[i];
-        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag))
-        {
-          return token is TToken ttoken ? ttoken : throw new InvalidOperationException($"Token {token} is not of the correct type.");
-        }
-      }
-      return default;
-    }
-    TokenCollection getTokens<TToken> (RT flag) where TToken : IToken
-    {
-      Validate();
-      TokenCollection token_result = [];
-      for (int i = 0; i < tokens_to_assemble.Count; i++)
-      {
-        IToken token = tokens_to_assemble[i];
-        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag) && token is TToken ttoken)
-        {
-          token_result.Add(ttoken);
-        }
-      }
-      return token_result;
-    }
-    bool hasToken (RT flag)
-    {
-      Validate();
+      tokens = [];
       for (int i = 0; i < _tokens.Count; i++)
       {
-        if (_tokenRuleLookup[first_token_index + i].HasFlag(flag))
+        if (!_tokenRuleLookup.TryGetValue(first_token_index + i, out RT value))
+          continue;
+        if (value.HasFlag(flag))
         {
+          tokens.Add(_tokens[i]);
+          continue;
+        }
+      }
+
+      return tokens.Count > 0;
+    }
+    bool tryGetToken (RT flag, [NotNullWhen(true)] out IToken? token)
+    {
+      Validate();
+      token = null;
+      for (int i = 0; i < _tokens.Count; i++)
+      {
+        if (!_tokenRuleLookup.TryGetValue(first_token_index + i, out RT value))
+          return false;
+        if (value.HasFlag(flag))
+        {
+          token = _tokens[i];
           return true;
         }
       }
       return false;
     }
-    TokenObject buildObject ()
+    ComplexToken buildObject ()
     {
       IToken? originalType = null;
       IToken? originalName = null;
-      TokenCollection? originalProps = null;
-      TokenCollection? originalFlags = null;
-
-      if (hasToken(RT.Descendant))
+      IToken? originalValue = null;
+      TokenCollection originalProps = [];
+      TokenCollection originalFlags = [];
+      TokenCollection originalValues = [];
+      TokenCollection originalParams = [];
+      if (tryGetToken(RT.Descendant, out IToken? baseToken))
       {
-        IToken baseToken = getToken<IToken>(RT.Descendant);
-
-        if (baseToken is ITypeToken itt)
-        {
-          originalType = itt.TypeToken;
-        }
-        if (baseToken is INameToken itn)
-        {
-          originalName = itn.NameToken;
-        }
+        if (baseToken is ITypeToken itt) originalType = itt.TypeToken;
+        if (baseToken is INameToken itn) originalName = itn.NameToken;
+        if (baseToken is IValueToken ivt) originalValue = ivt.ValueToken;
         if (baseToken is TokenObject to)
         {
           originalProps = [.. to.Properties];
           originalFlags = [.. to.Flags];
         }
+        if (baseToken is ComplexToken ct)
+        {
+          originalValues = [.. ct.GetPieceToken(TPT.ValueList) as IEnumerable<IToken> ?? []];
+          originalParams = [.. ct.GetPieceToken(TPT.ParameterList) as IEnumerable<IToken> ?? []];
+          originalProps = [.. ct.GetPieceToken(TPT.PropertyList) as IEnumerable<IToken> ?? []];
+          originalFlags = [.. ct.GetPieceToken(TPT.FlagList) as IEnumerable<IToken> ?? []];
+        }
       }
-
-      TokenObject result = new()
+      ComplexToken result = new()
       {
         NameToken = originalName,
         TypeToken = originalType,
+        ValueToken = originalValue,
         Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        Properties = originalProps ?? [],
-        Flags = originalFlags ?? [],
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       };
 
-      result.NameToken = getOptionalToken<IToken>(RT.AssignName) ?? result.NameToken;
-      result.TypeToken = getOptionalToken<IToken>(RT.AssignType) ?? result.TypeToken;
-      result.Properties.AddRange(getTokens<IToken>(RT.AddProperty));
-      result.Flags.AddRange(getTokens<IToken>(RT.AddProperty));
+      result.AddPieceType(TPT.PropertyList, originalProps);
+      result.AddPieceType(TPT.FlagList, originalFlags);
+      result.AddPieceType(TPT.ParameterList, originalParams);
+      result.AddPieceType(TPT.ValueList, originalValues);
+
+      if (tryGetToken(RT.AssignName, out IToken? name)) result.NameToken = name;
+      if (tryGetToken(RT.AssignType, out IToken? type)) result.TypeToken = type;
+
+      if (tryGetTokens(RT.AssignValue, out IList<IToken> list))
+      {
+        if (list.Count > 1)
+          result.AddPieceType(TPT.ValueList, new TokenCollection(list));
+        else if (list.Count == 1)
+          result.ValueToken = list[0];
+      }
+
+      if (tryGetToken(RT.AssignLeft, out IToken? left))
+        result.SetPieceType(TPT.Left, left);
+      if (tryGetToken(RT.AssignRight, out IToken? right))
+        result.SetPieceType(TPT.Right, right);
+      if (tryGetToken(RT.AssignCenter, out IToken? center))
+        result.SetPieceType(TPT.Center, center);
+
+      if (tryGetTokens(RT.AddProperty, out IList<IToken> list2))
+        foreach (IToken item in list2)
+          result.AddPieceType(TPT.PropertyList, item);
+      if (tryGetTokens(RT.AddFlag, out IList<IToken> list3))
+        foreach (IToken item in list3)
+          result.AddPieceType(TPT.FlagList, item);
+      if (tryGetTokens(RT.AddParameter, out IList<IToken> list4))
+        foreach (IToken item in list4)
+          result.AddPieceType(TPT.ParameterList, item);
+
       return result;
     }
     _constructed_items++;
 
-    RT switch_safe = _rule.Type.RemoveBitLong<RT>(RT.Recursive);
-    IToken constructed_obj = switch_safe switch
-    {
-      RT.BuildProperty => new TokenProperty()
-      {
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        NameToken = getOptionalToken<IToken>(RT.AssignName),
-        ValueToken = getOptionalToken<IToken>(RT.AssignValue),
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin),
-      },
-      RT.BuildObject => buildObject(),
-      RT.BuildArray => new TokenArray()
-      {
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        Items = [.. getTokens<IToken>(RT.AssignValue)],
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      },
-      RT.BuildFlag => new TokenFlag()
-      {
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        AddFlag = hasToken(RT.AddFlag),
-        NameToken = getToken<IToken>(RT.AssignName),
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      },
-      RT.BuildLabel => new TokenLabel()
-      {
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        NameToken = getToken<IToken>(RT.AssignName),
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      },
-      RT.BuildTypedValue => new TokenTypedValue()
-      {
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        TypeToken = getOptionalToken<IToken>(RT.AssignType),
-        ValueToken = getOptionalToken<IToken>(RT.AssignValue),
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      },
-      RT.BuildExpression => new TokenExpression()
-      {
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        TypeToken = getOptionalToken<IToken>(RT.AssignType),
-        LeftValueToken = getOptionalToken<IToken>(RT.AssignLeft),
-        RightValueToken = getOptionalToken<IToken>(RT.AssignRight),
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      },
-      RT.BuildStatement => new TokenStatement()
-      {
-        Type = _rule.TypeToAssign,
-        Index = tokens_to_assemble[0].Index,
-        TypeToken = getOptionalToken<IToken>(RT.AssignType),
-        NameToken = getOptionalToken<IToken>(RT.AssignName),
-        Parameters = getTokens<IToken>(RT.AddProperty),
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      },
-      _ => throw new InvalidOperationException("Unknown rule type"),
-    };
-    _tokens.Insert(first_token_index, constructed_obj);
+    ComplexToken complex_token = buildObject();
+    _tokens.Remove(first_token_index, tokens_to_assemble.Count);
+    _tokens.Insert(first_token_index, complex_token);
   }
-  internal int ExecRule ()
+  private int ExecRule ()
   {
     Validate();
     TokenCollection assembly = [];
@@ -262,7 +214,7 @@ public sealed partial class TokenAssembler
         {
           Construct(first_token_index, assembly);
         }
-        token_index = first_token_index + 1;
+        token_index = first_token_index == -1 ? token_index + 1 : first_token_index + 1;
         reset_match();
         continue;
       }
@@ -342,7 +294,7 @@ public sealed partial class TokenAssembler
       }
       else
       {
-
+        LogInfo($"Rule {r} Did not match any content.");
       }
     }
 

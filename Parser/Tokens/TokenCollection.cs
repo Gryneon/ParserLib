@@ -45,7 +45,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
   bool IToken.Exempt { get; set; }
   bool IToken.Ignored => false;
-  public IReadOnlyList<IToken> Children
+  public IList<IToken> Children
   {
     get => _tokens;
     init => _tokens = [.. value];

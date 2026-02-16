@@ -48,9 +48,9 @@ public enum TokenRuleType : long
   AssignType = 0x20000,
   /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject"/>.</summary>
   AddProperty = 0x40000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="true"/> in a <see cref="TokenFlag"/>.</summary>
+  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.State"/> to <see langword="true"/> in a <see cref="TokenFlag"/>.</summary>
   AddFlag = 0x80000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.AddFlag"/> to <see langword="false"/> in a <see cref="TokenFlag"/>.</summary>
+  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.State"/> to <see langword="false"/> in a <see cref="TokenFlag"/>.</summary>
   SubFlag = 0x100000,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>
@@ -90,4 +90,7 @@ public enum TokenRuleType : long
   AssignRight = 0x200000000L,
   /// <summary>This flag means a character was not recognized.</summary>
   AssignCenter = 0x400000000L,
+  AddParameter = 0x800000000,
+  AddStatement = 0x1000000000,
+  AssignCustomProp = 0x2000000000,
 }

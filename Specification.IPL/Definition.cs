@@ -113,12 +113,19 @@ public static class Definition
       new(TokenMatch, ITT.Can, $"{Can}"),
       new(TokenMatch, ITT.Fs, $"{FS}|<FS>"),
       new(TokenMatch, ITT.TextProp, Rx(@"d3,.*?(?=$|;|{Etx})")),
+      new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=[0-9])"),
+      new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=\< | ;|<LF>|\n)"),
+      new(TokenMatch, ITT.Value, @"(?<=\b[A-Z]\b)[0-9]+(?=;|\<)"),
+      new(TokenMatch, ITT.Value, @"(?<=,)[0-9]+(?=,|;|\<)"),
     ],
     SC = SCO,
     TokenCompatLookup = new()
     {
       [ITT.Cmd] = [ITT.Etb, ITT.Stx, ITT.Etx, ITT.Can],
       [ITT.Break] = [ITT.Sc, ITT.Lf, ITT.Etx]
-    }
+    },
+    GroupTokenRules = [
+      new(BuildStatement, ITT.Line, "n:Letter t:Value pa:(TextProp|Prop)")
+    ]
   };
 }

@@ -169,7 +169,16 @@ internal sealed class Program
     }
     else
     {
-      byte[] bytes = File.ReadAllBytes(file.UserDirFix());
+      byte[] bytes;
+      try
+      {
+        bytes = File.ReadAllBytes(file.UserDirFix());
+      }
+      catch (DirectoryNotFoundException de)
+      {
+        Log(MsgClass.Error, Area, "InitialTest", $"{de.Message}");
+        bytes = [];
+      }
       OpStatus status = Parser.Parse(bytes);
       Log(MsgClass.Forced, Area, "InitialTest", $"{status}");
     }

@@ -28,4 +28,5 @@ public enum IPLTokenType
   Rs,
   Cmd,
   Break,
+  Line,
 }

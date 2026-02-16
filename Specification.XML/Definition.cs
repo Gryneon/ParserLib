@@ -109,12 +109,12 @@ public static class Definition
     GroupTokenRules = [
       new (BuildProperty, XTT.Attribute, "n:AttrKey x:Eq v:String"),
       new (BuildObject, XTT.Header, "x:Ao x:Qm n:ElementName pa:Attribute x:Qm x:Ac"),
-      new (BuildProperty, XTT.AttributeWithNamespace, "y:Namespace x:Co n:AttrKey x:Eq v:String"),
-      new (BuildLabel, XTT.ElementEndWithNamespace, "x:Ao x:Sl ty:Namespace x:Co n:ElementName x:Ac"),
+      new (BuildProperty, XTT.AttributeWithNamespace, "t:Namespace x:Co n:AttrKey x:Eq v:String"),
+      new (BuildProperty, XTT.ElementEndWithNamespace, "x:Ao x:Sl t:Namespace x:Co n:ElementName x:Ac"),
       new (BuildLabel, XTT.ElementEnd, "x:Ao x:Sl n:ElementName x:Ac"),
-      new (BuildObject, XTT.ElementSingleWithNamespace, "x:Ao y:Namespace x:Co n:ElementName pa:Attribute x:Sl x:Ac"),
+      new (BuildObject, XTT.ElementSingleWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Sl x:Ac"),
       new (BuildObject, XTT.ElementSingle, "x:Ao n:ElementName pa:Attribute x:Sl x:Ac"),
-      new (BuildObject, XTT.ElementStartWithNamespace, "x:Ao y:Namespace x:Co n:ElementName pa:Attribute x:Ac"),
+      new (BuildObject, XTT.ElementStartWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Ac"),
       new (BuildObject, XTT.ElementStart, "x:Ao n:ElementName pa:Attribute x:Ac"),
       new (BuildObject, XTT.ElementPair, "d:ElementStart v:Content x:ElementClose"),
 

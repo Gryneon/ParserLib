@@ -8,7 +8,7 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
   bool HasType { get; }
   bool Exempt { get; set; }
   bool Ignored { get; }
-  IReadOnlyList<IToken> Children { get; init; }
+  IList<IToken> Children { get; init; }
   string Content => Children.Select(static t => t.Content).TextJoin();
   string ContentNoNewLine => Content.
     Replace("\n", "<LF>", SCO).

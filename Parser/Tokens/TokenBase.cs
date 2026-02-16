@@ -14,7 +14,7 @@ public abstract class TokenBase : IToken
   public bool Exempt { get; set; }
   public int Index { get; init; }
   public string Type { get; set; } = SE;
-  public IReadOnlyList<IToken> Children { get; init; } = [];
+  public IList<IToken> Children { get; init; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
   public override string ToString () => $"{Index} : {GetType().Name} is {Type} = {((IToken) this).ToStringSm()}";

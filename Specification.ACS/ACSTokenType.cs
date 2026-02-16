@@ -73,7 +73,8 @@ public enum ACSTokenType
   WaitCall,
   Block,
   ScriptFull,
-  FunctionFull
+  FunctionFull,
+  PrintFunction
 }
 
 public enum ModelDefTokenType

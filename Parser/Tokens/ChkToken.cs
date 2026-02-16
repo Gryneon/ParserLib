@@ -23,6 +23,7 @@ namespace Parser.Tokens;
 /// </remarks>
 public sealed class ChkToken () : IEquatable<IToken>
 {
+  private Spec? _spec;
   internal static Dictionary<char, RT> LetterReference { get; } = new()
   {
     ['a'] = RT.Any,
@@ -31,7 +32,7 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['d'] = RT.Descendant,
     ['e'] = RT.Error,
     ['f'] = RT.AddFlag,
-    ['g'] = RT.Error,
+    ['g'] = RT.SubFlag,
     ['h'] = RT.Error,
     ['i'] = RT.IgnoreCase,
     ['j'] = RT.Error,
@@ -41,10 +42,10 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['n'] = RT.AssignName,
     ['o'] = RT.Opt,
     ['p'] = RT.AddProperty,
-    ['q'] = RT.Error,
+    ['q'] = RT.AddParameter,
     ['r'] = RT.AssignRight,
-    ['s'] = RT.SubFlag,
-    ['t'] = RT.Error,
+    ['s'] = RT.AddStatement,
+    ['t'] = RT.AssignType,
     ['u'] = RT.Error,
     ['v'] = RT.AssignValue,
     ['w'] = RT.Error,
@@ -53,22 +54,39 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['z'] = RT.Error,
   };
   public required RT TokenRule { get; init; } = RT.None;
+  public string? CustomPropertyName { get; set; }
   public Collection<string> AllowedTypes { get; init; } = [];
   public Collection<string> AllowedContents { get; init; } = [];
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
-  private StringComparison SC => IgnoreCase ? SCOIC : SCO;
+  private StringComparison SC => IgnoreCase || _spec?.SC == SCOIC ? SCOIC : SCO;
+  /// <summary>Creates a <see cref="ChkToken"/> object from the <see langword="string"/>.</summary>
+  /// <param name="definition">The definition string.</param>
+  /// <param name="spec">The <see cref="Spec"/> reference.</param>
+  /// <returns>A <see cref="ChkToken"/> object from the <see langword="string"/>.</returns>
+  /// <exception cref="ArgumentException"/>
   public static ChkToken Parse (string definition, Spec spec)
   {
-    RxS regex = RxS.Rx(@"^(?'prefix'\w+)\:(?:\((?'type_def'[^,&|+}-]+)([,&+|-](?'type_def'[^,&+|}-]+))*\)|\{(?'literal_def'[^,&|+}-]+)([,&+|-](?'literal_def'[^,&+|}-]+))*\}|(?'type_def'\w+))+");
+    RxS regex = RxS.Rx(@"^((?'prefix'\w+)|\[(?'custom_prop'\w+)\])\:(?:\((?'type_def'[^,&|+}-]+)([,&+|-](?'type_def'[^,&+|}-]+))*\)|\{(?'literal_def'[^,&|+}-]+)([,&+|-](?'literal_def'[^,&+|}-]+))*\}|(?'type_def'\w+))+");
     Regex regexobj = new(regex, ROEC, new TimeSpan(0, 0, 1));
     Match m = regexobj.Match(definition);
     if (!m.Success)
       throw new ArgumentException($"Bad Token Sequence String. {definition}");
 
-    string prefix = m.Groups["prefix"].Value;
+    RT rule = RT.None;
+    string prefix = SE;
+    string? prop = null;
+
+    if (m.Groups.ContainsKey("custom_prop"))
+    {
+      rule = RT.AssignCustomProp;
+      prop = m.Groups["custom_prop"].Value;
+    }
+    else
+    {
+      prefix = m.Groups["prefix"].Value;
+    }
     Collection<string> allowed_types = [];
     Collection<string> allowed_literals = [];
-    RT rule = RT.None;
 
     foreach (char c in prefix)
     {
@@ -92,9 +110,11 @@ public sealed class ChkToken () : IEquatable<IToken>
 
     ChkToken result = new()
     {
+      CustomPropertyName = prop,
       AllowedContents = allowed_literals,
       AllowedTypes = expanded_types,
-      TokenRule = rule
+      TokenRule = rule,
+      _spec = spec
     };
 
     return result;

@@ -2,7 +2,6 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Deterministic>true</Deterministic>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
@@ -11,24 +10,13 @@
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
+    <OldToolsVersion>2.0</OldToolsVersion>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <ProjectGuid>{86ABBCAE-DF85-9788-DDC4-E4B0F5C4D749}</ProjectGuid>
     <TargetFramework>net10.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
-    <LangVersion>preview</LangVersion>
-    <Platforms>AnyCPU;x86;x64</Platforms>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <ProjectGuid>{86ABBCAE-DF85-9788-DDC4-E4B0F5C4D749}</ProjectGuid>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
