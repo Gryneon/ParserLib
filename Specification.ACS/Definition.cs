@@ -65,7 +65,7 @@ public static class Definition
         "do", "for", "switch", "case", "default", "return"
       ]),
       Tm(ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
-      Tm(SimpleJump, @"\b(break|continue|terminate)\b"),
+      Tm(SimpleJump, @"\b(break|continue|terminate|restart)\b"),
       Tm(Wait, @"\b(delay|scriptwait|tagwait)\b"),
       Tm(MapVar, @"\b(world|global)\b"),
       Tm(Loop, @"\b(while|until)\b"),
@@ -76,8 +76,7 @@ public static class Definition
       Tm(Assign, @"[-+*^/%|&]="),
       Tm(Minus, @"-"),
       Tm(Assign, @"(<<|>>| \|\| |&&)="),
-      Tm(Binary, @"=="),
-      Tm(Binary, @"[!<>-]="),
+      Tm(Binary, @"== | [!<>]="),
       Tm(Binary, @"(&&| \|\| |<<|>>)(?!=)"),
       .. TokenRule.MakeSingleCharRules("+/%|&^*><-", TExact , Binary),
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;", TExact , new ATT[] { Ao, Ac, Bo, Bc, Po, Pc, Eq, Cm, Co, Sc }),
@@ -88,13 +87,13 @@ public static class Definition
     ],
     GroupTokenRules = [
       // Expressions
+      new(RT.BuildTypedValue, ArrayValue,                 "n:Name x:Ao v:Value x:Ac"),
       new(RT.BuildExpression | RT.Recursive, Expression,  "l:Value y:Binary r:Value"),
       new(RT.BuildExpression, ExpressionStatement,        "l:Value y:IncDec"),
       new(RT.BuildExpression, ExpressionStatement,        "y:IncDec r:Value"),
-      new(RT.BuildExpression, Expression,                 "y:Unary r:Value"),
+      new(RT.BuildExpression, Expression,                 "y:(Unary|Minus) r:Value"),
       new(RT.BuildExpression | RT.Recursive, Expression,  "l:Value y:Binary r:Value"),
       new(RT.BuildTypedValue, Expression,                 "x:Po v:Expression x:Pc"),
-      new(RT.BuildTypedValue, ArrayValue,                 "n:Name x:Ao v:Value x:Ac"),
       new(RT.BuildStatement, FunctionCall,                "n:Name x:Po p:Value x:Pc"),
       new(RT.BuildStatement, FunctionCall,                "n:Name x:Po pa:ParameterValue p:Value x:Pc"),
       new(RT.BuildStatement, FunctionCall,                "n:Name x:Po pa:ParameterValue x:Pc"),
@@ -105,7 +104,7 @@ public static class Definition
       // Statements
       new(RT.BuildStatement, VarDecl,                     "y:Type n:Name x:Sc"),
       new(RT.BuildStatement, VarDeclAssn,                 "y:Type n:Name x:Eq v:Value x:Sc"),
-      new(RT.BuildStatement, ArrayDecl,                   "y:Type n:Name x:Ao v:Value x:Ac x:Sc"),
+      new(RT.BuildStatement, ArrayDecl,                   "y:Type d:ArrayValue x:Sc"),
       new(RT.BuildStatement, BasicCmd,                    "n:SimpleJump x:Sc"),
       new(RT.BuildStatement, BasicCmd,                    "n:Return x:Sc"),
       new(RT.BuildProperty, BasicCmd,                     "n:Return v:value x:Sc"),
