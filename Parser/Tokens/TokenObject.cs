@@ -66,11 +66,10 @@ public interface IComplexToken : IToken
   IToken this[TokenPieceType piece_type] { get; }
   bool HasPieceType (TokenPieceType piece_type);
   void SetPieceType (TokenPieceType piece_type, IToken token);
-  bool IsPieceRequired (TokenPieceType piece_type);
   string GetPieceContent (TokenPieceType piece_type);
 }
 
-public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
+public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken, IValueToken
 {
   private readonly Dictionary<TokenPieceType, IToken> _token_pieces = [];
 
@@ -83,7 +82,19 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
   public bool Exempt { get; set; }
   public bool Ignored => false;
   public IReadOnlyList<IToken> Children { get; init; } = [];
-  public int Index { get; }
+  public int Index => Children.Count > 0 ? Children[0].Index : -1;
+  #region IValueToken
+  public string? Value { get; }
+  public IToken? ValueToken
+  {
+    get => _token_pieces[TokenPieceType.Value];
+    set
+    {
+      value.ThrowIfNull();
+      _token_pieces[TokenPieceType.Value] = value;
+    }
+  }
+  #endregion
   #region INameToken
   public string? Name { get; }
   public IToken? NameToken
@@ -109,12 +120,13 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
   }
   #endregion
   public static explicit operator TokenObject (ComplexToken complex) => ToTokenObject(complex);
+  public static implicit operator ComplexToken (TokenLabel obj) => FromToken(obj);
 
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
   public IToken GetPieceToken (TokenPieceType piece_type) => _token_pieces[piece_type];
   public string GetPieceContent (TokenPieceType piece_type) => _token_pieces[piece_type].Content;
-  public bool HasPieceType (TokenPieceType piece_type) => throw new NotImplementedException();
+  public bool HasPieceType (TokenPieceType piece_type) => _token_pieces.ContainsKey(piece_type);
   public void AddPieceType (TokenPieceType piece_type, IToken token)
   {
     if (HasPieceType(piece_type))
@@ -126,7 +138,6 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
       _token_pieces[piece_type] = new TokenCollection() { token };
     }
   }
-  public bool IsPieceRequired (TokenPieceType piece_type) => throw new NotImplementedException();
   public void SetPieceType (TokenPieceType piece_type, IToken token) => _token_pieces[piece_type] = token;
   public override bool Equals (object? obj) => obj is ComplexToken ct && Equals(ct);
   public override int GetHashCode () => _token_pieces.GetHashCode();
@@ -153,5 +164,31 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
       Index = complex.Index,
       Type = complex.Type
     };
+  }
+  public static ComplexToken FromToken (IToken obj)
+  {
+    obj.ThrowIfNull();
+    ComplexToken result = new()
+    {
+      NameToken = obj is INameToken itn ? itn.NameToken : null,
+      TypeToken = obj is ITypeToken itt ? itt.TypeToken : null,
+      ValueToken = obj is IValueToken ivt ? ivt.ValueToken : null,
+      Children = obj.Children,
+      Exempt = obj.Exempt,
+      Type = obj.Type
+    };
+
+    if (obj.HasFlags && obj is TokenObject to)
+      result.SetPieceType(TokenPieceType.FlagList, to.Flags);
+    if (obj.HasProperties && obj is TokenObject to2)
+      result.SetPieceType(TokenPieceType.PropertyList, to2.Properties);
+    if (obj.HasLeftRight && obj is TokenExpression te && te.LeftValueToken is not null)
+      result.SetPieceType(TokenPieceType.Left, te.LeftValueToken);
+    if (obj.HasLeftRight && obj is TokenExpression te2 && te2.RightValueToken is not null)
+      result.SetPieceType(TokenPieceType.Right, te2.RightValueToken);
+    if (obj.HasLeftRight && obj is TokenExpression te3 && te3.TypeToken is not null)
+      result.SetPieceType(TokenPieceType.Center, te3.TypeToken);
+
+    return result;
   }
 }

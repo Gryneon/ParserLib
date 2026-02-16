@@ -8,7 +8,7 @@ public class ChkSequence : IList<ChkToken>
   public string? DataString { get; set; }
 
   public ChkToken this[int index] { get => _sequence[index]; set => _sequence[index] = value; }
-  public ChkSequence this[Range rng] { get => [.. _sequence[rng]]; }
+  public ChkSequence this[Range rng] => [.. _sequence[rng]];
   public int Count => _sequence.Count;
   public bool IsReadOnly => _sequence.Count > 0;
   public bool AllOptional => _sequence.All(item => item.TokenRule.HasFlag(RT.Opt));

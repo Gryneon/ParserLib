@@ -85,8 +85,6 @@ public class TranslateOperation (
   private readonly ICollection<TranslationConstruct> _constructs = constructs;
   private readonly ICollection<TranslationRule> _rules = rules;
 
-  private TranslationRule? Splitter { get; set; }
-
   public string TranslateReplace (string s)
   {
     s ??= SE;
@@ -137,7 +135,7 @@ public class TranslateOperation (
     {
       pos = [.. _constructs.Select(x =>
       {
-        Match match = Regex.Match(s, x.Translation!);
+        Match match = Regex.Match(s, x.Translation);
         return match.Success ? (match.Index, x) : (-1, TranslationConstruct.Null);
       })];
       pos = [.. pos.Where(x => x.Index != -1).OrderBy(x => x.Index)];

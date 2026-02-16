@@ -70,14 +70,8 @@ public static class MenuController
     NextMenu = next_menu;
     IsChangingMenu = true;
   }
-  internal static void HideCursor ()
-  {
-    Console.CursorVisible = false;
-  }
-  internal static void ShowCursor ()
-  {
-    Console.CursorVisible = true;
-  }
+  internal static void HideCursor () => Console.CursorVisible = false;
+  internal static void ShowCursor () => Console.CursorVisible = true;
   internal static void Draw (MenuDrawType type)
   {
     if (type is MenuDrawType.Erase)

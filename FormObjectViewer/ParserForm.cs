@@ -19,8 +19,6 @@ namespace FormObjectViewer;
 
 internal sealed partial class ParserForm : Form
 {
-  private object? ParseFileContent { get; set; } = SE;
-  private Spec Spec { get; set; } = DefaultSpec.Unknown;
   private bool ItemsChanged { get; set; }
   private List<Spec> SpecList { get; } = [
       Specification.ACS.Definition.ACS,
@@ -141,7 +139,6 @@ internal sealed partial class ParserForm : Form
     try
     {
       contents = File.ReadAllText(_parseFile);
-      ParseFileContent = contents;
     }
     catch (IOException)
     {
@@ -163,10 +160,7 @@ internal sealed partial class ParserForm : Form
     ShowUnparsedButton.Enabled = true;
   }
 
-  private void TokenRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e)
-  {
-    TokenRuleCountLabel.Text = $"{_workingRules.Count}";
-  }
+  private void TokenRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e) => TokenRuleCountLabel.Text = $"{_workingRules.Count}";
 
   private void ClearTokens (object sender, EventArgs e)
   {
