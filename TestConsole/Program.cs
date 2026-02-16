@@ -82,6 +82,7 @@ internal sealed class Program
 
     //InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
     //InitialTest(SpecUDMF.Spec, Paths.udmf_sample);
+    InitialTest(SpecACS.ACS, Paths.acs_rpglevel);
     InitialTest(SpecACS.ACS, Paths.acs_rpgmfunc);
     InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
     InitialTest(SpecXML.Spec, Paths.xsd_specification);

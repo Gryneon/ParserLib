@@ -50,7 +50,7 @@
   <ItemGroup>
     <EmbeddedResource Update="Paths.resx">
       <LastGenOutput>Paths.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 

@@ -22,7 +22,7 @@ namespace TestConsole {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Paths {
+    public class Paths {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TestConsole {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TestConsole.Paths", typeof(Paths).Assembly);
@@ -51,7 +51,7 @@ namespace TestConsole {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,18 @@ namespace TestConsole {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGLevel.acs.
+        /// </summary>
+        public static string acs_rpglevel {
+            get {
+                return ResourceManager.GetString("acs_rpglevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
         /// </summary>
-        internal static string acs_rpgmfunc {
+        public static string acs_rpgmfunc {
             get {
                 return ResourceManager.GetString("acs_rpgmfunc", resourceCulture);
             }
@@ -72,7 +81,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
         /// </summary>
-        internal static string acs_sample {
+        public static string acs_sample {
             get {
                 return ResourceManager.GetString("acs_sample", resourceCulture);
             }
@@ -81,7 +90,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\WAD.txt.
         /// </summary>
-        internal static string binparse_wad {
+        public static string binparse_wad {
             get {
                 return ResourceManager.GetString("binparse_wad", resourceCulture);
             }
@@ -90,7 +99,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini.
         /// </summary>
-        internal static string ini_vncdefault {
+        public static string ini_vncdefault {
             get {
                 return ResourceManager.GetString("ini_vncdefault", resourceCulture);
             }
@@ -99,7 +108,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt.
         /// </summary>
-        internal static string ipl_batch6456 {
+        public static string ipl_batch6456 {
             get {
                 return ResourceManager.GetString("ipl_batch6456", resourceCulture);
             }
@@ -108,7 +117,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt.
         /// </summary>
-        internal static string ipl_batch6458 {
+        public static string ipl_batch6458 {
             get {
                 return ResourceManager.GetString("ipl_batch6458", resourceCulture);
             }
@@ -117,7 +126,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\label.ipl.
         /// </summary>
-        internal static string ipl_label {
+        public static string ipl_label {
             get {
                 return ResourceManager.GetString("ipl_label", resourceCulture);
             }
@@ -126,7 +135,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\simple.txt.
         /// </summary>
-        internal static string ipl_simple {
+        public static string ipl_simple {
             get {
                 return ResourceManager.GetString("ipl_simple", resourceCulture);
             }
@@ -135,7 +144,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
         /// </summary>
-        internal static string json_launch {
+        public static string json_launch {
             get {
                 return ResourceManager.GetString("json_launch", resourceCulture);
             }
@@ -144,7 +153,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
         /// </summary>
-        internal static string mapinfo_common {
+        public static string mapinfo_common {
             get {
                 return ResourceManager.GetString("mapinfo_common", resourceCulture);
             }
@@ -153,7 +162,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
         /// </summary>
-        internal static string reg_iplfile {
+        public static string reg_iplfile {
             get {
                 return ResourceManager.GetString("reg_iplfile", resourceCulture);
             }
@@ -162,7 +171,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt.
         /// </summary>
-        internal static string sndinfo_test {
+        public static string sndinfo_test {
             get {
                 return ResourceManager.GetString("sndinfo_test", resourceCulture);
             }
@@ -171,7 +180,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
         /// </summary>
-        internal static string udmf_map00 {
+        public static string udmf_map00 {
             get {
                 return ResourceManager.GetString("udmf_map00", resourceCulture);
             }
@@ -180,7 +189,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
         /// </summary>
-        internal static string udmf_sample {
+        public static string udmf_sample {
             get {
                 return ResourceManager.GetString("udmf_sample", resourceCulture);
             }
@@ -189,7 +198,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
         /// </summary>
-        internal static string wad_pl2 {
+        public static string wad_pl2 {
             get {
                 return ResourceManager.GetString("wad_pl2", resourceCulture);
             }
@@ -198,7 +207,7 @@ namespace TestConsole {
         /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
         /// </summary>
-        internal static string xsd_specification {
+        public static string xsd_specification {
             get {
                 return ResourceManager.GetString("xsd_specification", resourceCulture);
             }
