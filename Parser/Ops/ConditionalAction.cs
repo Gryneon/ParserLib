@@ -1,6 +1,6 @@
 namespace Parser.Ops;
 
-public sealed class ConditionalAction : IOperation
+public sealed class ConditionalAction (ICondition condition, OperationAction action) : IOperation
 {
   bool IOperation.ContinueOnFail
   {
@@ -14,17 +14,11 @@ public sealed class ConditionalAction : IOperation
   }
   public int LoopBreak { get; set; }
   public int LoopStart { get; set; }
-  private ICondition Condition { get; }
-  private OperationAction Action { get; }
+  private ICondition Condition { get; } = condition;
+  private OperationAction Action { get; } = action;
   public bool NoInput { get; } = true;
   public bool NoOutput { get; } = true;
   public bool NoExecution { get; }
-
-  public ConditionalAction (ICondition condition, OperationAction action)
-  {
-    Condition = condition;
-    Action = action;
-  }
 
   public OpStatus DoOperation (XParser parser_ref) =>
     !Condition.Evaluate(parser_ref) ? OpStatus.Skipped : Action.DoOperation(parser_ref);

@@ -6,10 +6,7 @@ namespace TestConsole;
 
 internal sealed class TestAction : MenuAction
 {
-  public override void Execute ()
-  {
-    Execute(out _);
-  }
+  public override void Execute () => Execute(out _);
   public void Execute (out object? data_return)
   {
     string? specname = Library.CheckFile(Data);

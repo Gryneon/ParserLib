@@ -15,18 +15,13 @@ public class CombineOperation (string input_key = "textparts", string output_key
     if (CheckArray(out IEnumerable? list))
     {
       Status = OpStatus.Pass;
-      switch (delimiter)
+      WorkToReturn = delimiter switch
       {
-        case null:
-          WorkToReturn = list.TextJoin();
-          break;
-        case string s:
-          WorkToReturn = list.TextJoin(s);
-          break;
-        case char c:
-          WorkToReturn = list.TextJoin(new(c, 1));
-          break;
-      }
+        null => list.TextJoin(),
+        string s => list.TextJoin(s),
+        char c => list.TextJoin(new(c, 1)),
+        _ => list.TextJoin(delimiter.ToString()!),
+      };
     }
     else
     {

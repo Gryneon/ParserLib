@@ -109,7 +109,7 @@ Must have only one of these:
 ### Constructable Tokens
 
 - <code><b><font name="cascadia code" size=3 color=#5588FF>TokenObject\<T\></font></b></code>
-  - Name - Required
+  - Name - Optional
   - Type - Optional
   - PropertyList - Zero or more items
   - FlagList - Zero or more items
@@ -117,8 +117,8 @@ Must have only one of these:
   * Name - Required
   * BooleanValue - Required
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenTypedValue\<T\></font></b></code>
-  * Type - Required
-  * Value - Required
+  * Type - Optional
+  * Value - Optional
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenLabel\<T\></font></b></code>
   - Name - Required
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenArray\<T\></font></b></code>
@@ -126,4 +126,27 @@ Must have only one of these:
   * ValueList - Zero or more items
 * <code><b><font name="cascadia code" size=3 color=#5588FF>TokenProperty\<T\></font></b></code>
   - Name - Required
-  - Value - Required, may be null or undefined
+  - Type - Optional
+  - Value - Optional
+* <code><b><font name="cascadia code" size=3 color=#5588FF>TokenStatement\<T\></font></b></code>
+  - Name - Required
+  - Type - Optional
+  - Value - Optional
+  - ParameterList - Zero or more items
+* <code><b><font name="cascadia code" size=3 color=#5588FF>TokenExpression\<T\></font></b></code>
+  - Left - Optional
+  - Type - Optional
+  - Right - Optional
+
+#### Guidelines
+
+In a state list, shown below.
+
+    StateLabel:          //TokenLabel
+      FRAME A            //TokenStatement OR TokenObject
+      FRAME B            //TokenStatement OR TokenObject
+      Goto StateLabel2   //TokenStatement
+
+In a script, shown below.
+
+    

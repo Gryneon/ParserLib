@@ -48,17 +48,14 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
       ? UnpackInc(operations, index, 0)
       : Type is LoopType.ForCount or LoopType.ForEach ? UnpackInc(operations, index, 1) : operations.Count;
 
-  public bool Continue ()
+  public bool Continue () => Type switch
   {
-    return Type switch
-    {
-      LoopType.While when Condition is not null => Condition.Evaluate(Parser),
-      LoopType.Until when Condition is not null => !Condition.Evaluate(Parser),
-      LoopType.None => true,
-      LoopType.ForEach or LoopType.ForCount when CursorKey is not null => Data.GetCountOfKey(CursorKey) > Parser.GetCursorByKey(CursorKey).Index,
-      _ => true,
-    };
-  }
+    LoopType.While when Condition is not null => Condition.Evaluate(Parser),
+    LoopType.Until when Condition is not null => !Condition.Evaluate(Parser),
+    LoopType.None => true,
+    LoopType.ForEach or LoopType.ForCount when CursorKey is not null => Data.GetCountOfKey(CursorKey) > Parser.GetCursorByKey(CursorKey).Index,
+    _ => true,
+  };
   protected override void Execute ()
   {
     if (OpIndex == 0)

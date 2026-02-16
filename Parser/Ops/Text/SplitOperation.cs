@@ -72,6 +72,8 @@ public class SplitOperation : Operation
       case Type.None when CheckInput(out str):
         WorkToReturn = RX.LineEnd.Split(str);
         goto Pass;
+      case Type.None:
+        goto default;
       case Type.Delim when CheckInput(out str):
         WorkToReturn = delimSplit(str);
         goto Pass;
@@ -81,6 +83,8 @@ public class SplitOperation : Operation
       case Type.Delim when CheckInput(out list):
         WorkToReturn = list.SelectMany(delimSplit);
         goto Pass;
+      case Type.Delim:
+        goto default;
       case Type.Regex when CheckInput(out str):
         rx = (_items ?? []).TextJoin("|");
         regex = new(rx, _options);
@@ -91,6 +95,9 @@ public class SplitOperation : Operation
         regex = new(rx, _options);
         WorkToReturn = list.SelectMany(str => regex.Split(str));
         goto Pass;
+      case Type.Regex:
+        goto default;
+
       default:
         Status = OpStatus.FailBadInputType;
         return;

@@ -15,10 +15,7 @@ public class XMLString () : ITextSerializer
     Elements.Add($"<{name}>");
     Closing.Add($"</{name}>");
   }
-  public void AddElementSingle (string name)
-  {
-    Elements.Add($"<{name}/>");
-  }
+  public void AddElementSingle (string name) => Elements.Add($"<{name}/>");
   public void AddElementSingle (string name, Collection<IProperty<string>> attributes)
   {
     Elements.Add($"<{name} ");
@@ -44,14 +41,8 @@ public class XMLString () : ITextSerializer
 
     Elements.Add($">");
   }
-  public void CloseLastElement ()
-  {
-    Elements.Add(Closing.Pop());
-  }
-  public void AddContent (string content)
-  {
-    Elements.Add(content);
-  }
+  public void CloseLastElement () => Elements.Add(Closing.Pop());
+  public void AddContent (string content) => Elements.Add(content);
   public void AddLineFeed ()
   {
     Elements.Add("\n");
