@@ -10,7 +10,5 @@ public sealed class TokenTypedValue : TokenBase, IValueToken, ITypeToken
   public required IToken? ValueToken { get; set; }
   public override bool Equals (object? obj) => obj is TokenTypedValue tv && (Value?.Equals(tv.Value, SCO) ?? false) && (ObjType?.Equals(tv.ObjType, SCO) ?? false);
   public override int GetHashCode () => HashCode.Combine(Value, ObjType);
-
-  public override string ToString () => $"{Value} as {ObjType}";
 }
 

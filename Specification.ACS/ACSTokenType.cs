@@ -68,8 +68,12 @@ public enum ACSTokenType
   ExpressionStatement,
   FunctionHeader,
   ScriptHeader,
+  PrintParameterValue,
   ParameterValue,
-  WaitCall
+  WaitCall,
+  Block,
+  ScriptFull,
+  FunctionFull
 }
 
 public enum ModelDefTokenType

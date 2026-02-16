@@ -88,6 +88,20 @@ public class TokenRule
 
     return [.. tokenRules];
   }
+  public static TokenRule[] MakeWordMatchRules (bool ignore_case, params Collection<object> rules)
+  {
+    Collection<TokenRule> tokenRules = [];
 
+    if (rules.IsEmpty() || rules is null)
+      return [.. tokenRules];
+
+    foreach (object type in rules)
+    {
+      TokenRule r = new(RT.TokenMatch | RT.ExemptAllWithin | (ignore_case ? RT.IgnoreCase : RT.None), type, @$"\b{type}\b");
+      tokenRules.Add(r);
+    }
+
+    return [.. tokenRules];
+  }
   public override string ToString () => $"TokenRule ({Type} => {TypeToAssign})";
 }
