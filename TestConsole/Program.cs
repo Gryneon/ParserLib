@@ -203,7 +203,7 @@ internal sealed class Program
     foreach (IOperation op in Parser?.Operations ?? [])
     {
       if (op.ToString() is not null)
-        LogDebug(">" + op.ToString()!);
+        LogDebug(">" + op.ToString());
       else
         LogError("Error: Bad Op");
     }

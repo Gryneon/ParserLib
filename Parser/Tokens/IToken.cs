@@ -19,7 +19,7 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
 
   string ToStringSm () => this switch
   {
-    TokenFlag f => $"{(f.AddFlag ? "+" : "-")} {f.Name}",
+    TokenFlag f => $"{(f.State ? "+" : "-")} {f.Name}",
     TokenLabel l => $"{l.Name}",
     TokenTypedValue t => $"{t.ObjType} {t.Value}",
     TokenObject o => $"{o.Name} {(o.ObjType.IsNotEmpty() ? "as " + o.ObjType : "")}{GetProps(o)}",

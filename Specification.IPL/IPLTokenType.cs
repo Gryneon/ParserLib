@@ -26,4 +26,6 @@ public enum IPLTokenType
   FieldText,  // 
   Text,       //
   Rs,
+  Cmd,
+  Break,
 }

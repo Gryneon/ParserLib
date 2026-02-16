@@ -281,7 +281,7 @@ public sealed class TokenFactory
     }
     _result.SortByIndex();
     Log(MsgClass.Critical, _result.ToString2());
-    return [.. _result];
+    return [with(_result)];
   }
   public static string GetRuleRegex (TokenRule rule, int? index = null)
   {

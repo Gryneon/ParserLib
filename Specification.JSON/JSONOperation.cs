@@ -73,10 +73,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
         assembly.RemoveAt(depth + 1);
         Index++;
       }
-      void innerArrayHelper ()
-      {
-        innerArray(false);
-      }
+      void innerArrayHelper () => innerArray(false);
       void addValueToAssembly ()
       {
         assembly[depth].Add(Spec.GetTokenTypeValue(TCurrent.Type) switch

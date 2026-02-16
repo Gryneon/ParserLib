@@ -96,22 +96,29 @@ public static class Definition
       IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
     IsTextFile = true,
+    DefaultRuleSet = ExemptAllWithin,
     TokenType = typeof(ITT),
     TokenRules = [
       new(TokenMatch | IgnoredToken, ITT.None, $"(?<={Etx}).*?(?={Stx})"),
       new(TokenMatch | IgnoredToken, ITT.None, $@"\A.*?(?={Stx})"),
-      new(TokenMatch | ExemptAllWithin, ITT.Stx, $"{Stx}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Etx, $"{Etx}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Esc, $"{Esc}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Si, $"{Si}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Sc, $";"),
-      new(TokenMatch | ExemptAllWithin, ITT.Lf, $"{Lf}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Etb, $"{Etb}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Rs, $"{Rs}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Us, $"{Us}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Can, $"{Can}"),
-      new(TokenMatch | ExemptAllWithin, ITT.Fs, $"{FS}|<FS>"),
-      new(TokenMatch | ExemptAllWithin, ITT.TextProp, Rx(@"d3,.*?(?=$|;|{Etx})")),
+      new(TokenMatch, ITT.Stx, $"{Stx}"),
+      new(TokenMatch, ITT.Etx, $"{Etx}"),
+      new(TokenMatch, ITT.Esc, $"{Esc}"),
+      new(TokenMatch, ITT.Si, $"{Si}"),
+      new(TokenMatch, ITT.Sc, $";"),
+      new(TokenMatch, ITT.Lf, $"{Lf}"),
+      new(TokenMatch, ITT.Etb, $"{Etb}"),
+      new(TokenMatch, ITT.Rs, $"{Rs}"),
+      new(TokenMatch, ITT.Us, $"{Us}"),
+      new(TokenMatch, ITT.Can, $"{Can}"),
+      new(TokenMatch, ITT.Fs, $"{FS}|<FS>"),
+      new(TokenMatch, ITT.TextProp, Rx(@"d3,.*?(?=$|;|{Etx})")),
     ],
+    SC = SCO,
+    TokenCompatLookup = new()
+    {
+      [ITT.Cmd] = [ITT.Etb, ITT.Stx, ITT.Etx, ITT.Can],
+      [ITT.Break] = [ITT.Sc, ITT.Lf, ITT.Etx]
+    }
   };
 }

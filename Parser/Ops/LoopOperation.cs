@@ -110,6 +110,14 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
       Pass:
         Status = OpStatus.Pass;
         return;
+      case LoopType.While:
+        goto default;
+      case LoopType.ForEach:
+        goto default;
+      case LoopType.Until:
+        goto default;
+      case LoopType.ForCount:
+        goto default;
       default:
         Status = OpStatus.FailBadOpDefinition;
         return;

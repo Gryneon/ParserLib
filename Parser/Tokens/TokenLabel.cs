@@ -13,7 +13,7 @@ public sealed class TokenLabel : TokenBase, INameToken
 
     return new()
     {
-      AddFlag = true,
+      State = true,
       NameToken = label.NameToken,
       Children = label.Children,
       Ignored = label.Ignored,

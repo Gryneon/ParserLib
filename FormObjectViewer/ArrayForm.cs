@@ -32,10 +32,7 @@ internal sealed partial class ArrayForm : Form
     ArrayListBox.Refresh();
   }
 
-  private void UpdateButton_Click (object sender, EventArgs e)
-  {
-    Repopulate();
-  }
+  private void UpdateButton_Click (object sender, EventArgs e) => Repopulate();
 
   private void ArrayListBox_MouseDoubleClick (object sender, MouseEventArgs e)
   {

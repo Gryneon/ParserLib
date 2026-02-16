@@ -106,8 +106,5 @@ internal sealed partial class RuleEditForm : Form
   }
 
   [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Nobody uses windows < 6.1")]
-  private void CancelButton_Click (object sender, EventArgs e)
-  {
-    Close();
-  }
+  private void CancelButton_Click (object sender, EventArgs e) => Close();
 }

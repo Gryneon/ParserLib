@@ -1,12 +1,13 @@
 namespace Terminal.Menu;
 
-public class MenuItem
+[method: SetsRequiredMembers]
+public class MenuItem (int index, string caption, IEnumerable<MenuAction> actions)
 {
-  public required string Caption { get; init; }
-  public required int Index { get; init; }
+  public required string Caption { get; init; } = caption;
+  public required int Index { get; init; } = index;
   public int Line => MenuController.ActiveMenu?.OptionLines.Start.Value + Index ?? ErrVal;
   public bool IsDirty { get; set; } = true;
-  public Collection<MenuAction> ItemActions { get; init; } = [];
+  public Collection<MenuAction> ItemActions { get; init; } = [.. actions];
   public void Draw (int current_index)
   {
     if (Line is ErrVal)
@@ -20,13 +21,6 @@ public class MenuItem
       MenuController.EraseLine(Line, true);
       Console.WriteLine(cursor + " " + Caption);
     }
-  }
-  [SetsRequiredMembers]
-  public MenuItem (int index, string caption, IEnumerable<MenuAction> actions)
-  {
-    Index = index;
-    Caption = caption;
-    ItemActions = [.. actions];
   }
 }
 /*
