@@ -112,7 +112,7 @@ public static class Definition
       new(TokenMatch, ITT.Us, $"{Us}"),
       new(TokenMatch, ITT.Can, $"{Can}"),
       new(TokenMatch, ITT.Fs, $"{FS}|<FS>"),
-      new(TokenMatch, ITT.TextProp, Rx(@"d3,.*?(?=$|;|{Etx})")),
+      new(TokenMatch, ITT.TextProp, Rx(@$"d3,.*?(?=$|;|{Etx})")),
       new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=[0-9])"),
       new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=\< | ;|<LF>|\n)"),
       new(TokenMatch, ITT.Value, @"(?<=\b[A-Z]\b)[0-9]+(?=;|\<)"),
@@ -125,6 +125,10 @@ public static class Definition
       [ITT.Break] = [ITT.Sc, ITT.Lf, ITT.Etx]
     },
     GroupTokenRules = [
+      new(BuildStatement, ITT.Prop, "n:Letter{o} p:Value, x:Cm p:Value"),
+      new(BuildStatement, ITT.Prop, "n:Letter{l} p:Value"),
+      new(BuildStatement, ITT.Prop, "n:Letter{w} p:Value"),
+      new(BuildStatement, ITT.Fmt, "n:Letter{E|F} p:Value"),
       new(BuildStatement, ITT.Line, "n:Letter t:Value pa:(TextProp|Prop)")
     ]
   };

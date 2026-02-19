@@ -29,4 +29,6 @@ public enum IPLTokenType
   Cmd,
   Break,
   Line,
+  Prop,
+  Fmt,
 }

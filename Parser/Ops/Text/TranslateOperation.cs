@@ -92,7 +92,7 @@ public class TranslateOperation (
     foreach (TranslationRule rule in replaces)
     {
       if (rule.Data is ReplaceNode rn)
-        s = rn.ReplaceRegex(s, global::Parser.Spec.Active.RxOpt);
+        s = rn.ReplaceRegex(s, Spec.RxOpt);
     }
     return s;
   }
