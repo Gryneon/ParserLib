@@ -2,9 +2,7 @@
 
 namespace Specification.IPL;
 
-/// <summary>
-/// Checks if the command is in the given mode.
-/// </summary>
+/// <summary>Checks if the command is in the given mode.</summary>
 /// <param name="modes">A list of the accepted printer modes.</param>
 public class CommandValidator_InMode (params IPLPrinterMode[] modes)
 {

@@ -31,6 +31,7 @@ public static class SpanExtensions
 
     return result;
   }
+  public static int ToInt32 (this Memory<byte> buffer) => buffer.Span.ToInt32();
   public static long ToInt64 (this Span<byte> buffer)
   {
     if (buffer.Length > 8)

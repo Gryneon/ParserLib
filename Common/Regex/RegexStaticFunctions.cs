@@ -2,9 +2,7 @@
 using static Common.Regex.RxS;
 
 namespace Common.Regex;
-/// <summary>
-/// Static functions to shorthand frequent definitions.
-/// </summary>
+/// <summary>Static functions to shorthand frequent definitions.</summary>
 public static class RegexStaticFunctions
 {
   public static RxS Rx ([SS("Regex")] string regex) => RxS.Rx(regex);
@@ -14,12 +12,8 @@ public static class RegexStaticFunctions
 
   public static RxS DQt ([SS("Regex")] string regex) => $"\"{regex}\"";
   public static RxS SQt ([SS("Regex")] string regex) => $"\'{regex}\'";
-  /// <summary>
-  /// Word Boundary (\b)
-  /// </summary>
+  /// <summary>Word Boundary (\b)</summary>
   public static RxS Bk => @"\b";
-  /// <summary>
-  /// Line Start (^)
-  /// </summary>
+  /// <summary>Line Start (^)</summary>
   public static RxS Start => @"^";
 }

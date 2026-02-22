@@ -1,3 +1,5 @@
+using System.Linq;
+
 using Common;
 using Common.Extensions;
 
@@ -5,49 +7,45 @@ namespace Specification.XML;
 
 public class XMLString () : ITextSerializer
 {
-  private Collection<string> Elements { get; } = [];
-  private Collection<string> Closing { get; } = [];
+  private Collection<IXMLObject> Elements { get; } = [];
+  private Collection<IXMLObject> Closing { get; } = [];
 
   public bool IsComplete => Closing.Count == 0 && Elements.Count > 0;
 
   public void AddElementOpen (string name)
   {
-    Elements.Add($"<{name}>");
-    Closing.Add($"</{name}>");
+    XMLElementOpen open = new() { Tag = name };
+    Elements.Add(open);
+    Closing.Add(open.ClosingElement);
   }
-  public void AddElementSingle (string name) => Elements.Add($"<{name}/>");
+  public void AddElementSingle (string name) => Elements.Add(new XMLElementSingle() { Tag = name });
   public void AddElementSingle (string name, Collection<IProperty<string>> attributes)
   {
-    Elements.Add($"<{name} ");
-
-    attributes ??= [];
-    foreach (IProperty<string> p in attributes)
+    XMLElementSingle single = new()
     {
-      Elements.Add($"{p.Key}=\"{p.Value}\" ");
-    }
+      Tag = name,
+      Attributes = [.. attributes.Select(att => new XMLAttr() { Key = att.Key, Value = att.Value })]
+    };
 
-    Elements.Add($"/>");
+    Elements.Add(single);
   }
   public void AddElementOpen (string name, Collection<IProperty<string>> attributes)
   {
-    Closing.Add($"</{name}>");
-    Elements.Add($"<{name} ");
-
-    attributes ??= [];
-    foreach (IProperty<string> p in attributes)
+    XMLElementOpen open = new()
     {
-      Elements.Add($"{p.Key}=\"{p.Value}\" ");
-    }
-
-    Elements.Add($">");
+      Tag = name,
+      Attributes = [.. attributes.Select(att => new XMLAttr() { Key = att.Key, Value = att.Value })]
+    };
+    Elements.Add(open);
+    Closing.Add(open.ClosingElement);
   }
   public void CloseLastElement () => Elements.Add(Closing.Pop());
-  public void AddContent (string content) => Elements.Add(content);
+  public void AddContent (string content) => Elements.Add(new XMLContent() { Content = content });
   public void AddLineFeed ()
   {
-    Elements.Add("\n");
     int depth = Closing.Count;
-    Elements.Add(new(' ', depth * 2));
+    string indent = new(' ', depth * 2);
+    Elements.Add(new XMLContent() { Content = $"\n{indent}" });
   }
   public void CloseAllElements ()
   {
@@ -59,8 +57,8 @@ public class XMLString () : ITextSerializer
   public override string ToString ()
   {
     string result = string.Empty;
-    foreach (string element in Elements)
-      result += element;
+    foreach (IXMLObject element in Elements)
+      result += element.Serialize();
     return result;
   }
 }

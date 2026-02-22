@@ -1,20 +1,14 @@
 namespace Specification.INI;
 
-/// <summary>
-/// A document, which is a collection of INISections.
-/// </summary>
+/// <summary>A document, which is a collection of INISections.</summary>
 public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, ICloneable, IEnumerable<INISection>, ICanAccessChildren<string, INISection>, ICanAccessChildren<int, INISection>
 {
   #region Static Constructors
-  /// <summary>
-  /// Creates an <c>INIDocument</c> from another <c>INIDocument</c>.
-  /// </summary>
+  /// <summary>Creates an <c>INIDocument</c> from another <c>INIDocument</c>.</summary>
   /// <param name="other">The specified document.</param>
   /// <returns>An <c>INIDocument</c> that is a deep clone of the specified object.</returns>
   public static INIDocument FromINIDocument (INIDocument other) => [.. other];
-  /// <summary>
-  /// Creates an <c>INIDocument</c> from an array or collection of <see cref="INISection"/> objects.
-  /// </summary>
+  /// <summary>Creates an <c>INIDocument</c> from an array or collection of <see cref="INISection"/> objects.</summary>
   /// <param name="sections">The array or collection of INISections.</param>
   /// <returns>The newly created document.</returns>
   public static INIDocument FromSections (IEnumerable<INISection> sections) => [.. sections];

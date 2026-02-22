@@ -28,6 +28,11 @@
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
             </summary>
         </member>
+        <member name="P:Specification.WAD.Resources.wad_rpg03">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\rpg03.WAD.
+            </summary>
+        </member>
         <member name="P:Specification.WAD.Resources.wad_tnt">
             <summary>
               Looks up a localized string similar to C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD.

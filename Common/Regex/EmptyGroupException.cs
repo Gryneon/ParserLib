@@ -1,8 +1,6 @@
 namespace Common.Regex;
 
-/// <summary>
-/// Exception thrown when a match group is empty but is required to contain characters.
-/// </summary>
+/// <summary>Exception thrown when a match group is empty but is required to contain characters.</summary>
 public class EmptyGroupException : KeyNotFoundException
 {
   public EmptyGroupException () { }

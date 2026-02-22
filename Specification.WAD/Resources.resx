@@ -124,4 +124,7 @@
     <value>C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD</value>
     <comment>Requires Final Doom to be installed.</comment>
   </data>
+  <data name="wad_rpg03" xml:space="preserve">
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\rpg03.WAD</value>
+  </data>
 </root>

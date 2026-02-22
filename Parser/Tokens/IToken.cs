@@ -19,18 +19,12 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
 
   string ToStringSm () => this switch
   {
-    TokenFlag f => $"{(f.State ? "+" : "-")} {f.Name}",
-    TokenLabel l => $"{l.Name}",
-    TokenTypedValue t => $"{t.ObjType} {t.Value}",
     TokenObject o => $"{o.Name} {(o.ObjType.IsNotEmpty() ? "as " + o.ObjType : "")}{GetProps(o)}",
-    TokenProperty p => $"{p.Name} {(p.ObjType.IsNotEmpty() ? "as " + p.ObjType + " " : "")}: {p.Value}",
-    TokenStatement s => $"{s.Name} {(s.ObjType.IsNotEmpty() ? "as " + s.ObjType + " " : "")}{GetParams(s)}",
     TokenExpression s => $"{s.LeftValue} {s.ObjType} {s.RightValue}",
     Token t => $"{t.Content}",
+    ComplexToken ct => $"{ct}",
     _ => $"`{ContentNoNewLine}`"
   };
   private static string GetProps (TokenObject to) =>
     to is null || to.Properties.Count == 0 ? SE : $"{{{to.Properties.Select(i => i.ToStringSm()).TextJoin(", ")}}}";
-  private static string GetParams (TokenStatement ts) =>
-    ts is null || ts.Parameters.Count == 0 ? SE : $"{{{ts.Parameters.Select(i => i.ToStringSm()).TextJoin(", ")}}}";
 }

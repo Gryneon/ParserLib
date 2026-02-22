@@ -27,7 +27,8 @@ public sealed class ChkToken () : IEquatable<IToken>
   internal static Dictionary<char, RT> LetterReference { get; } = new()
   {
     ['a'] = RT.Any,
-    ['b'] = RT.Error,
+    ['<'] = RT.LookAround,
+    ['>'] = RT.LookAround,
     ['c'] = RT.AssignCenter,
     ['d'] = RT.Descendant,
     ['e'] = RT.Error,
@@ -36,7 +37,6 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['h'] = RT.Error,
     ['i'] = RT.IgnoreCase,
     ['j'] = RT.Error,
-    ['k'] = RT.Error,
     ['l'] = RT.AssignLeft,
     ['m'] = RT.Mult,
     ['n'] = RT.AssignName,
@@ -48,16 +48,17 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['t'] = RT.AssignType,
     ['u'] = RT.Error,
     ['v'] = RT.AssignValue,
-    ['w'] = RT.Error,
+    ['!'] = RT.Negative,
     ['x'] = RT.IgnoredToken,
-    ['y'] = RT.AssignType,
-    ['z'] = RT.Error,
+    ['y'] = RT.AssignType
   };
   public required RT TokenRule { get; init; } = RT.None;
   public string? CustomPropertyName { get; set; }
   public Collection<string> AllowedTypes { get; init; } = [];
   public Collection<string> AllowedContents { get; init; } = [];
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
+  public bool LookAround => TokenRule.HasFlag(RT.LookAround);
+  public bool Negative => TokenRule.HasFlag(RT.Negative);
   private StringComparison SC => IgnoreCase || _spec?.SC == SCOIC ? SCOIC : SCO;
   /// <summary>Creates a <see cref="ChkToken"/> object from the <see langword="string"/>.</summary>
   /// <param name="definition">The definition string.</param>
@@ -66,7 +67,7 @@ public sealed class ChkToken () : IEquatable<IToken>
   /// <exception cref="ArgumentException"/>
   public static ChkToken Parse (string definition, Spec spec)
   {
-    RxS regex = RxS.Rx(@"^((?'prefix'\w+)|\[(?'custom_prop'\w+)\])\:(?:\((?'type_def'[^,&|+}-]+)([,&+|-](?'type_def'[^,&+|}-]+))*\)|\{(?'literal_def'[^,&|+}-]+)([,&+|-](?'literal_def'[^,&+|}-]+))*\}|(?'type_def'\w+))+");
+    RxS regex = RxS.Rx(@"^((?'prefix'[\w=!><]+)|\[(?'custom_prop'\w+)\])\:(?:\((?'type_def'[^,&|+}-]+)([,&+|-](?'type_def'[^,&+|}-]+))*\)|\{(?'literal_def'[^,&|+}-]+)([,&+|-](?'literal_def'[^,&+|}-]+))*\}|(?'type_def'\w+))+");
     Regex regexobj = new(regex, ROEC, new TimeSpan(0, 0, 1));
     Match m = regexobj.Match(definition);
     if (!m.Success)
@@ -76,7 +77,7 @@ public sealed class ChkToken () : IEquatable<IToken>
     string prefix = SE;
     string? prop = null;
 
-    if (m.Groups.ContainsKey("custom_prop"))
+    if (m.Groups.ContainsKey("custom_prop") && m.Groups["custom_prop"].Value.IsNotEmpty())
     {
       rule = RT.AssignCustomProp;
       prop = m.Groups["custom_prop"].Value;

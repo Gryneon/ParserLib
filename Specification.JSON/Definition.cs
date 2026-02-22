@@ -6,9 +6,7 @@ using RT = Parser.Tokens.TokenRuleType;
 
 namespace Specification.JSON;
 
-/// <summary>
-/// Defines a JSON Specification.
-/// </summary>
+/// <summary>Defines a JSON Specification.</summary>
 [DefinitionExport]
 public static class Definition
 {

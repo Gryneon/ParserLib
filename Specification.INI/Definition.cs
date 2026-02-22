@@ -26,7 +26,6 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      new GenerateOperation<TokenObject, INISection>(INISection.Generate, static item => item.Name.IsNotEmpty(), "tokens_assembled", "result"),
       Op.End
     ],
     TokenRules = [
@@ -36,8 +35,8 @@ public static class Definition
       .. MakeSingleCharRules("=", TokenExact, new ITT[] { ITT.Eq } ),
       new(TokenExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
     GroupTokenRules = [
-      new(BuildProperty, ITT.Property, "n:Key x:Eq v:Value"),
-      new(BuildObject, ITT.SectionWProps, "n:INISection pm:Property")
+      new(ITT.Property, "n:Key x:Eq v:Value"),
+      new(ITT.SectionWProps, "n:INISection pm:Property")
     ],
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
   };

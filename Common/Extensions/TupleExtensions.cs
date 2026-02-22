@@ -10,14 +10,10 @@ public static class TupleExtensions
   public static KeyValuePair<TKey, TValue> ToKVP<TKey, TValue> (this (TKey Key, TValue Value) t) => new(t.Key, t.Value);
 }
 
-/// <summary>
-/// Converter between a <see cref="ReplaceNode"/>s and a <see cref="KeyValuePair"/>.
-/// </summary>
+/// <summary>Converter between a <see cref="ReplaceNode"/>s and a <see cref="KeyValuePair"/>.</summary>
 public class ReplaceNodeKVPConverter : TypeConverter
 {
-  /// <summary>
-  /// Allows conversion from a tuple to a <see cref="KeyValuePair"/>.
-  /// </summary>
+  /// <summary>Allows conversion from a tuple to a <see cref="KeyValuePair"/>.</summary>
   /// <param name="context"></param>
   /// <param name="sourceType">The type to convert from.</param>
   /// <returns><see langword="true"/> if it can be converted, <see langword="false"/> otherwise.</returns>
@@ -31,9 +27,7 @@ public class ReplaceNodeKVPConverter : TypeConverter
 
   public override bool CanConvertTo (ITypeDescriptorContext? context, Type? destinationType) =>
     destinationType == typeof(ReplaceNode) || base.CanConvertTo(context, destinationType);
-  /// <summary>
-  /// Converts a value to a given type.
-  /// </summary>
+  /// <summary>Converts a value to a given type.</summary>
   /// <param name="context">The context.</param>
   /// <param name="culture">The culture info.</param>
   /// <param name="value">The value to convert.</param>

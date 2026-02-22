@@ -4,9 +4,7 @@ namespace FormObjectViewer;
 
 internal static class Program
 {
-  /// <summary>
-  ///  The main entry point for the application.
-  /// </summary>
+  /// <summary> The main entry point for the application.</summary>
   [STAThread]
   internal static void Main ()
   {

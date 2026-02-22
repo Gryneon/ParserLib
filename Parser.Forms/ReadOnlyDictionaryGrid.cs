@@ -22,9 +22,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
 {
   private readonly DataGridView _dataGridView;
 
-  /// <summary>
-  /// Initializes a new instance of the <see cref="ReadOnlyDictionaryGrid"/> class.
-  /// </summary>
+  /// <summary>Initializes a new instance of the <see cref="ReadOnlyDictionaryGrid"/> class.</summary>
   public ReadOnlyDictionaryGrid ()
   {
     _dataGridView = new DataGridView
@@ -56,9 +54,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
     Controls.Add(_dataGridView);
   }
 
-  /// <summary>
-  /// Gets or sets the dictionary to display in the grid.
-  /// </summary>
+  /// <summary>Gets or sets the dictionary to display in the grid.</summary>
   [Category("Data")]
   [Description("The DataDictionary whose keys and values will be displayed in the grid.")]
   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -72,9 +68,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
     }
   }
 
-  /// <summary>
-  /// Refreshes the grid with the current dictionary contents.
-  /// </summary>
+  /// <summary>Refreshes the grid with the current dictionary contents.</summary>
   private void UpdateGrid ()
   {
     _dataGridView.Rows.Clear();
@@ -88,9 +82,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
     }
   }
 
-  /// <summary>
-  /// Sorts the grid by Key or Value.
-  /// </summary>
+  /// <summary>Sorts the grid by Key or Value.</summary>
   /// <param name="sortByKey">True to sort by Key, false to sort by Value.</param>
   public void Sort (bool sortByKey = true)
   {
@@ -107,9 +99,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
     }
   }
 
-  /// <summary>
-  /// Exports the current grid contents to a CSV file.
-  /// </summary>
+  /// <summary>Exports the current grid contents to a CSV file.</summary>
   /// <param name="filePath">The file path to save the CSV.</param>
   public void ExportToCsv (string filePath)
   {
@@ -123,9 +113,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
     }
   }
 
-  /// <summary>
-  /// Event triggered when a row is selected.
-  /// </summary>
+  /// <summary>Event triggered when a row is selected.</summary>
   public event EventHandler<DataDictionaryEventArgs>? RowSelected;
 
   /// <inheritdoc />
@@ -145,9 +133,7 @@ public sealed class ReadOnlyDictionaryGrid : UserControl
     };
   }
 
-  /// <summary>
-  /// Disposes resources used by this control.
-  /// </summary>
+  /// <summary>Disposes resources used by this control.</summary>
   /// <param name="disposing">True if managed resources should be disposed.</param>
   protected override void Dispose (bool disposing)
   {

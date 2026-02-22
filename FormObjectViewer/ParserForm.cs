@@ -59,6 +59,7 @@ internal sealed partial class ParserForm : Form
     TokenDataGrid.DataSource = _currentTokens;
     TokenRuleDataGrid.DataSource = _workingRules;
     TokenRuleBindingSource.DataSource = _workingRules;
+    LoadSpecList(this, e);
   }
 
   private void OpenParseFileDialog_FileOk (object sender, CancelEventArgs e)
@@ -165,12 +166,14 @@ internal sealed partial class ParserForm : Form
   private void ClearTokens (object sender, EventArgs e)
   {
     _currentTokens.Clear();
+    TokenCountLabel.Text = $"{0}";
     TokenDataGrid.Refresh();
   }
 
   private void ClearRules (object sender, EventArgs e)
   {
     _workingRules.Clear();
+    TokenRuleCountLabel.Text = $"{0}";
     TokenRuleDataGrid.Refresh();
   }
 
@@ -198,7 +201,7 @@ internal sealed partial class ParserForm : Form
     foreach (TokenRule rule in _workingRules)
     {
 
-      maker.AddElementOpen("Rule", [new XMLProperty() { Key = "index", Value = $"{counter++}" }]);
+      maker.AddElementOpen("Rule", [new XMLAttr() { Key = "index", Value = $"{counter++}" }]);
       maker.AddLineFeed();
       maker.AddElementOpen("Type");
       maker.AddContent($"{rule.Type}");
@@ -230,6 +233,12 @@ internal sealed partial class ParserForm : Form
     ItemsChanged = true;
   }
 
+  private void TokenRuleAddRow (object sender, EventArgs e)
+  {
+    _workingRules.Add(new() { TypeToAssign = "None", Type = TokenRuleType.None, RuleStringData = SE });
+    TokenRuleDataGrid.Refresh();
+  }
+
   private void TokenRuleDataGrid_RowEnter (object sender, DataGridViewCellEventArgs e)
   {
     if (e.RowIndex == -1)
@@ -244,7 +253,7 @@ internal sealed partial class ParserForm : Form
       _workingRules.Add(new() { TypeToAssign = "None", Type = TokenRuleType.None, RuleStringData = SE });
       editForm = new()
       {
-        Original = _workingRules.Last(),
+        Original = _workingRules[^1],
         Spec = LoadedSpec,
       };
     }

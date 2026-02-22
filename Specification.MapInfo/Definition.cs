@@ -20,9 +20,7 @@ public static class Definition
 {
   internal static TokenRule Word (MTT token) => new(TokenMatch, token, @$"\b{token}\b");
   internal static Collection<TokenRule> Keywords (MTT type, Collection<string> words) => [.. words.Select(item => new TokenRule(TokenMatch, type, @$"\b{item}\b"))];
-  /// <summary>
-  /// Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see>
-  /// </summary>
+  /// <summary>Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see></summary>
   [DefinitionExport]
   public static Spec Spec { get; } = new()
   {

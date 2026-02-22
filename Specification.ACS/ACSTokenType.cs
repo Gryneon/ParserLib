@@ -7,11 +7,20 @@ namespace Specification.ACS;
 public enum ACSTokenType
 {
   None,
+
+  // Data Types
+
+  /// <summary>A string. (double quoted)</summary>
   Str,
+  /// <summary>A character. (single quoted)</summary>
   Char,
+  /// <summary>Integer Value</summary>
   Int,
+  /// <summary>A decimal (fixed point, actually an int)</summary>
   Fixed,
+  /// <summary>Common Boolean Value (Actually an int)</summary>
   Bool,
+  /// <summary>A name or identifier of some sort.</summary>
   Name,
   FunctionCall,
   FunctionCallStatement,
@@ -41,6 +50,7 @@ public enum ACSTokenType
   Loop,
   Do,
   Switch,
+  /// <summary>Keyword only. "case"</summary>
   Case,
   Default,
   Return,
@@ -74,7 +84,12 @@ public enum ACSTokenType
   Block,
   ScriptFull,
   FunctionFull,
-  PrintFunction
+  FunctionCallOpen,
+  PrintFunction,
+  CaseLabel,
+  ValueNoName,
+  FinalParameter,
+  ParameterExpression
 }
 
 public enum ModelDefTokenType

@@ -2,9 +2,7 @@
 
 namespace Common.Regex;
 
-/// <summary>
-/// Data for one capture.
-/// </summary>
+/// <summary>Data for one capture.</summary>
 public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<CaptureData>
 {
   /// <inheritdoc/>
@@ -19,9 +17,7 @@ public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<Capt
   public string Content { get; init; }
   /// <inheritdoc/>
   public virtual string Name { get; }
-  /// <summary>
-  /// The Capture index in the group.
-  /// </summary>
+  /// <summary>The Capture index in the group.</summary>
   public virtual int Index { get; init; }
   /// <inheritdoc/>
   public virtual bool IsNull => Pos < 0 || Len <= 0 || Content.Length == 0;
@@ -31,9 +27,7 @@ public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<Capt
     Content = SE;
     Name = SE;
   }
-  /// <summary>
-  /// Constructor from a <see cref="Capture"/>.
-  /// </summary>
+  /// <summary>Constructor from a <see cref="Capture"/>.</summary>
   /// <param name="c">The <see cref="Capture"/> to make this object from.</param>
   /// <param name="groupName">The name of the group.</param>
   /// <param name="index">The index of the capture.</param>
@@ -54,9 +48,7 @@ public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<Capt
     Index = index;
     Name = groupName;
   }
-  /// <summary>
-  /// Manual constructor.
-  /// </summary>
+  /// <summary>Manual constructor.</summary>
   /// <param name="content">The text of the capture.</param>
   /// <param name="pos">The position in the string.</param>
   /// <param name="len">The length of the string.</param>

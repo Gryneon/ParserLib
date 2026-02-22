@@ -4,9 +4,7 @@ namespace Common;
 
 public interface ICanAccessChildren<TIndex, out TChild> : IEnumerable<TChild> where TIndex : notnull
 {
-  /// <summary>
-  /// The number of children in this object.
-  /// </summary>
+  /// <summary>The number of children in this object.</summary>
   int Count { get; }
   TChild this[TIndex index] { get; }
 }

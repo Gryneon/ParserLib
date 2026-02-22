@@ -4,23 +4,10 @@ using Parser.Tokens;
 
 namespace Specification.XML;
 
-/// <summary>
-/// Represents an opening XML tag.
-/// </summary>
-public class XMLElementOpen () : XMLNodeAttr, IGeneratable, IXMLObject
+/// <summary>Represents an opening XML tag.</summary>
+public class XMLElementOpen () : XMLNodeAttr, IXMLObject
 {
-  /// <inheritdoc/>
-  public static XMLElementOpen Generate (TokenObject obj)
-  {
-    obj.ThrowIfNull();
-
-    XMLElementOpen result = new()
-    {
-      Tag = obj.Name,
-    };
-
-    result.AssignAttributes(obj);
-
-    return result;
-  }
+  public override string Serialize () => $"<{Tag} {Attributes.TextJoin(" ")}>";
+  public override string ToString () => Serialize();
+  public XMLElementClose ClosingElement => new() { Tag = Tag };
 }

@@ -9,9 +9,7 @@ public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
   public override string? Value { get; set; } = SE;
   /// <summary>Creates an empty <see cref="PropertyObj"/>.</summary>
   public PropertyObj () { }
-  /// <summary>
-  /// Creates a property from a key and value
-  /// </summary>
+  /// <summary>Creates a property from a key and value</summary>
   /// <param name="key">The key of the new property.</param>
   /// <param name="value">The value of the new property.</param>
   [SetsRequiredMembers]
@@ -20,9 +18,7 @@ public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
     Key = key;
     Value = value;
   }
-  /// <summary>
-  /// Creates a property from an IProperty interface
-  /// </summary>
+  /// <summary>Creates a property from an IProperty interface</summary>
   /// <param name="iprop">The other property.</param>
   [SetsRequiredMembers]
   public PropertyObj (IProperty<object> iprop) : this()
@@ -31,9 +27,7 @@ public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
     Key = iprop.Key;
     Value = iprop?.Value?.ToString() ?? SE;
   }
-  /// <summary>
-  /// Creates a property from an IProperty interface
-  /// </summary>
+  /// <summary>Creates a property from an IProperty interface</summary>
   /// <param name="iprop">The other property.</param>
   [SetsRequiredMembers]
   public PropertyObj (IProperty<string> iprop) : this()
@@ -81,9 +75,7 @@ public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
   public override bool Equals (object? obj) =>
     obj is IProperty<string> prop && Equals(prop);
   public override int GetHashCode () => HashCode.Combine(Key, Value);
-  /// <summary>
-  /// Gets the <see langword="string"/> representation of the object for serialization.
-  /// </summary>
+  /// <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
   /// <returns>The <see langword="string"/> representation of the object.</returns>
   public string Serialize () => $"  {Key}={Value}";
   public bool Equals (PropertyObj? other) => throw new NotImplementedException();

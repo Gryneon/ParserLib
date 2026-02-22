@@ -15,9 +15,7 @@ namespace Specification.ZScript;
 [DefinitionExport]
 public static class Definition
 {
-  /// <summary>
-  /// https://regex101.com/r/En5C8c/7
-  /// </summary>
+  /// <summary>https://regex101.com/r/En5C8c/7</summary>
   [DefinitionExport]
   public static Spec Spec => new()
   {

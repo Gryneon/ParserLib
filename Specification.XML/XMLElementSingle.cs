@@ -5,20 +5,8 @@ using Parser.Tokens;
 namespace Specification.XML;
 
 /// <summary>Represents a single self closing XML tag.</summary>
-public class XMLElementSingle () : XMLNodeAttr, IGeneratable, IXMLObject
+public class XMLElementSingle () : XMLNodeAttr, IXMLObject
 {
-  /// <inheritdoc/>
-  public static XMLElementSingle Generate (TokenObject obj)
-  {
-    obj.ThrowIfNull();
-
-    XMLElementSingle result = new()
-    {
-      Tag = obj.Name
-    };
-
-    result.AssignAttributes(obj);
-
-    return result;
-  }
+  public override string Serialize () => $"<{Tag} {Attributes.TextJoin(" ")}/>";
+  public override string ToString () => Serialize();
 }

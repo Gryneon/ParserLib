@@ -1,6 +1,13 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 namespace Parser.Tokens;
 
+public static class TokenRules
+{
+  public static Collection<TokenRule> Paren { get; } = [.. TokenRule.MakeSingleCharRules("()", RT.TokenExact, new string[] { "Po", "Pc" })];
+  public static Collection<TokenRule> Brack { get; } = [.. TokenRule.MakeSingleCharRules("{}", RT.TokenExact, new string[] { "Bo", "Bc" })];
+  public static Collection<TokenRule> Brace { get; } = [.. TokenRule.MakeSingleCharRules("[]", RT.TokenExact, new string[] { "Ao", "Ac" })];
+}
+
 public class TokenRule
 {
   public required RT Type { get; set; }

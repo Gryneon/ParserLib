@@ -1,13 +1,10 @@
 
 namespace Specification.XML;
 
-/// <summary>
-/// An XML node.
-/// </summary>
+/// <summary>An XML node.</summary>
 public abstract class XMLNode : IXMLObject
 {
-  /// <summary>
-  /// The name of the element.
-  /// </summary>
+  /// <summary>The name of the element.</summary>
   public string Tag { get; set; } = SE;
+  public abstract string Serialize ();
 }

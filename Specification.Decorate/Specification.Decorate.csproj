@@ -14,7 +14,7 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <ProjectGuid>{4EFA0A09-F928-C97B-6CDA-EF3F062FD381}</ProjectGuid>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
   <ItemGroup>

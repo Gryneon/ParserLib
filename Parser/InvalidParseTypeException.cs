@@ -1,8 +1,6 @@
 namespace Parser;
 
-/// <summary>
-/// Represents an exception that is thrown when an invalid parse type is passed to a generate operation.
-/// </summary>
+/// <summary>Represents an exception that is thrown when an invalid parse type is passed to a generate operation.</summary>
 public class InvalidDefinitionException : OperationException
 {
   public InvalidDefinitionException () : base("Error in operation definition") { }

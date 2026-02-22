@@ -16,9 +16,9 @@ public interface IGeneratable
   {
     try
     {
-      if (input is not TIn @in)
-        throw new ArgumentException(nameof(@in));
-      output = Generate<TIn, TOut>(@in);
+      if (input is not TIn tInput)
+        throw new ArgumentException("Argument is wrong.", nameof(input));
+      output = Generate<TIn, TOut>(tInput);
       return output is null ? throw new ArgumentNullException(nameof(output)) : true;
     }
     catch (ArgumentNullException)

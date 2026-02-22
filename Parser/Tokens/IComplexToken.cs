@@ -2,6 +2,23 @@
 
 namespace Parser.Tokens;
 
+public interface IFactory
+{
+  object Produce (IToken input);
+  Collection<object> Produce (IEnumerable<IToken> input)
+  {
+    Collection<object> result = [];
+
+    if (input is null)
+      return result;
+
+    foreach (IToken item in input)
+      result.Add(Produce(item));
+
+    return result;
+  }
+}
+
 public interface IComplexToken : IToken
 {
   new string Content { get; }

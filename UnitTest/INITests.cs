@@ -15,7 +15,7 @@ public class INITests
   [Fact]
   public void INI_Constructor ()
   {
-    INIDocument test = new([(INISection) "Section1"]);
+    INIDocument test = ["Section1"];
     test["Section1"].Set("key", "Section1_Value");
     Assert.Equal("Section1_Value", test["Section1"]["key"]);
     int count = test["Section1"].Count;

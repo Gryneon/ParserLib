@@ -89,13 +89,13 @@ public sealed partial class TokenAssembler
     {
       Validate();
       token = null;
-      for (int i = 0; i < _tokens.Count; i++)
+      for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         if (!_tokenRuleLookup.TryGetValue(first_token_index + i, out RT value))
           return false;
         if (value.HasFlag(flag))
         {
-          token = _tokens[i];
+          token = _tokens[first_token_index + i];
           return true;
         }
       }
@@ -232,8 +232,7 @@ public sealed partial class TokenAssembler
         reset_match();
         break;
       }
-
-      if (node.Equals(token))
+      if (node.Equals(token) && !node.LookAround)
       {
         if (first_token_index == -1)
           first_token_index = token_index;
@@ -247,6 +246,21 @@ public sealed partial class TokenAssembler
           node_index++;
         token_index++;
         continue;
+      }
+      else if (node.LookAround)
+      {
+        if (node.Negative && !node.Equals(token) || node.Equals(token) && !node.Negative)
+        {
+          node_index++;
+          token_index++;
+          continue;
+        }
+        else
+        {
+          token_index = first_token_index + 1;
+          reset_match();
+          continue;
+        }
       }
       else if (allow_fail)
       {
@@ -270,10 +284,10 @@ public sealed partial class TokenAssembler
     return _constructed_items;
   }
 
-  public void Execute (TokenCollection tokens)
+  public TokenCollection Execute (TokenCollection tokens)
   {
     _method = "Execute";
-    _tokens = tokens;
+    _tokens = [.. tokens];
 
     for (int r = 0; r < _rules.Count; r++)
     {
@@ -299,6 +313,8 @@ public sealed partial class TokenAssembler
     }
 
     LogInfo("Token Assembly Complete");
+
+    return _tokens;
   }
 
   public override string ToString () => $"TokenAssembler ({_spec.Name})";

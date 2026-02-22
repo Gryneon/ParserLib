@@ -5,9 +5,7 @@ using static Common.Regex.RegexStaticFunctions;
 
 namespace Common.Regex;
 
-/// <summary>
-/// Common Regex Parts.
-/// </summary>
+/// <summary>Common Regex Parts.</summary>
 public static class CommonRegex
 {
   // Common Patterns
@@ -15,13 +13,9 @@ public static class CommonRegex
   public static string WS_OnlyLine { get; } = Gp(@"(?:\r\n?|\n)+");
   public static string WS_OnlyNonLF { get; } = Gp(@"(?:\r\n?)+");
   public static string WS_Mult { get; } = Gp(@"\s{2,}");
-  /// <summary>
-  /// Required Whitespace (including new lines)
-  /// </summary>
+  /// <summary>Required Whitespace (including new lines)</summary>
   public static string WS_Req { get; } = Gp(@"\s+");
-  /// <summary>
-  /// Optional Whitespace (including new lines)
-  /// </summary>
+  /// <summary>Optional Whitespace (including new lines)</summary>
   public static string WS { get; } = Gp(@"\s*");
 
   public static string NWS_OrSlash { get; } = Gp(@"[^\s\/]+");

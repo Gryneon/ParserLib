@@ -26,31 +26,17 @@ public enum TokenRuleType : long
   /// If there are multiple captures, they will be stored as additional tokens of this type.</summary>
   /// <remarks>The entire match is exempted if flagged as exempt, but the value of the created tokens will ONLY be what is in the named matching group 'keep'.</remarks>
   TokenExtract = 0x80,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenProperty"/>.</summary>
-  BuildProperty = 0x100,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenArray"/>.</summary>
-  BuildArray = 0x200,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenObject"/>.</summary>
-  BuildObject = 0x400,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenFlag"/>.</summary>
-  BuildFlag = 0x800,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenTypedValue"/>.</summary>
-  BuildTypedValue = 0x1000,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenLabel"/>.</summary>
-  BuildLabel = 0x2000,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenStatement"/>.</summary>
-  BuildStatement = 0x4000,
-  /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="TokenProperty"/>, <see cref="TokenTypedValue"/>, or <see cref="TokenArray"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="ComplexToken"/>.</summary>
   AssignValue = 0x8000,
-  /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="TokenProperty"/> or <see cref="TokenObject"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="ComplexToken"/>.</summary>
   AssignName = 0x10000,
-  /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="TokenObject"/> or <see cref="TokenTypedValue"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="ComplexToken"/>.</summary>
   AssignType = 0x20000,
-  /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="TokenObject"/>.</summary>
+  /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="ComplexToken"/>.</summary>
   AddProperty = 0x40000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.State"/> to <see langword="true"/> in a <see cref="TokenFlag"/>.</summary>
+  /// <summary>This Token Group Token Code will set <see cref="TokenPieceType.FlagState"/> to <see langword="true"/> in a <see cref="ComplexToken"/>.</summary>
   AddFlag = 0x80000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenFlag.State"/> to <see langword="false"/> in a <see cref="TokenFlag"/>.</summary>
+  /// <summary>This Token Group Token Code will set <see cref="TokenPieceType.FlagState"/> to <see langword="false"/> in a <see cref="ComplexToken"/>.</summary>
   SubFlag = 0x100000,
   /// <summary>This Token Rule will only match from existing tokens.</summary>
   /// <remarks>This is useful for special keywords.</remarks>
@@ -76,21 +62,21 @@ public enum TokenRuleType : long
   Any = Opt | Mult,
   /// <summary>The bits to remove to get the type correctly.</summary>
   FlagBits = Mult | Opt | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
-  /// <summary>This Token Group Rule will assemble a <see cref="TokenExpression"/> differently than normal. It will store the left hand, the operator, and the right hand values.</summary>
-  BuildExpression = 0x20000000,
   /// <summary>This token sequence entry will supply any fields not already filled by other definitions from its own respective values.</summary>
-  /// <remarks>If a <see cref="TokenObject"/> was passed to any field of a <see cref="TokenObject"/> with this flag assigned, it would copy all of its fields to the parent <see cref="TokenObject"/>.
+  /// <remarks>If a <see cref="ComplexToken"/> was passed to any field of a <see cref="ComplexToken"/> with this flag assigned, it would copy all of its fields to the parent <see cref="TokenObject"/>.
   /// These properties would be overwritten by any defined token sequence entries.</remarks>
   Descendant = 0x40000000,
   /// <summary>This flag means a character was not recognized.</summary>
-  Error = 0x80000000L,
+  Error = 0x20000000,
   /// <summary>This flag means a character was not recognized.</summary>
-  AssignLeft = 0x100000000L,
+  AssignLeft = 0x200,
   /// <summary>This flag means a character was not recognized.</summary>
-  AssignRight = 0x200000000L,
+  AssignRight = 0x400,
   /// <summary>This flag means a character was not recognized.</summary>
-  AssignCenter = 0x400000000L,
-  AddParameter = 0x800000000,
-  AddStatement = 0x1000000000,
-  AssignCustomProp = 0x2000000000,
+  AssignCenter = 0x100,
+  AddParameter = 0x800,
+  AddStatement = 0x1000,
+  AssignCustomProp = 0x2000,
+  LookAround = 0x4000,
+  Negative = 0x80000000L,
 }

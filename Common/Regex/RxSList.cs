@@ -7,9 +7,7 @@ public sealed class RxSCollection : ICollection<RxS>, IEquatable<RxSCollection>,
   private readonly List<RxS> _list;
   /// <inheritdoc/>
   public int Count => _list.Count;
-  /// <summary>
-  /// The elements in this collection combined with the '|' operator.
-  /// </summary>
+  /// <summary>The elements in this collection combined with the '|' operator.</summary>
   public RxS Combined => RxS.Grp(_list.TextJoin("|"));
 
   bool ICollection<RxS>.IsReadOnly => false;

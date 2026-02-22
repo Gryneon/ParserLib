@@ -2,6 +2,34 @@
 
 namespace Parser.Tokens;
 
+public abstract class ComplexTokenFactory : IFactory
+{
+  object IFactory.Produce (IToken input) => Produce<object>(input);
+
+  public abstract T Produce<T> (IToken input);
+}
+
+public static class TPTExt
+{
+  private static Dictionary<TPT, bool> TokenCollectionByPieceType { get; } = new()
+  {
+    [TPT.ValueList] = true,
+    [TPT.Value] = false,
+    [TPT.Name] = false,
+    [TPT.Center] = false,
+    [TPT.Left] = false,
+    [TPT.Right] = false,
+    [TPT.Type] = false,
+    [TPT.FlagList] = true,
+    [TPT.ParameterList] = true,
+    [TPT.PropertyList] = true,
+  };
+
+  public static bool IsTokenCollection (this TPT type) => TokenCollectionByPieceType[type];
+  public static bool IsUsed (this TPT type, Dictionary<TPT, IToken> token_pieces) =>
+    token_pieces is not null && token_pieces.TryGetValue(type, out IToken? value) && (!type.IsTokenCollection() || type.IsTokenCollection() && value is TokenCollection tc && tc.Count > 0);
+}
+
 public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken, IValueToken
 {
   private readonly Dictionary<TPT, IToken> _token_pieces = [];
@@ -9,7 +37,7 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
   public IToken this[TPT piece_type] => _token_pieces[piece_type];
 
   public string Content => Children.Select(i => i.Content).TextJoin();
-  public IReadOnlyCollection<TPT> PiecesPresent => _token_pieces.Keys;
+  public IReadOnlyCollection<TPT> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
   public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
   public bool Exempt { get; set; }
@@ -53,11 +81,11 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
   }
   #endregion
   public static explicit operator TokenObject (ComplexToken complex) => ToTokenObject(complex);
-  public static implicit operator ComplexToken (TokenLabel obj) => FromToken(obj);
 
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is IComplexToken && Children.SequenceEqual(other.Children);
   public IToken GetPieceToken (TPT piece_type) => _token_pieces[piece_type];
+  public TokenCollection? GetPieceTokens (TPT piece_type) => _token_pieces[piece_type] as TokenCollection;
   public string GetPieceContent (TPT piece_type) => _token_pieces[piece_type].Content;
   public bool HasPieceType (TPT piece_type)
   {

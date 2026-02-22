@@ -19,6 +19,13 @@ public class TokenGroupRule : TokenRule
     RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign?.ToString() ?? SE;
   }
+  [SetsRequiredMembers]
+  public TokenGroupRule (object typeToAssign, [SS("regex")] string ruleStringData)
+  {
+    Type = RT.None;
+    RuleStringData = ruleStringData;
+    TypeToAssign = typeToAssign?.ToString() ?? SE;
+  }
   public TokenGroupRule () => TypeToAssign = SE;
 
   public static Dictionary<char, RT> CharacterReference => new()

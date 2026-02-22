@@ -5,9 +5,7 @@
     </assembly>
     <members>
         <member name="T:Specification.JSON.Definition">
-            <summary>
-            Defines a JSON Specification.
-            </summary>
+            <summary>Defines a JSON Specification.</summary>
         </member>
         <member name="T:Specification.JSON.IJSONNode">
             <summary>Basic interface for JSON parts.</summary>

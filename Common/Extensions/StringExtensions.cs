@@ -31,9 +31,7 @@ public static class StringExtensions
   public static bool IsEmpty ([NotNullWhen(false)][MaybeNullWhen(true)] this string? text) => string.IsNullOrEmpty(text);
   public static bool IsNotEmpty ([NotNullWhen(true)] this string? text) => !text.IsEmpty();
   public static bool IsNamedGroup (this string text) => !text.IsPosInteger();
-  /// <summary>
-  /// Case insensitive comparison.
-  /// </summary>
+  /// <summary>Case insensitive comparison.</summary>
   /// <param name="text">This text.</param>
   /// <param name="other">The other text.</param>
   /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
@@ -85,9 +83,7 @@ public static class StringExtensions
 
     return result;
   }
-  /// <summary>
-  /// Removes all null characters from the string.
-  /// </summary>
+  /// <summary>Removes all null characters from the string.</summary>
   /// <param name="text">The input string.</param>
   /// <returns>The input string with all null characters removed.</returns>
   public static string RemoveNulls (this string? text) => text?.Replace("\0", "", SCO) ?? string.Empty;

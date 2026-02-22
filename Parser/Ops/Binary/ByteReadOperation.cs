@@ -54,17 +54,45 @@ public sealed class ByteReadOperation : Operation, IOperation
       return;
     }
 
-    int remaining = Data.FileSize - Parser.GetCursorByKey(CursorKey).Index;
+    if (((Memory<byte>) Data[CursorKey]).Length == 0)
+    {
+      Status = FailNoInput;
+      return;
+    }
+
+    if (((Memory<byte>) Data[CursorKey]).Length < Size)
+    {
+      Status = FailBufferOverflow;
+      return;
+    }
+
+    if (Size == 0)
+    {
+      Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Found: Marker");
+      Status = Pass;
+      WorkToReturn = Array.Empty<byte>();
+      return;
+    }
+
+    ByteReadMode adjusted_mode = Mode;
+
+    if ((int) adjusted_mode > 3)
+    {
+      adjusted_mode = Mode - 3;
+      MakeListOnSave = true;
+    }
+
+    int remaining = (int) Data.Load("file_size") - Parser.GetCursorByKey(CursorKey).Index;
     object? value = Size switch
     {
-      1 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span[0],
-      2 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt16(),
-      4 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt32(),
-      8 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt64(),
-      > 0 when Mode is ByteReadMode.Text => ReadChars(CursorKey, Size),
-      > 0 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size),
-      -1 when Mode is ByteReadMode.Text => ReadChars(CursorKey, remaining),
-      -1 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining),
+      1 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span[0],
+      2 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt16(),
+      4 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).ToInt32(),
+      8 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt64(),
+      > 0 when adjusted_mode is ByteReadMode.Text => ReadChars(CursorKey, Size),
+      > 0 when adjusted_mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size),
+      -1 when adjusted_mode is ByteReadMode.Text => ReadChars(CursorKey, remaining),
+      -1 when adjusted_mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining),
       _ => null
     };
     if (value is null)
@@ -72,6 +100,9 @@ public sealed class ByteReadOperation : Operation, IOperation
       Status = FailBadOpDefinition;
       return;
     }
+
+    Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Read: {value}");
+
     WorkToReturn = value;
     Status = Pass;
   }

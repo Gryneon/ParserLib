@@ -10,7 +10,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
     <LangVersion>preview</LangVersion>
     <Platforms>AnyCPU;x86;x64</Platforms>

@@ -2,9 +2,7 @@
 
 namespace Common.Regex;
 
-/// <summary>
-/// A box that contains a string representing a regular expression. Basically just an extension of <see cref="string"/>.
-/// </summary>
+/// <summary>A box that contains a string representing a regular expression. Basically just an extension of <see cref="string"/>.</summary>
 /// <seealso cref="string" />
 public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable<RxS>
 {
@@ -21,45 +19,33 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
 
   public static implicit operator string (RxS rx) => rx.Content;
   public static implicit operator RxS ([SS("Regex")] string str) => Rx(str);
-  /// <summary>
-  /// Concatenates 2 regular expressions.
-  /// </summary>
+  /// <summary>Concatenates 2 regular expressions.</summary>
   /// <param name="rx1">The left expression.</param>
   /// <param name="rx2">The right expression.</param>
   /// <returns>A regular expression formed from the 2 regular expressions.</returns>
   public static RxS operator + (RxS rx1, RxS rx2) => $"{rx1}{rx2}";
-  /// <summary>
-  /// Concatenates 2 regular expressions.
-  /// </summary>
+  /// <summary>Concatenates 2 regular expressions.</summary>
   /// <param name="rx1">The left expression.</param>
   /// <param name="rx2">The right expression.</param>
   /// <returns>A regular expression formed from the 2 regular expressions.</returns>
   public static RxS operator + (RxS rx1, [SS("Regex")] string rx2) => $"{rx1}{rx2}";
   public static RxS operator ! (RxS rx1) => NegLkAhd(rx1);
-  /// <summary>
-  /// Negative lookahead shorthand.
-  /// </summary>
+  /// <summary>Negative lookahead shorthand.</summary>
   /// <param name="rx1">Lefthand regular expression.</param>
   /// <param name="rx2">Righthand regular expression.</param>
   /// <returns>A regular expression that is a joining of the 2 expressions.</returns>
   public static RxS operator >> (RxS rx1, [SS("Regex")] string rx2) => rx1 + NegLkAhd(rx2);
-  /// <summary>
-  /// Negative lookbehind shorthand.
-  /// </summary>
+  /// <summary>Negative lookbehind shorthand.</summary>
   /// <param name="rx1">Lefthand regular expression.</param>
   /// <param name="rx2">Righthand regular expression.</param>
   /// <returns>A regular expression that is a joining of the 2 expressions.</returns>
   public static RxS operator << (RxS rx1, [SS("Regex")] string rx2) => rx1 + NegLkBhd(rx2);
-  /// <summary>
-  /// Positive lookahead shorthand.
-  /// </summary>
+  /// <summary>Positive lookahead shorthand.</summary>
   /// <param name="rx1">Lefthand regular expression.</param>
   /// <param name="rx2">Righthand regular expression.</param>
   /// <returns>A regular expression that is a joining of the 2 expressions.</returns>
   public static RxS operator >= (RxS rx1, [SS("Regex")] string rx2) => rx1 + PosLkAhd(rx2);
-  /// <summary>
-  /// Positive lookbehind shorthand.
-  /// </summary>
+  /// <summary>Positive lookbehind shorthand.</summary>
   /// <param name="rx1">Lefthand regular expression.</param>
   /// <param name="rx2">Righthand regular expression.</param>
   /// <returns>A regular expression that is a joining of the 2 expressions.</returns>
@@ -70,13 +56,9 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   /// <summary>Adds a 'zero or many' quantifier to the expression.</summary>
   /// <value><c>*</c></value>
   public RxS Any => $"{Grp(Content)}*";
-  /// <summary>
-  /// Adds a 'one or many' quantifier to the expression.
-  /// </summary>
+  /// <summary>Adds a 'one or many' quantifier to the expression.</summary>
   public RxS Many => $"{Grp(Content)}+";
-  /// <summary>
-  /// Adds an optional quantifier to the expression.
-  /// </summary>
+  /// <summary>Adds an optional quantifier to the expression.</summary>
   public RxS Opt => $"{Grp(Content)}?";
 
   public RxS Bk => @$"{Content}\b";
@@ -136,15 +118,11 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   public static RxS EntireInput => "$_";
   public static RxS LastGroup => "$+";
 
-  /// <summary>
-  /// Checks if the regular expression matches the other.
-  /// </summary>
+  /// <summary>Checks if the regular expression matches the other.</summary>
   /// <param name="other">The other regular expression.</param>
   /// <returns>true if the regular expression matches, false otherwise</returns>
   public bool Is (RxS other) => Content.Is(other);
-  /// <summary>
-  /// Checks if the regular expression matches the other, ignoring case.
-  /// </summary>
+  /// <summary>Checks if the regular expression matches the other, ignoring case.</summary>
   /// <param name="other">The other regular expression.</param>
   /// <returns>true if the regular expression matches ignoring case, false otherwise</returns>
   public bool Like (RxS other) => Content.Like(other);
@@ -158,15 +136,11 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   public static bool operator < (RxS left, RxS right) => left.CompareTo(right) < 0;
   public static bool operator > (RxS left, RxS right) => left.CompareTo(right) > 0;
 
-  /// <summary>
-  /// Compares the regular expressions for equality.
-  /// </summary>
+  /// <summary>Compares the regular expressions for equality.</summary>
   /// <param name="other">The string to compare to.</param>
   /// <returns><see langword="true"/> if the two regular expressions are based on the same pattern string, <see langword="false"/> otherwise.</returns>
   public bool Equals ([SS("Regex")] string? other) => Content.Equals(other, SCO);
-  /// <summary>
-  /// Compares the regular expressions for equality.
-  /// </summary>
+  /// <summary>Compares the regular expressions for equality.</summary>
   /// <param name="other">The regular expression to compare to.</param>
   /// <returns><see langword="true"/> if the two regular expressions are based on the same pattern string, <see langword="false"/> otherwise.</returns>
   public bool Equals (RxS other) => Equals(other.Content);

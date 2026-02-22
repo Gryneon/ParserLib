@@ -21,7 +21,7 @@
     <OutputType>WinExe</OutputType>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <StartupObject>FormObjectViewer.Program</StartupObject>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net11.0-windows</TargetFramework>
     <Title>Form Based Object Browser</Title>
     <UseWindowsForms>true</UseWindowsForms>
     <WarningLevel>9999</WarningLevel>
@@ -50,10 +50,6 @@
 
   <ItemGroup>
     <Content Include="Icons\ActiveServerApplication.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="TokenSequenceNode.cs" />
   </ItemGroup>
 
   <ItemGroup>

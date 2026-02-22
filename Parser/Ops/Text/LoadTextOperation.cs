@@ -2,9 +2,7 @@
 
 namespace Parser.Ops.Text;
 
-/// <summary>
-/// Loads a path as text.
-/// </summary>
+/// <summary>Loads a path as text.</summary>
 /// <param name="input_key">The path to the file(s).</param>
 /// <param name="output_key">The key to store the text in.</param>
 /// <param name="ignoreMissing">Whether or not to </param>

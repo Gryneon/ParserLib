@@ -6,15 +6,11 @@ using RegexObj = System.Text.RegularExpressions.Regex;
 
 namespace Common.Regex;
 
-/// <summary>
-/// A static class contianing extension methods for <see cref="RegexObj"/> related types.
-/// </summary>
+/// <summary>A static class contianing extension methods for <see cref="RegexObj"/> related types.</summary>
 public static class RegexExtensions
 {
   #region MatchCollection Extensions
-  /// <summary>
-  /// Exposes the <see cref="IEnumerator{Match}"/> for <paramref name="mc"/>.
-  /// </summary>
+  /// <summary>Exposes the <see cref="IEnumerator{Match}"/> for <paramref name="mc"/>.</summary>
   /// <param name="mc">The <see cref="MatchCollection"/> to enumerate.</param>
   /// <returns>The <see cref="IEnumerator{Match}"/>.</returns>
   public static IEnumerator<Match> GetEnumerator (this MatchCollection mc) => mc.ToImmutableList().GetEnumerator();

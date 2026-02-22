@@ -4,9 +4,7 @@ using Common.Regex;
 using XlRange = Microsoft.Office.Interop.Excel.Range;
 
 namespace Common.Excel;
-/// <summary>
-/// A node within a range.
-/// </summary>
+/// <summary>A node within a range.</summary>
 public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGeneratable
 {
   #region Static Members
@@ -16,24 +14,16 @@ public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGenerat
   #endregion
 
   #region Public Properties
-  /// <summary>
-  /// The containing worksheet.
-  /// </summary>
+  /// <summary>The containing worksheet.</summary>
   public string Sheet { get; set; } = SE;
   public string Address { get; set; } = SE;
   public bool RowAbs { get; set; }
-  /// <summary>
-  /// The row index.
-  /// </summary>
+  /// <summary>The row index.</summary>
   public int? Row { get; set; }
   public bool ColAbs { get; set; }
-  /// <summary>
-  /// The column index;
-  /// </summary>
+  /// <summary>The column index;</summary>
   public string? Col { get; set; }
-  /// <summary>
-  /// Whether or not this is the whole row or not.
-  /// </summary>
+  /// <summary>Whether or not this is the whole row or not.</summary>
   public bool WholeRow { get; set; }
   public bool WholeCol { get; set; }
 

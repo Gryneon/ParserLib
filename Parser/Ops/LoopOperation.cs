@@ -35,11 +35,21 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
 
   private int UnpackInc ([NotNull] Collection<IOperation> operations, int index, int inc)
   {
+    CursorKey.ThrowIfNull();
     Collection<IOperation> additions = [];
     OpIndex = operations.Count;
-    additions.Add(Op.StartLoop(this, OpIndex, index));
+    IOperation start = Op.StartLoop(this, OpIndex, index);
+    additions.Add(start);
     additions.AddRange(Operations);
-    additions.Add(Op.NextLoop(inc));
+    additions.Add(Op.NextLoop(CursorKey, inc));
+    foreach (IOperation op in additions)
+    {
+      if (op is OperationAction oa)
+      {
+        oa.LoopStart = OpIndex;
+        oa.LoopBreak = index;
+      }
+    }
     operations.AddRange(additions);
     return operations.Count;
   }

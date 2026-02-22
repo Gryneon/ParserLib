@@ -20,24 +20,6 @@ public sealed class TokenCollection () : IList<IToken>, IToken
     set => _tokens[index] = value;
   }
 
-  public Dictionary<string, string> GetProperties ()
-  {
-    Dictionary<string, string> result = [];
-
-    if (_tokens.All(i => i is TokenProperty))
-    {
-      foreach (TokenProperty token in _tokens.Cast<TokenProperty>())
-      {
-        if (token.Name is null || token.Value is null)
-          continue;
-
-        result.Add(token.Name, token.Value);
-      }
-    }
-
-    return result;
-  }
-
   public int Count => _tokens.Count;
   bool ICollection<IToken>.IsReadOnly => false;
 

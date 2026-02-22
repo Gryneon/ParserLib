@@ -2,9 +2,7 @@ using Parser.Inference;
 
 namespace Parser;
 
-/// <summary>
-/// This is a static class for <see cref="Spec"/> definitions.
-/// </summary>
+/// <summary>This is a static class for <see cref="Spec"/> definitions.</summary>
 public static class DefinitionStaticFunctions
 {
   // Methods

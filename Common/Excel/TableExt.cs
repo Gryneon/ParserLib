@@ -1,9 +1,7 @@
 #if HAS_OFFICE
 namespace Common.Excel;
 
-/// <summary>
-/// An abstract base class that implements the ITableExt interface, providing a foundation for table-like data structures.
-/// </summary>
+/// <summary>An abstract base class that implements the ITableExt interface, providing a foundation for table-like data structures.</summary>
 public abstract class TableExt : ITableExt
 {
   public abstract Dictionary<string, Collection<string>> Data { get; }

@@ -1,6 +1,9 @@
 #pragma warning disable CA1812 // Don't make unnecessary forms.
+#pragma warning disable CA1416 // Validate platform compatibility
 
 using System.Diagnostics.CodeAnalysis;
+
+using Common.Extensions;
 
 using Parser.Tokens;
 
@@ -43,7 +46,6 @@ internal sealed partial class RuleEditForm : Form
     UpdateForm();
 
   }
-  [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Nobody uses windows < 6.1")]
   private void UpdateForm ()
   {
     StringDataBox.Text = WorkingCopy.RuleStringData;
@@ -64,6 +66,16 @@ internal sealed partial class RuleEditForm : Form
     IgnoreTokenCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.IgnoredToken);
     MultCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Mult);
     OptCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Opt);
+
+    TokenMatchRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.TokenMatch);
+    TokenExactRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.TokenExact);
+    TokenExtractRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.TokenExtract);
+    SplitMatchRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.SplitMatch);
+    SplitExactRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.SplitExact);
+    StoreOtherRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.StoreOther);
+    StoreExtraRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.StoreExtra);
+    ErrorMatchRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.ErrorMatch);
+    CompetitiveRadio.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Competitive);
   }
   private void UpdateCopy ()
   {
@@ -95,7 +107,6 @@ internal sealed partial class RuleEditForm : Form
     WorkingCopy.Type = assembled;
 
   }
-  [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Nobody uses windows < 6.1")]
   private void SaveButton_Click (object sender, EventArgs e)
   {
     UpdateCopy();
@@ -105,6 +116,22 @@ internal sealed partial class RuleEditForm : Form
     Close();
   }
 
-  [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Nobody uses windows < 6.1")]
   private void CancelButton_Click (object sender, EventArgs e) => Close();
+
+  private void AddTypeButton_Click (object sender, EventArgs e)
+  {
+    WorkingCopy.TypeToAssign = AddTypeBox.Text;
+
+    bool hasType ()
+    {
+      foreach (object typ in TypeToAssignListBox.Items)
+      {
+        if (typ.ToString().Like(AddTypeBox.Text))
+          return true;
+      }
+      return false;
+    }
+    if (!hasType())
+      _ = TypeToAssignListBox.Items.Add(AddTypeBox.Text);
+  }
 }

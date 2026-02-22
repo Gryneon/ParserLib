@@ -21,15 +21,7 @@ public sealed class DataDictionary : IDictionary<string, object>
   public ICollection<object> Values => _dict.Values;
   public int Count => _dict.Count;
   public bool IsReadOnly => false;
-  public string LastKeySaved => DataOrder[^1];
-  /// <summary>
-  /// The order that keys have been saved to. You can get the last key in this collection to get the last stored key.
-  /// </summary>
-  public Collection<string> DataOrder { get; } = [];
-
-  /// <summary>
-  /// Gets or sets data to a given key.
-  /// </summary>
+  /// <summary>Gets or sets data to a given key.</summary>
   /// <param name="key">The key to assign to or look up.
   /// Prefixing this string with a "+" when assigning will cause it to make a list instead of overrwriting.</param>
   /// <returns>The data assigned to the given key, or <see langword="null"/> if the key is not present.</returns>
@@ -43,7 +35,7 @@ public sealed class DataDictionary : IDictionary<string, object>
     {
       key.ThrowIfNull();
       bool hasKey = _dict.ContainsKey(key);
-      if (key.StartsWith('+') && hasKey)
+      if (key.StartsWith('+', SCO) && hasKey)
       {
         key = key[1..];
         bool success = DoSave<object>(key, value, DM.Overwrite | DM.AddToCollection | DM.MakeCollection | DM.MergeCollection);
@@ -140,12 +132,6 @@ public sealed class DataDictionary : IDictionary<string, object>
   }
   public object Load (string key) => CanLoad(key) ? this[key] : throw new ArgumentException($"Key {key} not found in data dictionary.", nameof(key));
   public bool Save (string key, object data, DM mode = DM.Overwrite) => DoSave<object>(key, data, mode);
-  public bool TryGetLastSavedKey ([NotNullWhen(true)][MaybeNullWhen(false)] out string key_name, [NotNullWhen(true)][MaybeNullWhen(false)] out object key_value)
-  {
-    key_name = HasData ? LastKeySaved : null;
-    key_value = key_name is null ? null : _dict[key_name];
-    return key_value is not null;
-  }
   public bool IsArray<T> ([NotNullWhen(true)] string key) =>
     ContainsKey(key) && _dict[key] is IEnumerable<T>;
   public bool CanLoad<T> ([NotNullWhen(true)] string key) =>
@@ -165,11 +151,6 @@ public sealed class DataDictionary : IDictionary<string, object>
     !ContainsKey(key) ? 0 :
     _dict[key] is IEnumerable<object> list ? list.Count() :
     1;
-  // Standard Keys
-  public int FileSize => TryLoad("file_size", out int data) ? data : 0;
-  public object Initial => TryLoad("initial", out object? data) ? data : throw new InvalidOperationException();
-  public string Text => TryLoad("text", out string? data) ? data : throw new InvalidOperationException();
-  public Span<byte> Bytes => TryLoad("bytes", out Span<byte> data) ? data : throw new InvalidOperationException();
   // IDictionary Interface
   public void Add (string key, object? value) => _ = value is null ? Remove(key) : Save(key, value);
   public bool ContainsKey (string key) => CanLoad(key);

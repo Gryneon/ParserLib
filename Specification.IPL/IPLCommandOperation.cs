@@ -4,9 +4,7 @@ using Debug = Parser.Debug;
 
 namespace Specification.IPL;
 
-/// <summary>
-/// An operation that fills out the mode, format, and field numbers.
-/// </summary>
+/// <summary>An operation that fills out the mode, format, and field numbers.</summary>
 public class IPLCommandOperation (string input_key, string output_key) : Operation(input_key, output_key)
 {
   /// <inheritdoc/>
@@ -42,7 +40,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
     {
       Debug.Log("IPLCommandOperation", $"Processing command: {item.FullCommandText}");
       bool isPrintCommand () =>
-        item.Type is ICT.Simple && (item.CmdLetter is "<ETB>" || item.CmdLetter.StartsWith(Chars.ETB));
+        item.Type is ICT.Simple && (item.CmdLetter is "<ETB>" || item.CmdLetter.StartsWith(Chars.ETB, SCO));
       bool isResetFieldCommand () =>
         mode is IPLPrinterMode.Print && item.CmdLetter == "<CAN>" || item.Count > 0 && item.CmdLetter[0] == Chars.CAN;
       bool isSetFieldCommand () =>
@@ -95,7 +93,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       {
         if (item.Type is ICT.Qty)
         {
-          if (item.CmdLetter is "<RS>" || item.CmdLetter.StartsWith(Chars.RS))
+          if (item.CmdLetter is "<RS>" || item.CmdLetter.StartsWith(Chars.RS, SCO))
             qty = item.GetIntData(0);
           else
             bqty = item.GetIntData(0);

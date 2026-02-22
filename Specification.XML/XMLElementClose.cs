@@ -4,15 +4,17 @@ using Parser.Tokens;
 
 namespace Specification.XML;
 
-/// <summary>
-/// Represents a closing XML element.
-/// </summary>
-public class XMLElementClose () : XMLNode, IGeneratable, IXMLObject
+/// <summary>Represents a closing XML element.</summary>
+public class XMLElementClose () : XMLNode, IXMLObject
 {
-  /// <inheritdoc/>
-  public static XMLElementClose Generate (TokenLabel label)
-  {
-    label.ThrowIfNull();
-    return new() { Tag = label?.Name ?? SE };
-  }
+  public override string Serialize () => $"</{Tag}>";
+}
+
+/// <summary>Represents a paired XML element open and close with content.</summary>
+public class XMLElement () : XMLNodeAttr, IXMLObject
+{
+  /// <summary>The contents of this XML node.</summary>
+  public Collection<IXMLObject> Content { get; } = [];
+  public override string Serialize () => $"<{Tag} {Attributes.TextJoin(" ")}>{Content.TextJoin()}</{Tag}>";
+  public override string ToString () => Serialize();
 }

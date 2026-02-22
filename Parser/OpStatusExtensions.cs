@@ -2,9 +2,7 @@ namespace Parser;
 
 public static class OpStatusExtensions
 {
-  /// <summary>
-  /// Checks a status for failure.
-  /// </summary>
+  /// <summary>Checks a status for failure.</summary>
   /// <param name="status">The status to check.</param>
   /// <param name="continueOnFail">The continue on fail value.</param>
   /// <returns></returns>

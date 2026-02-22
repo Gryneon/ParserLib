@@ -16,14 +16,12 @@ public sealed class INISection : IGeneratable, IEnumerable<IProperty<string>>, I
 
   /// <summary>Creates a INISection from a string.</summary>
   /// <param name="name">The name of the section.</param>
-  public static explicit operator INISection (string name) => new() { Name = name };
+  public static implicit operator INISection (string name) => new() { Name = name };
   /// <summary>The name of the section.</summary>
   public string Name { get; set; } = SE;
   /// <summary>The properties within the INISection.</summary>
   private Dictionary<string, string> Properties { get; init; } = [];
-  /// <summary>
-  /// Gets the value of a property from a given key.
-  /// </summary>
+  /// <summary>Gets the value of a property from a given key.</summary>
   /// <param name="key">The key of the property.</param>
   /// <returns>The value of the property.</returns>
   public string? this[string key]
@@ -33,28 +31,10 @@ public sealed class INISection : IGeneratable, IEnumerable<IProperty<string>>, I
   }
   /// <summary>The number of properties this section contains.</summary>
   public int Count => Properties.Count;
-  /// <inheritdoc/>
-  /// <remarks>
-  /// <list type="table">
-  /// <listheader>Required Groups:</listheader>
-  /// <item><c>name</c></item> : The name of the INISection.<item></item><br/>
-  /// </list>
-  /// </remarks>
-  public static INISection Generate (TokenObject input)
-  {
-    input.ThrowIfNull();
-    return new INISection()
-    {
-      Name = input.Name ?? SE,
-      Properties = input.Properties.GetProperties(),
-    };
-  }
-  /// <summary>
-  /// Gets the <see langword="string"/> representation of the object for serialization.
-  /// </summary>
+  /// <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
   /// <returns>The <see langword="string"/> representation of the object.</returns>
   public static string SerializeProp (KeyValuePair<string, string> k) => $"  {k.Key}={k.Value}";
-  public static PropertyBase<string> GenerateProp (TokenProperty input)
+  public static PropertyBase<string> GenerateProp (ComplexToken input)
   {
     input.ThrowIfNull();
     input.Name.ThrowIfNull();
@@ -68,9 +48,7 @@ public sealed class INISection : IGeneratable, IEnumerable<IProperty<string>>, I
     if (!Properties.TryAdd(key, value))
       Properties[key] = value;
   }
-  /// <summary>
-  /// Sets the property and value given, or adds the property and value if it does not exist.
-  /// </summary>
+  /// <summary>Sets the property and value given, or adds the property and value if it does not exist.</summary>
   /// <param name="prop">The property to add or apply.</param>
   public void Set (PropertyObj prop)
   {

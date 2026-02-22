@@ -11,21 +11,15 @@
             <summary>The INI Spec</summary>
         </member>
         <member name="T:Specification.INI.INIDocument">
-            <summary>
-            A document, which is a collection of INISections.
-            </summary>
+            <summary>A document, which is a collection of INISections.</summary>
         </member>
         <member name="M:Specification.INI.INIDocument.FromINIDocument(Specification.INI.INIDocument)">
-            <summary>
-            Creates an <c>INIDocument</c> from another <c>INIDocument</c>.
-            </summary>
+            <summary>Creates an <c>INIDocument</c> from another <c>INIDocument</c>.</summary>
             <param name="other">The specified document.</param>
             <returns>An <c>INIDocument</c> that is a deep clone of the specified object.</returns>
         </member>
         <member name="M:Specification.INI.INIDocument.FromSections(System.Collections.Generic.IEnumerable{Specification.INI.INISection})">
-            <summary>
-            Creates an <c>INIDocument</c> from an array or collection of <see cref="T:Specification.INI.INISection"/> objects.
-            </summary>
+            <summary>Creates an <c>INIDocument</c> from an array or collection of <see cref="T:Specification.INI.INISection"/> objects.</summary>
             <param name="sections">The array or collection of INISections.</param>
             <returns>The newly created document.</returns>
         </member>
@@ -93,7 +87,7 @@
             <summary>Creates a <see cref="T:Specification.INI.INISection"/> with the provided name.</summary>
             <param name="name">The name of the INISection.</param>
         </member>
-        <member name="M:Specification.INI.INISection.op_Explicit(System.String)~Specification.INI.INISection">
+        <member name="M:Specification.INI.INISection.op_Implicit(System.String)~Specification.INI.INISection">
             <summary>Creates a INISection from a string.</summary>
             <param name="name">The name of the section.</param>
         </member>
@@ -104,28 +98,15 @@
             <summary>The properties within the INISection.</summary>
         </member>
         <member name="P:Specification.INI.INISection.Item(System.String)">
-            <summary>
-            Gets the value of a property from a given key.
-            </summary>
+            <summary>Gets the value of a property from a given key.</summary>
             <param name="key">The key of the property.</param>
             <returns>The value of the property.</returns>
         </member>
         <member name="P:Specification.INI.INISection.Count">
             <summary>The number of properties this section contains.</summary>
         </member>
-        <member name="M:Specification.INI.INISection.Generate(Parser.Tokens.TokenObject)">
-            <inheritdoc/>
-            <remarks>
-            <list type="table">
-            <listheader>Required Groups:</listheader>
-            <item><c>name</c></item> : The name of the INISection.<item></item><br/>
-            </list>
-            </remarks>
-        </member>
         <member name="M:Specification.INI.INISection.SerializeProp(System.Collections.Generic.KeyValuePair{System.String,System.String})">
-            <summary>
-            Gets the <see langword="string"/> representation of the object for serialization.
-            </summary>
+            <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
             <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
         <member name="M:Specification.INI.INISection.Set(System.String,System.String)">
@@ -134,9 +115,7 @@
             <param name="value">The value to set it to.</param>
         </member>
         <member name="M:Specification.INI.INISection.Set(Specification.INI.PropertyObj)">
-            <summary>
-            Sets the property and value given, or adds the property and value if it does not exist.
-            </summary>
+            <summary>Sets the property and value given, or adds the property and value if it does not exist.</summary>
             <param name="prop">The property to add or apply.</param>
         </member>
         <member name="M:Specification.INI.INISection.Add(Specification.INI.PropertyObj)">
@@ -213,22 +192,16 @@
             <summary>Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.</summary>
         </member>
         <member name="M:Specification.INI.PropertyObj.#ctor(System.String,System.String)">
-            <summary>
-            Creates a property from a key and value
-            </summary>
+            <summary>Creates a property from a key and value</summary>
             <param name="key">The key of the new property.</param>
             <param name="value">The value of the new property.</param>
         </member>
         <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.Object})">
-            <summary>
-            Creates a property from an IProperty interface
-            </summary>
+            <summary>Creates a property from an IProperty interface</summary>
             <param name="iprop">The other property.</param>
         </member>
         <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.String})">
-            <summary>
-            Creates a property from an IProperty interface
-            </summary>
+            <summary>Creates a property from an IProperty interface</summary>
             <param name="iprop">The other property.</param>
         </member>
         <member name="M:Specification.INI.PropertyObj.Generate(Common.Regex.MatchDataSet)">
@@ -242,9 +215,7 @@
             </remarks>
         </member>
         <member name="M:Specification.INI.PropertyObj.Serialize">
-            <summary>
-            Gets the <see langword="string"/> representation of the object for serialization.
-            </summary>
+            <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
             <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
     </members>

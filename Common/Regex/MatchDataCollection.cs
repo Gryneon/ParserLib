@@ -1,13 +1,9 @@
 namespace Common.Regex;
 
-/// <summary>
-/// A collection of <see cref="MatchDataSet"/> objects.
-/// </summary>
+/// <summary>A collection of <see cref="MatchDataSet"/> objects.</summary>
 public sealed class MatchDataCollection : Collection<MatchDataSet>
 {
-  /// <summary>
-  /// Gets the debugging and internal values for this object.
-  /// </summary>
+  /// <summary>Gets the debugging and internal values for this object.</summary>
   /// <returns>The debugging and internal values for this object.</returns>
   public override string ToString ()
   {

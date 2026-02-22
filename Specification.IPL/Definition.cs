@@ -89,7 +89,7 @@ public static class Definition
       new TokenizeOperation(),
       new DebugToStringOperation("tokens"),
       new DebugWaitForInputOperation(),
-      new TokenAssembleOperation(),],
+      new TokenAssembleOperation()],
     FileInferences = [
       IfN(ExtIs, "ipl"),
       IfN(ExtIs, "pr1"),
@@ -115,7 +115,7 @@ public static class Definition
       new(TokenMatch, ITT.TextProp, Rx(@$"d3,.*?(?=$|;|{Etx})")),
       new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=[0-9])"),
       new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=\< | ;|<LF>|\n)"),
-      new(TokenMatch, ITT.Value, @"(?<=\b[A-Z]\b)[0-9]+(?=;|\<)"),
+      new(TokenMatch, ITT.Value, @"(?<=\b[A-Za-z])[0-9]+(?=,|;|\<)"),
       new(TokenMatch, ITT.Value, @"(?<=,)[0-9]+(?=,|;|\<)"),
     ],
     SC = SCO,
@@ -125,11 +125,11 @@ public static class Definition
       [ITT.Break] = [ITT.Sc, ITT.Lf, ITT.Etx]
     },
     GroupTokenRules = [
-      new(BuildStatement, ITT.Prop, "n:Letter{o} p:Value, x:Cm p:Value"),
-      new(BuildStatement, ITT.Prop, "n:Letter{l} p:Value"),
-      new(BuildStatement, ITT.Prop, "n:Letter{w} p:Value"),
-      new(BuildStatement, ITT.Fmt, "n:Letter{E|F} p:Value"),
-      new(BuildStatement, ITT.Line, "n:Letter t:Value pa:(TextProp|Prop)")
+      new(ITT.Prop, "n:Letter{o} p:Value, x:Cm p:Value"),
+      new(ITT.Prop, "n:Letter{l} p:Value"),
+      new(ITT.Prop, "n:Letter{w} p:Value"),
+      new(ITT.Fmt, "n:Letter{E|F} p:Value"),
+      new(ITT.Line, "n:Letter t:Value pa:(TextProp|Prop)")
     ]
   };
 }

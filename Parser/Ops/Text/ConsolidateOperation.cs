@@ -1,8 +1,6 @@
 namespace Parser.Ops.Text;
 
-/// <summary>
-/// Combines multiple keys into one key. Keys must have a common type or interface.
-/// </summary>
+/// <summary>Combines multiple keys into one key. Keys must have a common type or interface.</summary>
 /// <typeparam name="TCommon">The common type or interface.</typeparam>
 /// <param name="input_keys">The keys to combine.</param>
 /// <param name="output_key">The combined keys.</param>

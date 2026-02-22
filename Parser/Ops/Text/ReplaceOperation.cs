@@ -21,9 +21,7 @@ namespace Parser.Ops.Text;
 public class ReplaceOperation : Operation
 {
   private readonly ReplaceNodes _nodes;
-  /// <summary>
-  /// Creates a new <see cref="ReplaceOperation"/> with nodes.
-  /// </summary>
+  /// <summary>Creates a new <see cref="ReplaceOperation"/> with nodes.</summary>
   /// <param name="nodes">The replacement and look for pairs.</param>
   /// <param name="input_key">The key to get the input from.</param>
   /// <param name="output_key">The key to write the output to.</param>

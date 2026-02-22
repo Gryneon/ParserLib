@@ -7,17 +7,13 @@ using SysRegex = System.Text.RegularExpressions.Regex;
 
 namespace Common.Excel;
 
-/// <summary>
-/// A class representing a range of cells in Excel, which can include standard cell references, table references, and named ranges.
-/// </summary>
+/// <summary>A class representing a range of cells in Excel, which can include standard cell references, table references, and named ranges.</summary>
 public class Range : IEquatable<Range>, IComparable<Range>, IEnumerable<RangeNode>
 {
   #region Static Members
   protected static ReadOnlyCollection<string> ExcelRefRegex => new([ExcelRef, TableCell, TableCol, TableRef]);
   public static SysRegex RangeRegex { get; } = new(ExcelRefRegex.AggregateRegex(), ROIPW);
-  /// <summary>
-  /// <c>[inside]</c>
-  /// </summary>
+  /// <summary><c>[inside]</c></summary>
   /// <param name="inside">Regex inside braces.</param>
   /// <returns>A string Regex of a column structure.</returns>
   protected static string ColumnRx ([SS("Regex")] string inside) => @$"\[{Nm("column", inside)}\]";

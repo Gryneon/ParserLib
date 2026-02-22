@@ -16,27 +16,19 @@ using XlRange = Microsoft.Office.Interop.Excel.Range;
 
 namespace Common.Excel;
 
-/// <summary>
-/// Repesents an Excel workbook and provides access to its sheets, tables, queries, styles, and named ranges.
-/// </summary>
+/// <summary>Repesents an Excel workbook and provides access to its sheets, tables, queries, styles, and named ranges.</summary>
 public sealed class ExcelWorkbook
 {
-  /// <summary>
-  /// The file path of the workbook, if it was opened from a file.
-  /// </summary>
+  /// <summary>The file path of the workbook, if it was opened from a file.</summary>
   public string? Path { get; }
-  /// <summary>
-  /// A reference to the underlying Excel Workbook object.
-  /// </summary>
+  /// <summary>A reference to the underlying Excel Workbook object.</summary>
   public Workbook Workbook { get; }
   public Dictionary<string, Name> Names { get; } = [];
   public Dictionary<string, ExcelTable> Tables { get; } = [];
   public Dictionary<string, QueryTable> Queries { get; } = [];
   public Dictionary<string, Style> Styles { get; } = [];
   public Dictionary<string, ISheetExt> Sheets { get; } = [];
-  /// <summary>
-  /// Creates an <see cref="ExcelWorkbook"/> by opening the specified file path.
-  /// </summary>
+  /// <summary>Creates an <see cref="ExcelWorkbook"/> by opening the specified file path.</summary>
   /// <param name="path">The path to the workbook.</param>
   public ExcelWorkbook (string? path)
   {

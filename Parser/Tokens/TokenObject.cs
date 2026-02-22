@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProperty<string>>, IReadOnlyCollection<IProperty<string>>, ITypeToken, INameToken, IToken
+public sealed class TokenObject : TokenBase, ITypeToken, INameToken, IToken
 {
   // Assigned Properties
   public string Name => NameToken?.Content ?? SE;
@@ -27,8 +27,4 @@ public sealed class TokenObject : TokenBase, IReadOnlyCollection<IReadOnlyProper
     _ => false
   };
   public override int GetHashCode () => HashCode.Combine(Name, Type, ObjType, Properties, Flags);
-  public IEnumerator<IReadOnlyProperty<string>> GetEnumerator () => Properties.OfType<TokenProperty>().GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  IEnumerator<IProperty<string>> IEnumerable<IProperty<string>>.GetEnumerator () => (IEnumerator<IProperty<string>>) GetEnumerator();
-
 }

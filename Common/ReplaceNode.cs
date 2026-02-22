@@ -6,15 +6,11 @@ using Common.Regex;
 using SysRegex = System.Text.RegularExpressions.Regex;
 
 namespace Common;
-/// <summary>
-/// A node that defines a string replacement operation.
-/// </summary>
+/// <summary>A node that defines a string replacement operation.</summary>
 public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?>>
 {
   #region Static Members
-  /// <summary>
-  /// Creates a <see cref="ReplaceNode"/> from the specified parameters.
-  /// </summary>
+  /// <summary>Creates a <see cref="ReplaceNode"/> from the specified parameters.</summary>
   /// <param name="lf">The string to look for.</param>
   /// <param name="rw">The string to replace with</param>
   /// <returns>A new <see cref="ReplaceNode"/> object.</returns>
@@ -32,17 +28,11 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
   public static implicit operator ReplaceNode (Tuple<string, string?> prop) => From(prop.ToValueTuple());
   public static implicit operator KeyValuePair<string, string?> ([NotNull] ReplaceNode node) => node.ToKVP();
   #endregion
-  /// <summary>
-  /// The regular expression to look for.
-  /// </summary>
+  /// <summary>The regular expression to look for.</summary>
   public RxS LookFor { get; init; }
-  /// <summary>
-  /// The string to replace matches with. If <see langword="null"/>, matches will be removed.
-  /// </summary>
+  /// <summary>The string to replace matches with. If <see langword="null"/>, matches will be removed.</summary>
   public string? ReplaceWith { get; init; }
-  /// <summary>
-  /// An empty node.
-  /// </summary>
+  /// <summary>An empty node.</summary>
   protected ReplaceNode ()
   {
     LookFor = SE;
@@ -65,9 +55,7 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
   }
 
   public KeyValuePair<string, string?> ToKVP () => new(LookFor, ReplaceWith);
-  /// <summary>
-  /// Checks if the 2 nodes are equal to each other.
-  /// </summary>
+  /// <summary>Checks if the 2 nodes are equal to each other.</summary>
   /// <param name="other">The other <see cref="ReplaceNode"/>.</param>
   /// <returns><see langword="true"/> if the <see cref="ReplaceNode"/> objects are equal to each other, otherwise <see langword="false"/>.</returns>
   public bool Equals (ReplaceNode? other) =>
@@ -92,9 +80,7 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
         new(LookFor, options, timeOut.Value);
     return opRegex.Replace(input, ReplaceWith ?? SE);
   }
-  /// <summary>
-  /// Recursively replaces text literallly, and does not interpret the string as a regular expression.
-  /// </summary>
+  /// <summary>Recursively replaces text literallly, and does not interpret the string as a regular expression.</summary>
   /// <param name="input">The text to operate on.</param>
   /// <param name="sc"><see cref="StringComparison"/> properties.</param>
   /// <returns>A <see cref="string"/> with the text replaced as directed.</returns>

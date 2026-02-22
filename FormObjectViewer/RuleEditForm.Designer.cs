@@ -2,14 +2,10 @@ namespace FormObjectViewer;
 
 partial class RuleEditForm
 {
-  /// <summary>
-  /// Required designer variable.
-  /// </summary>
+  /// <summary>Required designer variable.</summary>
   private System.ComponentModel.IContainer components = null;
 
-  /// <summary>
-  /// Clean up any resources being used.
-  /// </summary>
+  /// <summary>Clean up any resources being used.</summary>
   /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
   protected override void Dispose (bool disposing)
   {
@@ -51,12 +47,12 @@ partial class RuleEditForm
     MultCheck = new CheckBox();
     AddTypeButton = new Button();
     StringDataBox = new TextBox();
+    StringDataContextMenu = new ContextMenuStrip(components);
+    SelectAllContextMenuItem = new ToolStripMenuItem();
     StringDataLabel = new Label();
     AddTypeBox = new TextBox();
     RuleFlagsLabel = new Label();
     ExemptCheck = new CheckBox();
-    StringDataContextMenu = new ContextMenuStrip(components);
-    SelectAllContextMenuItem = new ToolStripMenuItem();
     TokenTypeGroup.SuspendLayout();
     StringDataContextMenu.SuspendLayout();
     SuspendLayout();
@@ -285,6 +281,7 @@ partial class RuleEditForm
     AddTypeButton.TabIndex = 6;
     AddTypeButton.Text = "Add Type";
     AddTypeButton.UseVisualStyleBackColor = true;
+    AddTypeButton.Click += AddTypeButton_Click;
     // 
     // StringDataBox
     // 
@@ -300,6 +297,19 @@ partial class RuleEditForm
     StringDataBox.ScrollBars = ScrollBars.Both;
     StringDataBox.Size = new Size(264, 200);
     StringDataBox.TabIndex = 7;
+    // 
+    // StringDataContextMenu
+    // 
+    StringDataContextMenu.Items.AddRange(new ToolStripItem[] { SelectAllContextMenuItem });
+    StringDataContextMenu.Name = "StringDataContextMenu";
+    StringDataContextMenu.Size = new Size(174, 26);
+    // 
+    // SelectAllContextMenuItem
+    // 
+    SelectAllContextMenuItem.Name = "SelectAllContextMenuItem";
+    SelectAllContextMenuItem.ShortcutKeys =  Keys.Control | Keys.A;
+    SelectAllContextMenuItem.Size = new Size(173, 22);
+    SelectAllContextMenuItem.Text = "Select All";
     // 
     // StringDataLabel
     // 
@@ -335,19 +345,6 @@ partial class RuleEditForm
     ExemptCheck.TabIndex = 5;
     ExemptCheck.Text = "Exempt Token";
     ExemptCheck.UseVisualStyleBackColor = true;
-    // 
-    // StringDataContextMenu
-    // 
-    StringDataContextMenu.Items.AddRange(new ToolStripItem[] { SelectAllContextMenuItem });
-    StringDataContextMenu.Name = "StringDataContextMenu";
-    StringDataContextMenu.Size = new Size(174, 26);
-    // 
-    // SelectAllContextMenuItem
-    // 
-    SelectAllContextMenuItem.Name = "SelectAllContextMenuItem";
-    SelectAllContextMenuItem.ShortcutKeys =  Keys.Control | Keys.A;
-    SelectAllContextMenuItem.Size = new Size(173, 22);
-    SelectAllContextMenuItem.Text = "Select All";
     // 
     // RuleEditForm
     // 

@@ -2,9 +2,7 @@
 
 namespace Common.Extensions;
 
-/// <summary>
-/// Extensions for Dictionary objects.
-/// </summary>
+/// <summary>Extensions for Dictionary objects.</summary>
 public static class DictionaryExtensions
 {
   // Dictionary <TKey, TValue>

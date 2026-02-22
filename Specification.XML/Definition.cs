@@ -49,11 +49,10 @@ public enum XMLTokenType
   ElementSingleWithNamespace,
   ElementStartWithNamespace,
   ElementPair,
+  DocumentNamespace,
 }
 
-/// <summary>
-/// The XML definition object.
-/// </summary>
+/// <summary>The XML definition object.</summary>
 [DefinitionExport]
 public static class Definition
 {
@@ -70,17 +69,13 @@ public static class Definition
     Nm("m_content", @"[^<]+")
   ];
 
-  /// <summary>
-  /// The attribute regular expression.
-  /// </summary>
+  /// <summary>The attribute regular expression.</summary>
   private static readonly RxS
     Attribute = Rx(@"(?'m_prop_key_1'\w+)\s*=\s*""(?'m_prop_value_1'.*?)"""),
     TagName = Nm("m_prop_tagname", "[A-Za-z][a-zA-Z0-9]+"),
     WS = RX.WS;
 
-  /// <summary>
-  /// The XML specification.
-  /// </summary>
+  /// <summary>The XML specification.</summary>
   [DefinitionExport]
   public static Spec Spec => new()
   {
@@ -96,9 +91,10 @@ public static class Definition
     SC = SCO,
     TokenType = typeof(XTT),
     TokenRules = [
-      new(Competitive, XTT.DString, @"""[^""]*"""),
-      new(Competitive, XTT.SString, @"'[^']*'"),
+      new(Competitive, XTT.DString, @"""[^""><]*"""),
+      new(Competitive, XTT.SString, @"'[^'><]*'"),
       new(Competitive, XTT.Comment, @"\<\!\s*\-\-([^\-]|(?<!\-)\-(?!\-))*\-\-\s*\>"),
+      new (TokenMatch, XTT.Content, @"(?<=\>)[^\<]+(?=\<)"),
       .. TokenRule.MakeSingleCharRules("<>/?;&:=!-", TokenExact, new Collection<XTT>() { XTT.Ao, XTT.Ac, XTT.Sl, XTT.Qm, XTT.Sc, XTT.An, XTT.Co, XTT.Eq, XTT.Em, XTT.Hy }),
       new (TokenMatch, XTT.NamespaceAttr, @"\bxmlns\b"),
       new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*\=)"),
@@ -107,20 +103,23 @@ public static class Definition
     ],
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
     GroupTokenRules = [
-      new (BuildProperty, XTT.Attribute, "n:AttrKey x:Eq v:String"),
-      new (BuildObject, XTT.Header, "x:Ao x:Qm n:ElementName pa:Attribute x:Qm x:Ac"),
-      new (BuildProperty, XTT.AttributeWithNamespace, "t:Namespace x:Co n:AttrKey x:Eq v:String"),
-      new (BuildProperty, XTT.ElementEndWithNamespace, "x:Ao x:Sl t:Namespace x:Co n:ElementName x:Ac"),
-      new (BuildLabel, XTT.ElementEnd, "x:Ao x:Sl n:ElementName x:Ac"),
-      new (BuildObject, XTT.ElementSingleWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Sl x:Ac"),
-      new (BuildObject, XTT.ElementSingle, "x:Ao n:ElementName pa:Attribute x:Sl x:Ac"),
-      new (BuildObject, XTT.ElementStartWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Ac"),
-      new (BuildObject, XTT.ElementStart, "x:Ao n:ElementName pa:Attribute x:Ac"),
-      new (BuildObject, XTT.ElementPair, "d:ElementStart v:Content x:ElementClose"),
+      new (XTT.Attribute, "n:AttrKey x:Eq v:String"),
+      new (XTT.Header, "x:Ao x:Qm n:ElementName pa:Attribute x:Qm x:Ac"),
+      new (XTT.DocumentNamespace, "n:NamespaceAttr x:Co t:Namespace x:Eq v:String"),
+      new (XTT.AttributeWithNamespace, "t:Namespace x:Co n:AttrKey x:Eq v:String"),
+      new (XTT.ElementEndWithNamespace, "x:Ao x:Sl t:Namespace x:Co n:ElementName x:Ac"),
+      new (XTT.ElementEnd, "x:Ao x:Sl n:ElementName x:Ac"),
+      new (XTT.ElementSingleWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Sl x:Ac"),
+      new (XTT.ElementSingle, "x:Ao n:ElementName pa:Attribute x:Sl x:Ac"),
+      new (XTT.ElementStartWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Ac"),
+      new (XTT.ElementStart, "x:Ao n:ElementName pa:Attribute x:Ac"),
+      new (XTT.ElementPair, "d:ElementStart v:Content x:ElementEnd"),
+      new (XTT.ElementPair, "d:ElementStartWithNamespace v:Content x:ElementEndWithNamespace"),
 
     ],
     TokenCompatLookup = {
-      [XTT.String] = [XTT.DString, XTT.SString]
+      [XTT.String] = [XTT.DString, XTT.SString],
+      [XTT.Attribute] = [XTT.DocumentNamespace, XTT.AttributeWithNamespace]
     },
     Operations = [
       new TokenizeOperation(),

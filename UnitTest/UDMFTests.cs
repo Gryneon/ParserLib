@@ -27,9 +27,9 @@ public class UDMFTests
     TokenCollection result = [.. factory.Produce(input)];
     TokenAssembler assembler = new([.. spec.GroupTokenRules], spec);
     int count = result.Count;
-    assembler.Execute(result);
-    int count2 = result.Count;
-    Assert.NotEmpty(result);
+    TokenCollection tc = assembler.Execute(result);
+    int count2 = tc.Count;
+    Assert.NotEmpty(tc);
     Assert.NotEqual(count, count2);
   }
 }

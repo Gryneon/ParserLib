@@ -1,20 +1,12 @@
+using Common.Extensions;
+
 using Parser.Tokens;
 
 namespace Specification.XML;
 
 /// <summary>Represents an XML header.</summary>
-public class XMLHeader () : XMLNodeAttr, IGeneratable, IXMLObject
+public class XMLHeader () : XMLNodeAttr, IXMLObject
 {
-  /// <inheritdoc/>
-  public static XMLHeader Generate (TokenObject obj)
-  {
-    XMLHeader result = new()
-    {
-      Tag = "xml"
-    };
-
-    result.AssignAttributes(obj);
-
-    return result;
-  }
+  public override string Serialize () => $"<?{Tag} {Attributes.TextJoin()}?>";
+  public override string ToString () => Serialize();
 }

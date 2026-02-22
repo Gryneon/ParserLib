@@ -13,7 +13,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <ProjectGuid>{86ABBCAE-DF85-9788-DDC4-E4B0F5C4D749}</ProjectGuid>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
   

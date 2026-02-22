@@ -8,4 +8,8 @@ public enum ByteReadMode
   Text = 1,
   Value = 2,
   Binary = 3,
+
+  TextToList = 4,
+  ValueToList = 5,
+  BinaryToList = 6,
 }

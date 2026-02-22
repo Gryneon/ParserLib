@@ -2,9 +2,7 @@
 
 namespace Common.Extensions;
 
-/// <summary>
-/// Integer extensions for bitwise operations.
-/// </summary>
+/// <summary>Integer extensions for bitwise operations.</summary>
 public static class IntExtensions
 {
   /// <summary>Throws an exception if the value is below 0.</summary>
@@ -21,9 +19,7 @@ public static class IntExtensions
   /// <param name="flag">The flag to look for.</param>
   /// <returns>Returns <see langword="true"/> if the flag is set, <see langword="false"/> otherwise.</returns>
   public static bool HasFlag (this int value, IConvertible flag) => (value & (int) flag) == (int) flag;
-  /// <summary>
-  /// Sets a specific flag in the integer value.
-  /// </summary>
+  /// <summary>Sets a specific flag in the integer value.</summary>
   /// <typeparam name="T">The type of integer value to return.</typeparam>
   /// <param name="value">The integer value to modify.</param>
   /// <param name="flag">The flag to set.</param>
@@ -35,9 +31,7 @@ public static class IntExtensions
   /// <param name="mask">The flag to mask.</param>
   /// <returns>The masked value.</returns>
   public static T MaskFlag<T> (this int value, IConvertible mask) where T : IConvertible => (T) (IConvertible) (value & (int) mask);
-  /// <summary>
-  /// Toggles a specific flag in the integer value.
-  /// </summary>
+  /// <summary>Toggles a specific flag in the integer value.</summary>
   /// <typeparam name="T">The type of integer value to return.</typeparam>
   /// <param name="value">The integer value to modify.</param>
   /// <param name="bit">The flag to toggle.</param>

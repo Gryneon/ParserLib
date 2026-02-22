@@ -2,18 +2,12 @@
 
 namespace Common;
 
-/// <summary>
-/// Static class of common character combinations.
-/// </summary> 
+/// <summary>Static class of common character combinations.</summary> 
 public static class Chars
 {
-  /// <summary>
-  /// Beep control code.
-  /// </summary>
+  /// <summary>Beep control code.</summary>
   public const char BEEP = '\a';
-  /// <summary>
-  /// Vertical Tab.
-  /// </summary>
+  /// <summary>Vertical Tab.</summary>
   public const char
     VT = '\v',
     TAB = '\t',
@@ -22,14 +16,10 @@ public static class Chars
     FF = '\f',
     ESC = '\e';
 
-  /// <summary>
-  /// Backspace Character.
-  /// </summary>
+  /// <summary>Backspace Character.</summary>
   public const char BSPC = '\b';
 
-  /// <summary>
-  /// Unicode Control Codes.
-  /// </summary>
+  /// <summary>Unicode Control Codes.</summary>
   public const char
     NUL = '\u0000',
     SOH = '\u0001',
@@ -48,24 +38,14 @@ public static class Chars
     US  = '\u001F',
     DEL = '\u007F';
 
-  /// <summary>
-  /// Standard line ending.
-  /// </summary>
+  /// <summary>Standard line ending.</summary>
   public const string CRLF = "\r\n";
-  /// <summary>
-  /// Line feed only.
-  /// </summary>
+  /// <summary>Line feed only.</summary>
   public const string LFs = "\n";
-  /// <summary>
-  /// Carriage return only.
-  /// </summary>
+  /// <summary>Carriage return only.</summary>
   public const string CRs = "\r";
-  /// <summary>
-  /// Double quote symbol.
-  /// </summary>
+  /// <summary>Double quote symbol.</summary>
   public const string QT = "\"";
-  /// <summary>
-  /// Single quote symbol.
-  /// </summary>
+  /// <summary>Single quote symbol.</summary>
   public const char SQ = '\'';
 }

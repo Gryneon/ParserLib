@@ -7,9 +7,7 @@ namespace Parser.Ops;
 public abstract class Operation : IOperation
 {
   #region Throwing Functions
-  /// <summary>
-  /// Throws an <see cref="InvalidOperationException"/> if condition is <see langword="true"/>.
-  /// </summary>
+  /// <summary>Throws an <see cref="InvalidOperationException"/> if condition is <see langword="true"/>.</summary>
   /// <param name="condition">The condition to check.</param>
   /// <param name="msg">The exception message.</param>
   /// <exception cref="InvalidOperationException"></exception>
@@ -17,27 +15,19 @@ public abstract class Operation : IOperation
   {
     if (condition) throw new InvalidOperationException(msg);
   }
-  /// <summary>
-  /// Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.
-  /// </summary>
+  /// <summary>Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.</summary>
   /// <exception cref="NotImplementedException"/>
   [DoesNotReturn]
   protected static void ThrowNoOverrideError () => throw new NotImplementedException();
-  /// <summary>
-  /// Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.
-  /// </summary>
+  /// <summary>Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.</summary>
   /// <exception cref="NotImplementedException"/>
   [DoesNotReturn]
   protected static T ThrowNoOverrideError<T> () => throw new NotImplementedException("This needs to be overridden by the inheriting class.");
-  /// <summary>
-  /// Throws an <see cref="NotSupportedException"/>. Use if you must prevent a valid overload from a base class from being used.
-  /// </summary>
+  /// <summary>Throws an <see cref="NotSupportedException"/>. Use if you must prevent a valid overload from a base class from being used.</summary>
   /// <exception cref="NotSupportedException"/>
   [DoesNotReturn]
   protected static void ThrowUnusableOverrideError () => throw new NotSupportedException("This overload cannot be used by this class.");
-  /// <summary>
-  /// Throws an <see cref="ArgumentException"/>. Use if the parser type was not correct and you cannot recover.
-  /// </summary>
+  /// <summary>Throws an <see cref="ArgumentException"/>. Use if the parser type was not correct and you cannot recover.</summary>
   /// <param name="parser">The parser object.</param>
   /// <param name="desired_parser">The type of parser you need.</param>
   /// <exception cref="ArgumentException"/>
@@ -46,17 +36,11 @@ public abstract class Operation : IOperation
     throw new ArgumentException($"Parser was not a {desired_parser.Name}. Got a {parser?.GetType()}.");
   #endregion
   #region Stored Keys & Data
-  /// <summary>
-  /// The loaded data from the input keys if there are multiple keys provided.
-  /// </summary>
+  /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
   protected Collection<object?> MultipleInputValues { get; } = [];
-  /// <summary>
-  /// A collection of all of the input keys. This will only contain one key if only one key is provided.
-  /// </summary>
+  /// <summary>A collection of all of the input keys. This will only contain one key if only one key is provided.</summary>
   protected Collection<string> InputKeys { get; } = [];
-  /// <summary>
-  /// The input key provided, or the first input key if multiple are provided.
-  /// </summary>
+  /// <summary>The input key provided, or the first input key if multiple are provided.</summary>
   [NotNullIfNotNull(nameof(InputKeys))]
   protected string? InputKey
   {
@@ -80,11 +64,10 @@ public abstract class Operation : IOperation
   protected object? WorkToReturn { get; set; }
   /// <summary>The status of the operation.</summary>
   protected OpStatus Status { get; set; } = OpStatus.Skipped;
+  protected bool MakeListOnSave { get; set; }
   #endregion
   #region Calculated Properties
-  /// <summary>
-  /// The adjusted status taking into account operation flags.
-  /// </summary>
+  /// <summary>The adjusted status taking into account operation flags.</summary>
   protected virtual OpStatus AdjustedStatus =>
     Status is OpStatus.Skipped ? OpStatus.Skipped : Status.IsFail() && ContinueOnFail ? OpStatus.FailOverride : Status;
   #endregion
@@ -93,9 +76,7 @@ public abstract class Operation : IOperation
   public bool SkipOperation { get; set; }
   public virtual bool NoOutput { get; }
   public virtual bool NoExecution { get; }
-  /// <summary>
-  /// Whether or not this operation loads any data.
-  /// </summary>
+  /// <summary>Whether or not this operation loads any data.</summary>
 
   [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkToReturn))]
   public bool NoInput => InputKey.IsEmpty();
@@ -161,9 +142,7 @@ public abstract class Operation : IOperation
     InputKey ??= SE;
     return true;
   }
-  /// <summary>
-  /// Sets the status to EndCommand or Skipped if the operation is flagged to be those.
-  /// </summary>
+  /// <summary>Sets the status to EndCommand or Skipped if the operation is flagged to be those.</summary>
   protected virtual void CheckOperationFlags ()
   {
     if (SkipOperation)
@@ -172,9 +151,7 @@ public abstract class Operation : IOperation
       Status = OpStatus.Skipped;
     }
   }
-  /// <summary>
-  /// Checks if the data stored in <see cref="InputKey"/> is of type <typeparamref name="T"/>.
-  /// </summary>
+  /// <summary>Checks if the data stored in <see cref="InputKey"/> is of type <typeparamref name="T"/>.</summary>
   /// <typeparam name="T">The type or interface to check against.</typeparam>
   /// <param name="casted">The data casted to the type specified.</param>
   /// <returns>Returns <see langword="true"/> if the data is of the correct type, <see langword="false"/> otherwise.</returns>
@@ -217,9 +194,7 @@ public abstract class Operation : IOperation
     casted = default;
     return false;
   }
-  /// <summary>
-  /// Checks all the inputs provided and validates them to a common class or interface.
-  /// </summary>
+  /// <summary>Checks all the inputs provided and validates them to a common class or interface.</summary>
   /// <typeparam name="T">The common class or interface.</typeparam>
   /// <param name="casted">The collection of inputs.</param>
   /// <returns>Returns <see langword="true"/> if the check passed, <see langword="false"/> otherwise.</returns>
@@ -260,18 +235,14 @@ public abstract class Operation : IOperation
     InputKey = !input_keys.Any() ? SE : InputKeys[0];
     OutputKey = output_key;
   }
-  /// <summary>
-  /// Constructor for the static <see cref="Op.End"/> object, and for operations that do not touch data.
-  /// </summary>
+  /// <summary>Constructor for the static <see cref="Op.End"/> object, and for operations that do not touch data.</summary>
   protected Operation ()
   {
     InputKey = SE;
     OutputKey = SE;
     InputKeys = [];
   }
-  /// <summary>
-  /// Single input key.
-  /// </summary>
+  /// <summary>Single input key.</summary>
   protected Operation (string input_key, string output_key)
   {
     InputKeys = NoInput ? [] : [input_key];
@@ -356,76 +327,12 @@ public abstract class Operation : IOperation
   private void AssignResult ()
   {
     if (WorkToReturn is null || NoOutput) return;
-    Parser.Data.Add(OutputKey, WorkToReturn);
+
+    if (!MakeListOnSave)
+    {
+      _ = Parser.Data.Save(OutputKey, WorkToReturn);
+      return;
+    }
+    _ = Parser.Data.Save(OutputKey, WorkToReturn, DM.AddToCollection | DM.MakeCollection);
   }
-}
-
-public static class Op
-{
-  #region Static Operation Methods & Properties
-  public static IOperation JumpTo (string label) => new OperationAction(OAT.GotoLabel, label);
-  public static IOperation JumpToFirst () => new OperationAction(OAT.GotoFirst);
-  public static IOperation JumpTo (int index) => new OperationAction(OAT.GotoIndex, index);
-  public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
-
-  public static IOperation Fail () => new OperationAction(OAT.ForceFail);
-  public static IOperation Done () => new OperationAction(OAT.ForcePass);
-  public static IOperation Prompt () => new OperationAction(OAT.Prompt);
-
-  public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
-  public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey, key);
-  public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey, key);
-  public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
-  public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
-
-  public static IOperation BreakLoop () => new OperationAction(OAT.BreakLoop);
-  public static IOperation StartLoop (LoopOperation loopOperation, int continue_index, int loop_) => new OperationAction(OAT.StartLoop, loopOperation);
-  public static IOperation NextLoop (int increment = 1) => new OperationAction(OAT.NextLoop, increment);
-  public static IOperation ContinueLoop (int increment = 1) => new OperationAction(OAT.ContinueLoop, increment);
-
-  public static IOperation ClearCursor () => new OperationAction(OAT.ClearCursor);
-  public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
-  public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
-
-  public static IOperation While (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.While,
-    Condition = condition,
-    Count = null
-  };
-  public static IOperation Until (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.Until,
-    Condition = condition,
-    Count = null
-  };
-  public static IOperation ForEach (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.ForEach,
-    CursorKey = cursor_key,
-    Count = null
-  };
-  public static IOperation ForCount (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.ForCount,
-    CursorKey = cursor_key,
-    Count = null
-  };
-  public static IOperation ForCount (IEnumerable<IOperation> operations, string count_key, int count) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.ForCount,
-    CursorKey = count_key,
-    Count = count
-  };
-
-  /// <summary>
-  /// A built in operation that ends the operation sequence.
-  /// </summary>
-  public static IOperation End => new OperationAction(OAT.ForcePass);
-  #endregion
 }

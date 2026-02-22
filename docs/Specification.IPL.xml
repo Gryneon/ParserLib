@@ -5,149 +5,97 @@
     </assembly>
     <members>
         <member name="T:Specification.IPL.CommandDataSet">
-            <summary>
-            Contains the details of an IPL command.
-            </summary>
+            <summary>Contains the details of an IPL command.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Origin">
-            <summary>
-            The data that created this object.
-            </summary>
+            <summary>The data that created this object.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.FullCommandText">
-            <summary>
-            The full text representation of this object at creation.
-            </summary>
+            <summary>The full text representation of this object at creation.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.IsEscaped">
-            <summary>
-            <see langword="true"/> if the command was escaped, <see langword="false"/> otherwise.
-            </summary>
+            <summary><see langword="true"/> if the command was escaped, <see langword="false"/> otherwise.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.IsShifted">
-            <summary>
-            <see langword="true"/> if the command was shifted, <see langword="false"/> otherwise.
-            </summary>
+            <summary><see langword="true"/> if the command was shifted, <see langword="false"/> otherwise.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.CmdLetter">
-            <summary>
-            The command executed.
-            </summary>
+            <summary>The command executed.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.FieldText">
-            <summary>
-            The field content if any is set.
-            </summary>
+            <summary>The field content if any is set.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.PrintQty">
-            <summary>
-            The number of labels to print in sequence.
-            </summary>
+            <summary>The number of labels to print in sequence.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.BatchPrintQty">
-            <summary>
-            The number of labels to print in each set.
-            </summary>
+            <summary>The number of labels to print in each set.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.FieldNum">
-            <summary>
-            The field number defined for this field data.
-            </summary>
+            <summary>The field number defined for this field data.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Data">
-            <summary>
-            The data attached to this command.
-            </summary>
+            <summary>The data attached to this command.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Properties">
-            <summary>
-            The properties assigned to a line command.
-            </summary>
+            <summary>The properties assigned to a line command.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Count">
             <inheritdoc/>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Format">
-            <summary>
-            The format the command was called in.
-            </summary>
+            <summary>The format the command was called in.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Mode">
-            <summary>
-            The mode that the command was called in.
-            </summary>
+            <summary>The mode that the command was called in.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.CmdMode">
-            <summary>
-            The mode that this command assigns, if any.
-            </summary>
+            <summary>The mode that this command assigns, if any.</summary>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Type">
-            <summary>
-            The command type.
-            </summary>
+            <summary>The command type.</summary>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.#ctor">
-            <summary>
-            Creates an empty object. IsNull would equal <see langword="true"/>.
-            </summary>
+            <summary>Creates an empty object. IsNull would equal <see langword="true"/>.</summary>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.#ctor(Common.Regex.MatchDataSet)">
-            <summary>
-            Creates an object from a <see cref="T:Common.Regex.MatchDataSet"/>. IsNull would equal <see langword="false"/>.
-            </summary>
+            <summary>Creates an object from a <see cref="T:Common.Regex.MatchDataSet"/>. IsNull would equal <see langword="false"/>.</summary>
             <param name="mdd">The <see cref="T:Common.Regex.MatchDataSet"/> to create an object from.</param>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.#ctor(System.String)">
-            <summary>
-            Creates an object from a <see cref="T:System.String"/>. IsNull would equal <see langword="false"/>.
-            </summary>
+            <summary>Creates an object from a <see cref="T:System.String"/>. IsNull would equal <see langword="false"/>.</summary>
             <param name="fullcmdstr">The <see cref="T:System.String"/> to create an object from.</param>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.Item(System.Int32)">
-            <summary>
-            Gets or sets the data associated with this command.
-            </summary>
+            <summary>Gets or sets the data associated with this command.</summary>
             <param name="index">The data index.</param>
             <returns>The data at the given index.</returns>
         </member>
         <member name="P:Specification.IPL.CommandDataSet.IsNull">
-            <summary>
-            <see langword="true"/> if the command is empty. <see langword="false"/> otherwise.
-            </summary>
+            <summary><see langword="true"/> if the command is empty. <see langword="false"/> otherwise.</summary>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.GetTextData(System.Int32)">
-            <summary>
-            Gets the data field at the given index as a <see langword="string"/>.
-            </summary>
+            <summary>Gets the data field at the given index as a <see langword="string"/>.</summary>
             <param name="index">The data index to access.</param>
             <returns>The data at the given index as a <see langword="string"/>.</returns>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.GetIntData(System.Int32)">
-            <summary>
-            Gets the data field at the given index as an <see langword="int"/>.
-            </summary>
+            <summary>Gets the data field at the given index as an <see langword="int"/>.</summary>
             <param name="index">The data index to access.</param>
             <returns>The data at the given index as an <see langword="int"/>.</returns>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.GetDecimalData(System.Int32)">
-            <summary>
-            Gets the data field at the given index as a <see langword="decimal"/>.
-            </summary>
+            <summary>Gets the data field at the given index as a <see langword="decimal"/>.</summary>
             <param name="index">The data index to access.</param>
             <returns>The data at the given index as a <see langword="decimal"/>.</returns>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.SetData(System.Int32,System.Object)">
-            <summary>
-            Sets data at the given index to the specified value.
-            </summary>
+            <summary>Sets data at the given index to the specified value.</summary>
             <param name="index">The index to assign to.</param>
             <param name="data">The value to assign.</param>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.Add(Specification.IPL.CommandDataSet)">
-            <summary>
-            Embeds a command inside of this command.
-            </summary>
+            <summary>Embeds a command inside of this command.</summary>
             <param name="data">The command to embed.</param>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.Equals(Specification.IPL.CommandDataSet)">
@@ -175,135 +123,89 @@
             <inheritdoc/>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_Equality(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
-            <summary>
-            Checks basic equality with another CommonData object.
-            </summary>
+            <summary>Checks basic equality with another CommonData object.</summary>
             <param name="left">The left object.</param>
             <param name="right">The right object.</param>
             <returns><see langword="true"/> if left equals right, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_Inequality(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
-            <summary>
-            Checks basic inequality with another CommonData object.
-            </summary>
+            <summary>Checks basic inequality with another CommonData object.</summary>
             <param name="left">The left object.</param>
             <param name="right">The right object.</param>
             <returns><see langword="true"/> if left does not equal right, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_LessThan(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
-            <summary>
-            TODO: Doc
-            </summary>
+            <summary>TODO: Doc</summary>
             <param name="left">The left object.</param>
             <param name="right">The right object.</param>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_LessThanOrEqual(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
-            <summary>
-            TODO: Doc
-            </summary>
+            <summary>TODO: Doc</summary>
             <param name="left">The left object.</param>
             <param name="right">The right object.</param>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_GreaterThan(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
-            <summary>
-            Whether or not the left object is greater than the right object.
-            </summary>
+            <summary>Whether or not the left object is greater than the right object.</summary>
             <param name="left">The left object.</param>
             <param name="right">The right object.</param>
             <returns><see langword="true"/> if the left object is greater than the right object, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_GreaterThanOrEqual(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">
-            <summary>
-            TODO: Doc
-            </summary>
+            <summary>TODO: Doc</summary>
             <param name="left">The left object.</param>
             <param name="right">The right object.</param>
         </member>
         <member name="T:Specification.IPL.CommandValidationType">
-            <summary>
-            The type of command validation to perform.
-            </summary>
+            <summary>The type of command validation to perform.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.Error">
-            <summary>
-            Standard error value of -1.
-            </summary>
+            <summary>Standard error value of -1.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.None">
-            <summary>
-            No type specified.
-            </summary>
+            <summary>No type specified.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.InMode">
-            <summary>
-            Checks if the command is in the given mode.
-            </summary>
+            <summary>Checks if the command is in the given mode.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.InLineCmd">
-            <summary>
-            Checks if the command is in the given line cmd.
-            </summary>
+            <summary>Checks if the command is in the given line cmd.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.IsCommandType">
-            <summary>
-            Checks if the command is of the given type.
-            </summary>
+            <summary>Checks if the command is of the given type.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.IsCommandLetter">
-            <summary>
-            Checks if the command letter matches the given letter.
-            </summary>
+            <summary>Checks if the command letter matches the given letter.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.HasFieldDefined">
-            <summary>
-            Indicates whether a specific field is defined.
-            </summary>
+            <summary>Indicates whether a specific field is defined.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.ValueWithinRange">
-            <summary>
-            Value is within the specified range (inclusive).
-            </summary>
+            <summary>Value is within the specified range (inclusive).</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.ValueWithinSet">
-            <summary>
-            Value is within the specified set.
-            </summary>
+            <summary>Value is within the specified set.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.HasValueIndex">
-            <summary>
-            Has a data value at the specified index.
-            </summary>
+            <summary>Has a data value at the specified index.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.NoDuplicateFieldIndex">
-            <summary>
-            Checks that there are no duplicate values at the specified field index.
-            </summary>
+            <summary>Checks that there are no duplicate values at the specified field index.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.And">
-            <summary>
-            Logical AND.
-            </summary>
+            <summary>Logical AND.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.Or">
-            <summary>
-            Logical OR.
-            </summary>
+            <summary>Logical OR.</summary>
         </member>
         <member name="F:Specification.IPL.CommandValidationType.Not">
-            <summary>
-            Logical NOT.
-            </summary>
+            <summary>Logical NOT.</summary>
         </member>
         <member name="T:Specification.IPL.CommandValidator_InMode">
-            <summary>
-            Checks if the command is in the given mode.
-            </summary>
+            <summary>Checks if the command is in the given mode.</summary>
             <param name="modes">A list of the accepted printer modes.</param>
         </member>
         <member name="M:Specification.IPL.CommandValidator_InMode.#ctor(Specification.IPL.IPLPrinterMode[])">
-            <summary>
-            Checks if the command is in the given mode.
-            </summary>
+            <summary>Checks if the command is in the given mode.</summary>
             <param name="modes">A list of the accepted printer modes.</param>
         </member>
         <member name="M:Specification.IPL.CommandValidator_InMode.Validate(Specification.IPL.CommandDataSet)">
@@ -322,65 +224,43 @@
             </summary>
         </member>
         <member name="T:Specification.IPL.InvalidCommandException">
-            <summary>
-            Exception that is thrown when a command is executed in the wrong mode.
-            </summary>
+            <summary>Exception that is thrown when a command is executed in the wrong mode.</summary>
         </member>
         <member name="M:Specification.IPL.InvalidCommandException.#ctor">
-            <summary>
-            Creates the default <see cref="T:Specification.IPL.InvalidCommandException"/>.
-            </summary>
+            <summary>Creates the default <see cref="T:Specification.IPL.InvalidCommandException"/>.</summary>
         </member>
         <member name="M:Specification.IPL.InvalidCommandException.#ctor(System.String)">
-            <summary>
-            Creates a <see cref="T:Specification.IPL.InvalidCommandException"/> that includes the offending command.
-            </summary>
+            <summary>Creates a <see cref="T:Specification.IPL.InvalidCommandException"/> that includes the offending command.</summary>
             <param name="cmd_type">The command type.</param>
         </member>
         <member name="M:Specification.IPL.InvalidCommandException.#ctor(System.String,System.Exception)">
-            <summary>
-            Creates a <see cref="T:Specification.IPL.InvalidCommandException"/> that includes the offending command, and another exception.
-            </summary>
+            <summary>Creates a <see cref="T:Specification.IPL.InvalidCommandException"/> that includes the offending command, and another exception.</summary>
             <param name="cmd_type">The type of command.</param>
             <param name="innerException">The inner exception.</param>
         </member>
         <member name="T:Specification.IPL.IPLCommandOperation">
-            <summary>
-            An operation that fills out the mode, format, and field numbers.
-            </summary>
+            <summary>An operation that fills out the mode, format, and field numbers.</summary>
         </member>
         <member name="M:Specification.IPL.IPLCommandOperation.#ctor(System.String,System.String)">
-            <summary>
-            An operation that fills out the mode, format, and field numbers.
-            </summary>
+            <summary>An operation that fills out the mode, format, and field numbers.</summary>
         </member>
         <member name="M:Specification.IPL.IPLCommandOperation.Execute">
             <inheritdoc/>
         </member>
         <member name="T:Specification.IPL.IPLCommandTemplate">
-            <summary>
-            Represents a command to compare.
-            </summary>
+            <summary>Represents a command to compare.</summary>
         </member>
         <member name="P:Specification.IPL.IPLCommandTemplate.CmdType">
-            <summary>
-            The command type.
-            </summary>
+            <summary>The command type.</summary>
         </member>
         <member name="P:Specification.IPL.IPLCommandTemplate.IsEscaped">
-            <summary>
-            Is the command escaped?
-            </summary>
+            <summary>Is the command escaped?</summary>
         </member>
         <member name="P:Specification.IPL.IPLCommandTemplate.IsShifted">
-            <summary>
-            Is the command shifted?
-            </summary>
+            <summary>Is the command shifted?</summary>
         </member>
         <member name="M:Specification.IPL.IPLCommandTemplate.Equals(Specification.IPL.IPLCommandTemplate)">
-            <summary>
-            Checks equality against another object.
-            </summary>
+            <summary>Checks equality against another object.</summary>
             <param name="other">The other object</param>
             <returns><see langword="true"/> if the objects are the same command, <see langword="false"/> otherwise.</returns>
         </member>
@@ -388,9 +268,7 @@
             <inheritdoc/>
         </member>
         <member name="M:Specification.IPL.IPLCommandTemplate.ToString">
-            <summary>
-            Gets the basic command formatted as readable text.
-            </summary>
+            <summary>Gets the basic command formatted as readable text.</summary>
             <returns>The basic command formatted as readable text.</returns>
         </member>
         <member name="M:Specification.IPL.IPLCommandTemplate.GetHashCode">
@@ -400,22 +278,16 @@
             <inheritdoc/>
         </member>
         <member name="P:Specification.IPL.IPLCommandTemplate.Empty">
-            <summary>
-            An empty or null command.
-            </summary>
+            <summary>An empty or null command.</summary>
         </member>
         <member name="M:Specification.IPL.IPLCommandTemplate.op_Equality(Specification.IPL.IPLCommandTemplate,Specification.IPL.IPLCommandTemplate)">
-            <summary>
-            Checks equality of 2 command objects.
-            </summary>
+            <summary>Checks equality of 2 command objects.</summary>
             <param name="left">The lefthand object.</param>
             <param name="right">The righthand object.</param>
             <returns><see langword="true"/> if the objects are the same command, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Specification.IPL.IPLCommandTemplate.op_Inequality(Specification.IPL.IPLCommandTemplate,Specification.IPL.IPLCommandTemplate)">
-            <summary>
-            Checks the inequality of 2 command objects.
-            </summary>
+            <summary>Checks the inequality of 2 command objects.</summary>
             <param name="left">The lefthand object.</param>
             <param name="right">The righthand object.</param>
             <returns><see langword="true"/> if the objects are not the same command, <see langword="false"/> otherwise.</returns>
@@ -472,61 +344,39 @@
             <summary>Selects the format to be used.</summary>
         </member>
         <member name="T:Specification.IPL.IPLExtensions">
-            <summary>
-            Extensions for this Spec.
-            </summary>
+            <summary>Extensions for this Spec.</summary>
         </member>
         <member name="M:Specification.IPL.IPLExtensions.ToCommandData(Common.Regex.MatchDataSet)">
-            <summary>
-            Converts this <see cref="T:Common.Regex.MatchDataSet"/> into a <see cref="T:Specification.IPL.CommandDataSet"/> object.
-            </summary>
+            <summary>Converts this <see cref="T:Common.Regex.MatchDataSet"/> into a <see cref="T:Specification.IPL.CommandDataSet"/> object.</summary>
             <param name="mdd">The match data to use.</param>
             <returns>A <see cref="T:Specification.IPL.CommandDataSet"/> object.</returns>
         </member>
         <member name="T:Specification.IPL.IPLPrinterMode">
-            <summary>
-            The different possible printer modes.
-            </summary>
+            <summary>The different possible printer modes.</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.None">
-            <summary>
-            No mode change.
-            </summary>
+            <summary>No mode change.</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.Advanced">
-            <summary>
-            Advanced mode.
-            </summary>
+            <summary>Advanced mode.</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.Emulation">
-            <summary>
-            Emulation mode.
-            </summary>
+            <summary>Emulation mode.</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.Print">
-            <summary>
-            Print mode.
-            </summary>
+            <summary>Print mode.</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.Program">
-            <summary>
-            Program mode.
-            </summary>
+            <summary>Program mode.</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.TestAndService">
-            <summary>
-            TODO: Doc
-            </summary>
+            <summary>TODO: Doc</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.PrintHeadLoading">
-            <summary>
-            TODO: Doc
-            </summary>
+            <summary>TODO: Doc</summary>
         </member>
         <member name="F:Specification.IPL.IPLPrinterMode.DirectGraphics">
-            <summary>
-            TODO: Doc
-            </summary>
+            <summary>TODO: Doc</summary>
         </member>
     </members>
 </doc>

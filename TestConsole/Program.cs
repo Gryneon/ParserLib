@@ -12,7 +12,7 @@ using SpecACS = Specification.ACS.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecMapInfo = Specification.MapInfo.Definition;
 using SpecWAD = Specification.WAD.Definition;
-using SpecXML = Specification.XML.Definition;
+//using SpecXML = Specification.XML.Definition;
 using SpecZScript = Specification.ZScript.Definition;
 
 namespace TestConsole;
@@ -82,10 +82,11 @@ internal sealed class Program
 
     //InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
     //InitialTest(SpecUDMF.Spec, Paths.udmf_sample);
-    InitialTest(SpecACS.ACS, Paths.acs_rpglevel);
+    //InitialTest(SpecACS.ACS, Paths.acs_rpglevel);
     InitialTest(SpecACS.ACS, Paths.acs_rpgmfunc);
-    InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
-    InitialTest(SpecXML.Spec, Paths.xsd_specification);
+    //InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
+    //InitialTest(SpecXML.Spec, Paths.xsd_specification);
+    InitialTest(SpecWAD.WAD, ResWAD.wad_rpg03);
     InitialTest(SpecWAD.WAD, ResWAD.wad_pl2);
     InitialTest(SpecWAD.WAD, ResWAD.wad_tnt);
     InitialTest(SpecMapInfo.Spec, Paths.mapinfo_common);
@@ -159,11 +160,11 @@ internal sealed class Program
       //Debug.Log(Area, result.ToString2());
       TokenAssembler assembler = new(spec);
       TokenCollection tokens = [.. result];
-      assembler.Execute(tokens);
-      LogWarn($"Tokens After Assembly : {tokens.Count}");
-      foreach (IToken token in tokens)
+      TokenCollection tokens_assembled = assembler.Execute(tokens);
+      LogWarn($"Tokens After Assembly : {tokens_assembled.Count}");
+      foreach (IToken token in tokens_assembled)
       {
-        LogDebug(token.ToString()!);
+        LogDebug($"{token}");
       }
       LogInfo($"Token Log Complete");
     }

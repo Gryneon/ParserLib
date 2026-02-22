@@ -6,14 +6,10 @@ namespace FormObjectViewer;
 
 partial class ParserForm : Form
 {
-  /// <summary>
-  ///  Required designer variable.
-  /// </summary>
+  /// <summary> Required designer variable.</summary>
   private System.ComponentModel.IContainer components = null;
 
-  /// <summary>
-  ///  Clean up any resources being used.
-  /// </summary>
+  /// <summary> Clean up any resources being used.</summary>
   /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
   protected override void Dispose (bool disposing)
   {
@@ -89,11 +85,11 @@ partial class ParserForm : Form
     TokenBindingSource = new BindingSource(components);
     ShowUnparsedButton = new Button();
     AssemblerPage = new TabPage();
-    LoadSpecButton = new Button();
     LoadParseFileButton = new Button();
     ParsePathLabel = new Label();
     ParsePathTextBox = new TextBox();
     ParseButton = new Button();
+    toolStripMenuItem1 = new ToolStripMenuItem();
     StatusStrip.SuspendLayout();
     TheMenuStrip.SuspendLayout();
     ((ISupportInitialize) SpecBindingSource).BeginInit();
@@ -213,7 +209,7 @@ partial class ParserForm : Form
     // 
     // RuleMenuItem
     // 
-    RuleMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadFromSpecToolStripMenuItem, loadFromFilToolStripMenuItem, toolStripSeparator2, saveToFileToolStripMenuItem, clearRuleTableToolStripMenuItem });
+    RuleMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadFromSpecToolStripMenuItem, loadFromFilToolStripMenuItem, toolStripSeparator2, saveToFileToolStripMenuItem, clearRuleTableToolStripMenuItem, toolStripMenuItem1 });
     RuleMenuItem.Name = "RuleMenuItem";
     RuleMenuItem.Size = new Size(45, 21);
     RuleMenuItem.Text = "Rule";
@@ -513,6 +509,7 @@ partial class ParserForm : Form
     ClearTokensButton.Text = "Clear Token Table";
     ClearTokensButton.TextImageRelation = TextImageRelation.ImageBeforeText;
     ClearTokensButton.UseVisualStyleBackColor = true;
+    ClearTokensButton.Click += ClearTokens;
     // 
     // TokenTableLabel
     // 
@@ -630,19 +627,6 @@ partial class ParserForm : Form
     AssemblerPage.Text = "Assembler";
     AssemblerPage.UseVisualStyleBackColor = true;
     // 
-    // LoadSpecButton
-    // 
-    LoadSpecButton.Font = new Font("Bahnschrift SemiCondensed", 9F);
-    LoadSpecButton.Location = new Point(6, 76);
-    LoadSpecButton.Margin = new Padding(3, 2, 3, 2);
-    LoadSpecButton.Name = "LoadSpecButton";
-    LoadSpecButton.Size = new Size(85, 42);
-    LoadSpecButton.TabIndex = 8;
-    LoadSpecButton.Text = "Load Specifications";
-    LoadSpecButton.TextImageRelation = TextImageRelation.ImageBeforeText;
-    LoadSpecButton.UseVisualStyleBackColor = true;
-    LoadSpecButton.Click += LoadSpecList;
-    // 
     // LoadParseFileButton
     // 
     LoadParseFileButton.Enabled = false;
@@ -687,6 +671,11 @@ partial class ParserForm : Form
     ParseButton.UseVisualStyleBackColor = true;
     ParseButton.Click += ExecuteParse;
     // 
+    // toolStripMenuItem1
+    // 
+    toolStripMenuItem1.Name = "toolStripMenuItem1";
+    toolStripMenuItem1.Size = new Size(180, 22);
+    // 
     // ParserForm
     // 
     AutoScaleDimensions = new SizeF(7F, 17F);
@@ -696,7 +685,6 @@ partial class ParserForm : Form
     Controls.Add(ParsePathLabel);
     Controls.Add(ParsePathTextBox);
     Controls.Add(ParseButton);
-    Controls.Add(LoadSpecButton);
     Controls.Add(ItemTabs);
     Controls.Add(SpecLabel);
     Controls.Add(SpecComboBox);
@@ -751,7 +739,6 @@ partial class ParserForm : Form
   private Label TokenRuleCountLabel;
   private Label TokenRuleLabel;
   private Label RuleTableLabel;
-  private Button LoadSpecButton;
   private Button LoadRulesFileButton;
   private Button ClearRulesButton;
   private Button SaveRuleButton;
@@ -786,4 +773,5 @@ partial class ParserForm : Form
   private DataGridViewTextBoxColumn TypeTextColumn;
   private DataGridViewTextBoxColumn AssignTypeColumnText;
   private DataGridViewTextBoxColumn RuleDataColumnText;
+  private ToolStripMenuItem toolStripMenuItem1;
 }
