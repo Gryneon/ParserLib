@@ -21,13 +21,19 @@ public enum UDMFTokenType
   /// <summary>Sector keyword.</summary>
   Sector,
 
-  // Data Types
-  Str,      // Quoted text
-  Name,     // Unquoted text
-  PInt,     // Positive Integer
-  Int,      // Any Integer
-  Dec,      // Decimal Value
-  Value,    // Any Data Type
+  /// <summary>Quoted text.</summary>
+  String,
+  /// <summary>Unquoted text.</summary>
+  Name,
+  /// <summary>Positive Integer.</summary>
+  PInt,
+  /// <summary>Any Integer.</summary>
+  Int,
+  /// <summary>Decimal, Float, or Fixed Point.</summary>
+  Dec,
+  /// <summary>Any data type.</summary>
+  Value,
+  /// <summary>True or False.</summary>
   Bool,
 
   /// <summary>Equals sign.</summary>
@@ -41,6 +47,8 @@ public enum UDMFTokenType
   /// <summary>An assembled property definition.</summary>
   Property,
   Op,
-  Structure
+  /// <summary>An assembled map structure.</summary>
+  Structure,
+  Keyword
 }
 

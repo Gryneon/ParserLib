@@ -20,21 +20,6 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:TestConsole.Paths.acs_rpglevel">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGLevel.acs.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.acs_rpgmfunc">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.acs_sample">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
-            </summary>
-        </member>
         <member name="P:TestConsole.Paths.binparse_wad">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\WAD.txt.
@@ -70,29 +55,9 @@
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
             </summary>
         </member>
-        <member name="P:TestConsole.Paths.mapinfo_common">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
-            </summary>
-        </member>
         <member name="P:TestConsole.Paths.reg_iplfile">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.sndinfo_test">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.udmf_map00">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.udmf_sample">
-            <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.wad_pl2">

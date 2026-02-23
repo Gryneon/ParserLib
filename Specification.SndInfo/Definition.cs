@@ -42,25 +42,5 @@ public static class Definition
     Cmd("playersound") + @"(?:dup)?" + WS + Wd("player") + WS + Wd("gender") + WS + Act + WS + Sndref
   ];
 
-  [DefinitionExport]
-  public static Spec Spec => new()
-  {
-    Name = "zdoom.sndinfo",
-    RxOpt = ROML | ROIPW | ROIC | ROEC,
-    FileInferences = [
-      new InferenceNodeOr([
-        IfN(ExtIs, "sndinfo"),
-        IfN(FName | Is, "sndinfo"),
-      ])
-    ],
-    IsTextFile = true,
-    TokenType = typeof(SndInfoTokenType),
-    SC = SCOIC,
-    TokenRules = [],
-    GroupTokenRules = [],
-    Operations = [
-      new TokenizeOperation(),
-      Op.End
-    ],
-  };
+
 }

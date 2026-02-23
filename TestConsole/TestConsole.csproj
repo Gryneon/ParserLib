@@ -25,18 +25,14 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Console.Menu\Terminal.Menu.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
-    <ProjectReference Include="..\Specification.ACS\Specification.ACS.csproj" />
-    <ProjectReference Include="..\Specification.Decorate\Specification.Decorate.csproj" />
     <ProjectReference Include="..\Specification.INI\Specification.INI.csproj" />
     <ProjectReference Include="..\Specification.IPL\Specification.IPL.csproj" />
     <ProjectReference Include="..\Specification.JSON\Specification.JSON.csproj" />
     <ProjectReference Include="..\Specification.MapInfo\Specification.MapInfo.csproj" />
     <ProjectReference Include="..\Specification.REG\Specification.REG.csproj" />
-    <ProjectReference Include="..\Specification.SndInfo\Specification.SndInfo.csproj" />
     <ProjectReference Include="..\Specification.WAD\Specification.WAD.csproj" />
     <ProjectReference Include="..\Specification.XML\Specification.XML.csproj" />
-    <ProjectReference Include="..\Specification.ZScript\Specification.ZScript.csproj" />
-    <ProjectReference Include="..\Specificiation.UDMF\Specification.UDMF.csproj" />
+    <ProjectReference Include="..\Specification.ZScript\Specification.ZDoom.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,6 +21,7 @@ public sealed class XMLAttr () : IXMLObject, IProperty<string>, IEquatable<IProp
   public override bool Equals (object? obj) => obj is IProperty<string> iprop && Key == iprop.Key && Value == iprop.Value?.ToString();
   public override int GetHashCode () => HashCode.Combine(Key, Value);
   public string Serialize () => $"{Key} = \"{Value}\"";
+  public override string ToString () => Serialize();
 
   /// <summary>Standard equality operator.</summary>
   /// <param name="left">The left property.</param>

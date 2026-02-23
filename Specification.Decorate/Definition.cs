@@ -7,19 +7,5 @@ namespace Specification.Decorate;
 [DefinitionExport]
 public static class Definition
 {
-  [DefinitionExport]
-  public static Spec Spec => new()
-  {
-    FileInferences = [],
-    RxOpt = ROML | ROIPW | ROIC | ROEC,
-    IsTextFile = true,
-    SC = SCOIC,
-    TokenType = typeof(DecorateTokenType),
-    Name = "zdoom.decorate",
-    Operations = [
-      new TokenizeOperation(),
-      new TokenAssembleOperation(),
-      Op.End
-    ]
-  };
+
 }

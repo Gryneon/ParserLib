@@ -7,13 +7,12 @@ using static Parser.Debug;
 
 using CK = System.ConsoleKey;
 using ResWAD = Specification.WAD.Resources;
-using ResZScript = Specification.ZScript.Properties.Resources;
-using SpecACS = Specification.ACS.Definition;
+using ResZDoom = Specification.ZDoom.Properties.Resources;
+using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
-using SpecMapInfo = Specification.MapInfo.Definition;
 using SpecWAD = Specification.WAD.Definition;
-//using SpecXML = Specification.XML.Definition;
-using SpecZScript = Specification.ZScript.Definition;
+using SpecXML = Specification.XML.Definition;
+using SpecZDoom = Specification.ZDoom.Definition;
 
 namespace TestConsole;
 
@@ -30,10 +29,10 @@ internal sealed class Program
     ["ipl"] = Paths.ipl_label,
     ["vnc"] = Paths.ini_vncdefault,
     ["ipl2"] = Paths.ipl_batch6456,
-    ["sndinfo"] = Paths.sndinfo_test,
+    ["sndinfo"] = ResZDoom.sndinfo_test,
     ["reg"] = Paths.reg_iplfile,
-    ["acs"] = Paths.acs_sample,
-    ["mapinfo"] = Paths.mapinfo_common,
+    ["acs"] = ResZDoom.acs_sample,
+    ["mapinfo"] = ResZDoom.mapinfo_common,
     ["json"] = Paths.json_launch,
     ["menu"] = "TODO: Add path",
     ["wad"] = Paths.wad_pl2,
@@ -80,18 +79,18 @@ internal sealed class Program
     Library.InitializeLibrary(AppDomain.CurrentDomain);
     LogInfo("Program Start");
 
-    //InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
-    //InitialTest(SpecUDMF.Spec, Paths.udmf_sample);
-    //InitialTest(SpecACS.ACS, Paths.acs_rpglevel);
-    InitialTest(SpecACS.ACS, Paths.acs_rpgmfunc);
-    //InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
-    //InitialTest(SpecXML.Spec, Paths.xsd_specification);
+    InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
+    InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
+    InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
+    InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
+    InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
+    InitialTest(SpecXML.Spec, Paths.xsd_specification);
     InitialTest(SpecWAD.WAD, ResWAD.wad_rpg03);
     InitialTest(SpecWAD.WAD, ResWAD.wad_pl2);
     InitialTest(SpecWAD.WAD, ResWAD.wad_tnt);
-    InitialTest(SpecMapInfo.Spec, Paths.mapinfo_common);
+    InitialTest(SpecZDoom.MapInfo, ResZDoom.mapinfo_common);
     InitialTest(SpecIPL.Spec, Paths.ipl_simple);
-    InitialTest(SpecZScript.Spec, ResZScript.zs_demon);
+    InitialTest(SpecZDoom.ZScript, ResZDoom.zs_demon);
 
     if (args.Length == 0)
     {

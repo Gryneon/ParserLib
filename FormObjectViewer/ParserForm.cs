@@ -9,8 +9,6 @@ using Common.Extensions;
 
 using Parser.Tokens;
 
-using Specification.XML;
-
 using static Common.Names;
 
 using XMLMaker = Specification.XML.XMLString;
@@ -21,18 +19,18 @@ internal sealed partial class ParserForm : Form
 {
   private bool ItemsChanged { get; set; }
   private List<Spec> SpecList { get; } = [
-      Specification.ACS.Definition.ACS,
-      Specification.ACS.Definition.ModelDef,
-      Specification.Decorate.Definition.Spec,
+      Specification.ZDoom.Definition.ACS,
+      Specification.ZDoom.Definition.ModelDef,
+      Specification.ZDoom.Definition.ACS,
       Specification.INI.Definition.Spec,
       Specification.IPL.Definition.Spec,
       Specification.JSON.Definition.Spec,
-      Specification.MapInfo.Definition.Spec,
       Specification.REG.Definition.Spec,
-      Specification.SndInfo.Definition.Spec,
-      Specification.UDMF.Definition.Spec,
       Specification.XML.Definition.Spec,
-      Specification.ZScript.Definition.Spec,
+      Specification.ZDoom.Definition.MapInfo,
+      Specification.ZDoom.Definition.SndInfo,
+      Specification.ZDoom.Definition.UDMF,
+      Specification.ZDoom.Definition.ZScript,
 
     ];
   public BindingList<string> TokenRules { get; } = [
@@ -47,6 +45,7 @@ internal sealed partial class ParserForm : Form
     ];
   private Spec LoadedSpec => SpecComboBox.SelectedIndex >= 0 ? SpecList[SpecComboBox.SelectedIndex] : DefaultSpec.Unknown;
   private readonly BindingList<TokenRule> _workingRules = [];
+  private readonly BindingList<TokenGroupRule> _workingGroupRules = [];
   private readonly BindingList<IToken> _currentTokens = [];
   private SectionCollection _sections = [];
   private string _parseFile = "";
@@ -54,10 +53,18 @@ internal sealed partial class ParserForm : Form
 
   public ParserForm () => InitializeComponent();
 
+  private void UpdateCounts ()
+  {
+    TokenRuleCountLabel.Text = $"{_workingRules.Count}";
+    GroupTokenRuleCountLabel.Text = $"{_workingGroupRules.Count}";
+    TokenCountLabel.Text = $"{_currentTokens.Count}";
+    SaveRuleButton.Enabled = _workingRules.Count > 0;
+  }
   private void ParserForm_Load (object sender, EventArgs e)
   {
     TokenDataGrid.DataSource = _currentTokens;
     TokenRuleDataGrid.DataSource = _workingRules;
+    TokenGroupRuleDataGrid.DataSource = _workingGroupRules;
     TokenRuleBindingSource.DataSource = _workingRules;
     LoadSpecList(this, e);
   }
@@ -106,6 +113,17 @@ internal sealed partial class ParserForm : Form
       _workingRules.Add(rule);
     }
     TokenRuleDataGrid.Refresh();
+    UpdateCounts();
+  }
+  private void LoadGroupRules (object sender, EventArgs e)
+  {
+
+    foreach (TokenGroupRule rule in LoadedSpec.GroupTokenRules)
+    {
+      _workingGroupRules.Add(rule);
+    }
+    TokenGroupRuleDataGrid.Refresh();
+    UpdateCounts();
   }
   private void SaveRuleDialog (object sender, EventArgs e)
   {
@@ -161,20 +179,20 @@ internal sealed partial class ParserForm : Form
     ShowUnparsedButton.Enabled = true;
   }
 
-  private void TokenRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e) => TokenRuleCountLabel.Text = $"{_workingRules.Count}";
-
+  private void TokenRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e) => UpdateCounts();
+  private void TokenGroupRuleDataGrid_RowValidated (object sender, DataGridViewCellEventArgs e) => UpdateCounts();
   private void ClearTokens (object sender, EventArgs e)
   {
     _currentTokens.Clear();
-    TokenCountLabel.Text = $"{0}";
     TokenDataGrid.Refresh();
+    UpdateCounts();
   }
 
   private void ClearRules (object sender, EventArgs e)
   {
     _workingRules.Clear();
-    TokenRuleCountLabel.Text = $"{0}";
     TokenRuleDataGrid.Refresh();
+    UpdateCounts();
   }
 
   private void ShowUnparsed (object sender, EventArgs e)
@@ -201,7 +219,7 @@ internal sealed partial class ParserForm : Form
     foreach (TokenRule rule in _workingRules)
     {
 
-      maker.AddElementOpen("Rule", [new XMLAttr() { Key = "index", Value = $"{counter++}" }]);
+      maker.AddElementOpen("Rule", [("index", $"{counter++}")]);
       maker.AddLineFeed();
       maker.AddElementOpen("Type");
       maker.AddContent($"{rule.Type}");
@@ -225,18 +243,21 @@ internal sealed partial class ParserForm : Form
     try { File.WriteAllText(args.Path, doc); } catch (IOException) { return; }
 
     ItemsChanged = false;
+    UpdateCounts();
   }
 
   private void TokenRuleDataGrid_DataError (object sender, DataGridViewDataErrorEventArgs e)
   {
     TokenRuleDataGrid[e.ColumnIndex, e.RowIndex].Style.BackColor = Color.Pink;
     ItemsChanged = true;
+    UpdateCounts();
   }
 
   private void TokenRuleAddRow (object sender, EventArgs e)
   {
     _workingRules.Add(new() { TypeToAssign = "None", Type = TokenRuleType.None, RuleStringData = SE });
     TokenRuleDataGrid.Refresh();
+    UpdateCounts();
   }
 
   private void TokenRuleDataGrid_RowEnter (object sender, DataGridViewCellEventArgs e)
@@ -278,5 +299,6 @@ internal sealed partial class ParserForm : Form
 
     editForm.Dispose();
     TokenRuleDataGrid.Refresh();
+    UpdateCounts();
   }
 }

@@ -29,7 +29,9 @@ public class XMLString () : ITextSerializer
 
     Elements.Add(single);
   }
-  public void AddElementOpen (string name, Collection<IProperty<string>> attributes)
+  public void AddElementOpen (string name, Collection<IProperty<string>> attributes) =>
+    AddElementOpen(name, [.. attributes.Select(att => (att.Key, att.Value ?? SE))]);
+  public void AddElementOpen (string name, Collection<(string Key, string Value)> attributes)
   {
     XMLElementOpen open = new()
     {

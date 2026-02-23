@@ -40,10 +40,14 @@
             <summary> The main entry point for the application.</summary>
         </member>
         <member name="T:FormObjectViewer.Properties.Resources">
-            <summary>  A strongly-typed resource class, for looking up localized strings, etc.</summary>
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
         </member>
         <member name="P:FormObjectViewer.Properties.Resources.ResourceManager">
-            <summary>  Returns the cached ResourceManager instance used by this class.</summary>
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
         </member>
         <member name="P:FormObjectViewer.Properties.Resources.Culture">
             <summary>
@@ -51,8 +55,35 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:FormObjectViewer.Properties.Resources.AddMemeber">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:FormObjectViewer.Properties.Resources.CloseGroup">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:FormObjectViewer.Properties.Resources.Open">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:FormObjectViewer.Properties.Resources.RigidRelationshipInfo">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:FormObjectViewer.Properties.Resources.Save">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
         <member name="P:FormObjectViewer.Properties.Resources.ToolStripIcon_Image">
-            <summary>  Looks up a localized resource of type System.Drawing.Bitmap.</summary>
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
         </member>
         <member name="F:FormObjectViewer.RuleEditForm.components">
             <summary>Required designer variable.</summary>

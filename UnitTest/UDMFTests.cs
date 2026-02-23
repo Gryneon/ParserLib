@@ -5,7 +5,7 @@ using Common;
 using Parser;
 using Parser.Tokens;
 
-using Specification.UDMF;
+using Specification.ZDoom;
 
 namespace UnitTest;
 
@@ -20,7 +20,7 @@ public class UDMFTests
     string input = File.ReadAllText(file.UserDirFix());
 
     //Load Spec
-    Spec spec = Definition.Spec;
+    Spec spec = Definition.UDMF;
     TokenRuleCollection rules = [];
     rules.AddRange(spec.TokenRules);
     TokenFactory factory = new(spec);

@@ -13,11 +13,12 @@
 
   <xs:complexType name="RuleDef">
     <xs:all>
-      <xs:element name="AssignType" minOccurs="0" maxOccurs="1" type="xs:token" default="None"/>
-      <xs:element name="RuleType" type="RuleTypeDef" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="TypeToAssign" minOccurs="0" maxOccurs="1" type="xs:token" default="None"/>
+      <xs:element name="Type" type="RuleTypeDef" minOccurs="1" maxOccurs="1"/>
       <xs:element name="Data" minOccurs="0" maxOccurs="1" default="" type="xs:string"/>
     </xs:all>
     <xs:attribute name="name" type="xs:token"/>
+    <xs:attribute name="index" type="xs:int"/>
   </xs:complexType>
   <xs:element name="RuleSet">
     <xs:complexType>

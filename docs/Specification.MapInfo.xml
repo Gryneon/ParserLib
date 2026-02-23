@@ -4,8 +4,5 @@
         <name>Specification.MapInfo</name>
     </assembly>
     <members>
-        <member name="P:Specification.MapInfo.Definition.Spec">
-            <summary>Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see></summary>
-        </member>
     </members>
 </doc>

@@ -21,8 +21,8 @@ public class ACSTests
   [InlineData(Statement3)]
   public void ACS_PieceParse (string to_parse)
   {
-    TokenFactory tokenFactory = new(Specification.ACS.Definition.ACS);
-    TokenAssembler tokenAssembler = new(Specification.ACS.Definition.ACS);
+    TokenFactory tokenFactory = new(Specification.ZDoom.Definition.ACS);
+    TokenAssembler tokenAssembler = new(Specification.ZDoom.Definition.ACS);
 
     TokenCollection tokens = tokenFactory.Produce(to_parse);
     Assert.NotEmpty(tokens);

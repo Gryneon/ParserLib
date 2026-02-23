@@ -4,12 +4,12 @@
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1720 // Identifier contains type name
 
-namespace Specification.MapInfo;
+namespace Specification.ZDoom;
 
 public enum MapInfoTokenType
 {
+  None,
   AddDefaultMap, DefaultMap, Map,
-  BlkComment, LnComment,
   BlockKeyword,
   Bool, Char, Dec, Int, String, Class, LangRef, Value, Name,
   Include,
@@ -18,4 +18,12 @@ public enum MapInfoTokenType
   Op,
 
   PropertyName,
+  Cast,
+  Fader,
+  GotoTitle,
+  Image,
+  Scroller,
+  TextScreen,
+  Wiper,
+  Cutscene,
 }

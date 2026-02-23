@@ -1,0 +1,270 @@
+<RuleSet xmlns="Parser/TokenRule" spec="zdoom.acs">
+  <Rule index="0">
+    <Type>
+      <Flag>Competitive</Flag>
+      <Flag>ExemptAllWithin</Flag>
+    </Type>
+    <TypeToAssign >Str</TypeToAssign>
+    <Data >&quot;([^\\&quot;]|\\.)*&quot;</Data>
+    </Rule>
+  <Rule index = "1">
+    <Type >TokenMatch, ExemptAllWithin, Competitive</Type>
+    <TypeToAssign >Char</TypeToAssign>
+    <Data >&apos;([^\\&apos;]|\\.)*&apos;</Data>
+    </Rule>
+  <Rule index = "2">
+    <Type >TokenMatch, ExemptAllWithin, IgnoredToken, Competitive</Type>
+    <TypeToAssign >None</TypeToAssign>
+    <Data >\/\/.*?$</Data>
+    </Rule>
+  <Rule index = "3">
+    <Type >TokenMatch, ExemptAllWithin, IgnoredToken, Competitive</Type>
+    <TypeToAssign >None</TypeToAssign>
+    <Data >\/\*.*?\*\/</Data>
+    </Rule>
+  <Rule index = "4">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Preprocessor</TypeToAssign>
+    <Data >\# \w+</Data>
+    </Rule>
+  <Rule index = "5">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Bool</TypeToAssign>
+    <Data >\b(true|false|on|off|yes|no)\b</Data>
+    </Rule>
+  <Rule index = "6">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Int</TypeToAssign>
+    <Data >-?(?&lt;!\.|\w)(\d+|0x[a-f0-9]+)(?!\.|\w)</Data>
+    </Rule>
+  <Rule index = "7">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Fixed</TypeToAssign>
+    <Data >-?(\d+\.\d*|\.\d+)</Data>
+    </Rule>
+  <Rule index = "8">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >script</TypeToAssign>
+    <Data >\bscript\b</Data>
+    </Rule>
+  <Rule index = "9">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >function</TypeToAssign>
+    <Data >\bfunction\b</Data>
+    </Rule>
+  <Rule index = "10">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >net</TypeToAssign>
+    <Data >\bnet\b</Data>
+    </Rule>
+  <Rule index = "11">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >if</TypeToAssign>
+    <Data >\bif\b</Data>
+    </Rule>
+  <Rule index = "12">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >else</TypeToAssign>
+    <Data >\belse\b</Data>
+    </Rule>
+  <Rule index = "13">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >do</TypeToAssign>
+    <Data >\bdo\b</Data>
+    </Rule>
+  <Rule index = "14">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >for</TypeToAssign>
+    <Data >\bfor\b</Data>
+    </Rule>
+  <Rule index = "15">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >switch</TypeToAssign>
+    <Data >\bswitch\b</Data>
+    </Rule>
+  <Rule index = "16">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >case</TypeToAssign>
+    <Data >\bcase\b</Data>
+    </Rule>
+  <Rule index = "17">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >default</TypeToAssign>
+    <Data >\bdefault\b</Data>
+    </Rule>
+  <Rule index = "18">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >return</TypeToAssign>
+    <Data >\breturn\b</Data>
+    </Rule>
+  <Rule index = "19">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >ScriptType</TypeToAssign>
+    <Data >\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b</Data>
+    </Rule>
+  <Rule index = "20">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >SimpleJump</TypeToAssign>
+    <Data >\b(break|continue|terminate|restart)\b</Data>
+    </Rule>
+  <Rule index = "21">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Wait</TypeToAssign>
+    <Data >\b(delay|scriptwait|tagwait)\b</Data>
+    </Rule>
+  <Rule index = "22">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >MapVar</TypeToAssign>
+    <Data >\b(world|global)\b</Data>
+    </Rule>
+  <Rule index = "23">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Loop</TypeToAssign>
+    <Data >\b(while|until)\b</Data>
+    </Rule>
+  <Rule index = "24">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >IncDec</TypeToAssign>
+    <Data >(\+\+|--)</Data>
+    </Rule>
+  <Rule index = "25">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Unary</TypeToAssign>
+    <Data >!(?!=)|~</Data>
+    </Rule>
+  <Rule index = "26">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Assign</TypeToAssign>
+    <Data >[-+*^/%|&amp;]=</Data>
+    </Rule>
+  <Rule index = "27">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Assign</TypeToAssign>
+    <Data >(&lt;&lt;|&gt;&gt;| \|\| |&amp;&amp;)=</Data>
+    </Rule>
+  <Rule index = "28">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >== | [!&lt;&gt;]=</Data>
+    </Rule>
+  <Rule index = "29">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >(&amp;&amp;| \|\| |&lt;&lt;|&gt;&gt;)(?!=)</Data>
+    </Rule>
+  <Rule index = "30">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >+</Data>
+    </Rule>
+  <Rule index = "31">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >/</Data>
+    </Rule>
+  <Rule index = "32">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >%</Data>
+    </Rule>
+  <Rule index = "33">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >|</Data>
+    </Rule>
+  <Rule index = "34">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >&amp;</Data>
+    </Rule>
+  <Rule index = "35">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >^</Data>
+    </Rule>
+  <Rule index = "36">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >*</Data>
+    </Rule>
+  <Rule index = "37">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >&gt;</Data>
+    </Rule>
+  <Rule index = "38">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Binary</TypeToAssign>
+    <Data >&lt;</Data>
+    </Rule>
+  <Rule index = "39">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Ao</TypeToAssign>
+    <Data >[</Data>
+    </Rule>
+  <Rule index = "40">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Ac</TypeToAssign>
+    <Data >]</Data>
+    </Rule>
+  <Rule index = "41">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Bo</TypeToAssign>
+    <Data >{</Data>
+    </Rule>
+  <Rule index = "42">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Bc</TypeToAssign>
+    <Data >}</Data>
+    </Rule>
+  <Rule index = "43">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Po</TypeToAssign>
+    <Data >(</Data>
+    </Rule>
+  <Rule index = "44">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Pc</TypeToAssign>
+    <Data >)</Data>
+    </Rule>
+  <Rule index = "45">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Eq</TypeToAssign>
+    <Data >=</Data>
+    </Rule>
+  <Rule index = "46">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Cm</TypeToAssign>
+    <Data >,</Data>
+    </Rule>
+  <Rule index = "47">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Co</TypeToAssign>
+    <Data >:</Data>
+    </Rule>
+  <Rule index = "48">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Sc</TypeToAssign>
+    <Data >;</Data>
+    </Rule>
+  <Rule index = "49">
+    <Type >TokenExact, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Minus</TypeToAssign>
+    <Data >-</Data>
+    </Rule>
+  <Rule index = "50">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Void</TypeToAssign>
+    <Data >\bvoid\b</Data>
+    </Rule>
+  <Rule index = "51">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Type</TypeToAssign>
+    <Data >\b(int|str|char|bool)\b</Data>
+    </Rule>
+  <Rule index = "52">
+    <Type >TokenMatch, ExemptAllWithin, IgnoreCase</Type>
+    <TypeToAssign >Name</TypeToAssign>
+    <Data >\b[a-z_][\w]*\b</Data>
+    </Rule>
+  </RuleSet>

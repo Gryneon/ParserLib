@@ -1,66 +1,12 @@
 using Parser.Tokens;
 
 using static Parser.DefinitionStaticFunctions;
-using static Specification.UDMF.UDMFTokenType;
+using static Specification.ZDoom.UDMFTokenType;
 
 namespace Specification.UDMF;
 
 [DefinitionExport]
-public static class Definition
-{
-  // Flags
-  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.IgnoredToken;
-  internal const RT RT_String = RT.TokenMatch | RT.Competitive;
 
-  [DefinitionExport]
-  public static Spec Spec => new()
-  {
-    Name = "zdoom.udmf",
-    FileInferences = [IfN(InferenceType.Ext | InferenceType.Like, "udmf")],
-    RxOpt = ROML | ROIPW | ROIC | ROEC | ROSL,
-    Operations = [
-      new TokenizeOperation(),
-      new TokenAssembleOperation(),
-    ],
-    DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
-    TokenRules = [
-      new(RT_String,  Str,     Rx(@"""(?:[^""\\\n\r]|\\.)*""")),
-      new(RT_Comment, None, Rx(@"//[^\n\r]*")),
-      new(RT_Comment, None, Rx(@"/\*.*?\*/")),
-      new(RT.TokenExact, Bo, "{"),
-      new(RT.TokenExact, Bc, "}"),
-      new(RT.TokenExact, Eq, "="),
-      new(RT.TokenExact, Sc, ";"),
-      new(RT.TokenMatch, Bool,  @"\b(true|false)\b"),
-      new(RT.TokenMatch, Dec,  Rx(@"-?\b(\d+\.\d+|\.?\d+)\b")),
-      new(RT.TokenMatch, Namespace, @"\bnamespace\b"),
-      new(RT.TokenMatch, Vertex,    @"\bvertex\b"),
-      new(RT.TokenMatch, Thing,     @"\bthing\b"),
-      new(RT.TokenMatch, SideDef,   @"\bsidedef\b"),
-      new(RT.TokenMatch, LineDef,   @"\blinedef\b"),
-      new(RT.TokenMatch, Sector,    @"\bsector\b(?=[^=}]*\{)"),
-      new(RT.TokenMatch, Name, Rx(@"\b[a-z]\w*\b"))],
-    // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
-    //new(RT.StoreOther, None)],
-    GroupTokenRules = [
-      new(Structure, "n:Namespace x:Eq v:Str x:Sc"),
-      new(Property, "n:Name x:Eq v:Value x:Sc"),
-      new(Structure, "n:Vertex x:Bo pm:Property x:Bc"),
-      new(Structure, "n:Thing x:Bo pm:Property x:Bc"),
-      new(Structure, "n:Sector x:Bo pm:Property x:Bc"),
-      new(Structure, "n:LineDef x:Bo pm:Property x:Bc"),
-      new(Structure, "n:SideDef x:Bo pm:Property x:Bc"),
-      ],
-    SC = SCOIC,
-    IsTextFile = true,
-    TokenType = typeof(UDMFTokenType),
-    TokenCompatLookup = new Dictionary<dynamic, Collection<dynamic>>()
-    {
-      [Structure] = [Vertex, Thing, Sector, LineDef, SideDef],
-      [Op] = [Eq, Sc, Bo, Bc],
-      [Value] = [Bool, Dec, Str],
-    },
-  };
 }
 
 public abstract class ZMapObj
