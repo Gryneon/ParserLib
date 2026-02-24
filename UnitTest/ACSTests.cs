@@ -11,6 +11,7 @@ public class ACSTests
   internal const string Statement1 = "int foo = 23;";
   internal const string Statement2 = "ACS_Execute(3, 4, 3);";
   internal const string Statement3 = "Terminate;";
+  internal const string Statement4 = "char d = 'd';";
 
   [Theory]
   [InlineData(Expression1)]
@@ -19,6 +20,7 @@ public class ACSTests
   [InlineData(Statement1)]
   [InlineData(Statement2)]
   [InlineData(Statement3)]
+  [InlineData(Statement4)]
   public void ACS_PieceParse (string to_parse)
   {
     TokenFactory tokenFactory = new(Specification.ZDoom.Definition.ACS);
