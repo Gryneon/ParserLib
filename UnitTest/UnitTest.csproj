@@ -48,7 +48,6 @@
     <ProjectReference Include="..\Specification.INI\Specification.INI.csproj" />
     <ProjectReference Include="..\Specification.IPL\Specification.IPL.csproj" />
     <ProjectReference Include="..\Specification.JSON\Specification.JSON.csproj" />
-    <ProjectReference Include="..\Specification.MapInfo\Specification.MapInfo.csproj" />
     <ProjectReference Include="..\Specification.REG\Specification.REG.csproj" />
     <ProjectReference Include="..\Specification.WAD\Specification.WAD.csproj" />
     <ProjectReference Include="..\Specification.XML\Specification.XML.csproj" />

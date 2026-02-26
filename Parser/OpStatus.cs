@@ -18,15 +18,12 @@ public enum OpStatus
   Skipped = 2,
   /// <summary>Represents a state where an operation failed, but the parser should continue processing other operations.</summary>
   FailOverride = 4,
-  /// <summary>Represents the state of starting an inner loop in the process.</summary>
-  /// <remarks>This value is typically used to indicate that the process has entered the inner loop
-  /// phase.</remarks>
-  StartInnerLoop = 8,
   /// <summary>The if condition passed.</summary>
   ConditionPass = 16,
   /// <summary>The if condition failed.</summary>
   ConditionFail = 32,
   /// <summary>A generic failure status that indicates an operation has failed.</summary>
+  /// <remarks>Caused by a generic <see cref="OperationException"/>.</remarks>
   Fail = 256,
   /// <summary>Represents a failure condition where the input is null.</summary>
   FailBadInputNull = Fail * 2,

@@ -67,13 +67,14 @@ public sealed class TokenFactory
   #endregion
   private void MakeAddToken (Section match, TokenRule? rule = null)
   {
+    rule ??= _currentRule!;
     Token token = new()
     {
       Index = match.Start,
       Content = match.Content,
-      Type = (rule is null) ? AssignType : rule.TypeToAssign,
-      Ignored = (rule is null) ? IgnoredToken : rule.Type.HasFlag(RT.IgnoredToken),
-      Exempt = (rule is null) ? ExemptAllWithin : rule.Type.HasFlag(RT.ExemptAllWithin),
+      Type = rule.TypeToAssign,
+      Ignored = rule.Type.HasFlag(RT.IgnoredToken),
+      Exempt = rule.Type.HasFlag(RT.ExemptAllWithin),
     };
     bool any = _result.Any(t => t.Index == token.Index);
     if (any)
@@ -149,7 +150,7 @@ public sealed class TokenFactory
   }
   private void ExactMatch ()
   {
-    int length = RuleData.Length > 0 ? RuleData.Length : throw new InvalidOperationException("RuleData has a length of 0 on an exact token.");
+    int length = RuleData.Length > 0 ? RuleData.Length : throw new OperationBadDefinitionException("RuleData has a length of 0 on an exact token.");
     int cursor = 0;
     int next = Input.IndexOf(RuleData, cursor, IC);
 

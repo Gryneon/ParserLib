@@ -37,15 +37,6 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="MSXML2">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>0</VersionMinor>
-      <VersionMajor>6</VersionMajor>
-      <Guid>f5078f18-c551-11d3-89b9-0000f81fe221</Guid>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -60,7 +51,6 @@
     <ProjectReference Include="..\Specification.INI\Specification.INI.csproj" />
     <ProjectReference Include="..\Specification.IPL\Specification.IPL.csproj" />
     <ProjectReference Include="..\Specification.JSON\Specification.JSON.csproj" />
-    <ProjectReference Include="..\Specification.MapInfo\Specification.MapInfo.csproj" />
     <ProjectReference Include="..\Specification.REG\Specification.REG.csproj" />
     <ProjectReference Include="..\Specification.WAD\Specification.WAD.csproj" />
     <ProjectReference Include="..\Specification.XML\Specification.XML.csproj" />
