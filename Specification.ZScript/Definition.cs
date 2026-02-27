@@ -1,20 +1,12 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Rule Violation
 
-using System;
-using System.Linq.Expressions;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using System.Xml.Linq;
-
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.ZDoom;
 
 [DefinitionExport]
-public static partial class Definition
+public static class Definition
 {
   // Flags
   internal const RT RT_Comment = RT.Competitive | RT.IgnoredToken;
@@ -202,9 +194,13 @@ public static partial class Definition
     TokenType = typeof(AT),
     TokenCompatLookup = {
       [AT.ParameterValue] = [AT.ParameterExpression],
-      [AT.Value] = [AT.Int, AT.Bool, AT.Char, AT.Str, AT.Fixed, AT.Expression, AT.Name, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStatement],
+      [AT.Value] = [AT.Int, AT.Bool, AT.Char, AT.Str, AT.Fixed, AT.Expression, AT.ExprName, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStandalone],
       [AT.Statement] = [AT.VarDecl, AT.BasicCmd, AT.FunctionCallStatement, AT.VarAssn, AT.VarInc, AT.ArrayDecl, AT.WaitCall, AT.Block, AT.VarDeclAssn],
-      [AT.Block] = [AT.IfBlock, AT.ElseBlock, AT.ElseIfBlock]
+      [AT.Block] = [AT.IfBlock, AT.ElseBlock, AT.ElseIfBlock, AT.LoopBlock, AT.SwitchBlock],
+      [AT.MapVar] = ["global", "world"],
+      [AT.Loop] = ["until", "while"],
+      [AT.Wait] = ["delay", "tagwait", "scriptwait", "polywait"],
+      [AT.Name] = [AT.ExprName, AT.FuncName, AT.FuncDefName, AT.ArrVarName, AT.VarName, AT.ParamName],
     },
     TokenRules = [
 
@@ -223,13 +219,17 @@ public static partial class Definition
       // Keywords
       .. TokenRule.MakeWordMatchRules(true, [
         "script", "function", "net", "if", "else",
-        "do", "for", "switch", "case", "default", "return"
+        "do", "for", "switch", "case", "default", "return",
+        "while", "until", "world", "global", "void"
       ]),
-      Tm(AT.ScriptType, @"\b(enter|return|death|lightning|kill|reopen|open|unloading|disconnect|respawn|lightning)\b"),
+
+      // Wait Functions
+      .. TokenRule.MakeWordMatchRules(true, [
+        "scriptwait", "delay", "polywait", "tagwait"
+      ]),
+
+      Tm(AT.ScriptType, @"\b(enter|re(turn|open|spawn)|death|kill|open|unloading|disconnect|lightning)\b"),
       Tm(AT.SimpleJump, @"\b(break|continue|terminate|restart)\b"),
-      Tm(AT.Wait, @"\b(delay|scriptwait|tagwait)\b"),
-      Tm(AT.MapVar, @"\b(world|global)\b"),
-      Tm(AT.Loop, @"\b(while|until)\b"),
 
       // Operators
       Tm(AT.IncDec, @"(\+\+|--)"),
@@ -240,66 +240,71 @@ public static partial class Definition
       Tm(AT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),
       .. TokenRule.MakeSingleCharRules("+/%|&^*><", TExact , AT.Binary),
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;-", TExact , new AT[] { AT.Ao, AT.Ac, AT.Bo, AT.Bc, AT.Po, AT.Pc, AT.Eq, AT.Cm, AT.Co, AT.Sc, AT.Minus }),
-
-      Tm(AT.Void, @"\bvoid\b"),
       Tm(AT.Type, @"\b(int|str|char|bool)\b"),
-      Tm(AT.Name, @"\b[a-z_][\w]*\b"),
+      Tm(AT.FuncDefName, @"(?<=function\s*\w+\s*) ([a-z_]\w*)"),
+      Tm(AT.FuncName, @"([a-z_]\w*) (?=\s*\()"),
+      Tm(AT.VarName, @"(?<= (int|str|bool|char) \s+) (?>[a-z_]\w*) (?!\s*\() (?=\s*(;|\=))"),
+      Tm(AT.ArrVarName, @"(?<= (int|str|bool|char) \s+) (?>[a-z_]\w*) (?!\s*\() (?=\s*(\[))"),
+      Tm(AT.ParamName, @"(?<= (int|str|bool|char) \s+) (?>[a-z_]\w*) (?!\s*\()"),
+      Tm(AT.ExprName, @"\b[a-z_]\w*\b"),
     ],
     GroupTokenRules = [
       // Paremeter Expressions
-      new(RT.None, AT.Parameter,                   "t:Type n:Name x:Cm"),
-      new(RT.None, AT.FinalParameter,              "t:Type n:Name x:Pc"),
-      new(RT.None, AT.PrintParameterValue,         "n:Name{s|i} x:Co pa:Value xo:Cm"),
-      new(RT.None, AT.PrintFunction,               "n:name x:Po p:PrintParameterValue x:Pc x:Sc"),
-      new(RT.None, AT.ParameterValue,              "d:Value x:Cm"),
-      new(RT.Recursive, AT.ParameterExpression,    "l:Value t:Binary r:ParameterValue"),
+      new(RT.None, AT.ParamDef,                   "t:Type n:ParamName xo:Cm"),
+      new(RT.None, AT.PrintParameterValue,        "n:Name{s|i} x:Co pa:Value xo:Cm"),      
 
       // Expressions
-      new(RT.None, AT.FunctionCallOpen,            "n:Name x:Po"),
-      new(RT.None, AT.ArrayValue,                  "n:Name x:Ao v:Value x:Ac"),
-      new(RT.Recursive, AT.Expression,             "l:Value t:Binary r:Value"),
-      new(RT.None, AT.ExpressionStatement,         "l:Value t:IncDec"),
-      new(RT.None, AT.ExpressionStatement,         "t:IncDec r:Value"),
-      new(RT.Recursive, AT.Expression,             "l:Value t:(Binary|Minus) r:Value"),
-      new(RT.None, AT.Expression,                  "t:(Unary|Minus) r:Value"),
-      new(RT.None, AT.Expression,                  "x:Po v:Value x:Pc"),
-      new(RT.None, AT.FunctionCall,                "d:FunctionCallOpen p:Value x:Pc"),
-      new(RT.None, AT.FunctionCall,                "d:FunctionCallOpen pa:ParameterValue p:Value x:Pc"),
-      new(RT.None, AT.FunctionCall,                "d:FunctionCallOpen x:Pc"),
+      new(RT.None, AT.ArrayDim,                    "x:Ao v:Value x:Ac"),
+      new(RT.None, AT.ArrayValue,                  "n:ExprName v:ArrayDim"),
+      new(RT.Recursive, AT.Expression,             "l:Value c:(Binary|Minus) r:Value"),
+      new(RT.None, AT.Expression,                  "c:(Unary|Minus) r:Value"),
+      new(RT.None, AT.ExpressionStandalone,        "l:Value c:IncDec"),
+      new(RT.None, AT.ExpressionStandalone,        "c:IncDec r:Value"),
+      new(RT.Recursive, AT.Expression,             "l:Value c:(Binary|Minus) r:Value"),
+      new(RT.None, AT.Expression,                  "c:(Unary|Minus) r:Value"),
+      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po p:PrintParameterValue x:Pc"),
+      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po p:Value x:Pc"),
+      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po pa:ParameterValue p:Value x:Pc"),
+      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po x:Pc"),
 
       // Run Again
-      new(RT.None, AT.ArrayValue,                  "n:Name x:Ao v:Value x:Ac"),
+      new(RT.None, AT.ArrayValue,                  "n:ExprName v:ArrayDim"),
 
-      new(RT.None, AT.PreprocessorFull,            "yi:Preprocessor{#Define|#LibDefine} n:Name v:Value"),
+      new(RT.None, AT.PreprocessorFull,            "yi:Preprocessor{#Define|#LibDefine} n:ExprName v:Value"),
       new(RT.None, AT.PreprocessorFull,            "yi:Preprocessor{#Import|#Library|#Include} v:Str"),
 
       // Statements
-      new(RT.None, AT.VarDecl,                     "t:Type n:Name x:Sc"),
-      new(RT.None, AT.VarDeclAssn,                 "t:Type n:Name x:Eq v:Value x:Sc"),
-      new(RT.None, AT.VarAssn,                     "n:(ArrayValue|Name) x:(Eq|Assign) v:Value x:Sc"),
-      new(RT.None, AT.ArrayDecl,                   "t:Type n:ArrayValue x:Sc"),
+      new(RT.None, AT.VarDecl,                     "t:Type n:VarName x:Sc"),
+      new(RT.None, AT.VarDeclAssn,                 "t:Type n:VarName x:Eq v:Value x:Sc"),
+      new(RT.None, AT.VarAssn,                     "n:(ArrayValue|ExprName) x:(Eq|Assign) v:Value x:Sc"),
+      new(RT.None, AT.ArrayDecl,                   "t:Type n:ArrVarName x:Ao v:Value x:Ac x:Sc"),
       //new(RT.None, AT.ArrayDecl,                   "t:Type n:Name x:Ao v:Value x:Ac x:Sc"),
       //new(RT.None, AT.ArrayDecl,                   "t:Type n:Name x:Ao l:Value x:Ac x:Ao r:Value x:Ac x:Sc"),
       new(RT.None, AT.BasicCmd,                    "n:SimpleJump x:Sc"),
       new(RT.None, AT.BasicCmd,                    "n:Return x:Sc"),
       new(RT.None, AT.BasicCmd,                    "n:Return v:value x:Sc"),
-      new(RT.None, AT.WaitCall,                    "t:Wait x:Po p:ParameterValue x:Pc x:Sc"),
+      new(RT.None, AT.WaitCall,                    "t:Wait x:Po p:ParameterExpression x:Pc x:Sc"),
       new(RT.None, AT.FunctionCallStatement,       "d:FunctionCall x:Sc"),
       new(RT.None, AT.CaseLabel,                   "x:Case n:Value x:Co"),
       new(RT.None, AT.CaseLabel,                   "n:Default x:Co"),
 
-      new(RT.None, AT.IfBlock,                     "t:If v:Expression x:Bo pa:Statement x:Bc"),
-      new(RT.None, AT.ElseBlock,                   "t:Else x:Bo pmo:Statement x:Bc"),
-      new(RT.None, AT.ElseIfBlock,                 "t:Else x:If v:Expression x:Bo pa:Statement x:Bc"),
+      new(RT.None, AT.IfBlock,                     "t:If x:Po v:Value x:Pc x:Bo pa:Statement x:Bc"),
+      new(RT.None, AT.IfBlock,                     "t:If x:Po v:Value x:Pc p:Statement"),
+      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc x:Bo pa:Statement x:Bc"),
+      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc p:Statement"),
+      new(RT.None, AT.ElseBlock,                   "t:Else x:Bo pa:Statement x:Bc"),
+      new(RT.None, AT.ElseBlock,                   "t:Else p:Statement"),
+      new(RT.None, AT.ElseIfBlock,                 "t:Else x:If x:Po v:Value x:Pc x:Bo pa:Statement x:Bc"),
+      new(RT.None, AT.ElseIfBlock,                 "t:Else x:If x:Po v:Value x:Pc p:Statement"),
 
-      new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:Name x:Po x:Void x:Pc"),
-      new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:Name x:Po pm:Parameter x:Pc"),
+      new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:FuncDefName x:Po x:Void x:Pc"),
+      new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:FuncDefName x:Po pm:Parameter x:Pc"),
       new(RT.None, AT.FunctionFull,                "d:FunctionHeader x:Bo s:(Statement|Block) x:Bc"),
 
       new(RT.None, AT.ScriptHeader,                "x:Script n:Value t:ScriptType x:Po p:FinalParameter"),
 
       new(RT.None, AT.ScriptHeader,                "x:Script n:Value t:ScriptType"),
-      new(RT.None, AT.ScriptHeader,                "x:Script n:Value x:Po pmo:Parameter p:FinalParameter"),
+      new(RT.None, AT.ScriptHeader,                "x:Script n:Value x:Po pa:ParamDef p:FinalParameter"),
       new(RT.None, AT.ScriptHeader,                "x:Script n:Value x:Po p:Void x:Pc"),
       new(RT.None, AT.ScriptHeader,                "d:Script n:Value t:Return"),
       new(RT.None, AT.ScriptFull,                  "d:ScriptHeader x:Bo s:(Statement|Block) x:Bc"),

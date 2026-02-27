@@ -12,6 +12,8 @@ public class ACSTests
   internal const string Statement2 = "ACS_Execute(3, 4, 3);";
   internal const string Statement3 = "Terminate;";
   internal const string Statement4 = "char d = 'd';";
+  internal const string Statement5 = "if (do_delay == true) delay(34);";
+  internal const string Statement6 = "if (do_delay == true) { delay(34); }";
 
   [Theory]
   [InlineData(Expression1)]
@@ -21,6 +23,8 @@ public class ACSTests
   [InlineData(Statement2)]
   [InlineData(Statement3)]
   [InlineData(Statement4)]
+  [InlineData(Statement5)]
+  [InlineData(Statement6)]
   public void ACS_PieceParse (string to_parse)
   {
     TokenFactory tokenFactory = new(Specification.ZDoom.Definition.ACS);

@@ -20,8 +20,16 @@ public enum ACSTokenType
   Fixed,
   /// <summary>Common Boolean Value (Actually an int)</summary>
   Bool,
+
+  // Name Tokens
   /// <summary>A name or identifier of some sort.</summary>
   Name,
+  FuncDefName,
+  FuncName,
+  ParamName,
+  VarName,
+  ArrVarName,
+
   FunctionCall,
   FunctionCallStatement,
   Script,
@@ -72,10 +80,10 @@ public enum ACSTokenType
   Statement,
   BasicCmd,
   VarInc,
-  Parameter,
+  ParamDef,
   ArrayValue,
   /// <summary>An expression that can also be used as an independent statement.</summary>
-  ExpressionStatement,
+  ExpressionStandalone,
   FunctionHeader,
   ScriptHeader,
   PrintParameterValue,
@@ -89,5 +97,9 @@ public enum ACSTokenType
   CaseLabel,
   ValueNoName,
   FinalParameter,
-  ParameterExpression
+  ParameterExpression,
+  ExprName,
+  ArrayDim,
+  LoopBlock,
+  SwitchBlock
 }

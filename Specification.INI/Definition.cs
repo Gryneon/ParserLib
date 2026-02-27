@@ -23,21 +23,23 @@ public static class Definition
     IsTextFile = true,
     SC = SCOIC,
     TokenType = typeof(ITT),
+
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      Op.End
-    ],
+      Op.End],
+
     TokenRules = [
-      new(Competitive | IgnoredToken, ITT.None, @";.*?$"),
+      new(TokenComment, ITT.None, @";.*?$"),
       new(Competitive, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
       new(Competitive, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
       .. MakeSingleCharRules("=", TokenExact, new ITT[] { ITT.Eq } ),
       new(TokenExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
+
     GroupTokenRules = [
       new(ITT.Property, "n:Key x:Eq v:Value"),
-      new(ITT.SectionWProps, "n:INISection pm:Property")
-    ],
+      new(ITT.SectionWProps, "n:Section pa:Property")],
+
     DefaultRuleSet = ExemptAllWithin | IgnoreCase,
   };
 }

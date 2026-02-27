@@ -27,8 +27,7 @@ public sealed class ChkToken () : IEquatable<IToken>
   internal static Dictionary<char, RT> LetterReference { get; } = new()
   {
     ['a'] = RT.Any,
-    ['<'] = RT.LookAround,
-    ['>'] = RT.LookAround,
+    ['b'] = RT.Error,
     ['c'] = RT.AssignCenter,
     ['d'] = RT.Descendant,
     ['e'] = RT.Error,
@@ -48,9 +47,14 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['t'] = RT.AssignType,
     ['u'] = RT.Error,
     ['v'] = RT.AssignValue,
-    ['!'] = RT.Negative,
+    ['w'] = RT.Error,
     ['x'] = RT.IgnoredToken,
-    ['y'] = RT.AssignType
+    ['y'] = RT.AssignType,
+    ['z'] = RT.Error,
+
+    ['<'] = RT.LookAround,
+    ['>'] = RT.LookAround,
+    ['!'] = RT.Negative,
   };
   public required RT TokenRule { get; init; } = RT.None;
   public string? CustomPropertyName { get; set; }
@@ -71,7 +75,7 @@ public sealed class ChkToken () : IEquatable<IToken>
     Regex regexobj = new(regex, ROEC, new TimeSpan(0, 0, 1));
     Match m = regexobj.Match(definition);
     if (!m.Success)
-      throw new ArgumentException($"Bad Token Sequence String. {definition}");
+      throw new OperationBadDefinitionException($"Bad Token Sequence String. {definition}");
 
     RT rule = RT.None;
     string prefix = SE;
@@ -96,7 +100,7 @@ public sealed class ChkToken () : IEquatable<IToken>
 
     if (rule.HasFlag(RT.Error))
     {
-      throw new ArgumentException($"Bad Prefix Char. ({prefix})");
+      throw new OperationBadDefinitionException($"Bad Prefix Char. ({prefix})");
     }
 
     if (m.Groups.ContainsKey("type_def"))
@@ -153,5 +157,4 @@ public sealed class ChkToken () : IEquatable<IToken>
   public bool Equals (IToken? other) =>
     Check_Content(other) && Check_Type(other);
   public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (AllowedContents.Count > 0 ? $"{{{AllowedContents.TextJoin("|")}}}" : "");
-
 }

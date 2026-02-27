@@ -79,4 +79,6 @@ public enum TokenRuleType : long
   AssignCustomProp = 0x2000,
   LookAround = 0x4000,
   Negative = 0x80000000L,
+  /// <summary>This Token Rule alias is short for <see cref="Competitive"/> and <see cref="IgnoredToken"/>.</summary>
+  TokenComment = Competitive | IgnoredToken,
 }

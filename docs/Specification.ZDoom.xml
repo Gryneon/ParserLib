@@ -34,7 +34,7 @@
         <member name="F:Specification.ZDoom.ACSTokenType.Wait">
             <summary>Keyword Only - Wait Functions</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.ExpressionStatement">
+        <member name="F:Specification.ZDoom.ACSTokenType.ExpressionStandalone">
             <summary>An expression that can also be used as an independent statement.</summary>
         </member>
         <member name="P:Specification.ZDoom.Definition.ZScript">

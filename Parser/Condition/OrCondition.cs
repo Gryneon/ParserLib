@@ -1,10 +1,10 @@
 namespace Parser.Condition;
 
-public abstract class OrCondition (OperationConditionType type, params Collection<ICondition> conditions) : ICondition, ICanAddChildren<ICondition>
+public class OrCondition (params Collection<ICondition> conditions) : ICondition, ICanAddChildren<ICondition>
 {
   public Collection<ICondition> Conditions { get; private set; } = conditions;
 
-  public OperationConditionType Type { get; } = type;
+  public OperationConditionType Type { get; } = OperationConditionType.Or;
   public bool ConditionResult { get; protected set; }
   public int Count => Conditions.Count;
 
