@@ -8,9 +8,6 @@ public static class Op
   public static IOperation JumpToFirst () => new OperationJump(0);
   public static IOperation JumpTo (int index) => new OperationJump(index);
   public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
-
-  public static IOperation Fail () => new OperationFail();
-  public static IOperation Done () => new OperationJump(JumpToEnd);
   public static IOperation Prompt () => new OperationAction(OAT.Prompt);
 
   public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
@@ -65,7 +62,9 @@ public static class Op
   };
 
   /// <summary>A built in operation that ends the operation sequence.</summary>
-  public static IOperation End => new OperationAction(OAT.ForcePass);
+  public static IOperation End => new OperationJump(JumpToEnd);
+  /// <summary>A built in operation that force-fails the operation sequence.</summary>
+  public static IOperation Fail => new OperationFail();
 
   [DoesNotReturn]
   public static void ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);
