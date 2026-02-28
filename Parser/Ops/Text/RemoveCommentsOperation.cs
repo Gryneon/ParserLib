@@ -17,6 +17,6 @@ public class RemoveCommentsOperation ([SS("Regex")] string comment, [SS("Regex")
     else if (CheckInput(out IEnumerable<string>? list))
       WorkToReturn = list.Select(Task);
     else
-      throw new OperationBadInputTypeException($"string or list", $"{WorkToReturn?.GetType()}");
+      Op.ThrowBadInput($"string or list", $"{WorkToReturn?.GetType()}");
   }
 }
