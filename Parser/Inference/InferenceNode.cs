@@ -1,3 +1,5 @@
+using Parser.Exceptions;
+
 namespace Parser.Inference;
 
 public class InferenceNode (IT type, string content) : IInferenceNode

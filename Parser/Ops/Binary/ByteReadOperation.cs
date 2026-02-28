@@ -70,7 +70,7 @@ public sealed class ByteReadOperation : Operation, IOperation
     {
       Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Found: Marker");
       Status = Pass;
-      WorkToReturn = Array.Empty<byte>();
+      WorkData = Array.Empty<byte>();
       return;
     }
 
@@ -82,7 +82,7 @@ public sealed class ByteReadOperation : Operation, IOperation
       MakeListOnSave = true;
     }
 
-    int remaining = (int) Data.Load("file_size") - Parser.GetCursorByKey(CursorKey).Index;
+    int remaining = (int) Data["file_size"] - Parser.GetCursorByKey(CursorKey).Index;
     object? value = Size switch
     {
       1 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span[0],
@@ -103,7 +103,7 @@ public sealed class ByteReadOperation : Operation, IOperation
 
     Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Read: {value}");
 
-    WorkToReturn = value;
+    WorkData = value;
     Status = Pass;
   }
 }

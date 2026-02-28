@@ -10,12 +10,12 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
 {
   protected override void Execute ()
   {
-    if (WorkToReturn is string s && !File.Exists(s) && ignoreMissing)
+    if (WorkData is string s && !File.Exists(s) && ignoreMissing)
       Status = OpStatus.Skipped;
-    else if (WorkToReturn is string s2 && File.Exists(s2))
+    else if (WorkData is string s2 && File.Exists(s2))
     {
       //TODO: Text or bytes?
-      WorkToReturn = File.ReadAllText(s2);
+      WorkData = File.ReadAllText(s2);
       Status = OpStatus.Skipped;
     }
     else if (CheckInput(out IEnumerable<string>? list))
@@ -30,7 +30,7 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
 
         result.Add(File.ReadAllText(ea));
       }
-      WorkToReturn = result;
+      WorkData = result;
       Status = OpStatus.Pass;
       return;
     }

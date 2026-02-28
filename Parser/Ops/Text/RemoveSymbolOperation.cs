@@ -11,7 +11,7 @@ public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupG
   protected override void Execute ()
   {
     foreach (ReplaceNode node in Nodes)
-      if (WorkToReturn is string s)
+      if (WorkData is string s)
       {
         Regex rx = new(node.LookFor);
         string update = s;
@@ -31,9 +31,9 @@ public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupG
             Insert(pos, node.ReplaceWith ?? SE);
         }
 
-        WorkToReturn = update;
+        WorkData = update;
       }
-      else if (WorkToReturn is IEnumerable<string> list)
+      else if (WorkData is IEnumerable<string> list)
       {
         //TODO: Complete RemoveSymbolOperation.DoOperation(ref object data) for IEnumerable<string>
 

@@ -25,7 +25,7 @@ public sealed class PromptOperation (string message, string output_key, Predicat
     {
       Data[output_key] = userInput;
       Status = OpStatus.Pass;
-      WorkToReturn = userInput;
+      WorkData = userInput;
       return;
     }
     else

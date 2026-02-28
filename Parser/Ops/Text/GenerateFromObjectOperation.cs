@@ -62,7 +62,7 @@ public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, str
       return;
     }
 
-    WorkToReturn = output_items;
+    WorkData = output_items;
     Status = output_items.Count > 0 ? OpStatus.Pass : OpStatus.Skipped;
   }
 }

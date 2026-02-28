@@ -49,7 +49,7 @@ public class GenerateOperation<TIn, TOut> : Operation
 
   protected override void Execute ()
   {
-    if (WorkToReturn is IEnumerable<TIn> mdds)
+    if (WorkData is IEnumerable<TIn> mdds)
     {
       Collection<TIn> mddList = [.. mdds];
       for (int i = 0; i < mddList.Count; i++)
@@ -62,7 +62,7 @@ public class GenerateOperation<TIn, TOut> : Operation
           Results.Add(i, result);
         }
       }
-      WorkToReturn = Results;
+      WorkData = Results;
       Status = OS.Pass;
     }
     else if (CheckInput(out TIn? mdd))
@@ -70,7 +70,7 @@ public class GenerateOperation<TIn, TOut> : Operation
       if (Predicate(mdd))
       {
         TOut? result = Function(mdd);
-        WorkToReturn = result;
+        WorkData = result;
         Status = OS.Pass;
       }
       else

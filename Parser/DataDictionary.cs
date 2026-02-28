@@ -116,8 +116,6 @@ public sealed class DataDictionary : IDictionary<string, object>
       Save<int>("list_size", coll.Count);
     }
   }
-  public bool IsArray ([NotNullWhen(true)] string key) =>
-    ContainsKey(key) && _dict[key] is IEnumerable;
   public bool CanLoad ([NotNullWhen(true)] string key) =>
     _dict.ContainsKey(key) && _dict[key] != null;
   public bool TryLoad ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out object data)
@@ -130,10 +128,7 @@ public sealed class DataDictionary : IDictionary<string, object>
     data = CanLoad<IEnumerable>(key) ? this[key] as IEnumerable : null;
     return data is not null;
   }
-  public object Load (string key) => CanLoad(key) ? this[key] : throw new ArgumentException($"Key {key} not found in data dictionary.", nameof(key));
   public void Save (string key, object data, DM mode = DM.Overwrite) => DoSave<object>(key, data, mode);
-  public bool IsArray<T> ([NotNullWhen(true)] string key) =>
-    ContainsKey(key) && _dict[key] is IEnumerable<T>;
   public bool CanLoad<T> ([NotNullWhen(true)] string key) =>
     CanLoad(key) && _dict[key] is T;
   public bool TryLoad<T> ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out T data) where T : allows ref struct
@@ -163,10 +158,10 @@ public sealed class DataDictionary : IDictionary<string, object>
   public bool Remove (string key) => _dict.Remove(key);
   public bool TryGetValue (string key, [NotNullWhen(true)] out object? value) => TryLoad(key, out value);
   public void Add (KeyValuePair<string, object> item) => Add(item.Key, item.Value);
-  public void Clear () => _dict.Clear();
   public bool Contains (KeyValuePair<string, object> item) => CanLoad(item.Key);
   public bool Remove (KeyValuePair<string, object> item) => Remove(item.Key);
   public IEnumerator<KeyValuePair<string, object>> GetEnumerator () => _dict.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   void ICollection<KeyValuePair<string, object>>.CopyTo (KeyValuePair<string, object>[] array, int arrayIndex) => throw new NotSupportedException();
+  void ICollection<KeyValuePair<string, object>>.Clear () => _dict.Clear();
 }

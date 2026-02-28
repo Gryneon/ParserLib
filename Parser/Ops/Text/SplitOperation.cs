@@ -70,36 +70,36 @@ public class SplitOperation : Operation
     switch (_type)
     {
       case Type.None when CheckInput(out str):
-        WorkToReturn = RX.LineEnd.Split(str);
+        WorkData = RX.LineEnd.Split(str);
         goto Pass;
       case Type.None:
         goto default;
       case Type.Delim when CheckInput(out str):
-        WorkToReturn = delimSplit(str);
+        WorkData = delimSplit(str);
         goto Pass;
       case Type.Delim when CheckInput(out str):
-        WorkToReturn = delimSplit(str);
+        WorkData = delimSplit(str);
         goto Pass;
       case Type.Delim when CheckInput(out list):
-        WorkToReturn = list.SelectMany(delimSplit);
+        WorkData = list.SelectMany(delimSplit);
         goto Pass;
       case Type.Delim:
         goto default;
       case Type.Regex when CheckInput(out str):
         rx = (_items ?? []).TextJoin("|");
         regex = new(rx, _options);
-        WorkToReturn = regex.Split(str);
+        WorkData = regex.Split(str);
         goto Pass;
       case Type.Regex when CheckInput(out list):
         rx = (_items ?? []).TextJoin("|");
         regex = new(rx, _options);
-        WorkToReturn = list.SelectMany(str => regex.Split(str));
+        WorkData = list.SelectMany(str => regex.Split(str));
         goto Pass;
       case Type.Regex:
         goto default;
 
       default:
-        throw new OperationBadInputTypeException($"string or list", $"{WorkToReturn?.GetType()}");
+        throw new OperationBadInputTypeException($"string or list", $"{WorkData?.GetType()}");
 
       Pass:
         Status = OpStatus.Pass;

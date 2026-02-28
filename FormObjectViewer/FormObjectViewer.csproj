@@ -54,7 +54,7 @@
     <ProjectReference Include="..\Specification.REG\Specification.REG.csproj" />
     <ProjectReference Include="..\Specification.WAD\Specification.WAD.csproj" />
     <ProjectReference Include="..\Specification.XML\Specification.XML.csproj" />
-    <ProjectReference Include="..\Specification.ZScript\Specification.ZDoom.csproj" />
+    <ProjectReference Include="..\Specification.ZDoom\Specification.ZDoom.csproj" />
     <!-- <ProjectReference Include="..\TestConsole\TestConsole.csproj" /> -->
   </ItemGroup>
 

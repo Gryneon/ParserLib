@@ -28,7 +28,7 @@ public class ConsolidateOperation<TCommon> (IEnumerable<string> input_keys, stri
       index++;
     }
 
-    WorkToReturn = output_items;
+    WorkData = output_items;
     Status = OpStatus.Pass;
   }
 }

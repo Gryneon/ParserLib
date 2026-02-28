@@ -16,7 +16,7 @@ public class ByteJumpVarOperation (string input_key, string cursor_key = "bytes"
       return;
     }
 
-    if (pos >= (int) Data.Load("file_size"))
+    if (pos >= (int) Data["file_size"])
     {
       Status = FailBufferOverflow;
       return;

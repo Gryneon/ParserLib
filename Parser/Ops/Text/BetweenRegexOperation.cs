@@ -9,15 +9,15 @@ public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] s
 
   protected override void Execute ()
   {
-    if (WorkToReturn is null)
+    if (WorkData is null)
     {
       Status = OpStatus.FailBadInputNull;
       return;
     }
 
-    if (WorkToReturn is string s)
-      WorkToReturn = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
-    else if (WorkToReturn is IEnumerable<string> list)
+    if (WorkData is string s)
+      WorkData = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
+    else if (WorkData is IEnumerable<string> list)
     {
       /* TODO: Finish BetweenRegexOperation.DoOperation when data is IEnumerable<string> */
       // data = list.Select(x => x.Trim()).ToCollection();

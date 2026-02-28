@@ -169,11 +169,6 @@ public sealed class OperationAction : IOperation
   public override string ToString () => $"Action {Type} => " + Type switch
   {
     OAT.None => "No Type",
-    OAT.ForcePass => "Force Pass",
-    OAT.ForceFail => "Force Fail",
-    OAT.GotoLabel => $"Goto Label '{SData[0]}'",
-    OAT.GotoIndex => $"Goto Index '{IData[0]}'",
-    OAT.GotoFirst => $"Goto First",
     OAT.CopyKey => $"Key '{SData[0]}' copied to '{SData[1]}'",
     _ => $"(string args:{SData.Count} int args:{IData.Count})",
   };
@@ -181,13 +176,8 @@ public sealed class OperationAction : IOperation
   private string GetMessage () => Type switch
   {
     OAT.BreakLoop => $"Loop break.",
-    OAT.GotoLabel => $"Goto Label: {SData[0]}",
     OAT.None => $"No Action",
     OAT.StoreKey => $"Storing {SData[1]} in {SData[0]}.",
-    OAT.ForceFail => "Operation Sequence Failed",
-    OAT.ForcePass => "Operation Sequence Passed",
-    OAT.GotoIndex => $"Jumping to Index {IData[0]}",
-    OAT.GotoFirst => $"Jumping to Index 0",
     OAT.EraseKey => $"Data erased from {SData[0]}.",
     OAT.StartLoop => "Break if loop is done.",
     OAT.NextLoop => "Next Loop Action Triggered",

@@ -39,7 +39,7 @@ public class ByteDivideOperation : Operation
     }
 
     int quotient = _dividend / _divisor;
-    WorkToReturn = quotient;
+    WorkData = quotient;
     Log("ByteDivideOperation", $"{_dividend} / {_divisor} = {quotient}");
     Status = Pass;
   }

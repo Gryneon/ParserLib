@@ -1,5 +1,6 @@
 #pragma warning disable CA1822 // Mark members as static
 
+using Parser.Exceptions;
 using Parser.Inference;
 
 namespace Parser;

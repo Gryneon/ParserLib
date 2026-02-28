@@ -150,7 +150,7 @@ public class TranslateOperation (
     {
       try
       {
-        WorkToReturn = TranslateSplit(casted);
+        WorkData = TranslateSplit(casted);
         Status = OpStatus.Pass;
       }
       catch (InvalidOperationException)
