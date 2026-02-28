@@ -37,11 +37,10 @@ public abstract class Operation : IOperation
   #endregion
   #region Stored Keys & Data
   /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
-  protected Collection<object?> MultipleInputValues { get; } = [];
+  protected Collection<object?> MultipleInputValues { get; private set; } = [];
   /// <summary>A collection of all of the input keys. This will only contain one key if only one key is provided.</summary>
   protected Collection<string> InputKeys { get; } = [];
   /// <summary>The input key provided, or the first input key if multiple are provided.</summary>
-  [NotNullIfNotNull(nameof(InputKeys))]
   protected string? InputKey
   {
     get => InputKeys.IsEmpty() ? null : InputKeys[0];
@@ -76,10 +75,11 @@ public abstract class Operation : IOperation
   public bool SkipOperation { get; set; }
   public virtual bool NoOutput { get; }
   public virtual bool NoExecution { get; }
-  /// <summary>Whether or not this operation loads any data.</summary>
+  /// <summary>Whether or not this operation loads a key from a <see cref="DataDictionary"/>.</summary>
+  /// <remarks>Set this to false on any operation that does not use or load data.</remarks>
 
   [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkToReturn))]
-  public bool NoInput => InputKey.IsEmpty();
+  public virtual bool NoInput => InputKey.IsEmpty();
   #endregion
   #region Input Checks
   /// <summary>
@@ -257,15 +257,14 @@ public abstract class Operation : IOperation
 
     Initialize(parser_ref);
 
-    CheckInputNull();
+    if (!NoInput)
+      CheckInputNull();
 
-    if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
+    if (!NoExecution)
+      Execute();
 
-    Execute();
-
-    if (Status.IsFail(ContinueOnFail)) return AdjustedStatus;
-
-    AssignResult();
+    if (!NoOutput)
+      AssignResult();
 
     return AdjustedStatus;
   }
@@ -275,13 +274,10 @@ public abstract class Operation : IOperation
   /// Use <c><see cref="CheckInput{T}(out T)"/></c> or <see cref="CheckArray{T}(out IEnumerable{T})"/> to validate single variables.
   /// Use <see cref="CheckInputs{T}(out Collection{T})"/> to validate mulitple.
   /// </summary>
+  /// <exception cref="OperationException"/>
   protected virtual void Execute ()
   {
-    if (NoExecution)
-      return;
-
-    ThrowIf(WorkToReturn is null, "This needs to be overridden by the inheriting class.");
-    Status = OpStatus.FailBadOpDefinition;
+    throw new OperationException("This needs to be overridden by the inheriting class.");
   }
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
@@ -289,39 +285,31 @@ public abstract class Operation : IOperation
   {
     parser.ThrowIfNull();
     Parser = parser;
+    WorkToReturn = null;
 
     if (NoInput)
-    {
-      WorkToReturn = null;
       return;
-    }
 
-    object? loadKey (string input_key)
+    object loadkey (string key)
     {
-      if (Parser.Data.TryGetValue(InputKey, out object? value))
+      if (Parser.Data.TryGetValue(key, out object? value))
       {
-        Log("Operation.Initialize", $"Loaded {InputKey} with value {value}.");
-        WorkToReturn = value;
+        Log("Operation.Initialize", $"Loaded {key} with value {value}.");
+        return value;
       }
       else
       {
-        Log("Operation.Initialize", $"Key {InputKey} does not exist or is null.");
-        WorkToReturn = null;
-        Status = OpStatus.FailNoSuchVarName;
+        Log("Operation.Initialize", $"Key {key} does not exist or is null.");
+        throw new OperationNoSuchVarException(key);
       }
-      return WorkToReturn;
     }
-
-    object? data = loadKey(InputKey);
-
-    if (InputKeys.Count > 1)
+    if (InputKeys.Count == 1)
     {
-      MultipleInputValues?.AddRange(InputKeys.Select(loadKey));
-
-      if (MultipleInputValues?.Any(item => item is null) ?? true)
-      {
-        Status = OpStatus.FailBadInputNull;
-      }
+      WorkToReturn = loadkey(InputKey);
+    }
+    else if (InputKeys.Count > 1)
+    {
+      MultipleInputValues = [.. InputKeys.Select(loadkey)];
     }
   }
   private void AssignResult ()
@@ -330,9 +318,9 @@ public abstract class Operation : IOperation
 
     if (!MakeListOnSave)
     {
-      _ = Parser.Data.Save(OutputKey, WorkToReturn);
+      Parser.Data.Save(OutputKey, WorkToReturn);
       return;
     }
-    _ = Parser.Data.Save(OutputKey, WorkToReturn, DM.AddToCollection | DM.MakeCollection);
+    Parser.Data.Save(OutputKey, WorkToReturn, DM.AddToCollection | DM.MakeCollection);
   }
 }

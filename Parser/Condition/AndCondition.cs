@@ -3,9 +3,6 @@ namespace Parser.Condition;
 public class AndCondition (params Collection<ICondition> conditions) : ICondition, ICanAddChildren<ICondition>
 {
   public Collection<ICondition> Conditions { get; private set; } = conditions;
-
-  public OperationConditionType Type { get; } = OperationConditionType.And;
-  public bool ConditionResult { get; protected set; }
   public int Count => Conditions.Count;
 
   public void Add (ICondition child) => Conditions.Add(child);
@@ -17,7 +14,5 @@ public class AndCondition (params Collection<ICondition> conditions) : IConditio
       Add(child);
     }
   }
-
-  /// <inheritdoc/>
   public bool Evaluate (XParser parser) => Conditions.All(item => item.Evaluate(parser));
 }

@@ -5,7 +5,7 @@ public static class Op
   #region Static Operation Methods & Properties
   public static IOperation JumpTo (string label) => new OperationAction(OAT.GotoLabel, label);
   public static IOperation JumpToFirst () => new OperationAction(OAT.GotoFirst);
-  public static IOperation JumpTo (int index) => new OperationAction(OAT.GotoIndex, index);
+  public static IOperation JumpTo (int index) => new OperationJump(index);
   public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
 
   public static IOperation Fail () => new OperationAction(OAT.ForceFail);

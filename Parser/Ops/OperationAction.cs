@@ -1,5 +1,24 @@
 namespace Parser.Ops;
 
+public sealed class OperationJump : Operation
+{
+  private int TargetIndex { get; set; }
+  public override bool NoInput => true;
+  public override bool NoOutput => true;
+  public OperationJump (int index)
+  {
+    TargetIndex = index;
+  }
+  protected override void Execute ()
+  {
+    if (TargetIndex >= Parser.OpCount)
+    {
+      throw new OperationBadDefinitionException($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
+    }
+    Parser.SetNextOperationIndex(TargetIndex);
+  }
+}
+
 public sealed class OperationAction : IOperation
 {
   private const string Area = "OperationAction";

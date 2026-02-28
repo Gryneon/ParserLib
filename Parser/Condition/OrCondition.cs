@@ -3,9 +3,6 @@ namespace Parser.Condition;
 public class OrCondition (params Collection<ICondition> conditions) : ICondition, ICanAddChildren<ICondition>
 {
   public Collection<ICondition> Conditions { get; private set; } = conditions;
-
-  public OperationConditionType Type { get; } = OperationConditionType.Or;
-  public bool ConditionResult { get; protected set; }
   public int Count => Conditions.Count;
 
   public void Add (ICondition child) => Conditions.Add(child);

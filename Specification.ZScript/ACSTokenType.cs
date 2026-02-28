@@ -4,6 +4,39 @@
 
 namespace Specification.ZDoom;
 
+public enum ACSStructureType
+{
+  Unknown,
+
+  //Single Word Tokens
+  Type,
+  Keyword,
+  Name,
+  Int,
+  String,
+  Char,
+  Fixed,
+
+  //Token Groups
+  Value,
+
+  //Assembled Structures
+  Expression,
+  Statement,
+  Block,
+  FunctionCall,
+
+  //Top Level Structures
+  Script, Function,
+
+  VarDecl, ArrDecl, VarAssn, ArrAssn, MultiVarDecl,
+
+  FuncCall, FuncCallStmt, Stmt,
+
+  ExprBlock, Label, Switch, ForBlock, ElseBlock, DoBlock
+
+}
+
 public enum ACSTokenType
 {
   None,

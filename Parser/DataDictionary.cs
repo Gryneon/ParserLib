@@ -95,25 +95,25 @@ public sealed class DataDictionary : IDictionary<string, object>
   public void Initialize<T> ([NotNull] T initial)
   {
     initial.ThrowIfNull();
-    _ = Save("initial", initial);
+    Save("initial", initial);
 
     if (initial is string s)
     {
-      _ = Save("text", s);
-      _ = Save<int>("file_size", s.Length);
+      Save("text", s);
+      Save<int>("file_size", s.Length);
     }
     else if (initial is IEnumerable<byte> bytes)
     {
       Memory<byte> list = bytes.ToArray().AsMemory();
-      _ = Save("bytes", list);
-      _ = Save<int>("file_size", list.Length);
+      Save("bytes", list);
+      Save<int>("file_size", list.Length);
     }
     else if (initial is IEnumerable list)
     {
       Log("DataDictionary", "Initialization of an unknown list.");
       Collection<object> coll = [.. list.OfType<object>()];
-      _ = Save("list", coll);
-      _ = Save<int>("list_size", coll.Count);
+      Save("list", coll);
+      Save<int>("list_size", coll.Count);
     }
   }
   public bool IsArray ([NotNullWhen(true)] string key) =>
@@ -131,7 +131,7 @@ public sealed class DataDictionary : IDictionary<string, object>
     return data is not null;
   }
   public object Load (string key) => CanLoad(key) ? this[key] : throw new ArgumentException($"Key {key} not found in data dictionary.", nameof(key));
-  public bool Save (string key, object data, DM mode = DM.Overwrite) => DoSave<object>(key, data, mode);
+  public void Save (string key, object data, DM mode = DM.Overwrite) => DoSave<object>(key, data, mode);
   public bool IsArray<T> ([NotNullWhen(true)] string key) =>
     ContainsKey(key) && _dict[key] is IEnumerable<T>;
   public bool CanLoad<T> ([NotNullWhen(true)] string key) =>
@@ -146,13 +146,19 @@ public sealed class DataDictionary : IDictionary<string, object>
     data = CanLoad<IEnumerable<T>>(key) ? this[key] as IEnumerable<T> : null;
     return data is not null;
   }
-  public bool Save<T> ([NotNull] string key, object data, DM mode = DM.Overwrite) => DoSave<T>(key, data, mode);
+  public void Save<T> ([NotNull] string key, object data, DM mode = DM.Overwrite) => DoSave<T>(key, data, mode);
   public int GetCountOfKey (string key) =>
     !ContainsKey(key) ? 0 :
     _dict[key] is IEnumerable<object> list ? list.Count() :
     1;
   // IDictionary Interface
-  public void Add (string key, object? value) => _ = value is null ? Remove(key) : Save(key, value);
+  public void Add (string key, object? value)
+  {
+    if (value is null)
+      _ = Remove(key);
+    else
+      Save(key, value);
+  }
   public bool ContainsKey (string key) => CanLoad(key);
   public bool Remove (string key) => _dict.Remove(key);
   public bool TryGetValue (string key, [NotNullWhen(true)] out object? value) => TryLoad(key, out value);

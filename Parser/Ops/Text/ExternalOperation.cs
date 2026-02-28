@@ -33,7 +33,7 @@ public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut,
 
   protected override void Execute ()
   {
-    if (CheckInput(out TIn? casted))
+    if (WorkToReturn is TIn casted)
     {
       TOut result = _operation(casted);
       Status = _validation(result) ? OpStatus.Pass : OpStatus.FailBadOpResult;

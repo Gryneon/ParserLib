@@ -4,23 +4,11 @@ public class EncapsulateOperation<TParent, TChild> (string input_key, string out
 {
   protected override void Execute ()
   {
-    IEnumerable<TChild> list;
-    if (CheckInput(out IEnumerable<TChild>? collection))
-    {
-      list = collection;
-    }
-    else if (CheckInput(out IDictionary<int, TChild>? dict))
-    {
-      list = dict.Select(item => item.Value);
-    }
-    else
-    {
-      if (InputKey is null) throw new InvalidOperationException();
-      Log("EncapsulateOperation", $"Input was a {Parser.Data[InputKey]}");
-      Status = OpStatus.FailBadInputType;
-      return;
-    }
-
+    IEnumerable<TChild> list = WorkToReturn is IEnumerable<TChild> collection
+      ? collection
+      : WorkToReturn is IDictionary<int, TChild> dict
+        ? dict.Select(item => item.Value)
+        : throw new OperationBadInputTypeException($"{typeof(IEnumerable<TChild>)}", $"{WorkToReturn?.GetType()}");
     TParent parent = new();
 
     foreach (TChild item in list)

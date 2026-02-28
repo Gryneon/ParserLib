@@ -8,21 +8,12 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
 
   protected override void Execute ()
   {
-    if (InputKey is null) throw new InvalidOperationException();
-    if (Parser.Data.TryGetValue(InputKey, out object? input))
-      Log("DictionaryOperation", $"Input is {input?.GetType()}.");
-    else
-    {
-      Status = OpStatus.FailBadInputNull;
-      return;
-    }
-
-    if (input is string s)
+    if (WorkToReturn is string s)
     {
       WorkToReturn = OpRegex.Matches(s).ToMDDCollection();
       Status = OpStatus.Pass;
     }
-    else if (input is IEnumerable<string> list)
+    else if (WorkToReturn is IEnumerable<string> list)
     {
       Collection<MatchDataSet> result = [];
       foreach (string part in list)

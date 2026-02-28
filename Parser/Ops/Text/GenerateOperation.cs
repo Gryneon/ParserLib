@@ -47,10 +47,9 @@ public class GenerateOperation<TIn, TOut> : Operation
     Function = func;
   }
 
-  /// <inheritdoc/>
   protected override void Execute ()
   {
-    if (CheckInput(out IEnumerable<TIn>? mdds))
+    if (WorkToReturn is IEnumerable<TIn> mdds)
     {
       Collection<TIn> mddList = [.. mdds];
       for (int i = 0; i < mddList.Count; i++)

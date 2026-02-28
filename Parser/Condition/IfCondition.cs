@@ -8,20 +8,19 @@ public class StringCompareCondition (OCT type, string left, string right) : ICon
   public OCT Type { get; } = type;
   public object Left { get; } = left;
   public object Right { get; } = right;
-  public bool ConditionResult { get; protected set; }
-  /// <inheritdoc/>
   public bool Evaluate (XParser parser)
   {
+    bool result = true;
     bool not = Type.HasFlag(OCT.Not);
     OCT type = Type.RemoveBit<OCT>(OCT.Not);
 
     if (type == OCT.None)
-      return ConditionResult = true;
+      return true && !not;
     if (type == OCT.Fail)
-      return ConditionResult = false;
+      return false || not;
 
     parser.ThrowIfNull();
-    StringComparison sc = parser.Spec.SC;
+    //StringComparison sc = parser.Spec.SC;
 
     /*switch (type)
     {
@@ -29,7 +28,6 @@ public class StringCompareCondition (OCT type, string left, string right) : ICon
         result = left.Contains(right, sc);
         
     }*/
-    ConditionResult = !not && ConditionResult;
-    return ConditionResult;
+    return !not && result;
   }
 }
