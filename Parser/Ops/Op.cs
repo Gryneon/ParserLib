@@ -5,26 +5,22 @@ public static class Op
   public const int JumpToEnd = -2;
   #region Static Operation Methods & Properties
   public static IOperation JumpTo (string label) => new OperationJump(label);
-  public static IOperation JumpToFirst () => new OperationJump(0);
   public static IOperation JumpTo (int index) => new OperationJump(index);
   public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
-
-  public static IOperation Fail () => new OperationFail();
-  public static IOperation Done () => new OperationJump(JumpToEnd);
-  public static IOperation Prompt () => new OperationAction(OAT.Prompt);
-
+  public static IOperation ToStart => new OperationJump(0);
+  public static IOperation Fail => new OperationFail();
+  public static IOperation End => new OperationJump(JumpToEnd);
+  public static IOperation Prompt => new OperationAction(OAT.Prompt);
+  public static IOperation Break => new OperationAction(OAT.BreakLoop);
+  public static IOperation ClearCursor => new OperationAction(OAT.ClearCursor);
   public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
   public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey, key);
   public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey, key);
   public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
   public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
-
-  public static IOperation BreakLoop () => new OperationAction(OAT.BreakLoop);
   public static IOperation StartLoop (LoopOperation loopOperation, int continue_index, int break_index) => new OperationAction(OAT.StartLoop, loopOperation) { LoopBreak = break_index, LoopStart = continue_index };
   public static IOperation NextLoop (string loop_key, int increment = 1) => new OperationAction(OAT.NextLoop, loop_key, increment);
   public static IOperation ContinueLoop (string loop_key, int increment = 1) => new OperationAction(OAT.ContinueLoop, loop_key, increment);
-
-  public static IOperation ClearCursor () => new OperationAction(OAT.ClearCursor);
   public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
   public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
 
@@ -64,8 +60,6 @@ public static class Op
     Count = count
   };
 
-  /// <summary>A built in operation that ends the operation sequence.</summary>
-  public static IOperation End => new OperationAction(OAT.ForcePass);
 
   [DoesNotReturn]
   public static void ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);

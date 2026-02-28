@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specification.WAD", "Specif
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specification.XML", "Specification.XML\Specification.XML.csproj", "{6D899EA9-9016-E1B6-F8EA-442F1E80F179}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specification.ZDoom", "Specification.ZScript\Specification.ZDoom.csproj", "{680E3022-EF08-0A27-8E21-EE7DDE01539E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specification.ZDoom", "Specification.ZDoom\Specification.ZDoom.csproj", "{680E3022-EF08-0A27-8E21-EE7DDE01539E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{284B0C48-6525-F3F5-CD5D-7841BD44174A}"
 	ProjectSection(SolutionItems) = preProject

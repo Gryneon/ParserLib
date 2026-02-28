@@ -1,3 +1,5 @@
+using Parser.Exceptions;
+
 namespace Parser;
 
 /// <summary>
