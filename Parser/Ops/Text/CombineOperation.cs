@@ -10,7 +10,7 @@ public class CombineOperation (string input_key = "textparts", string output_key
 {
   protected override void Execute ()
   {
-    if (CheckArray(out IEnumerable? list))
+    if (WorkToReturn is IEnumerable<string> list)
     {
       Status = OpStatus.Pass;
       WorkToReturn = delimiter switch
@@ -23,7 +23,7 @@ public class CombineOperation (string input_key = "textparts", string output_key
     }
     else
     {
-      Status = CheckInput(out string? _) ? OpStatus.Skipped : OpStatus.FailBadInputType;
+      Status = WorkToReturn is string ? OpStatus.Skipped : OpStatus.FailBadInputType;
     }
   }
 }

@@ -3,11 +3,17 @@ namespace Parser.Ops;
 public sealed class OperationJump : Operation
 {
   private int TargetIndex { get; set; }
+  private string? TargetLabel { get; set; }
   public override bool NoInput => true;
   public override bool NoOutput => true;
   public OperationJump (int index)
   {
     TargetIndex = index;
+  }
+  public OperationJump (string label)
+  {
+    TargetIndex = -1;
+    TargetLabel = label;
   }
   protected override void Execute ()
   {
@@ -15,7 +21,27 @@ public sealed class OperationJump : Operation
     {
       throw new OperationBadDefinitionException($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
     }
+    else if (TargetIndex == -1 && TargetLabel is not null)
+    {
+      Parser.SetNextOperationIndex(Parser.Labels[TargetLabel]);
+    }
+    else if (TargetIndex == -1)
+    {
+      Op.ThrowBadDef("Neagtive Jump Target");
+    }
+    else if (TargetIndex == Op.JumpToEnd)
+    {
+      Parser.SetNextOperationIndex(-1);
+    }
     Parser.SetNextOperationIndex(TargetIndex);
+  }
+}
+
+public sealed class OperationFail : Operation
+{
+  protected override void Execute ()
+  {
+    Status = OpStatus.DefinedFail;
   }
 }
 
@@ -62,27 +88,10 @@ public sealed class OperationAction : IOperation
           return OpStatus.Skipped;
 
         // Jumps
-        case OAT.GotoLabel:
-          Parser.SetNextOperationIndex(Parser.Labels[SData[0]]);
-          goto Pass;
-        case OAT.GotoIndex:
-          if (IData[0] >= Parser.OpCount)
-            goto default;
-          Parser.SetNextOperationIndex(IData[0]);
-          goto Pass;
-        case OAT.GotoFirst:
-          Parser.SetNextOperationIndex(0);
-          goto Pass;
         case OAT.JumpIf:
           if (OData[0] is ICondition c && c.Evaluate(Parser))
             Parser.SetNextOperationIndex(IData[0]);
           goto Pass;
-
-        // State Setters
-        case OAT.ForcePass:
-          return OpStatus.EndCommand;
-        case OAT.ForceFail:
-          return OpStatus.DefinedFail;
 
         // Data Actions
         case OAT.EraseKey:

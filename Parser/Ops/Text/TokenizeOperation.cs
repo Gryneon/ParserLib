@@ -25,7 +25,7 @@ public class TokenizeOperation : Operation
       Rules.AddRange(Spec.TokenRules);
     }
 
-    if (CheckInput(out string? input))
+    if (WorkToReturn is string input)
     {
       TokenFactory factory = new(Rules, Spec);
       TokenCollection return_tokens = [.. factory.Produce(input)];
@@ -34,8 +34,7 @@ public class TokenizeOperation : Operation
     }
     else
     {
-      Log(Tokenize_Wrong_Type, WorkToReturn?.GetType().Name ?? SE);
-      Status = OpStatus.FailBadInputType;
+      Op.ThrowBadInput("string", $"{WorkToReturn?.GetType()}");
     }
   }
 }

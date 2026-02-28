@@ -300,7 +300,8 @@ public abstract class Operation : IOperation
       else
       {
         Log("Operation.Initialize", $"Key {key} does not exist or is null.");
-        throw new OperationNoSuchVarException(key);
+        Op.ThrowNoVar(key);
+        throw null;
       }
     }
     if (InputKeys.Count == 1)

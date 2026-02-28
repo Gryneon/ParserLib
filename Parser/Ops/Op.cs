@@ -2,14 +2,15 @@ namespace Parser.Ops;
 
 public static class Op
 {
+  public const int JumpToEnd = -2;
   #region Static Operation Methods & Properties
-  public static IOperation JumpTo (string label) => new OperationAction(OAT.GotoLabel, label);
-  public static IOperation JumpToFirst () => new OperationAction(OAT.GotoFirst);
+  public static IOperation JumpTo (string label) => new OperationJump(label);
+  public static IOperation JumpToFirst () => new OperationJump(0);
   public static IOperation JumpTo (int index) => new OperationJump(index);
   public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
 
-  public static IOperation Fail () => new OperationAction(OAT.ForceFail);
-  public static IOperation Done () => new OperationAction(OAT.ForcePass);
+  public static IOperation Fail () => new OperationFail();
+  public static IOperation Done () => new OperationJump(JumpToEnd);
   public static IOperation Prompt () => new OperationAction(OAT.Prompt);
 
   public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
@@ -65,5 +66,13 @@ public static class Op
 
   /// <summary>A built in operation that ends the operation sequence.</summary>
   public static IOperation End => new OperationAction(OAT.ForcePass);
+
+  [DoesNotReturn]
+  public static void ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);
+  [DoesNotReturn]
+  public static void ThrowNoVar (string key) => throw new OperationNoSuchVarException(key);
+  [DoesNotReturn]
+  public static void ThrowBadDef (string msg) => throw new OperationBadDefinitionException(msg);
+
   #endregion
 }
