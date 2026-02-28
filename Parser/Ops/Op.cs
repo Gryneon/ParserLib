@@ -73,6 +73,8 @@ public static class Op
   public static void ThrowNoVar (string key) => throw new OperationNoSuchVarException(key);
   [DoesNotReturn]
   public static void ThrowBadDef (string msg) => throw new OperationBadDefinitionException(msg);
+  [DoesNotReturn]
+  public static void ThrowNoOverride (string method = "Unspecified") => throw new OperationException($"Method {method} needs to be overridden by the inheriting class.");
 
   #endregion
 }

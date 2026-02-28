@@ -62,7 +62,7 @@ public abstract class Operation : IOperation
   /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
   protected object? WorkToReturn { get; set; }
   /// <summary>The status of the operation.</summary>
-  protected OpStatus Status { get; set; } = OpStatus.Skipped;
+  protected OpStatus Status { get; set; } = OpStatus.Pass;
   protected bool MakeListOnSave { get; set; }
   #endregion
   #region Calculated Properties
@@ -277,7 +277,7 @@ public abstract class Operation : IOperation
   /// <exception cref="OperationException"/>
   protected virtual void Execute ()
   {
-    throw new OperationException("This needs to be overridden by the inheriting class.");
+    Op.ThrowNoOverride();
   }
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
@@ -294,12 +294,11 @@ public abstract class Operation : IOperation
     {
       if (Parser.Data.TryGetValue(key, out object? value))
       {
-        Log("Operation.Initialize", $"Loaded {key} with value {value}.");
+        Log(MsgClass.Debug, "Operation.Initialize->loadkey()", $"Loaded {key} with value {value}.");
         return value;
       }
       else
       {
-        Log("Operation.Initialize", $"Key {key} does not exist or is null.");
         Op.ThrowNoVar(key);
         throw null;
       }

@@ -4,12 +4,12 @@ public class TrimOperation (string input_key, string output_key) : Operation(inp
 {
   protected override void Execute ()
   {
-    if (CheckInput(out string? s))
+    if (WorkToReturn is string s)
     {
       WorkToReturn = s.Trim();
       Status = OpStatus.Pass;
     }
-    else if (CheckInput(out IEnumerable<string>? ien))
+    else if (WorkToReturn is IEnumerable<string> ien)
     {
       WorkToReturn = ien.Select(x => x.Trim()).ToCollection();
       Status = OpStatus.Pass;

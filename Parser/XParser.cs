@@ -114,16 +114,6 @@ public sealed class XParser
     OpIndex = NextOpIndex;
     NextOpIndex++;
   }
-  private void LogIfStatus (OpStatus status, string msg)
-  {
-    if (status == Any || status == LastStatus)
-      Log(Area, msg);
-  }
-  private void LogStatus (OpStatus status, string msg)
-  {
-    if (status == Any || status == LastStatus)
-      Log(Area, $"Operation Index {OpIndex} Evaluated to {LastStatus}: {msg}");
-  }
   /// <summary>Performs all the operations, ending on a fail or a completion of the sequence.</summary>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   private OpStatus ParseLoop ()
@@ -144,7 +134,7 @@ public sealed class XParser
     _method = "PerformOperation";
     if (CurrentOp.SkipOperation)
     {
-      Log(Area, "Skip Operation Encountered");
+      Log(MsgClass.Debug, Area, "Skip Operation Encountered");
       LastStatus = Skipped;
       AdvanceOperation();
       return LastStatus;
@@ -159,26 +149,20 @@ public sealed class XParser
     }
 
     Log(MsgClass.Informational, Area, _method, $"Performing Operation {CurrentOp.GetType().Name}.");
-    LastStatus = CurrentOp.DoOperation(this);
-    Log(Area, _method, $"Operation resulted in {LastStatus}.");
+
+    try { LastStatus = CurrentOp.DoOperation(this); }
+    catch (OperationBadInputTypeException obit)
+    {
+      LastStatus = FailBadInputType;
+      LogException(obit);
+    }
+    Log(MsgClass.Debug, Area, _method, $"Operation resulted in {LastStatus}.");
+
     if (LastStatus is EndCommand)
       NextOpIndex = -1;
-    if (LastStatus.IsFail(CurrentOp.ContinueOnFail))
-    {
-      LogStatus(FailBadInputNull, "Given bad input, cannot be null");
-      LogStatus(FailBadInputType, "Given bad input, invalid type.");
-      LogStatus(FailBadOpDefinition, "Bad operation definition.");
-      LogStatus(FailBadOpResult, "Bad operation result. Operation failed to generate proper data.");
-      LogStatus(FailBadOpImpossible, "Bad operation event. Impossible condition reached.");
-      LogStatus(Any, "Parse sequence terminated.");
-    }
-    if (NextOpIndex == -1)
-    {
-      LogIfStatus(EndCommand, "Result has been assigned. Operation complete.");
-      Log(Area, _method, "Results");
-      Log(Area, _method, Data["result"]?.ToString() ?? "<null data>");
-    }
+
     AdvanceOperation();
+
     return LastStatus;
   }
   #endregion
@@ -242,7 +226,7 @@ public sealed class XParser
   public OpStatus StepThrough<TData> (TData input)
   {
     InitializeData(input);
-    Log(Area, "StepInit", "Initialized");
+    Log(MsgClass.Debug, Area, "StepInit", "Initialized");
 
     while (NextOpIndex >= 0)
     {
