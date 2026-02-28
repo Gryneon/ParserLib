@@ -25,16 +25,16 @@ public class TokenizeOperation : Operation
       Rules.AddRange(Spec.TokenRules);
     }
 
-    if (WorkToReturn is string input)
+    if (WorkData is string input)
     {
       TokenFactory factory = new(Rules, Spec);
       TokenCollection return_tokens = [.. factory.Produce(input)];
-      WorkToReturn = return_tokens;
+      WorkData = return_tokens;
       Status = OpStatus.Pass;
     }
     else
     {
-      Op.ThrowBadInput("string", $"{WorkToReturn?.GetType()}");
+      Op.ThrowBadInput("string", $"{WorkData?.GetType()}");
     }
   }
 }

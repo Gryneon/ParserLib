@@ -137,6 +137,6 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
         return;
       }
     }
-    WorkToReturn = newData;
+    WorkData = newData;
   }
 }

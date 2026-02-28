@@ -70,7 +70,7 @@ public sealed class ByteReadOperation : Operation, IOperation
     {
       Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Found: Marker");
       Status = Pass;
-      WorkToReturn = Array.Empty<byte>();
+      WorkData = Array.Empty<byte>();
       return;
     }
 
@@ -103,7 +103,7 @@ public sealed class ByteReadOperation : Operation, IOperation
 
     Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Read: {value}");
 
-    WorkToReturn = value;
+    WorkData = value;
     Status = Pass;
   }
 }

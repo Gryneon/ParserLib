@@ -13,10 +13,10 @@ public class RemoveCommentsOperation ([SS("Regex")] string comment, [SS("Regex")
   {
     Status = OpStatus.Pass;
     if (CheckInput(out string? s))
-      WorkToReturn = Task(s);
+      WorkData = Task(s);
     else if (CheckInput(out IEnumerable<string>? list))
-      WorkToReturn = list.Select(Task);
+      WorkData = list.Select(Task);
     else
-      throw new OperationBadInputTypeException($"string or list", $"{WorkToReturn?.GetType()}");
+      throw new OperationBadInputTypeException($"string or list", $"{WorkData?.GetType()}");
   }
 }

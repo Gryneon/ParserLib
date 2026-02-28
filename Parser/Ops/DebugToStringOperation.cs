@@ -13,7 +13,7 @@ public class DebugToStringOperation (string input_key) : Operation(input_key, Em
   /// <remarks>This is a debugging operation and does not store data.</remarks>
   protected override void Execute ()
   {
-    switch (WorkToReturn)
+    switch (WorkData)
     {
       case string s:
         Log(GetCaller(s), s);
@@ -31,7 +31,7 @@ public class DebugToStringOperation (string input_key) : Operation(input_key, Em
           Log(GetCaller("IToken<>"), it.ToString() ?? "<null data>");
         break;
       default:
-        Log(GetCaller(WorkToReturn), WorkToReturn?.ToString2() ?? "<null data>");
+        Log(GetCaller(WorkData), WorkData?.ToString2() ?? "<null data>");
         break;
     }
   }

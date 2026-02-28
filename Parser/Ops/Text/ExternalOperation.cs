@@ -33,11 +33,11 @@ public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut,
 
   protected override void Execute ()
   {
-    if (WorkToReturn is TIn casted)
+    if (WorkData is TIn casted)
     {
       TOut result = _operation(casted);
       Status = _validation(result) ? OpStatus.Pass : OpStatus.FailBadOpResult;
-      WorkToReturn = result;
+      WorkData = result;
     }
     else
     {

@@ -6,12 +6,12 @@ public class TrimOperation (string input_key, string output_key) : Operation(inp
   {
     if (CheckInput(out string? s))
     {
-      WorkToReturn = s.Trim();
+      WorkData = s.Trim();
       Status = OpStatus.Pass;
     }
     else if (CheckInput(out IEnumerable<string>? ien))
     {
-      WorkToReturn = ien.Select(x => x.Trim()).ToCollection();
+      WorkData = ien.Select(x => x.Trim()).ToCollection();
       Status = OpStatus.Pass;
     }
     else

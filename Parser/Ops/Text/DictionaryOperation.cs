@@ -8,12 +8,12 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
 
   protected override void Execute ()
   {
-    if (WorkToReturn is string s)
+    if (WorkData is string s)
     {
-      WorkToReturn = OpRegex.Matches(s).ToMDDCollection();
+      WorkData = OpRegex.Matches(s).ToMDDCollection();
       Status = OpStatus.Pass;
     }
-    else if (WorkToReturn is IEnumerable<string> list)
+    else if (WorkData is IEnumerable<string> list)
     {
       Collection<MatchDataSet> result = [];
       foreach (string part in list)
@@ -34,7 +34,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
       }
 
       Status = OpStatus.Pass;
-      WorkToReturn = result;
+      WorkData = result;
     }
     else
     {

@@ -36,7 +36,7 @@ public class ReplaceOperation : Operation
       {
         s = node.ReplaceRegex(s, Spec.RxOpt);
       }
-      WorkToReturn = s;
+      WorkData = s;
       Status = OpStatus.Pass;
     }
     else if (CheckInput(out IEnumerable<string>? list))
@@ -45,7 +45,7 @@ public class ReplaceOperation : Operation
       {
         list = [.. list.Select(line => node.ReplaceRegex(line, Spec.RxOpt))];
       }
-      WorkToReturn = list.ToCollection();
+      WorkData = list.ToCollection();
       Status = OpStatus.Pass;
     }
     else

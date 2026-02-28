@@ -4,16 +4,16 @@ public class EncapsulateOperation<TParent, TChild> (string input_key, string out
 {
   protected override void Execute ()
   {
-    IEnumerable<TChild> list = WorkToReturn is IEnumerable<TChild> collection
+    IEnumerable<TChild> list = WorkData is IEnumerable<TChild> collection
       ? collection
-      : WorkToReturn is IDictionary<int, TChild> dict
+      : WorkData is IDictionary<int, TChild> dict
         ? dict.Select(item => item.Value)
-        : throw new OperationBadInputTypeException($"{typeof(IEnumerable<TChild>)}", $"{WorkToReturn?.GetType()}");
+        : throw new OperationBadInputTypeException($"{typeof(IEnumerable<TChild>)}", $"{WorkData?.GetType()}");
     TParent parent = new();
 
     foreach (TChild item in list)
       parent.Add(item);
-    WorkToReturn = parent;
+    WorkData = parent;
     Status = OpStatus.Pass;
   }
 }

@@ -13,7 +13,7 @@ public class TokenAssembleOperation : Operation
     if (base.CheckInput<TokenCollection>(out TokenCollection? list))
     {
       TokenCollection assembled = assembler.Execute(list);
-      WorkToReturn = assembled;
+      WorkData = assembled;
       Status = OpStatus.Pass;
     }
   }

@@ -62,7 +62,7 @@ public abstract class Operation : IOperation
   /// <summary>The output key provided.</summary>
   protected string OutputKey { get; set; }
   /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
-  protected object? WorkToReturn { get; set; }
+  protected object? WorkData { get; set; }
   /// <summary>The status of the operation.</summary>
   protected OpStatus Status { get; set; } = OpStatus.Skipped;
   protected bool MakeListOnSave { get; set; }
@@ -75,12 +75,12 @@ public abstract class Operation : IOperation
   #region Operation Flags
   public bool ContinueOnFail { get; set; }
   public bool SkipOperation { get; set; }
-  public virtual bool NoOutput { get; }
-  public virtual bool NoExecution { get; }
+  public virtual bool NoOutput => SkipOperation;
+  public virtual bool NoExecution => SkipOperation;
   /// <summary>Whether or not this operation loads a key from a <see cref="DataDictionary"/>.</summary>
   /// <remarks>Set this to false on any operation that does not use or load data.</remarks>
 
-  [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkToReturn))]
+  [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkData))]
   public virtual bool NoInput => InputKey.IsEmpty();
   #endregion
   #region Input Checks
@@ -93,17 +93,16 @@ public abstract class Operation : IOperation
   {
     if (InputKey == SE || NoInput)
     {
-      Log("Operation.CheckInputNull", $"No key checked.");
+      Log(MsgClass.Debug, "Operation.CheckInputNull", $"No key checked.");
       Status = OpStatus.Skipped;
     }
     else if (!Data.CanLoad(InputKey))
     {
-      Log("Operation.CheckInputNull", $"Key {InputKey} does not exist.");
-      Status = OpStatus.FailNoSuchVarName;
+      Op.ThrowNoVar(InputKey);
     }
-    else if (Data.CanLoad(InputKey))
+    else
     {
-      Log("Operation.CheckInputNull", $"Key {InputKey} is not null.");
+      Log(MsgClass.Debug, "Operation.CheckInputNull", $"Key {InputKey} is not null.");
       Status = OpStatus.Pass;
     }
   }
@@ -116,7 +115,7 @@ public abstract class Operation : IOperation
   {
     if (InputKeys is null)
     {
-      Status = OpStatus.FailBadInputNull;
+      Op.Thro
       return false;
     }
 
@@ -124,34 +123,15 @@ public abstract class Operation : IOperation
     {
       if (!Parser.Data.ContainsKey(key))
       {
-        Debug.Log("Operation.CheckInputsNull", $"Key {key} does not exist.");
-        Status = OpStatus.FailNoSuchVarName;
-        return false;
-      }
-      else if (Parser.Data.TryGetValue(key, out object? data) && data is not null)
-      {
-        continue;
-      }
-      else
-      {
-        Debug.Log("Operation.CheckInputsNull", $"Key {key} is null.");
-        Status = OpStatus.FailBadInputNull;
+        Log(MsgClass.Error, "Operation.CheckInputsNull", $"Key {key} does not exist.");
+        Op.ThrowNoVar(key);
         return false;
       }
     }
-    Debug.Log("Operation.CheckInputsNull", $"All keys are not null.");
+    Log("Operation.CheckInputsNull", $"All keys are not null.");
     Status = OpStatus.Pass;
     InputKey ??= SE;
     return true;
-  }
-  /// <summary>Sets the status to EndCommand or Skipped if the operation is flagged to be those.</summary>
-  protected virtual void CheckOperationFlags ()
-  {
-    if (SkipOperation)
-    {
-      Debug.Log("Operation.CheckOperationFlags", "Skipping operation.");
-      Status = OpStatus.Skipped;
-    }
   }
   /// <summary>Checks if the data stored in <see cref="InputKey"/> is of type <typeparamref name="T"/>.</summary>
   /// <typeparam name="T">The type or interface to check against.</typeparam>
@@ -160,40 +140,17 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
-    if (!NoInput && Parser.Data.TryLoad(InputKey, out T? temp))
+    casted = default;
+    if (NoInput)
+      return false;
+
+    if (Parser.Data.TryLoad(InputKey, out T? temp))
     {
       Status = OpStatus.Pass;
       casted = temp;
       return true;
     }
-    Status = OpStatus.FailBadInputType;
-    casted = default;
-    return false;
-  }
-  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
-  protected virtual bool CheckArray<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable<T> casted)
-  {
-    if (!NoInput && Parser.Data.TryLoadArray(InputKey, out IEnumerable<T>? temp))
-    {
-      Status = OpStatus.Pass;
-      casted = temp;
-      return true;
-    }
-    Status = OpStatus.FailBadInputType;
-    casted = default;
-    return false;
-  }
-  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
-  protected virtual bool CheckArray ([NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable casted)
-  {
-    if (!NoInput && Parser.Data.TryLoadArray(InputKey, out IEnumerable? temp))
-    {
-      Status = OpStatus.Pass;
-      casted = temp;
-      return true;
-    }
-    Status = OpStatus.FailBadInputType;
-    casted = default;
+    Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
     return false;
   }
   /// <summary>Checks all the inputs provided and validates them to a common class or interface.</summary>
@@ -271,9 +228,9 @@ public abstract class Operation : IOperation
     return AdjustedStatus;
   }
   /// <summary>
-  /// Performs the operation and stores the value in <c><see cref="WorkToReturn"/></c>,
+  /// Performs the operation and stores the value in <c><see cref="WorkData"/></c>,
   /// and the <see cref="OpStatus"/> in <c><see cref="Status"/></c><br/>
-  /// Use <c><see cref="CheckInput{T}(out T)"/></c> or <see cref="CheckArray{T}(out IEnumerable{T})"/> to validate single variables.
+  /// Use <c><see cref="CheckInput{T}(out T)"/></c>to validate single variables.
   /// Use <see cref="CheckInputs{T}(out Collection{T})"/> to validate mulitple.
   /// </summary>
   /// <exception cref="OperationException"/>
@@ -287,7 +244,7 @@ public abstract class Operation : IOperation
   {
     parser.ThrowIfNull();
     Parser = parser;
-    WorkToReturn = null;
+    WorkData = null;
 
     if (NoInput)
       return;
@@ -308,7 +265,7 @@ public abstract class Operation : IOperation
     }
     if (InputKeys.Count == 1)
     {
-      WorkToReturn = loadkey(InputKey);
+      WorkData = loadkey(InputKey);
     }
     else if (InputKeys.Count > 1)
     {
@@ -317,13 +274,13 @@ public abstract class Operation : IOperation
   }
   private void AssignResult ()
   {
-    if (WorkToReturn is null || NoOutput) return;
+    if (WorkData is null || NoOutput) return;
 
     if (!MakeListOnSave)
     {
-      Parser.Data.Save(OutputKey, WorkToReturn);
+      Parser.Data.Save(OutputKey, WorkData);
       return;
     }
-    Parser.Data.Save(OutputKey, WorkToReturn, DM.AddToCollection | DM.MakeCollection);
+    Parser.Data.Save(OutputKey, WorkData, DM.AddToCollection | DM.MakeCollection);
   }
 }
