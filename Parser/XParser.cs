@@ -1,3 +1,7 @@
+using System.Security.Cryptography;
+
+using Parser.Exceptions;
+
 using static Parser.OpStatus;
 
 namespace Parser;
@@ -42,7 +46,7 @@ public sealed class XParser
   [NotNull] public Collection<IOperation>? Operations { get; } = [];
   public Dictionary<string, int> Labels { get; } = [];
   /// <summary>The dictionary storing all of the data from the parsed file.</summary>
-  [NotNull] public DataDictionary? Data { get; private set; }
+  [NotNull] public DataStore? Data { get; private set; }
   public object? Result => Data.CanLoad("result") ? Data["result"] : null;
   /// <summary>Gets a value indicating whether a valid result is available.</summary>
   /// <remarks>This property returns <see langword="true"/> if the <see cref="Result"/> property is not <see
@@ -94,7 +98,7 @@ public sealed class XParser
     data.ThrowIfNull();
     Data.Initialize(data);
   }
-  /// <summary>Sets up the Specification and DataDictionary for the parser.</summary>
+  /// <summary>Sets up the Specification and DataStore for the parser.</summary>
   /// <param name="spec">The specificiation to use.</param>
   [MemberNotNull(nameof(Data), nameof(Spec))]
   private void InitializeParser (Spec spec)
@@ -150,12 +154,19 @@ public sealed class XParser
 
     Log(MsgClass.Informational, Area, _method, $"Performing Operation {CurrentOp.GetType().Name}.");
 
-    try { LastStatus = CurrentOp.DoOperation(this); }
-    catch (OperationBadInputTypeException obit)
+    void setExceptionData (OpStatus status, Exception toLog)
     {
-      LastStatus = FailBadInputType;
-      LogException(obit);
+      LastStatus = status;
+      LogException(toLog);
     }
+
+    try { LastStatus = CurrentOp.DoOperation(this); }
+    catch (OperationBadInputTypeException obit) { setExceptionData(FailBadInputType, obit); }
+    catch (OperationBadDefinitionException obd) { setExceptionData(FailBadOpDefinition, obd); }
+    catch (OperationBadResultException obr) { setExceptionData(FailBadOpResult, obr); }
+    catch (OperationNoSuchVarException onsv) { setExceptionData(FailNoSuchVarName, onsv); }
+    catch (UnknownOperationException uoe) { setExceptionData(FailNoSpec, uoe); }
+    catch (OperationException o) { setExceptionData(Fail, o); }
     Log(MsgClass.Debug, Area, _method, $"Operation resulted in {LastStatus}.");
 
     if (LastStatus is EndCommand)

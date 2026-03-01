@@ -41,7 +41,8 @@ public abstract class Operation : IOperation
   /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
   protected Collection<object?> MultipleInputValues { get; private set; } = [];
   /// <summary>A collection of all of the input keys. This will only contain one key if only one key is provided.</summary>
-  protected Collection<string> InputKeys { get; } = [];
+  [NotNull]
+  protected Collection<string> InputKeys { get; private set; } = [];
   /// <summary>The input key provided, or the first input key if multiple are provided.</summary>
   protected string? InputKey
   {
@@ -77,7 +78,7 @@ public abstract class Operation : IOperation
   public bool SkipOperation { get; set; }
   public virtual bool NoOutput => SkipOperation;
   public virtual bool NoExecution => SkipOperation;
-  /// <summary>Whether or not this operation loads a key from a <see cref="DataDictionary"/>.</summary>
+  /// <summary>Whether or not this operation loads a key from a <see cref="DataStore"/>.</summary>
   /// <remarks>Set this to false on any operation that does not use or load data.</remarks>
 
   [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkData))]
@@ -113,12 +114,7 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected bool CheckInputsNull ()
   {
-    if (InputKeys is null)
-    {
-      Op.Thro
-      return false;
-    }
-
+    InputKeys ??= [];
     foreach (string key in InputKeys)
     {
       if (!Parser.Data.ContainsKey(key))
@@ -181,8 +177,8 @@ public abstract class Operation : IOperation
   #region Reference Properties
   /// <summary>The reference to the parser.</summary>
   [AllowNull] protected XParser Parser { get; private set; }
-  /// <summary>The reference to the <see cref="DataDictionary"/>.</summary>
-  [AllowNull] protected DataDictionary Data => Parser.Data;
+  /// <summary>The reference to the <see cref="DataStore"/>.</summary>
+  [AllowNull] protected DataStore Data => Parser.Data;
   /// <summary>The reference to the specification.</summary>
   [AllowNull] protected Spec Spec => Parser.Spec;
   #endregion

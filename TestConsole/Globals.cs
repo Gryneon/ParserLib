@@ -13,6 +13,7 @@ global using Parser.Ops;
 global using Terminal.Menu;
 
 global using static Common.Names;
+
 [assembly: AssemblyCompany("Testing Console App")]
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: AssemblyFlags(AssemblyNameFlags.None)]

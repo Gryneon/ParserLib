@@ -117,17 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="acs_foolib" xml:space="preserve">
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\FooLib.acs</value>
+  </data>
   <data name="acs_rpglevel" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGLevel.acs</value>
   </data>
   <data name="acs_rpgmfunc" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs</value>
+    <value>C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGMFunc.acs</value>
   </data>
   <data name="acs_sample" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.acs</value>
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\sample.acs</value>
   </data>
   <data name="mapinfo_common" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp</value>
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt</value>
   </data>
   <data name="sndinfo_test" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt</value>
@@ -139,6 +142,6 @@
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf</value>
   </data>
   <data name="zs_demon" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs</value>
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs</value>
   </data>
 </root>

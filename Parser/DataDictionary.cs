@@ -11,16 +11,15 @@ namespace Parser;
 /// </list>
 /// </summary>
 /// <remarks>Any string may be used as a key.</remarks>
-public sealed class DataDictionary : IDictionary<string, object>
+public sealed class DataStore
 {
-  private const string Area = "DataDictionary";
+  private const string Area = "DataStore";
   private readonly Dictionary<string, object> _dict = [];
   public required XParser Parser { get; init; }
   public bool HasData => Count > 0;
   public ICollection<string> Keys => _dict.Keys;
   public ICollection<object> Values => _dict.Values;
   public int Count => _dict.Count;
-  public bool IsReadOnly => false;
   /// <summary>Gets or sets data to a given key.</summary>
   /// <param name="key">The key to assign to or look up.
   /// Prefixing this string with a "+" when assigning will cause it to make a list instead of overrwriting.</param>
@@ -41,7 +40,7 @@ public sealed class DataDictionary : IDictionary<string, object>
         bool success = DoSave<object>(key, value, DM.Overwrite | DM.AddToCollection | DM.MakeCollection | DM.MergeCollection);
         if (!success)
         {
-          Log(Area, $"Accessor tried to make list, but failed. Value:{value} & Key:{key} & Current: {_dict[key]}.");
+          Log(MsgClass.Error, Area, $"Accessor tried to make list, but failed. Value:{value} & Key:{key} & Current: {_dict[key]}.");
         }
       }
       else
@@ -110,7 +109,7 @@ public sealed class DataDictionary : IDictionary<string, object>
     }
     else if (initial is IEnumerable list)
     {
-      Log("DataDictionary", "Initialization of an unknown list.");
+      Log("DataStore", "Initialization of an unknown list.");
       Collection<object> coll = [.. list.OfType<object>()];
       Save("list", coll);
       Save<int>("list_size", coll.Count);
@@ -161,7 +160,4 @@ public sealed class DataDictionary : IDictionary<string, object>
   public bool Contains (KeyValuePair<string, object> item) => CanLoad(item.Key);
   public bool Remove (KeyValuePair<string, object> item) => Remove(item.Key);
   public IEnumerator<KeyValuePair<string, object>> GetEnumerator () => _dict.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  void ICollection<KeyValuePair<string, object>>.CopyTo (KeyValuePair<string, object>[] array, int arrayIndex) => throw new NotSupportedException();
-  void ICollection<KeyValuePair<string, object>>.Clear () => _dict.Clear();
 }

@@ -21,7 +21,7 @@ namespace Parser.Ops.Text;
 /// <see cref="OpStatus.FailOverride"/>: Operation failed, but is allowed to continue.
 /// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
 /// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
-/// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataDictionary"/>.
+/// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataStore"/>.
 /// </code>
 /// </remarks>
 public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, string output_key, string group_name) : Operation(input_key, output_key)

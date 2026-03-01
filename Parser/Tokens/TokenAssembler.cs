@@ -283,33 +283,56 @@ public sealed partial class TokenAssembler
     }
     return _constructed_items;
   }
-
   public TokenCollection Execute (TokenCollection tokens)
   {
     _method = "Execute";
     _tokens = [.. tokens];
+
+    int recurseCounter = 0;
+    int jumpRule = -1;
+
+    bool wasInBlock () => jumpRule >= 0;
+    bool hasMatched () => recurseCounter > 0;
+    bool isInBlock () => _rule?.Type.HasFlag(RT.Recursive) ?? false;
 
     for (int r = 0; r < _rules.Count; r++)
     {
       _rule = (TokenGroupRule?) _rules[r];
       _rule.ThrowIfNull();
       Parse();
+      int times = 0;
 
-      int times = ExecRule();
-
-      while (_rule.Type.HasFlag(RT.Recursive) && times > 0)
+      if (isInBlock() && !wasInBlock())
       {
-        times = ExecRule();
+        times += ExecRule();
+        recurseCounter += times;
+        jumpRule = r;
       }
-
-      if (times > 0)
+      else if (isInBlock() && wasInBlock())
       {
-        LogInfo($"Rule {r} Executed {times} Times.");
+        times += ExecRule();
+        recurseCounter += times;
+      }
+      else if (!isInBlock() && wasInBlock() && hasMatched())
+      {
+        r = jumpRule - 1;
+        recurseCounter = 0;
+        continue;
+      }
+      else if (!isInBlock() && wasInBlock() && !hasMatched())
+      {
+        times += ExecRule();
+        jumpRule = -1;
       }
       else
       {
-        LogInfo($"Rule {r} Did not match any content.");
+        times += ExecRule();
       }
+
+      if (times > 0)
+        LogInfo($"Rule {r} Executed {times} Times.");
+      else
+        LogInfo($"Rule {r} Did not match any content.");
     }
 
     LogInfo("Token Assembly Complete");

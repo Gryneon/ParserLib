@@ -99,7 +99,7 @@ public class SplitOperation : Operation
         goto default;
 
       default:
-        throw new OperationBadInputTypeException($"string or list", $"{WorkData?.GetType()}");
+        Op.ThrowBadInput($"string or list", $"{WorkData?.GetType()}");
 
       Pass:
         Status = OpStatus.Pass;

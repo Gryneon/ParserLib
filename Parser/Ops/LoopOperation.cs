@@ -44,11 +44,11 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
     additions.Add(Op.NextLoop(CursorKey, inc));
     foreach (IOperation op in additions)
     {
-      if (op is OperationAction oa)
-      {
-        oa.LoopStart = OpIndex;
-        oa.LoopBreak = index;
-      }
+      if (op is OperationBreak ob)
+        ob.SetupBreakTarget(index, CursorKey);
+
+      if (op is OperationContinue oc)
+        oc.SetContTarget(OpIndex);
     }
     operations.AddRange(additions);
     return operations.Count;

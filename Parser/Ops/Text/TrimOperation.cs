@@ -4,17 +4,15 @@ public class TrimOperation (string input_key, string output_key) : Operation(inp
 {
   protected override void Execute ()
   {
-    if (WorkToReturn is string s)
+    Status = OpStatus.Pass;
+    WorkData = WorkData switch
     {
-      WorkData = s.Trim();
-      Status = OpStatus.Pass;
-    }
-    else if (WorkToReturn is IEnumerable<string> ien)
-    {
-      WorkData = ien.Select(x => x.Trim()).ToCollection();
-      Status = OpStatus.Pass;
-    }
-    else
-      Status = OpStatus.FailBadInputType;
+      string s => s.Trim(),
+      IEnumerable<string> ien => ien.Select(x => x.Trim()).ToCollection(),
+      _ => WorkData
+    };
+
+    if (WorkData is not string and not IEnumerable<string>)
+      Op.ThrowBadInput("string or list", $"{WorkData?.GetType()}");
   }
 }

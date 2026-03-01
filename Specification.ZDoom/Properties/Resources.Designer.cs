@@ -61,6 +61,15 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\FooLib.acs.
+        /// </summary>
+        public static string acs_foolib {
+            get {
+                return ResourceManager.GetString("acs_foolib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGLevel.acs.
         /// </summary>
         public static string acs_rpglevel {
@@ -70,7 +79,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGMFunc.acs.
         /// </summary>
         public static string acs_rpgmfunc {
             get {
@@ -79,7 +88,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\sample.acs.
         /// </summary>
         public static string acs_sample {
             get {
@@ -88,7 +97,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt.
         /// </summary>
         public static string mapinfo_common {
             get {
@@ -124,7 +133,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs.
         /// </summary>
         public static string zs_demon {
             get {
