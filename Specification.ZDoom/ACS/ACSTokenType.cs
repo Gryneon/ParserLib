@@ -2,7 +2,22 @@
 #pragma warning disable IDE0052 // Remove unread private members
 #pragma warning disable CA1720 // Identifier contains type name
 
+using System;
+
 namespace Specification.ZDoom.ACS;
+
+public struct ACSTokenData (ACSStructureType structure, AT token) : IEquatable<ACSTokenData>
+{
+  public ACSStructureType Structure { get; set; } = structure;
+  public string Token { get; set; } = token.ToString();
+
+  public override readonly int GetHashCode () => HashCode.Combine(Structure, Token);
+  public override readonly bool Equals ([NotNullWhen(true)] object? obj) => obj is ACSTokenData atd && Equals(atd);
+  public readonly bool Equals (ACSTokenData other) => Structure == other.Structure && Token.Like(other.Token);
+  public static bool operator == (ACSTokenData left, ACSTokenData right) => left.Equals(right);
+  public static bool operator != (ACSTokenData left, ACSTokenData right) => !(left == right);
+  public override readonly string ToString () => $"{Structure}, {Token}";
+}
 
 public enum ACSStructureType
 {
@@ -12,27 +27,25 @@ public enum ACSStructureType
   Type,
   Keyword,
   Name,
-  Int,
-  String,
-  Char,
-  Fixed,
+  Literal, //Int, String, Char, Fixed,
+  Op, // All Ops
+  Preproc,
 
   //Token Groups
   Value,
 
   //Assembled Structures
   Expression,
+  ParamDef,
   Statement,
   Block,
   FunctionCall,
+  PreProcFull,
 
   //Top Level Structures
   Script, Function,
-
-  VarDecl, ArrDecl, VarAssn, ArrAssn, MultiVarDecl,
-
+  VarDecl, ArrDecl, VarAssn, ArrAssn, MultiVarDecl, MapVarDecl,
   FuncCall, FuncCallStmt, Stmt,
-
   ExprBlock, Label, Switch, ForBlock, ElseBlock, DoBlock
 
 }
@@ -44,15 +57,17 @@ public enum ACSTokenType
   // Data Types
 
   /// <summary>A string. (double quoted)</summary>
+  /// <remarks>Ex. <c>"MapSpot"</c></remarks>
   Str,
   /// <summary>A character. (single quoted)</summary>
+  /// <remarks>Ex. <c>'c'</c></remarks>
   Char,
   /// <summary>Integer Value</summary>
+  /// <remarks>Ex. <c>6388334</c></remarks>
   Int,
-  /// <summary>A decimal (fixed point, actually an int)</summary>
+  /// <summary>A fixed point value, stored internally as an int.</summary>
+  /// <remarks>Ex. <c>320.5</c></remarks>
   Fixed,
-  /// <summary>Common Boolean Value (Actually an int)</summary>
-  Bool,
 
   // Name Tokens
   /// <summary>A name or identifier of some sort.</summary>
@@ -62,9 +77,10 @@ public enum ACSTokenType
   ParamName,
   VarName,
   ArrVarName,
+  DefineName,
 
   FunctionCall,
-  FunctionCallStatement,
+  FunctionCallStmt,
   Script,
   Function,
   MapVar,
@@ -73,35 +89,56 @@ public enum ACSTokenType
   Value,
   Bo, Bc,
   Po, Pc,
+  /// <summary>Represents an assembly of an operator and one or more values.</summary>
   Expression,
-  Sc, Cm,
-  Op, Co,
-  Ao, Ac,
+  /// <summary>Semicolon</summary>
+  Sc,
+  /// <summary>Comma ','</summary>
+  Cm,
+  /// <summary>Group contruct: All operators satisfy this token.</summary>
+  Op,
+  /// <summary>Colon ':'</summary>
+  Co,
+  /// <summary>Array open '['</summary>
+  Ao,
+  /// <summary>Array close ']'</summary>
+  Ac,
   Preprocessor,
+  PreprocessorFull,
+  /// <summary>Equals</summary>
   Eq,
+  /// <summary>Keyword: if</summary>
   If,
+  /// <summary>Keyword: for</summary>
   For,
+  /// <summary>Operator: ++ or --</summary>
   IncDec,
   LogNot,
   Assign,
   Minus,
   Unary,
   Binary,
+  /// <summary>Keyword: net</summary>
   Net,
   Loop,
+  /// <summary>Keyword: do</summary>
   Do,
+  /// <summary>Keyword: switch</summary>
   Switch,
-  /// <summary>Keyword only. "case"</summary>
+  /// <summary>Keyword: case</summary>
   Case,
+  /// <summary>Keyword: default</summary>
   Default,
+  /// <summary>Keyword: return</summary>
   Return,
   SimpleJump,
+  /// <summary>Keyword: void</summary>
   Void,
-  /// <summary>Keyword only. Any type object, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
+  /// <summary>Group construct: Any type keyword, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
   Type,
-  /// <summary>Keyword Only - Wait Functions</summary>
+  /// <summary>Group construct: Any latent function name.</summary>
   Wait,
-  PreprocessorFull,
+
   IfBlock,
   ElseBlock,
   ElseIfBlock,
@@ -109,8 +146,9 @@ public enum ACSTokenType
   VarDeclAssn,
   ArrayDecl,
   VarAssn,
+  /// <summary>Keyword: else</summary>
   Else,
-  Statement,
+  Stmt,
   BasicCmd,
   VarInc,
   ParamDef,
@@ -135,5 +173,7 @@ public enum ACSTokenType
   ArrayDim,
   LoopBlock,
   SwitchBlock,
+  Literal,
+  StmtNoWait
   ScriptFunc
 }

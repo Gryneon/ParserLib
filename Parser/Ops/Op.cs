@@ -62,7 +62,6 @@ public static class Op
     Count = count
   };
 
-
   [DoesNotReturn]
   public static OpStatus ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);
   [DoesNotReturn]

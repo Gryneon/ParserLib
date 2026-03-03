@@ -7,6 +7,8 @@
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -15,9 +17,7 @@
     <NeutralResourcesLanguage>en-us</NeutralResourcesLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>net11.0</TargetFramework>
-    
     <Platforms>AnyCPU;x86;x64</Platforms>
-    
     <StartupObject>TestConsole.Program</StartupObject>
   </PropertyGroup>
 

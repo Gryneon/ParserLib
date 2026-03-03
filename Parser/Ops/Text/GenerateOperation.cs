@@ -20,7 +20,7 @@ namespace Parser.Ops.Text;
 /// <see cref="OS.FailOverride"/>: Operation failed, but is allowed to continue.
 /// <see cref="OS.FailBadInputType"/>: Operation was provided the wrong type as input.
 /// <see cref="OS.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
-/// <see cref="OS.FailNoSuchVarName"/>: The key was not found in the <see cref="DataDictionary"/>.
+/// <see cref="OS.FailNoSuchVarName"/>: The key was not found in the <see cref="DataStore"/>.
 /// </code>
 /// </remarks>
 public class GenerateOperation<TIn, TOut> : Operation

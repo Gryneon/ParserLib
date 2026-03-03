@@ -75,7 +75,7 @@ public sealed class ChkToken () : IEquatable<IToken>
     Regex regexobj = new(regex, ROEC, new TimeSpan(0, 0, 1));
     Match m = regexobj.Match(definition);
     if (!m.Success)
-      throw new OperationBadDefinitionException($"Bad Token Sequence String. {definition}");
+      Op.ThrowBadDef($"Bad Token Sequence String. {definition}");
 
     RT rule = RT.None;
     string prefix = SE;
@@ -100,7 +100,7 @@ public sealed class ChkToken () : IEquatable<IToken>
 
     if (rule.HasFlag(RT.Error))
     {
-      throw new OperationBadDefinitionException($"Bad Prefix Char. ({prefix})");
+      Op.ThrowBadDef($"Bad Prefix Char. ({prefix})");
     }
 
     if (m.Groups.ContainsKey("type_def"))

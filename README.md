@@ -5,7 +5,7 @@ Uses these objects primarily:
 * <code>XParser</code> - The parser object. You call <code>Parse(object input)</code> to run it.
 * <code>Spec</code>
 * <code>Operation</code>
-* <code>DataDictionary</code>
+* <code>DataStore</code>
 
 ### Basic Operation Actions
 

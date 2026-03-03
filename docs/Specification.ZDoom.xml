@@ -6,16 +6,23 @@
     <members>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Str">
             <summary>A string. (double quoted)</summary>
+            <remarks>Ex. <c>"MapSpot"</c></remarks>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Char">
             <summary>A character. (single quoted)</summary>
+            <remarks>Ex. <c>'c'</c></remarks>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Int">
             <summary>Integer Value</summary>
+            <remarks>Ex. <c>6388334</c></remarks>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Fixed">
+            <summary>A fixed point value, stored internally as an int.</summary>
+            <remarks>Ex. <c>320.5</c></remarks>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Fixed">
             <summary>A decimal (fixed point, actually an int)</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Name">
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Bool">
             <summary>Common Boolean Value (Actually an int)</summary>
         </member>
@@ -25,15 +32,76 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Value">
             <summary>Placeholder representing any value, expression, or function call.</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Expression">
+            <summary>Represents an assembly of an operator and one or more values.</summary>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Case">
             <summary>Keyword only. "case"</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Sc">
+            <summary>Semicolon</summary>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Type">
             <summary>Keyword only. Any type object, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Cm">
+            <summary>Comma ','</summary>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Wait">
             <summary>Keyword Only - Wait Functions</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Op">
+            <summary>Group contruct: All operators satisfy this token.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Co">
+            <summary>Colon ':'</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Ao">
+            <summary>Array open '['</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Ac">
+            <summary>Array close ']'</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Eq">
+            <summary>Equals</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.If">
+            <summary>Keyword: if</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.For">
+            <summary>Keyword: for</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.IncDec">
+            <summary>Operator: ++ or --</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Net">
+            <summary>Keyword: net</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Do">
+            <summary>Keyword: do</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Switch">
+            <summary>Keyword: switch</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Case">
+            <summary>Keyword: case</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Default">
+            <summary>Keyword: default</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Return">
+            <summary>Keyword: return</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Void">
+            <summary>Keyword: void</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Type">
+            <summary>Group construct: Any type keyword, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Wait">
+            <summary>Group construct: Any latent function name.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Else">
+            <summary>Keyword: else</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
             <summary>An expression that can also be used as an independent statement.</summary>
         </member>
@@ -62,6 +130,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Specification.ZDoom.Properties.Resources.acs_foolib">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\FooLib.acs.
+            </summary>
+        </member>
         <member name="P:Specification.ZDoom.Properties.Resources.acs_rpglevel">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGLevel.acs.
@@ -69,17 +142,17 @@
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.acs_rpgmfunc">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ACS\Samples\RPGMFunc.acs.
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGMFunc.acs.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.acs_sample">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.acs.
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\sample.acs.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.mapinfo_common">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\mapinfo.lmp.
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.sndinfo_test">
@@ -99,7 +172,7 @@
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.zs_demon">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs.
             </summary>
         </member>
         <member name="T:Specification.ZDoom.SndInfo.SndInfoCmdExt">

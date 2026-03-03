@@ -17,25 +17,60 @@ public sealed class OperationJump : Operation
   protected override void Execute ()
   {
     if (TargetIndex >= Parser.OpCount)
-    {
-      Status = Op.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
-    }
+      Op.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
+    else if (TargetIndex == -1 && TargetLabel is null)
+      Op.ThrowBadDef("Neagtive Jump Target");
     else if (TargetIndex == -1 && TargetLabel is not null)
-    {
       Parser.SetNextOperationIndex(Parser.Labels[TargetLabel]);
-    }
-    else if (TargetIndex == -1)
-    {
-      Status = Op.ThrowBadDef("Neagtive Jump Target");
-    }
     else if (TargetIndex == Op.JumpToEnd)
-    {
       Parser.SetNextOperationIndex(-1);
-    }
-    Parser.SetNextOperationIndex(TargetIndex);
+    else
+      Parser.SetNextOperationIndex(TargetIndex);
   }
 }
+public sealed class OperationBreak () : Operation
+{
+  public int BreakTarget { get; private set; }
+  [AllowNull]
+  public string BreakCursor { get; private set; }
+  public override bool NoInput => true;
+  public override bool NoOutput => true;
 
+  protected override void Execute ()
+  {
+    Parser.SetNextOperationIndex(BreakTarget);
+    Parser.RemCursorByKey(BreakCursor);
+  }
+
+  public void SetupBreakTarget (int target, string cursor_key)
+  {
+    BreakTarget = target;
+    BreakCursor = cursor_key;
+  }
+}
+public sealed class OperationContinue () : Operation
+{
+  public int ContTarget { get; private set; }
+  public override bool NoInput => true;
+  public override bool NoOutput => true;
+
+  protected override void Execute () => Parser.SetNextOperationIndex(ContTarget);
+  public void SetContTarget (int target) => ContTarget = target;
+}
+public sealed class OperationNextLoop () : Operation
+{
+  public int ContTarget { get; private set; }
+  public int BreakTarget { get; private set; }
+  public override bool NoInput => true;
+  public override bool NoOutput => true;
+
+  protected override void Execute ()
+  {
+    //Parser.SetNextOperationIndex(ContTarget);
+  }
+
+  public void SetContTarget (int target) => ContTarget = target;
+}
 public sealed class OperationFail : Operation
 {
   protected override void Execute ()
@@ -146,10 +181,6 @@ public sealed class OperationAction : IOperation
           goto Pass;
         case OAT.IncrementCursorKey:
           Parser.IncCursorByKey(SData[0], IData[0]);
-          goto Pass;
-
-        case OAT.Prompt:
-          _ = Console.ReadLine();
           goto Pass;
 
         Pass:

@@ -6,8 +6,8 @@ public class CursorData
   /// <summary>Creates a new cursor and sets itself as the last accessed.</summary>
   /// <param name="index">The index of the cursor.</param>
   /// <param name="key">The key to iterate through.</param>
-  /// <param name="data">The reference to the <see cref="DataDictionary"/> where the keyed data is stored.</param>
-  public CursorData (int index, string key, DataDictionary data)
+  /// <param name="data">The reference to the <see cref="DataStore"/> where the keyed data is stored.</param>
+  public CursorData (int index, string key, DataStore data)
   {
     Index = index;
     Key = key;
@@ -17,10 +17,12 @@ public class CursorData
 
   /// <summary>The index of the cursor.</summary>
   public int Index { get; set; }
+  public int? BreakTarget { get; set; }
+  public int? ContinueTarget { get; set; }
   /// <summary>The key the cursor is operating on.</summary>
   public string Key { get; set; }
   /// <summary>A reference to the data dictionary the parser is using.</summary>
-  public DataDictionary Data { get; }
+  public DataStore Data { get; }
   /// <summary>The object referenced.</summary>
   public object Cursor => Data[Key].AsCollection()[Index];
   /// <summary>The outermost created cursor.</summary>

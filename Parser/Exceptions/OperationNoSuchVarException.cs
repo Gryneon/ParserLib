@@ -1,6 +1,6 @@
 namespace Parser.Exceptions;
 
-/// <summary>An exception thrown by an operation when the key does nt exist in the <see cref="DataDictionary"/>.</summary>
+/// <summary>An exception thrown by an operation when the key does nt exist in the <see cref="DataStore"/>.</summary>
 public class OperationNoSuchVarException : Exception
 {
   public OperationNoSuchVarException () : base("Key not found") { }

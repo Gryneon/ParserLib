@@ -57,13 +57,13 @@ public sealed class RegProperty : IProperty<string>, IGeneratable
         input["default"].Content :
         hasKey ?
           input["key"].Content :
-          throw new InvalidOperationException("The input MatchDataDictionary did not contain a 'key' group or a 'default' group."),
+          throw new InvalidOperationException("The input MatchDataStore did not contain a 'key' group or a 'default' group."),
       IsDeleteEntry = isRem,
       Value = isRem ?
         input["remval"].Content :
         hasValue ?
           input["value"].Content :
-          throw new InvalidOperationException("The input MatchDataDictionary did not contain a 'value' group or a 'remval' group."),
+          throw new InvalidOperationException("The input MatchDataStore did not contain a 'value' group or a 'remval' group."),
       Type = hasType ? input["type"].Content : SE,
       Size = hasSize ? input["hsize"].Content : SE,
     };
