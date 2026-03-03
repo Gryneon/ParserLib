@@ -49,6 +49,7 @@ public enum UDMFTokenType
   Op,
   /// <summary>An assembled map structure.</summary>
   Structure,
-  Keyword
+  Keyword,
+  NamespaceDec
 }
 

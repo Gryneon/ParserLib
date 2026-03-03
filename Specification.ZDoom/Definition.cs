@@ -8,9 +8,6 @@ namespace Specification.ZDoom;
 [DefinitionExport]
 public static class Definition
 {
-  // Flags
-  internal const RT RT_Comment = RT.Competitive | RT.IgnoredToken;
-
   /// <summary>https://regex101.com/r/En5C8c/7</summary>
   [DefinitionExport]
   public static Spec ZScript => new()
@@ -33,8 +30,8 @@ public static class Definition
     TokenType = typeof(ZT),
     DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
     TokenRules = [
-      new(RT_Comment, ZT.None, @"\/\/[^\n]*"),
-      new(RT_Comment, ZT.None, @"\/\*[\s\S]*?\*\/"),
+      new(RT.TokenComment, ZT.None, @"\/\/[^\n]*"),
+      new(RT.TokenComment, ZT.None, @"\/\*[\s\S]*?\*\/"),
       new(RT.Competitive, ZT.String, @"""([^""\\]|\\.)*"""),
       .. TokenRule.MakeSingleCharRules("{}();=,:+-", RT.TokenExact, new ZT[] { ZT.Bo, ZT.Bc, ZT.Po, ZT.Pc, ZT.Sc, ZT.Eq, ZT.Cm, ZT.Co, ZT.Pl, ZT.Mn })
     ],
@@ -57,8 +54,8 @@ public static class Definition
     DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
     TokenRules = [
       new(RT.Competitive, UT.String, Rx(@"""(?:[^""\\\n\r]|\\.)*""")),
-      new(RT_Comment, UT.None, Rx(@"//[^\n\r]*")),
-      new(RT_Comment, UT.None, Rx(@"/\*.*?\*/")),
+      new(RT.TokenComment, UT.None, Rx(@"//[^\n\r]*")),
+      new(RT.TokenComment, UT.None, Rx(@"/\*.*?\*/")),
       new(RT.TokenExact, UT.Bo, "{"),
       new(RT.TokenExact, UT.Bc, "}"),
       new(RT.TokenExact, UT.Eq, "="),
@@ -75,7 +72,7 @@ public static class Definition
     // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
     //new(RT.StoreOther, None)],
     GroupTokenRules = [
-      new(UT.Structure, "n:Namespace x:Eq v:Str x:Sc"),
+      new(UT.NamespaceDec, "n:Namespace x:Eq v:String x:Sc"),
       new(UT.Property, "n:Name x:Eq v:Value x:Sc"),
       new(UT.Structure, "n:Vertex x:Bo pm:Property x:Bc"),
       new(UT.Structure, "n:Thing x:Bo pm:Property x:Bc"),
@@ -93,7 +90,7 @@ public static class Definition
       [UT.Value] = [UT.Bool, UT.Dec, UT.String],
     },
   };
-
+  /// <summary>This is the specification for the SndInfo ZDoom lump.</summary>
   [DefinitionExport]
   public static Spec SndInfo => new()
   {
@@ -108,7 +105,11 @@ public static class Definition
     IsTextFile = true,
     TokenType = typeof(SndIT),
     SC = SCOIC,
-    TokenRules = [],
+    TokenRules = [
+      new (RT.TokenComment, SndIT.None, @"\/\/.*?$"),
+      new (RT.TokenComment, SndIT.None, @"\/\*[\s\S]*?\*\/"),
+      new (RT.Competitive, SndIT.String, @""".+?""")
+    ],
     GroupTokenRules = [],
     Operations = [
       new TokenizeOperation(),
@@ -138,8 +139,8 @@ public static class Definition
     TokenRules = [
       new (RT.Competitive, MT.LangRef, @"""\$\w+"""),
       new (RT.Competitive, MT.String, @""".+?"""),
-      new (RT_Comment, MT.None, @"\/\/.*?$"),
-      new (RT_Comment, MT.None, @"\/\*[\s\S]*?\*\/"),
+      new (RT.TokenComment, MT.None, @"\/\/.*?$"),
+      new (RT.TokenComment, MT.None, @"\/\*[\s\S]*?\*\/"),
       .. TokenRule.MakeWordMatchRules(true,
         MT.Doomednums, MT.AddDefaultMap, MT.GameInfo,
         MT.Skill, MT.Map, MT.DamageType, MT.Episode,
@@ -172,11 +173,7 @@ public static class Definition
     ]
   };
 
-  internal static RT Compet = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin;
-  internal static RT Ignore = RT.TokenMatch | RT.Competitive | RT.ExemptAllWithin | RT.IgnoredToken;
-  internal static RT TMatch = RT.TokenMatch | RT.ExemptAllWithin | RT.IgnoreCase;
-  internal static RT TExact = RT.TokenExact | RT.ExemptAllWithin | RT.IgnoreCase;
-  internal static TokenRule Tm (AT tokenType, [SS("regex")] string regex) => new(TMatch, tokenType, regex);
+  internal static TokenRule Tm (AT tokenType, [SS("regex")] string regex) => new(RT.TokenMatch, tokenType, regex);
 
   /// <summary>Defined Specification</summary>
   [DefinitionExport]
@@ -192,6 +189,7 @@ public static class Definition
     IsTextFile = true,
     SC = SCOIC,
     TokenType = typeof(AT),
+    DefaultRuleSet = RT.ExemptAllWithin | RT.IgnoreCase,
     TokenCompatLookup = {
       [AT.ParameterValue] = [AT.ParameterExpression],
       [AT.Value] = [AT.Int, AT.Bool, AT.Char, AT.Str, AT.Fixed, AT.Expression, AT.ExprName, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStandalone],
@@ -205,10 +203,10 @@ public static class Definition
     TokenRules = [
 
       // Data
-      new(Compet, AT.Str, @"""([^\\""]|\\.)*"""),
-      new(Compet, AT.Char, @"'([^\\']|\\.)*'"),
-      new(Ignore, AT.None, @"\/\/.*?$"),
-      new(Ignore, AT.None, @"\/\*.*?\*\/"),
+      new(RT.Competitive,   AT.Str,   @"""([^\\""]|\\.)*"""),
+      new(RT.Competitive,   AT.Char,  @"'([^\\']|\\.)*'"),
+      new(RT.TokenComment,  AT.None,  @"\/\/.*?$"),
+      new(RT.TokenComment,  AT.None,  @"\/\*.*?\*\/"),
 
       // Preprocessor
       Tm(AT.Preprocessor, @"\# \w+"),
@@ -220,13 +218,17 @@ public static class Definition
       .. TokenRule.MakeWordMatchRules(true, [
         "script", "function", "net", "if", "else",
         "do", "for", "switch", "case", "default", "return",
-        "while", "until", "world", "global", "void"
+        "while", "until", "world", "global", "void", "terminate"
       ]),
 
       // Wait Functions
       .. TokenRule.MakeWordMatchRules(true, [
-        "scriptwait", "delay", "polywait", "tagwait"
+        "scriptwait", "delay", "polywait", "tagwait", "ACS_ExecuteWait", "namedscriptwait", "ACS_NamedExecuteWait"
       ]),
+
+      // Script Functions
+      Tm(AT.ScriptFunc, @"\b(ACS_Execute\w*)\b"),
+      Tm(AT.ScriptFunc, @"\b(ACS_NamedExecute\w*)\b"),
 
       Tm(AT.ScriptType, @"\b(enter|re(turn|open|spawn)|death|kill|open|unloading|disconnect|lightning)\b"),
       Tm(AT.SimpleJump, @"\b(break|continue|terminate|restart)\b"),
@@ -238,8 +240,8 @@ public static class Definition
       Tm(AT.Assign, @"(<<|>>| \|\| |&&)="),
       Tm(AT.Binary, @"== | [!<>]="),
       Tm(AT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),
-      .. TokenRule.MakeSingleCharRules("+/%|&^*><", TExact , AT.Binary),
-      .. TokenRule.MakeSingleCharRules("[]{}()=,:;-", TExact , new AT[] { AT.Ao, AT.Ac, AT.Bo, AT.Bc, AT.Po, AT.Pc, AT.Eq, AT.Cm, AT.Co, AT.Sc, AT.Minus }),
+      .. TokenRule.MakeSingleCharRules("+/%|&^*><", RT.TokenExact , AT.Binary),
+      .. TokenRule.MakeSingleCharRules("[]{}()=,:;-", RT.TokenExact , new AT[] { AT.Ao, AT.Ac, AT.Bo, AT.Bc, AT.Po, AT.Pc, AT.Eq, AT.Cm, AT.Co, AT.Sc, AT.Minus }),
       Tm(AT.Type, @"\b(int|str|char|bool)\b"),
       Tm(AT.FuncDefName, @"(?<=function\s*\w+\s*) ([a-z_]\w*)"),
       Tm(AT.FuncName, @"([a-z_]\w*) (?=\s*\()"),
@@ -278,8 +280,6 @@ public static class Definition
       new(RT.None, AT.VarDeclAssn,                 "t:Type n:VarName x:Eq v:Value x:Sc"),
       new(RT.None, AT.VarAssn,                     "n:(ArrayValue|ExprName) x:(Eq|Assign) v:Value x:Sc"),
       new(RT.None, AT.ArrayDecl,                   "t:Type n:ArrVarName x:Ao v:Value x:Ac x:Sc"),
-      //new(RT.None, AT.ArrayDecl,                   "t:Type n:Name x:Ao v:Value x:Ac x:Sc"),
-      //new(RT.None, AT.ArrayDecl,                   "t:Type n:Name x:Ao l:Value x:Ac x:Ao r:Value x:Ac x:Sc"),
       new(RT.None, AT.BasicCmd,                    "n:SimpleJump x:Sc"),
       new(RT.None, AT.BasicCmd,                    "n:Return x:Sc"),
       new(RT.None, AT.BasicCmd,                    "n:Return v:value x:Sc"),
@@ -320,15 +320,20 @@ public static class Definition
     RxOpt = ROML | ROIC | ROIPW | ROEC,
     SC = SCOIC,
     IsTextFile = true,
+    TokenType = typeof(MdlT),
+    GroupTokenRules = [
+      //TODO: Start Group Defs
+    ],
     DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
     TokenRules = [
-      .. TokenRule.MakeSingleCharRules("{}()=,;", TExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
+      .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
     ],
     Operations = [
       new TokenizeOperation(),
       new DebugToStringOperation("tokens"),
       new DebugWaitForInputOperation(),
-
+      new TokenAssembleOperation(),
+      new DebugWaitForInputOperation(),
     ]
   };
 }

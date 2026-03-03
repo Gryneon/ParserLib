@@ -134,5 +134,6 @@ public enum ACSTokenType
   ExprName,
   ArrayDim,
   LoopBlock,
-  SwitchBlock
+  SwitchBlock,
+  ScriptFunc
 }

@@ -1,5 +1,4 @@
 namespace Parser.Ops;
-
 public sealed class OperationJump : Operation
 {
   private int TargetIndex { get; set; }
@@ -19,7 +18,7 @@ public sealed class OperationJump : Operation
   {
     if (TargetIndex >= Parser.OpCount)
     {
-      throw new OperationBadDefinitionException($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
+      Status = Op.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
     }
     else if (TargetIndex == -1 && TargetLabel is not null)
     {
@@ -27,7 +26,7 @@ public sealed class OperationJump : Operation
     }
     else if (TargetIndex == -1)
     {
-      Op.ThrowBadDef("Neagtive Jump Target");
+      Status = Op.ThrowBadDef("Neagtive Jump Target");
     }
     else if (TargetIndex == Op.JumpToEnd)
     {

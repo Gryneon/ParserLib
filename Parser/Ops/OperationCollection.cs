@@ -33,7 +33,7 @@ public sealed class OperationCollection : IOperation, IReadOnlyCollection<IOpera
       op.ApplyProperties(ContinueOnFail, SkipOperation);
     }
   }
-  OpStatus IOperation.DoOperation (XParser parser_ref) => throw new UnknownOperationException("Placeholder found in operation execution.");
+  OpStatus IOperation.DoOperation (XParser parser_ref) => Op.ThrowBadDef("Unhandled placeholder operation found.");
   public IEnumerator<IOperation> GetEnumerator () => Operations.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }

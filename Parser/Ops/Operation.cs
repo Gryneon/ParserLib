@@ -98,7 +98,7 @@ public abstract class Operation : IOperation
     }
     else if (!Data.CanLoad(InputKey))
     {
-      Op.ThrowNoVar(InputKey);
+      Status = Op.ThrowNoVar(InputKey);
     }
     else
     {
@@ -115,7 +115,7 @@ public abstract class Operation : IOperation
   {
     if (InputKeys is null)
     {
-      Op.Thro
+      Status = Op.ThrowBadDef("InputKeys is null.");
       return false;
     }
 
@@ -124,7 +124,7 @@ public abstract class Operation : IOperation
       if (!Parser.Data.ContainsKey(key))
       {
         Log(MsgClass.Error, "Operation.CheckInputsNull", $"Key {key} does not exist.");
-        Op.ThrowNoVar(key);
+        Status = Op.ThrowNoVar(key);
         return false;
       }
     }
@@ -150,7 +150,7 @@ public abstract class Operation : IOperation
       casted = temp;
       return true;
     }
-    Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
+    Status = Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
     return false;
   }
   /// <summary>Checks all the inputs provided and validates them to a common class or interface.</summary>
@@ -259,7 +259,7 @@ public abstract class Operation : IOperation
       else
       {
         Log("Operation.Initialize", $"Key {key} does not exist or is null.");
-        Op.ThrowNoVar(key);
+        Status = Op.ThrowNoVar(key);
         throw null;
       }
     }
@@ -274,7 +274,7 @@ public abstract class Operation : IOperation
   }
   private void AssignResult ()
   {
-    if (WorkData is null || NoOutput) return;
+    if (NoOutput || WorkData is null) return;
 
     if (!MakeListOnSave)
     {

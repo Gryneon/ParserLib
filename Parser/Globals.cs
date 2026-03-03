@@ -18,6 +18,7 @@ global using Common.Regex;
 global using Parser.Condition;
 global using Parser.Ops;
 global using Parser.Tokens;
+global using Parser.Exceptions;
 
 global using static Common.Names;
 global using static Parser.Debug;

@@ -4,37 +4,37 @@
         <name>Specification.ZDoom</name>
     </assembly>
     <members>
-        <member name="F:Specification.ZDoom.ACSTokenType.Str">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Str">
             <summary>A string. (double quoted)</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Char">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Char">
             <summary>A character. (single quoted)</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Int">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Int">
             <summary>Integer Value</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Fixed">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Fixed">
             <summary>A decimal (fixed point, actually an int)</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Bool">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Bool">
             <summary>Common Boolean Value (Actually an int)</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Name">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Name">
             <summary>A name or identifier of some sort.</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Value">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Value">
             <summary>Placeholder representing any value, expression, or function call.</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Case">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Case">
             <summary>Keyword only. "case"</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Type">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Type">
             <summary>Keyword only. Any type object, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.Wait">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Wait">
             <summary>Keyword Only - Wait Functions</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACSTokenType.ExpressionStandalone">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
             <summary>An expression that can also be used as an independent statement.</summary>
         </member>
         <member name="P:Specification.ZDoom.Definition.ZScript">
@@ -102,49 +102,49 @@
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZScript\Samples\demon.zs.
             </summary>
         </member>
-        <member name="F:Specification.ZDoom.SndInfoTokenType.PlayerSound">
-            <summary>PlayerSound keyword.</summary>
-        </member>
-        <member name="F:Specification.ZDoom.SndInfoTokenType.Alias">
-            <summary>Alias keyword.</summary>
-        </member>
-        <member name="F:Specification.ZDoom.SndInfoTokenType.Limit">
-            <summary>Limit keyword.</summary>
-        </member>
-        <member name="F:Specification.ZDoom.SndInfoTokenType.ArchivePath">
-            <summary>ArchivePath keyword.</summary>
-        </member>
-        <member name="F:Specification.ZDoom.SndInfoTokenType.PlayerSoundDup">
-            <summary>PlayerSoundDup keyword.</summary>
-        </member>
-        <member name="F:Specification.ZDoom.SndInfoTokenType.RollOff">
-            <summary>RollOff keyword.</summary>
-        </member>
         <member name="T:Specification.ZDoom.SndInfo.SndInfoCmdExt">
             <summary>Static class providing extensions for strings.</summary>
         </member>
         <member name="M:Specification.ZDoom.SndInfo.SndInfoCmdExt.ToSndInfoCmd(System.String)">
-            <summary>Gets the <see cref="T:Specification.ZDoom.SndInfoTokenType"/> object that the given <see cref="T:System.String"/> represents.</summary>
+            <summary>Gets the <see cref="T:Specification.ZDoom.SndInfo.SndInfoTokenType"/> object that the given <see cref="T:System.String"/> represents.</summary>
             <param name="cmd">The <see cref="T:System.String"/> to interpret.</param>
-            <returns>A <see cref="T:Specification.ZDoom.SndInfoTokenType"/> enum that represents the given <see cref="T:System.String"/>.</returns>
+            <returns>A <see cref="T:Specification.ZDoom.SndInfo.SndInfoTokenType"/> enum that represents the given <see cref="T:System.String"/>.</returns>
         </member>
         <member name="T:Specification.ZDoom.SndInfo.SndInfoCommand">
             <summary>An abstract sndinfo command.</summary>
             <param name="cmd">The type of command.</param>
         </member>
-        <member name="M:Specification.ZDoom.SndInfo.SndInfoCommand.#ctor(Specification.ZDoom.SndInfoTokenType)">
+        <member name="M:Specification.ZDoom.SndInfo.SndInfoCommand.#ctor(Specification.ZDoom.SndInfo.SndInfoTokenType)">
             <summary>An abstract sndinfo command.</summary>
             <param name="cmd">The type of command.</param>
         </member>
         <member name="P:Specification.ZDoom.SndInfo.SndInfoCommand.Command">
             <summary>The command type.</summary>
         </member>
+        <member name="F:Specification.ZDoom.SndInfo.SndInfoTokenType.PlayerSound">
+            <summary>PlayerSound keyword.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.SndInfo.SndInfoTokenType.Alias">
+            <summary>Alias keyword.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.SndInfo.SndInfoTokenType.Limit">
+            <summary>Limit keyword.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.SndInfo.SndInfoTokenType.ArchivePath">
+            <summary>ArchivePath keyword.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.SndInfo.SndInfoTokenType.PlayerSoundDup">
+            <summary>PlayerSoundDup keyword.</summary>
+        </member>
+        <member name="F:Specification.ZDoom.SndInfo.SndInfoTokenType.RollOff">
+            <summary>RollOff keyword.</summary>
+        </member>
         <member name="T:Specification.ZDoom.SndInfo.ValueCommand">
             <summary>Stores a command and its parameters.</summary>
             <param name="cmd">The command.</param>
             <param name="values">The values.</param>
         </member>
-        <member name="M:Specification.ZDoom.SndInfo.ValueCommand.#ctor(Specification.ZDoom.SndInfoTokenType,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:Specification.ZDoom.SndInfo.ValueCommand.#ctor(Specification.ZDoom.SndInfo.SndInfoTokenType,System.Collections.Generic.IEnumerable{System.String})">
             <summary>Stores a command and its parameters.</summary>
             <param name="cmd">The command.</param>
             <param name="values">The values.</param>
@@ -152,67 +152,67 @@
         <member name="P:Specification.ZDoom.SndInfo.ValueCommand.Values">
             <summary>The stored parameter values.</summary>
         </member>
-        <member name="T:Specification.ZDoom.UDMFTokenType">
+        <member name="T:Specification.ZDoom.UDMF.UDMFTokenType">
             <summary>Token types for UDMF Spec.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.None">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.None">
             <summary>Undefined or unmatched token.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Vertex">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Vertex">
             <summary>Vertex keyword.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Thing">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Thing">
             <summary>Thing keyword.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Namespace">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Namespace">
             <summary>Namespace keyword.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.SideDef">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.SideDef">
             <summary>SideDef keyword.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.LineDef">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.LineDef">
             <summary>LineDef keyword.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Sector">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Sector">
             <summary>Sector keyword.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.String">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.String">
             <summary>Quoted text.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Name">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Name">
             <summary>Unquoted text.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.PInt">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.PInt">
             <summary>Positive Integer.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Int">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Int">
             <summary>Any Integer.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Dec">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Dec">
             <summary>Decimal, Float, or Fixed Point.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Value">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Value">
             <summary>Any data type.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Bool">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Bool">
             <summary>True or False.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Eq">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Eq">
             <summary>Equals sign.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Sc">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Sc">
             <summary>Semicolon.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Bo">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Bo">
             <summary>Bracket open '{'.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Bc">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Bc">
             <summary>Bracket close '}'.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Property">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Property">
             <summary>An assembled property definition.</summary>
         </member>
-        <member name="F:Specification.ZDoom.UDMFTokenType.Structure">
+        <member name="F:Specification.ZDoom.UDMF.UDMFTokenType.Structure">
             <summary>An assembled map structure.</summary>
         </member>
     </members>
