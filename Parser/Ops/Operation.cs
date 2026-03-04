@@ -237,7 +237,7 @@ public abstract class Operation : IOperation
   /// <exception cref="OperationException"/>
   protected virtual void Execute ()
   {
-    Op.ThrowNoOverride();
+    Status = Op.ThrowBadDef("Method not overridden, or NoExecute not set.");
   }
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>

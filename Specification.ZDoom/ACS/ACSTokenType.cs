@@ -159,7 +159,7 @@ public enum ACSTokenType
   ScriptHeader,
   PrintParameterValue,
   ParameterValue,
-  WaitCall,
+  WaitStmt,
   Block,
   ScriptFull,
   FunctionFull,
@@ -174,6 +174,7 @@ public enum ACSTokenType
   LoopBlock,
   SwitchBlock,
   Literal,
-  StmtNoWait
-  ScriptFunc
+  FuncStmt,
+  ScriptFunc,
+  Pre
 }

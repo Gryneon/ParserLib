@@ -149,7 +149,12 @@ public sealed class TokenFactory
   }
   private void ExactMatch ()
   {
-    int length = RuleData.Length > 0 ? RuleData.Length : Op.ThrowBadDef<int>("RuleData has a length of 0 on an exact token.");
+    int length = 0;
+    if (RuleData.Length > 0)
+      length = RuleData.Length;
+    else
+      _ = Op.ThrowBadDef("RuleData has a length of 0 on an exact token.");
+
     int cursor = 0;
     int next = Input.IndexOf(RuleData, cursor, IC);
 
