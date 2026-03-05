@@ -1,4 +1,3 @@
-
 namespace Specification.XML;
 
 /// <summary>An XML node.</summary>

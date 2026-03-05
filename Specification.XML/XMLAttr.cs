@@ -1,7 +1,5 @@
 using System;
 
-using Common;
-
 namespace Specification.XML;
 
 /// <summary>Represents an XML attribute.</summary>

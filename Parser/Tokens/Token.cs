@@ -2,13 +2,29 @@
 
 namespace Parser.Tokens;
 
-public class Token : TokenBase
+public class Token : IToken
 {
-  public override string Content { get; set; } = SE;
+  public string Content { get; set; } = SE;
   // Calculated Properties
   public int LastPosition => Index + Length - 1;
   public int Length => Content.Length;
-  // Override Methods
-  public override bool Equals (object? obj) => obj is TokenBase rt && Equals(rt);
+
+  public bool Ignored { get; set; }
+  public bool Exempt { get; set; }
+  public int Index { get; init; }
+  public string Type { get; set; } = SE;
+  public IList<IToken> Children { get; init; } = [];
+  public virtual int Count => Children.Count;
+  public bool HasType => Type is not null;
+  public override string ToString () => $"{Index} : {GetType().Name} is {Type} = {((IToken) this).ToStringSm()}";
+  public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
+  public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public virtual bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
+  public static bool operator == (Token left, IToken right) => left is null ? right is null : left.Equals(right);
+  public static bool operator != (Token left, IToken right) => !(left == right);
+  public static bool operator < (Token left, IToken right) => left is null ? right is not null : left.CompareTo(right) < 0;
+  public static bool operator <= (Token left, IToken right) => left is null || left.CompareTo(right) <= 0;
+  public static bool operator > (Token left, IToken right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator >= (Token left, IToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

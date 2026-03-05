@@ -49,7 +49,7 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['v'] = RT.AssignValue,
     ['w'] = RT.Error,
     ['x'] = RT.IgnoredToken,
-    ['y'] = RT.AssignType,
+    ['y'] = RT.Error,
     ['z'] = RT.Error,
 
     ['<'] = RT.LookAround,

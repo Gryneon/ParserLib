@@ -17,8 +17,6 @@ public sealed class DataStore
   private readonly Dictionary<string, object> _dict = [];
   public required XParser Parser { get; init; }
   public bool HasData => Count > 0;
-  public ICollection<string> Keys => _dict.Keys;
-  public ICollection<object> Values => _dict.Values;
   public int Count => _dict.Count;
   /// <summary>Gets or sets data to a given key.</summary>
   /// <param name="key">The key to assign to or look up.
@@ -156,8 +154,5 @@ public sealed class DataStore
   public bool ContainsKey (string key) => CanLoad(key);
   public bool Remove (string key) => _dict.Remove(key);
   public bool TryGetValue (string key, [NotNullWhen(true)] out object? value) => TryLoad(key, out value);
-  public void Add (KeyValuePair<string, object> item) => Add(item.Key, item.Value);
-  public bool Contains (KeyValuePair<string, object> item) => CanLoad(item.Key);
-  public bool Remove (KeyValuePair<string, object> item) => Remove(item.Key);
   public IEnumerator<KeyValuePair<string, object>> GetEnumerator () => _dict.GetEnumerator();
 }

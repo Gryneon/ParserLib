@@ -1,7 +1,3 @@
-using Common.Extensions;
-
-using Parser.Tokens;
-
 namespace Specification.XML;
 
 /// <summary>Represents a closing XML element.</summary>

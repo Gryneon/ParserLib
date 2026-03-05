@@ -13,7 +13,7 @@ public static class Op
   public static IOperation Fail => new OperationFail();
   public static IOperation End => new OperationJump(JumpToEnd);
   public static IOperation Prompt => new OperationAction(OAT.Prompt);
-  public static IOperation Break => new OperationAction(OAT.BreakLoop);
+  public static IOperation Break => new OperationBreak();
   public static IOperation ClearCursor => new OperationAction(OAT.ClearCursor);
   public static IOperation EraseKey (string key) => new OperationAction(OAT.EraseKey, key);
   public static IOperation StoreKey (string key) => new OperationAction(OAT.StoreKey, key);

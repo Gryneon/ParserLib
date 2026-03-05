@@ -1,8 +1,5 @@
 using System.Linq;
 
-using Common;
-using Common.Extensions;
-
 namespace Specification.XML;
 
 public class XMLString () : ITextSerializer

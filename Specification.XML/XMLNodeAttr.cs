@@ -1,7 +1,3 @@
-using System;
-
-using Parser.Tokens;
-
 namespace Specification.XML;
 
 /// <summary>Represents an XML attribute.</summary>

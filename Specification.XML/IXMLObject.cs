@@ -1,5 +1,3 @@
-using Common;
-
 namespace Specification.XML;
 
 /// <summary>Represents an XML structure</summary>

@@ -30,7 +30,7 @@ public static class TPTExt
     token_pieces is not null && token_pieces.TryGetValue(type, out IToken? value) && (!type.IsTokenCollection() || type.IsTokenCollection() && value is TokenCollection tc && tc.Count > 0);
 }
 
-public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken, IValueToken
+public sealed class ComplexToken : IComplexToken
 {
   private readonly Dictionary<TPT, IToken> _token_pieces = [];
   public Dictionary<string, IToken> CustomProperties { get; } = [];
@@ -80,8 +80,6 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
     }
   }
   #endregion
-  public static explicit operator TokenObject (ComplexToken complex) => ToTokenObject(complex);
-
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is IComplexToken && Children.SequenceEqual(other.Children);
   public IToken GetPieceToken (TPT piece_type) => _token_pieces[piece_type];
@@ -115,50 +113,6 @@ public sealed class ComplexToken : IComplexToken, IToken, INameToken, ITypeToken
   public static bool operator <= (ComplexToken left, ComplexToken right) => left is null || left.CompareTo(right) <= 0;
   public static bool operator > (ComplexToken left, ComplexToken right) => left is not null && left.CompareTo(right) > 0;
   public static bool operator >= (ComplexToken left, ComplexToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
-
-  public static TokenObject ToTokenObject (IComplexToken complex)
-  {
-    complex.ThrowIfNull();
-    return new()
-    {
-      NameToken = complex.NameToken,
-      TypeToken = complex.TypeToken,
-      Properties = (TokenCollection) complex.GetPieceToken(TPT.PropertyList),
-      Flags = (TokenCollection) complex.GetPieceToken(TPT.FlagList),
-      Children = [.. complex.Children],
-      Exempt = complex.Exempt,
-      Ignored = complex.Ignored,
-      Content = complex.Content,
-      Index = complex.Index,
-      Type = complex.Type
-    };
-  }
-  public static ComplexToken FromToken (IToken obj)
-  {
-    obj.ThrowIfNull();
-    ComplexToken result = new()
-    {
-      NameToken = obj is INameToken itn ? itn.NameToken : null,
-      TypeToken = obj is ITypeToken itt ? itt.TypeToken : null,
-      ValueToken = obj is IValueToken ivt ? ivt.ValueToken : null,
-      Children = obj.Children,
-      Exempt = obj.Exempt,
-      Type = obj.Type
-    };
-
-    if (obj.HasFlags && obj is TokenObject to)
-      result.SetPieceType(TPT.FlagList, to.Flags);
-    if (obj.HasProperties && obj is TokenObject to2)
-      result.SetPieceType(TPT.PropertyList, to2.Properties);
-    if (obj.HasLeftRight && obj is TokenExpression te && te.LeftValueToken is not null)
-      result.SetPieceType(TPT.Left, te.LeftValueToken);
-    if (obj.HasLeftRight && obj is TokenExpression te2 && te2.RightValueToken is not null)
-      result.SetPieceType(TPT.Right, te2.RightValueToken);
-    if (obj.HasLeftRight && obj is TokenExpression te3 && te3.TypeToken is not null)
-      result.SetPieceType(TPT.Center, te3.TypeToken);
-
-    return result;
-  }
 
   public override string ToString ()
   {

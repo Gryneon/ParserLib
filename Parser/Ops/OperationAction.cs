@@ -1,63 +1,4 @@
 namespace Parser.Ops;
-
-public sealed class OperationJump : Operation
-{
-  private int TargetIndex { get; set; }
-  private string? TargetLabel { get; set; }
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
-  public OperationJump (int index)
-  {
-    TargetIndex = index;
-  }
-  public OperationJump (string label)
-  {
-    TargetIndex = -1;
-    TargetLabel = label;
-  }
-  protected override void Execute ()
-  {
-    if (TargetIndex >= Parser.OpCount)
-      Op.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
-    else if (TargetIndex == -1 && TargetLabel is null)
-      Op.ThrowBadDef("Neagtive Jump Target");
-    else if (TargetIndex == -1 && TargetLabel is not null)
-      Parser.SetNextOperationIndex(Parser.Labels[TargetLabel]);
-    else if (TargetIndex == Op.JumpToEnd)
-      Parser.SetNextOperationIndex(-1);
-    else
-      Parser.SetNextOperationIndex(TargetIndex);
-  }
-}
-public sealed class OperationBreak () : Operation
-{
-  public int BreakTarget { get; private set; }
-  [AllowNull]
-  public string BreakCursor { get; private set; }
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
-
-  protected override void Execute ()
-  {
-    Parser.SetNextOperationIndex(BreakTarget);
-    Parser.RemCursorByKey(BreakCursor);
-  }
-
-  public void SetupBreakTarget (int target, string cursor_key)
-  {
-    BreakTarget = target;
-    BreakCursor = cursor_key;
-  }
-}
-public sealed class OperationContinue () : Operation
-{
-  public int ContTarget { get; private set; }
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
-
-  protected override void Execute () => Parser.SetNextOperationIndex(ContTarget);
-  public void SetContTarget (int target) => ContTarget = target;
-}
 public sealed class OperationNextLoop () : Operation
 {
   public int ContTarget { get; private set; }
@@ -71,13 +12,6 @@ public sealed class OperationNextLoop () : Operation
   }
 
   public void SetContTarget (int target) => ContTarget = target;
-}
-public sealed class OperationFail : Operation
-{
-  protected override void Execute ()
-  {
-    Status = OpStatus.DefinedFail;
-  }
 }
 
 public sealed class OperationAction : IOperation

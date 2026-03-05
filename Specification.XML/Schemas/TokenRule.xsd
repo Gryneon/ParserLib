@@ -21,6 +21,7 @@
     <xs:attribute name="name" type="xs:token"/>
     <xs:attribute name="index" type="xs:int"/>
   </xs:complexType>
+  
   <xs:element name="RuleSet">
     <xs:complexType>
       <xs:sequence>

@@ -174,5 +174,9 @@ public enum ACSTokenType
   LoopBlock,
   SwitchBlock,
   Literal,
-  StmtNoWait
+  FuncStmt,
+  ReturnStmt,
+  ScriptCallStmt,
+  ScriptCallWaitStmt,
+  Pre
 }

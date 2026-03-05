@@ -1,7 +1,3 @@
-using Common.Extensions;
-
-using Parser.Tokens;
-
 namespace Specification.XML;
 
 public sealed class XMLComment () : IXMLObject

@@ -61,7 +61,6 @@ public sealed partial class TokenAssembler
       }
     }
   }
-  [SuppressMessage("Style", "IDE0072:Add missing cases", Justification = "Irrelevant here.")]
   private void Construct (int first_token_index, TokenCollection tokens_to_assemble)
   {
     Validate();
@@ -112,20 +111,15 @@ public sealed partial class TokenAssembler
       TokenCollection originalParams = [];
       if (tryGetToken(RT.Descendant, out IToken? baseToken))
       {
-        if (baseToken is ITypeToken itt) originalType = itt.TypeToken;
-        if (baseToken is INameToken itn) originalName = itn.NameToken;
-        if (baseToken is IValueToken ivt) originalValue = ivt.ValueToken;
-        if (baseToken is TokenObject to)
-        {
-          originalProps = [.. to.Properties];
-          originalFlags = [.. to.Flags];
-        }
         if (baseToken is ComplexToken ct)
         {
-          originalValues = [.. ct.GetPieceToken(TPT.ValueList) as IEnumerable<IToken> ?? []];
-          originalParams = [.. ct.GetPieceToken(TPT.ParameterList) as IEnumerable<IToken> ?? []];
-          originalProps = [.. ct.GetPieceToken(TPT.PropertyList) as IEnumerable<IToken> ?? []];
-          originalFlags = [.. ct.GetPieceToken(TPT.FlagList) as IEnumerable<IToken> ?? []];
+          originalType = ct.TypeToken;
+          originalName = ct.NameToken;
+          originalValue = ct.ValueToken;
+          originalValues = [.. ct.GetPieceToken(TPT.ValueList) as TokenCollection ?? []];
+          originalParams = [.. ct.GetPieceToken(TPT.ParameterList) as TokenCollection ?? []];
+          originalProps = [.. ct.GetPieceToken(TPT.PropertyList) as TokenCollection ?? []];
+          originalFlags = [.. ct.GetPieceToken(TPT.FlagList) as TokenCollection ?? []];
         }
       }
       ComplexToken result = new()
