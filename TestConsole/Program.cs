@@ -152,11 +152,9 @@ internal sealed class Program
     {
       //Load Data
       string input = File.ReadAllText(file.UserDirFix());
-      //int libcount = Library.SpecList.Count;
       TokenFactory factory = new(spec);
       TokenCollection result = [.. factory.Produce(input)];
       LogWarn($"Tokens Created : {result.Count}");
-      //Debug.Log(Area, result.ToString2());
       TokenAssembler assembler = new(spec);
       TokenCollection tokens = [.. result];
       TokenCollection tokens_assembled = assembler.Execute(tokens);
@@ -176,11 +174,11 @@ internal sealed class Program
       }
       catch (DirectoryNotFoundException de)
       {
-        Log(MsgClass.Error, Area, "InitialTest", $"{de.Message}");
+        LogError($"{de.Message}");
         bytes = [];
       }
       OpStatus status = Parser.Parse(bytes);
-      Log(MsgClass.Forced, Area, "InitialTest", $"{status}");
+      LogDebug($"Status = {status}, HasResult = {Parser.HasResult}, LastStatus = {Parser.LastStatus}");
     }
     _ = Console.ReadLine();
     Console.Clear();

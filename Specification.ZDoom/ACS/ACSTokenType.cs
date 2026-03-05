@@ -159,7 +159,7 @@ public enum ACSTokenType
   ScriptHeader,
   PrintParameterValue,
   ParameterValue,
-  WaitCall,
+  WaitStmt,
   Block,
   ScriptFull,
   FunctionFull,

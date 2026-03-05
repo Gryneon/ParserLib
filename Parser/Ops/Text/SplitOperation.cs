@@ -57,53 +57,22 @@ public class SplitOperation : Operation
   }
   public SplitOperation (string input_key = "text", string output_key = "textparts") : base(input_key, output_key) => _type = Type.None;
   #endregion
-  /// <inheritdoc/>>
   protected override void Execute ()
   {
-    RxS rx;
-    Regex regex;
     string? str = null;
     IEnumerable<string>? list = null;
-
     IEnumerable<string> delimSplit (string input) => input.Split([.. _items ?? []], SSORT);
 
-    switch (_type)
+    WorkData = _type switch
     {
-      case Type.None when CheckInput(out str):
-        WorkData = RX.LineEnd.Split(str);
-        goto Pass;
-      case Type.None:
-        goto default;
-      case Type.Delim when CheckInput(out str):
-        WorkData = delimSplit(str);
-        goto Pass;
-      case Type.Delim when CheckInput(out str):
-        WorkData = delimSplit(str);
-        goto Pass;
-      case Type.Delim when CheckInput(out list):
-        WorkData = list.SelectMany(delimSplit);
-        goto Pass;
-      case Type.Delim:
-        goto default;
-      case Type.Regex when CheckInput(out str):
-        rx = (_items ?? []).TextJoin("|");
-        regex = new(rx, _options);
-        WorkData = regex.Split(str);
-        goto Pass;
-      case Type.Regex when CheckInput(out list):
-        rx = (_items ?? []).TextJoin("|");
-        regex = new(rx, _options);
-        WorkData = list.SelectMany(str => regex.Split(str));
-        goto Pass;
-      case Type.Regex:
-        goto default;
+      Type.None when CheckInput(out str) => RX.LineEnd.Split(str),
+      Type.Delim when CheckInput(out str) => delimSplit(str),
+      Type.Delim when CheckInput(out list) => list.SelectMany(delimSplit),
+      Type.Regex when CheckInput(out str) => new Regex((_items ?? []).TextJoin("|"), _options).Split(str),
+      Type.Regex when CheckInput(out list) => list.SelectMany(str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str)),
+      _ => Op.ThrowBadInput($"string or list", $"{WorkData?.GetType()}"),
+    };
 
-      default:
-        Op.ThrowBadInput($"string or list", $"{WorkData?.GetType()}");
-
-      Pass:
-        Status = OpStatus.Pass;
-        return;
-    }
+    Status = OpStatus.Pass;
   }
 }

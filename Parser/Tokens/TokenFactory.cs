@@ -44,7 +44,6 @@ public sealed class TokenFactory
   #endregion
   #region Private Logging Methods
   private static void DebugLog (string msg) => Debug.Log(MsgClass.Debug, Area, s_method, msg);
-  private static void Log (MsgClass type, string msg) => Debug.Log(type, Area, s_method, msg);
   private static void WarnLog (string msg) => Debug.Log(MsgClass.Warning, Area, s_method, msg);
   private static void ErrorLog (string msg) => Debug.Log(MsgClass.Error, Area, s_method, msg);
   #endregion
@@ -150,7 +149,12 @@ public sealed class TokenFactory
   }
   private void ExactMatch ()
   {
-    int length = RuleData.Length > 0 ? RuleData.Length : Op.ThrowBadDef<int>("RuleData has a length of 0 on an exact token.");
+    int length = 0;
+    if (RuleData.Length > 0)
+      length = RuleData.Length;
+    else
+      _ = Op.ThrowBadDef("RuleData has a length of 0 on an exact token.");
+
     int cursor = 0;
     int next = Input.IndexOf(RuleData, cursor, IC);
 
@@ -238,7 +242,7 @@ public sealed class TokenFactory
       switch (Type)
       {
         case RT when HasError:
-          Log(MsgClass.Error, "Error in rule. Skipping.");
+          ErrorLog("Error: Invalid rule. Skipping rule.");
           break;
         case RT when Competes && !competed:
           DebugLog("Running competition.");
@@ -246,10 +250,10 @@ public sealed class TokenFactory
           competed = true;
           break;
         case RT when Competes && competed:
-          DebugLog("Already ran competition, Skipping Rule");
+          DebugLog("Already ran competition. Skipping rule");
           break;
         case RT.None:
-          Log(MsgClass.Warning, "Warning: Bad type defined.");
+          WarnLog("Warning: Bad type defined.");
           break;
         case RT.TokenExact or RT.TokenMatch or RT.TokenExtract or RT.SplitMatch or RT.SplitExact when FindInTokens:
           DebugLog("Token matching starting, from Tokens");
@@ -276,12 +280,11 @@ public sealed class TokenFactory
           DebugLog("Error Matching");
           break;
         default:
-          WarnLog("Bad rule type, skipping rule.");
+          WarnLog("Warning: Invalid rule type. Skipping rule.");
           break;
       }
     }
     _result.SortByIndex();
-    Log(MsgClass.Critical, _result.ToString2());
     return [.. _result];
   }
   public static string GetRuleRegex (TokenRule rule, int? index = null)

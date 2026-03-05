@@ -21,4 +21,16 @@ public class JSONTests
     Assert.Equal(OpStatus.Pass, result);
     Assert.True(parser.Data.Keys.Count > 3);
   }
+
+  [Theory]
+  [InlineData("{\"key\":\"value\",\"key2\":\"value2\"}")]
+  public void JSON_FunctionalTest2 (string file)
+  {
+    string content = File.ReadAllText(file.UserDirFix());
+    XParser parser = new(Definition.Spec);
+    OpStatus result = parser.Parse(content);
+
+    Assert.Equal(OpStatus.Pass, result);
+    Assert.True(parser.Data.Keys.Count > 3);
+  }
 }

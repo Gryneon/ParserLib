@@ -99,7 +99,7 @@ public abstract class Operation : IOperation
     }
     else if (!Data.CanLoad(InputKey))
     {
-      Op.ThrowNoVar(InputKey);
+      Status = Op.ThrowNoVar(InputKey);
     }
     else
     {
@@ -114,13 +114,18 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected bool CheckInputsNull ()
   {
-    InputKeys ??= [];
+    if (InputKeys is null)
+    {
+      Status = Op.ThrowBadDef("InputKeys is null.");
+      return false;
+    }
+
     foreach (string key in InputKeys)
     {
       if (!Parser.Data.ContainsKey(key))
       {
         Log(MsgClass.Error, "Operation.CheckInputsNull", $"Key {key} does not exist.");
-        Op.ThrowNoVar(key);
+        Status = Op.ThrowNoVar(key);
         return false;
       }
     }
@@ -146,7 +151,7 @@ public abstract class Operation : IOperation
       casted = temp;
       return true;
     }
-    Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
+    Status = Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
     return false;
   }
   /// <summary>Checks all the inputs provided and validates them to a common class or interface.</summary>
@@ -232,7 +237,7 @@ public abstract class Operation : IOperation
   /// <exception cref="OperationException"/>
   protected virtual void Execute ()
   {
-    Op.ThrowNoOverride();
+    Status = Op.ThrowBadDef("Method not overridden, or NoExecute not set.");
   }
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
@@ -254,7 +259,8 @@ public abstract class Operation : IOperation
       }
       else
       {
-        Op.ThrowNoVar(key);
+        Log("Operation.Initialize", $"Key {key} does not exist or is null.");
+        Status = Op.ThrowNoVar(key);
         throw null;
       }
     }
@@ -269,7 +275,7 @@ public abstract class Operation : IOperation
   }
   private void AssignResult ()
   {
-    if (WorkData is null || NoOutput) return;
+    if (NoOutput || WorkData is null) return;
 
     if (!MakeListOnSave)
     {

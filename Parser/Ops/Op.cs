@@ -63,15 +63,15 @@ public static class Op
   };
 
   [DoesNotReturn]
-  public static void ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);
+  public static OpStatus ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);
   [DoesNotReturn]
-  public static void ThrowNoVar (string key) => throw new OperationNoSuchVarException(key);
+  public static OpStatus ThrowNoVar (string key) => throw new OperationNoSuchVarException(key);
   [DoesNotReturn]
-  public static void ThrowBadDef (string msg) => throw new OperationBadDefinitionException(msg);
+  public static OpStatus ThrowBadDef (string msg) => throw new OperationBadDefinitionException(msg);
   [DoesNotReturn]
-  public static T ThrowBadDef<T> (string msg) => throw new OperationBadDefinitionException(msg);
+  public static OpStatus ThrowUnknownOp (string msg) => throw new UnknownOperationException(msg);
   [DoesNotReturn]
-  public static void ThrowNoOverride (string method = "Unspecified") => throw new OperationException($"Method {method} needs to be overridden by the inheriting class.");
+  public static OpStatus ThrowBadResult (string msg) => throw new OperationBadResultException(msg);
 
   #endregion
 }
