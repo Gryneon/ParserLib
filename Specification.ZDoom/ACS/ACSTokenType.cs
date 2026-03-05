@@ -178,5 +178,6 @@ public enum ACSTokenType
   ReturnStmt,
   ScriptCallStmt,
   ScriptCallWaitStmt,
-  Pre
+  Pre,
+  ScriptFunc
 }

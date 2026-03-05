@@ -18,6 +18,7 @@ public sealed class DataStore
   public required XParser Parser { get; init; }
   public bool HasData => Count > 0;
   public int Count => _dict.Count;
+  public ReadOnlyCollection<string> Keys => [.. _dict.Keys];
   /// <summary>Gets or sets data to a given key.</summary>
   /// <param name="key">The key to assign to or look up.
   /// Prefixing this string with a "+" when assigning will cause it to make a list instead of overrwriting.</param>
