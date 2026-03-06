@@ -199,7 +199,7 @@ public static class Definition
       [AT.MapVar] = ["global", "world"],
       [AT.Loop] = ["until", "while"],
       [AT.Wait] = ["delay", "tagwait", "scriptwait", "polywait", "NamedScriptWait", AT.ScriptCallWaitStmt],
-      [AT.Name] = [AT.ExprName, AT.FuncName, AT.FuncDefName, AT.ArrVarName, AT.VarName, AT.ParamName, AT.DefineName],
+      [AT.Name] = [AT.PreProcName, AT.ExprName, AT.FuncName, AT.FuncDefName, AT.ArrVarName, AT.VarName, AT.ParamName, AT.DefineName],
       [AT.Literal] = [AT.Int, AT.Str, AT.Char, AT.Fixed]
     },
     TokenRules = [
@@ -243,12 +243,13 @@ public static class Definition
       .. TokenRule.MakeSingleCharRules("+/%|&^*><", RT.TokenExact , AT.Binary),
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;#-", RT.TokenExact , new AT[] { AT.Ao, AT.Ac, AT.Bo, AT.Bc, AT.Po, AT.Pc, AT.Eq, AT.Cm, AT.Co, AT.Sc, AT.Pre, AT.Minus }),
       Tm(AT.Type, @"\b(int|str|char|bool)\b"),
-      Tm(AT.FuncDefName, @"(?<=function\s*\w+\s*) ([a-z_]\w*)"),
-      Tm(AT.FuncName, @"([a-z_]\w*) (?=\s*\()"),
+      Tm(AT.FuncDefName, @"(?<=function\s*\w+\s*) (?>[a-z_]\w*)"),
+      Tm(AT.FuncName, @"(?>[a-z_]\w*) (?=\s*\()"),
       Tm(AT.VarName, @"(?<= (int|str|bool|char) \s+ ( \w+\s*\,\s* )*) (?>[a-z_]\w*) (?!\s*\(|\s*,\s*(int|bool|str|char)) (?=\s*(;|\=|,))"),
       Tm(AT.ArrVarName, @"(?<= (int|str|bool|char) \s+) (?>[a-z_]\w*) (?!\s*\() (?=\s*(\[))"),
       Tm(AT.ParamName, @"(?<= (int|str|bool|char) \s+) (?>[a-z_]\w*) (?!\s*\()"),
       Tm(AT.DefineName, @"(?<= \#\w+\s+) (?>[a-z_]\w*)"),
+      Tm(AT.PreProcName, @"(?<= \#) (?>[a-z]+)"),
       Tm(AT.ExprName, @"\b[a-z_]\w*\b"),
     ],
     GroupTokenRules = [
@@ -256,9 +257,6 @@ public static class Definition
       new(RT.None, AT.ParamDef,                   "t:Type n:ParamName xo:Cm"),
       new(RT.None, AT.PrintParameterValue,        "n:Name{s|i} x:Co pa:Value xo:Cm"),      
 
-      // Expressions
-      new(RT.Recursive, AT.ArrayDim,               "x:Ao v:Value x:Ac"),
-      new(RT.Recursive, AT.ArrayValue,             "n:ExprName vm:ArrayDim"),
       // Expressions (Must be recurrsive!)
       new(RT.Recursive, AT.ArrayDim,               "x:Ao v:Value x:Ac"),
       new(RT.Recursive, AT.ArrayValue,             "n:ExprName vm:ArrayDim"),
@@ -267,22 +265,15 @@ public static class Definition
       new(RT.Recursive, AT.ExpressionStandalone,   "l:Value c:IncDec"),
       new(RT.Recursive, AT.ExpressionStandalone,   "c:IncDec r:Value"),
       new(RT.Recursive, AT.Expression,             "l:Value c:(Binary|Minus) r:Value"),
-      new(RT.Recursive, AT.Expression,             "c:(Unary|Minus) r:Value"),
       new(RT.Recursive, AT.FunctionCall,           "n:FuncName x:Po p:PrintParameterValue x:Pc"),
       new(RT.Recursive, AT.FunctionCall,           "n:FuncName x:Po p:Value x:Pc"),
       new(RT.Recursive, AT.FunctionCall,           "n:FuncName x:Po p:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value x:Pc"),
       new(RT.Recursive, AT.FunctionCall,           "n:FuncName x:Po x:Pc"),
-      new(RT.Recursive, AT.Expression,             "c:(Unary|Minus) r:Value"),
 
       new(RT.None, AT.ScriptCallStmt,              "n:FuncName{ACS_Execute.*} x:Po p:Value x:Cm p:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value x:Pc x:Sc"),
-      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po p:PrintParameterValue x:Pc"),
-      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po p:Value x:Pc"),
-      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po p:Value x:Cm p:Value x:Pc"),
-      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po p:Value x:Cm p:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value x:Pc"),
-      new(RT.None, AT.FunctionCall,                "n:FuncName x:Po x:Pc"),
 
-      new(RT.None, AT.PreprocessorFull,            "x:Pre ti:Preprocessor{(lib)?define} n:DefineName v:Value"),
-      new(RT.None, AT.PreprocessorFull,            "x:Pre ti:Preprocessor{i(mport|nclude)|library} v:Str"),
+      new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{(lib)?define} n:DefineName v:Value"),
+      new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{i(mport|nclude)|library} v:Str"),
 
       // Statements
       new(RT.None, AT.VarDecl,                     "t:Type n:VarName x:Sc"),

@@ -59,6 +59,15 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.IncDec">
             <summary>Operator: ++ or --</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.LogNot">
+            <summary>Operator: !</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Assign">
+            <summary>Operator Group: Any Assignment Operator</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Minus">
+            <summary>Operator: -</summary>
+        </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Net">
             <summary>Keyword: net</summary>
         </member>
@@ -92,6 +101,7 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
             <summary>An expression that can also be used as an independent statement.</summary>
         </member>
+        
         <member name="P:Specification.ZDoom.Definition.ZScript">
             <summary>https://regex101.com/r/En5C8c/7</summary>
         </member>

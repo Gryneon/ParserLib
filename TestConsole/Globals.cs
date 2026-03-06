@@ -10,7 +10,7 @@ global using Common.Extensions;
 global using Parser;
 global using Parser.Ops;
 
-global using Terminal.Menu;
+//global using Terminal.Menu;
 
 global using static Common.Names;
 

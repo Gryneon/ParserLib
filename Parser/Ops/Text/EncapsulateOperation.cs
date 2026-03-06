@@ -11,7 +11,7 @@ public class EncapsulateOperation<TParent, TChild> (string input_key, string out
       if (WorkData is IDictionary<int, TChild> dict)
         list = dict.Select(item => item.Value);
       else
-        Op.ThrowBadInput($"{typeof(IEnumerable<TChild>)}", $"{WorkData?.GetType()}");
+        Status = Op.ThrowBadInput($"{typeof(IEnumerable<TChild>)}", $"{WorkData?.GetType()}");
 
     TParent parent = new();
 

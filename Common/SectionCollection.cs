@@ -19,7 +19,6 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
     }
     return result;
   }
-
   public Collection<bool> GetGetParsedFromBitArray ()
   {
     Collection<bool> result = [];
