@@ -103,6 +103,7 @@
         </member>
         <member name="P:Specification.ZDoom.Definition.ACS">
             <summary>Defined Specification</summary>
+            <remarks><see href="https://regex101.com/r/bNaEDc/1">Regex for Tokens</see></remarks>
         </member>
         <member name="T:Specification.ZDoom.Properties.Resources">
             <summary>
