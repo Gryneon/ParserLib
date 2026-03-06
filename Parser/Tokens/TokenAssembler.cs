@@ -71,13 +71,13 @@ public sealed partial class TokenAssembler
     {
       Validate();
       tokens = [];
-      for (int i = 0; i < _tokens.Count; i++)
+      for (int i = 0; i < tokens_to_assemble.Count; i++)
       {
         if (!_tokenRuleLookup.TryGetValue(first_token_index + i, out RT value))
           continue;
         if (value.HasFlag(flag))
         {
-          tokens.Add(_tokens[i]);
+          tokens.Add(tokens_to_assemble[i]);
           continue;
         }
       }
@@ -116,29 +116,33 @@ public sealed partial class TokenAssembler
           originalType = ct.TypeToken;
           originalName = ct.NameToken;
           originalValue = ct.ValueToken;
-          originalValues = [.. ct.GetPieceToken(TPT.ValueList) as TokenCollection ?? []];
-          originalParams = [.. ct.GetPieceToken(TPT.ParameterList) as TokenCollection ?? []];
-          originalProps = [.. ct.GetPieceToken(TPT.PropertyList) as TokenCollection ?? []];
-          originalFlags = [.. ct.GetPieceToken(TPT.FlagList) as TokenCollection ?? []];
+          originalValues = ct.GetPieceToken(TPT.ValueList) as TokenCollection ?? [];
+          originalParams = ct.GetPieceToken(TPT.ParameterList) as TokenCollection ?? [];
+          originalProps = ct.GetPieceToken(TPT.PropertyList) as TokenCollection ?? [];
+          originalFlags = ct.GetPieceToken(TPT.FlagList) as TokenCollection ?? [];
         }
       }
       ComplexToken result = new()
       {
-        NameToken = originalName,
-        TypeToken = originalType,
-        ValueToken = originalValue,
+        TokenPieces =
+        {
+          [TPT.Name] = originalName,
+          [TPT.Value] = originalValue,
+          [TPT.Type] = originalType,
+        },
+        
         Type = _rule.TypeToAssign,
         Children = [.. tokens_to_assemble],
         Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
       };
 
-      result.AddPieceType(TPT.PropertyList, originalProps);
-      result.AddPieceType(TPT.FlagList, originalFlags);
-      result.AddPieceType(TPT.ParameterList, originalParams);
-      result.AddPieceType(TPT.ValueList, originalValues);
+      result.AddPieceTypes(TPT.PropertyList, originalProps);
+      result.AddPieceTypes(TPT.FlagList, originalFlags);
+      result.AddPieceTypes(TPT.ParameterList, originalParams);
+      result.AddPieceTypes(TPT.ValueList, originalValues);
 
-      if (tryGetToken(RT.AssignName, out IToken? name)) result.NameToken = name;
-      if (tryGetToken(RT.AssignType, out IToken? type)) result.TypeToken = type;
+      if (tryGetToken(RT.AssignName, out IToken? name)) result[TPT.Name] = name;
+      if (tryGetToken(RT.AssignType, out IToken? type)) result[TPT.Type] = type;
 
       if (tryGetTokens(RT.AssignValue, out IList<IToken> list))
       {
@@ -226,7 +230,7 @@ public sealed partial class TokenAssembler
         reset_match();
         break;
       }
-      if (node.Equals(token) && !node.LookAround)
+      if (node.Equals(token))
       {
         if (first_token_index == -1)
           first_token_index = token_index;
@@ -241,21 +245,21 @@ public sealed partial class TokenAssembler
         token_index++;
         continue;
       }
-      else if (node.LookAround)
-      {
-        if (node.Negative && !node.Equals(token) || node.Equals(token) && !node.Negative)
-        {
-          node_index++;
-          token_index++;
-          continue;
-        }
-        else
-        {
-          token_index = first_token_index + 1;
-          reset_match();
-          continue;
-        }
-      }
+      //else if (node.LookAround)
+      //{
+      //  if (node.Negative && !node.Equals(token) || node.Equals(token) && !node.Negative)
+      //  {
+      //    node_index++;
+      //    token_index++;
+      //    continue;
+      //  }
+      //  else
+      //  {
+      //    token_index = first_token_index + 1;
+      //    reset_match();
+      //    continue;
+      //  }
+      //}
       else if (allow_fail)
       {
         node_index++;

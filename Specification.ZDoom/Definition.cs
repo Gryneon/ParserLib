@@ -200,7 +200,8 @@ public static class Definition
       [AT.Loop] = ["until", "while"],
       [AT.Wait] = ["delay", "tagwait", "scriptwait", "polywait", "NamedScriptWait", AT.ScriptCallWaitStmt],
       [AT.Name] = [AT.PreProcName, AT.ExprName, AT.FuncName, AT.FuncDefName, AT.ArrVarName, AT.VarName, AT.ParamName, AT.DefineName],
-      [AT.Literal] = [AT.Int, AT.Str, AT.Char, AT.Fixed]
+      [AT.Literal] = [AT.Int, AT.Str, AT.Char, AT.Fixed],
+      [AT.SimpleJump] = ["break", "continue", "terminate", "restart"]
     },
     TokenRules = [
 
@@ -218,7 +219,8 @@ public static class Definition
       .. TokenRule.MakeWordMatchRules(true, [
         "script", "function", "net", "if", "else",
         "do", "for", "switch", "case", "default", "return",
-        "while", "until", "world", "global", "void", "terminate"
+        "while", "until", "world", "global", "void", "terminate",
+        "break", "continue", "terminate", "restart"
       ]),
 
       // Wait Functions
@@ -231,7 +233,6 @@ public static class Definition
       Tm(AT.ScriptFunc, @"\b(ACS_NamedExecute\w*)\b"),
 
       Tm(AT.ScriptType, @"\b(enter|re(turn|open|spawn)|death|kill|open|unloading|disconnect|lightning)\b"),
-      Tm(AT.SimpleJump, @"\b(break|continue|terminate|restart)\b"),
 
       // Operators
       Tm(AT.IncDec, @"(\+\+|--)"),
@@ -255,9 +256,9 @@ public static class Definition
     GroupTokenRules = [
       // Paremeter Expressions
       new(RT.None, AT.ParamDef,                   "t:Type n:ParamName xo:Cm"),
-      new(RT.None, AT.PrintParameterValue,        "n:Name{s|i} x:Co pa:Value xo:Cm"),      
+      new(RT.None, AT.PrintParameterValue,        "n:Name{s|i} x:Co pa:Value xo:Cm"),
 
-      // Expressions (Must be recurrsive!)
+      // Expressions
       new(RT.Recursive, AT.ArrayDim,               "x:Ao v:Value x:Ac"),
       new(RT.Recursive, AT.ArrayValue,             "n:ExprName vm:ArrayDim"),
       new(RT.Recursive, AT.Expression,             "l:Value c:(Binary|Minus) r:Value"),
@@ -270,7 +271,7 @@ public static class Definition
       new(RT.Recursive, AT.FunctionCall,           "n:FuncName x:Po p:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value x:Pc"),
       new(RT.Recursive, AT.FunctionCall,           "n:FuncName x:Po x:Pc"),
 
-      new(RT.None, AT.ScriptCallStmt,              "n:FuncName{ACS_Execute.*} x:Po p:Value x:Cm p:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value x:Pc x:Sc"),
+      new(RT.None, AT.ScriptCallStmt,              "n:ScriptFunc x:Po p:Value x:Cm p:Value xa:Cm pa:Value xa:Cm pa:Value xa:Cm pa:Value x:Pc x:Sc"),
 
       new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{(lib)?define} n:DefineName v:Value"),
       new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{i(mport|nclude)|library} v:Str"),
@@ -287,7 +288,6 @@ public static class Definition
       new(RT.None, AT.FunctionCallStmt,            "d:FunctionCall x:Sc"),
       new(RT.None, AT.CaseLabel,                   "x:Case n:Value x:Co"),
       new(RT.None, AT.CaseLabel,                   "n:Default x:Co"),
-      new(RT.None, AT.CaseLabel,                   "n:Default x:Co"),
 
       new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc x:Bo pa:Stmt x:Bc"),
       new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc p:Stmt"),
@@ -298,6 +298,8 @@ public static class Definition
       new(RT.None, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc x:Bo pa:(Stmt|Block) x:Bc"),
       new(RT.None, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc p:(Stmt|Block)"),
       new(RT.None, AT.SwitchBlock,                 "x:Switch x:Po v:Value x:Pc x:Bo sa:(CaseLabel|Stmt|Block) x:Bc"),
+      new(RT.None, AT.ForHeader,                   "x:For x:Po po:(VarAssn|VarDeclAssn) x:Sc po:Value x:Sc po:Value x:Pc"),
+      new(RT.None, AT.ForBlock,                    "d:ForHeader x:Bo sa:(Stmt|Block) x:Bc"),
 
       new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:FuncDefName x:Po x:Void x:Pc"),
       new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:FuncDefName x:Po pm:ParamDef x:Pc"),

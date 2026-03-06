@@ -2,50 +2,27 @@
 
 namespace Parser.Tokens;
 
-public abstract class ComplexTokenFactory : IFactory
-{
-  object IFactory.Produce (IToken input) => Produce<object>(input);
 
-  public abstract T Produce<T> (IToken input);
-}
-
-public static class TPTExt
-{
-  private static Dictionary<TPT, bool> TokenCollectionByPieceType { get; } = new()
-  {
-    [TPT.ValueList] = true,
-    [TPT.Value] = false,
-    [TPT.Name] = false,
-    [TPT.Center] = false,
-    [TPT.Left] = false,
-    [TPT.Right] = false,
-    [TPT.Type] = false,
-    [TPT.FlagList] = true,
-    [TPT.ParameterList] = true,
-    [TPT.PropertyList] = true,
-  };
-
-  public static bool IsTokenCollection (this TPT type) => TokenCollectionByPieceType[type];
-  public static bool IsUsed (this TPT type, Dictionary<TPT, IToken> token_pieces) =>
-    token_pieces is not null && token_pieces.TryGetValue(type, out IToken? value) && (!type.IsTokenCollection() || type.IsTokenCollection() && value is TokenCollection tc && tc.Count > 0);
-}
 
 public sealed class ComplexToken : IComplexToken
 {
   private readonly Dictionary<TPT, IToken> _token_pieces = [];
+
+  public Dictionary<TPT, IToken?> TokenPieces { init => _token_pieces = [..value]; }
   public Dictionary<string, IToken> CustomProperties { get; } = [];
-  public IToken this[TPT piece_type] => _token_pieces[piece_type];
+  public IToken this[TPT piece_type]
+  {
+    get => _token_pieces[piece_type];
+    set => _token_pieces[piece_type] = value;
+  }
 
   public string Content => Children.Select(i => i.Content).TextJoin();
   public IReadOnlyCollection<TPT> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
   public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
   public bool Exempt { get; set; }
-  public bool Ignored => false;
   public IList<IToken> Children { get; init; } = [];
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
-  #region IValueToken
-  public string? Value { get; }
   public IToken? ValueToken
   {
     get => _token_pieces.TryGetValue(TPT.Value, out IToken? f) ? f : null;
@@ -55,9 +32,7 @@ public sealed class ComplexToken : IComplexToken
       _token_pieces[TPT.Value] = value;
     }
   }
-  #endregion
-  #region INameToken
-  public string? Name { get; }
+
   public IToken? NameToken
   {
     get => _token_pieces.TryGetValue(TPT.Name, out IToken? f) ? f : null;
@@ -67,9 +42,7 @@ public sealed class ComplexToken : IComplexToken
       _token_pieces[TPT.Name] = value;
     }
   }
-  #endregion
-  #region ITypeToken
-  public string? ObjType { get; }
+
   public IToken? TypeToken
   {
     get => _token_pieces.TryGetValue(TPT.Type, out IToken? f) ? f : null;
@@ -79,7 +52,6 @@ public sealed class ComplexToken : IComplexToken
       _token_pieces[TPT.Type] = value;
     }
   }
-  #endregion
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is IComplexToken && Children.SequenceEqual(other.Children);
   public IToken GetPieceToken (TPT piece_type) => _token_pieces[piece_type];
@@ -88,9 +60,9 @@ public sealed class ComplexToken : IComplexToken
   public bool HasPieceType (TPT piece_type)
   {
     bool has_key = _token_pieces.ContainsKey(piece_type);
-    bool not_emp = false;
-    if (has_key) not_emp = !(_token_pieces[piece_type] as IDictionary<TPT, IToken>).IsEmpty();
-    return not_emp;
+    return has_key && piece_type.IsTokenCollection()
+      ? !(_token_pieces[piece_type] as ICollection<IToken>).IsEmpty()
+      : has_key;
   }
 
   public void AddPieceType (TPT piece_type, IToken token)
@@ -102,6 +74,23 @@ public sealed class ComplexToken : IComplexToken
     else
     {
       _token_pieces[piece_type] = new TokenCollection() { token };
+    }
+  }
+  public void AddPieceTypes (TPT piece_type, TokenCollection tokens)
+  {
+    if (tokens is null)
+      return;
+
+    if (HasPieceType(piece_type) && _token_pieces[piece_type] is TokenCollection list)
+    {
+      foreach (IToken token in tokens)
+      {
+        list.Add(token);
+      }
+    }
+    else
+    {
+      _token_pieces[piece_type] = tokens;
     }
   }
   public void SetPieceType (TPT piece_type, IToken token) => _token_pieces[piece_type] = token;
@@ -118,12 +107,18 @@ public sealed class ComplexToken : IComplexToken
   {
     string temp = SE;
 
-    temp += $"{Type}";
+    temp += $"{Type} ";
 
     if (HasPieceType(TPT.Name)) temp += $"\n  Name = {GetPieceContent(TPT.Name)}";
     if (HasPieceType(TPT.Type)) temp += $"\n  Type = {GetPieceContent(TPT.Type)}";
     if (HasPieceType(TPT.Value)) temp += $"\n  Value = {GetPieceContent(TPT.Value)}";
-    if (HasPieceType(TPT.FlagList)) temp += $"\n  Flags = {GetPieceContent(TPT.FlagList)}";
+    if (HasPieceType(TPT.Left)) temp += $"\n  Left = {GetPieceContent(TPT.Left)}";
+    if (HasPieceType(TPT.Center)) temp += $"\n  Center = {GetPieceContent(TPT.Center)}";
+    if (HasPieceType(TPT.Right)) temp += $"\n  Right = {GetPieceContent(TPT.Right)}";
+    if (HasPieceType(TPT.FlagList)) temp += $"\n  FlagList = {GetPieceTokens(TPT.FlagList)?.ListString()}";
+    if (HasPieceType(TPT.ParameterList)) temp += $"\n  ParameterList = {GetPieceTokens(TPT.ParameterList)?.ListString()}";
+    if (HasPieceType(TPT.PropertyList)) temp += $"\n  PropertyList = {GetPieceTokens(TPT.PropertyList)?.ListString()}";
+    if (HasPieceType(TPT.ValueList)) temp += $"\n  ValueList = {GetPieceTokens(TPT.ValueList)?.ListString()}";
 
     return temp;
   }

@@ -8,8 +8,6 @@ public class Token : IToken
   // Calculated Properties
   public int LastPosition => Index + Length - 1;
   public int Length => Content.Length;
-
-  public bool Ignored { get; set; }
   public bool Exempt { get; set; }
   public int Index { get; init; }
   public string Type { get; set; } = SE;

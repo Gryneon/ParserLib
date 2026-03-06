@@ -37,8 +37,9 @@ public sealed class INISection : IGeneratable, IEnumerable<IProperty<string>>, I
   public static PropertyBase<string> GenerateProp (ComplexToken input)
   {
     input.ThrowIfNull();
-    input.Name.ThrowIfNull();
-    return new() { Key = input.Name, Value = input.Value ?? SE };
+    IToken name = input[TokenPieceType.Name];
+    IToken value = input[TokenPieceType.Value];
+    return new() { Key = name.Content, Value = value.Content };
   }
   /// <summary>Sets the given property to the given value.</summary>
   /// <param name="key">The key name.</param>
