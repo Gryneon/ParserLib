@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 
+using Parser.Condition;
 using Parser.Tokens;
 
 using static Parser.Debug;
@@ -8,6 +9,7 @@ using static Parser.Debug;
 using CK = System.ConsoleKey;
 using ResWAD = Specification.WAD.Resources;
 using ResZDoom = Specification.ZDoom.Properties.Resources;
+using SCC = Parser.Condition.StringCompareConditionType;
 using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecWAD = Specification.WAD.Definition;
@@ -51,18 +53,34 @@ internal sealed class Program
   internal static void LogInfo (string message) => Log(MsgClass.Informational, Area, s_method, message);
   internal static void LogWarn (string message) => Log(MsgClass.Warning, Area, s_method, message);
   #endregion
+
+  private static readonly Spec TestSpec = new()
+  {
+    Name = "testSpec",
+    Operations = [
+      Op.StoreKey("test_key", "string_value"),
+      Op.While("while_loop", new StringCompareCondition(SCC.LeftIsKey, "test_key", "string_value"),
+      [
+        Op.CopyKey("test_key", "copied_key"),
+        Op.StoreKey("test_key", "different_value"),
+      ]),
+      Op.DebugKey("copied_key"),
+      Op.DebugKey("test_key"),
+    ],
+  };
+
   #region Menu Definition
   internal static Action<IList<object>> DoTest => item => _ = item[0] is string s && item[1] is Spec sp ? TestTextParser(s, sp) : throw new InvalidOperationException("Invalid data passed to TestTextParser");
   // MenuItem 2 "Quit"
-  internal static MenuItem Exit = new(2, "Quit", [new MenuQuitAction() { Key = CK.Enter }]);
-  internal static MenuItem LoadItem = new(0, "Load", []);
-  internal static MenuItem Test = new(1, "Test", [new TestAction() { Key = CK.Enter }]);
-  internal static MenuBase InitialMenu = new BasicMenu()
-  {
-    Name = "main",
-    Items = [Exit, Test],
-    CommonActions = { }
-  };
+  //internal static MenuItem Exit = new(2, "Quit", [new MenuQuitAction() { Key = CK.Enter }]);
+  //internal static MenuItem LoadItem = new(0, "Load", []);
+  //internal static MenuItem Test = new(1, "Test", [new TestAction() { Key = CK.Enter }]);
+  //internal static MenuBase InitialMenu = new BasicMenu()
+  //{
+  //  Name = "main",
+  //  Items = [Exit, Test],
+  // CommonActions = { }
+  // };
   #endregion
 
   [STAThread]
@@ -79,6 +97,7 @@ internal sealed class Program
     Library.InitializeLibrary(AppDomain.CurrentDomain);
     LogInfo("Program Start");
 
+    InitialTest(TestSpec, Paths.ini_vncdefault);
     InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
     InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
     InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);

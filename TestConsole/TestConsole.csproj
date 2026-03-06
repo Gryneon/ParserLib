@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Console.Menu\Terminal.Menu.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
     <ProjectReference Include="..\Specification.INI\Specification.INI.csproj" />
     <ProjectReference Include="..\Specification.IPL\Specification.IPL.csproj" />

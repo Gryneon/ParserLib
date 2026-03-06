@@ -18,9 +18,9 @@ public sealed class OperationJump : Operation
   protected override void Execute ()
   {
     if (TargetIndex >= Parser.OpCount)
-      Op.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
+      Status = Op.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
     else if (TargetIndex == -1 && TargetLabel is null)
-      Op.ThrowBadDef("Neagtive Jump Target");
+      Status = Op.ThrowBadDef("Neagtive Jump Target");
     else if (TargetIndex == -1 && TargetLabel is not null)
       Parser.SetNextOperationIndex(Parser.Labels[TargetLabel]);
     else if (TargetIndex == Op.JumpToEnd)

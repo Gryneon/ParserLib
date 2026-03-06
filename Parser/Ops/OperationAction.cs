@@ -1,18 +1,4 @@
 namespace Parser.Ops;
-public sealed class OperationNextLoop () : Operation
-{
-  public int ContTarget { get; private set; }
-  public int BreakTarget { get; private set; }
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
-
-  protected override void Execute ()
-  {
-    //Parser.SetNextOperationIndex(ContTarget);
-  }
-
-  public void SetContTarget (int target) => ContTarget = target;
-}
 
 public sealed class OperationAction : IOperation
 {
@@ -25,6 +11,7 @@ public sealed class OperationAction : IOperation
     IData.AddRange(args.OfType<int>());
     DData.AddRange(args.OfType<decimal>());
     OData.AddRange(args.Where(item => item is not string and not int and not decimal));
+    AData.AddRange(args);
   }
   internal OperationAction (OAT type) => Type = type;
 
@@ -38,6 +25,7 @@ public sealed class OperationAction : IOperation
   public Collection<string> SData { get; } = [];
   public Collection<decimal> DData { get; } = [];
   public Collection<object> OData { get; } = [];
+  public Collection<object> AData { get; } = [];
   [NotNull] private XParser? Parser { get; set; }
   public OAT Type { get; set; }
   public bool NoExecution { get; }
@@ -67,7 +55,8 @@ public sealed class OperationAction : IOperation
           _ = Parser.Data.Remove(SData[0]);
           goto Pass;
         case OAT.StoreKey:
-          Parser.Data[SData[0]] = SData[1];
+          object value = AData[1];
+          Parser.Data[SData[0]] = value;
           goto Pass;
         case OAT.DebugKey:
           Log(Area, "Dumping Key.\n\n\n");
@@ -85,14 +74,6 @@ public sealed class OperationAction : IOperation
           }
           return OpStatus.FailNoSuchVarName;
         // State actions
-        case OAT.BreakLoop:
-          Parser.SetNextOperationIndex(LoopBreak);
-          Parser.Cursors.Drop();
-          goto Pass;
-        case OAT.StartLoop:
-          if (OData[0] is LoopOperation lo && !lo.Continue())
-            goto case OAT.BreakLoop;
-          goto Pass;
         case OAT.NextLoop:
           Parser.GetCursorByKey(SData[0]).Index += IData[0];
           Parser.SetNextOperationIndex(LoopStart);
@@ -140,7 +121,6 @@ public sealed class OperationAction : IOperation
 
   private string GetMessage () => Type switch
   {
-    OAT.BreakLoop => $"Loop break.",
     OAT.None => $"No Action",
     OAT.StoreKey => $"Storing {SData[1]} in {SData[0]}.",
     OAT.EraseKey => $"Data erased from {SData[0]}.",

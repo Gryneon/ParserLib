@@ -19,12 +19,6 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Fixed">
             <summary>A fixed point value, stored internally as an int.</summary>
             <remarks>Ex. <c>320.5</c></remarks>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Fixed">
-            <summary>A decimal (fixed point, actually an int)</summary>
-        </member>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Name">
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Bool">
-            <summary>Common Boolean Value (Actually an int)</summary>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Name">
             <summary>A name or identifier of some sort.</summary>
@@ -34,18 +28,12 @@
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Expression">
             <summary>Represents an assembly of an operator and one or more values.</summary>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Case">
-            <summary>Keyword only. "case"</summary>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Sc">
             <summary>Semicolon</summary>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Type">
-            <summary>Keyword only. Any type object, such as <c>str</c>, <c>char</c>, <c>bool</c>, or <c>int</c>.</summary>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Cm">
             <summary>Comma ','</summary>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Wait">
-            <summary>Keyword Only - Wait Functions</summary>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Op">
             <summary>Group contruct: All operators satisfy this token.</summary>
@@ -70,6 +58,15 @@
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.IncDec">
             <summary>Operator: ++ or --</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.LogNot">
+            <summary>Operator: !</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Assign">
+            <summary>Operator Group: Any Assignment Operator</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Minus">
+            <summary>Operator: -</summary>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Net">
             <summary>Keyword: net</summary>
@@ -101,18 +98,18 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Else">
             <summary>Keyword: else</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
-            <summary>An expression that can also be used as an independent statement.</summary>
-        </member>
         <member name="P:Specification.ZDoom.Definition.ZScript">
             <summary>https://regex101.com/r/En5C8c/7</summary>
+        </member>
+        <member name="P:Specification.ZDoom.Definition.SndInfo">
+            <summary>This is the specification for the SndInfo ZDoom lump.</summary>
         </member>
         <member name="P:Specification.ZDoom.Definition.MapInfo">
             <summary>Defines a mapinfo Spec. <see href="https://regex101.com/r/iWWPub/1">Regex</see></summary>
         </member>
         <member name="P:Specification.ZDoom.Definition.ACS">
             <summary>Defined Specification</summary>
+            <remarks><see href="https://regex101.com/r/bNaEDc/1">Regex for Tokens</see></remarks>
         </member>
         <member name="T:Specification.ZDoom.Properties.Resources">
             <summary>

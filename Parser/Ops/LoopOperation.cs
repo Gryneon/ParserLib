@@ -41,14 +41,14 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
     IOperation start = Op.StartLoop(this, OpIndex, index);
     additions.Add(start);
     additions.AddRange(Operations);
-    additions.Add(Op.NextLoop(CursorKey, inc));
+    additions.Add(new OperationContinue());
     foreach (IOperation op in additions)
     {
       if (op is OperationBreak ob)
         ob.SetupBreakTarget(index, CursorKey);
 
       if (op is OperationContinue oc)
-        oc.SetContTarget(OpIndex);
+        oc.SetupContinue(OpIndex, inc, CursorKey);
     }
     operations.AddRange(additions);
     return operations.Count;
@@ -61,7 +61,6 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
   public bool Continue () => Type switch
   {
     LoopType.While when Condition is not null => Condition.Evaluate(Parser),
-    LoopType.Until when Condition is not null => !Condition.Evaluate(Parser),
     LoopType.None => true,
     LoopType.ForEach or LoopType.ForCount when CursorKey is not null => Data.GetCountOfKey(CursorKey) > Parser.GetCursorByKey(CursorKey).Index,
     _ => true,
@@ -83,7 +82,9 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
 
     switch (Type)
     {
-      case LoopType.While when Condition is not null:
+      case LoopType.While:
+        if (Condition is null)
+          Status = Op.ThrowBadDef("Condition is null on a while loop");
         if (Condition.Evaluate(Parser))
         {
           Parser.SetNextOperationIndex(OpIndex);
@@ -120,14 +121,9 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
       Pass:
         Status = OpStatus.Pass;
         return;
-      case LoopType.While:
-        goto default;
       case LoopType.ForEach:
-        goto default;
       case LoopType.Until:
-        goto default;
       case LoopType.ForCount:
-        goto default;
       default:
         Status = OpStatus.FailBadOpDefinition;
         return;

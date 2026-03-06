@@ -71,6 +71,7 @@ public sealed class XParser
   private void OperationLoad ()
   {
     Operations.AddRange(Spec.Operations);
+    Operations.Add(Op.End);
 
     // Unpack all operations in main list
     for (int i = 0; i < Operations.Count; i++)

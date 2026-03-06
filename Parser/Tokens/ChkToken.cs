@@ -1,5 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using System.Net.NetworkInformation;
+
 namespace Parser.Tokens;
 
 /// <summary>Builds a <see cref="ChkToken"/> from a <see langword="string"/>.<br/>
@@ -59,7 +61,7 @@ public sealed class ChkToken () : IEquatable<IToken>
   public required RT TokenRule { get; init; } = RT.None;
   public string? CustomPropertyName { get; set; }
   public Collection<string> AllowedTypes { get; init; } = [];
-  public Collection<string> AllowedContents { get; init; } = [];
+  public string RegexValidator { get; init; } = SE;
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
   public bool LookAround => TokenRule.HasFlag(RT.LookAround);
   public bool Negative => TokenRule.HasFlag(RT.Negative);
@@ -71,11 +73,11 @@ public sealed class ChkToken () : IEquatable<IToken>
   /// <exception cref="ArgumentException"/>
   public static ChkToken Parse (string definition, Spec spec)
   {
-    RxS regex = RxS.Rx(@"^((?'prefix'[\w=!><]+)|\[(?'custom_prop'\w+)\])\:(?:\((?'type_def'[^,&|+}-]+)([,&+|-](?'type_def'[^,&+|}-]+))*\)|\{(?'literal_def'[^,&|+}-]+)([,&+|-](?'literal_def'[^,&+|}-]+))*\}|(?'type_def'\w+))+");
+    RxS regex = RxS.Rx(@"^((?'prefix'[\w=!><]+)|\[(?'custom_prop'\w+)\])\:(?:\((?'type_def'[^,&|+}-]+)([,&+|-](?'type_def'[^,&+|}-]+))*\)|\{(?'literal_def'[^}]+)\}|(?'type_def'\w+))+");
     Regex regexobj = new(regex, ROEC, new TimeSpan(0, 0, 1));
     Match m = regexobj.Match(definition);
     if (!m.Success)
-      Op.ThrowBadDef($"Bad Token Sequence String. {definition}");
+      _ = Op.ThrowBadDef($"Bad Token Sequence String. {definition}");
 
     RT rule = RT.None;
     string prefix = SE;
@@ -91,7 +93,7 @@ public sealed class ChkToken () : IEquatable<IToken>
       prefix = m.Groups["prefix"].Value;
     }
     Collection<string> allowed_types = [];
-    Collection<string> allowed_literals = [];
+    string regex_validator = SE;
 
     foreach (char c in prefix)
     {
@@ -100,7 +102,7 @@ public sealed class ChkToken () : IEquatable<IToken>
 
     if (rule.HasFlag(RT.Error))
     {
-      Op.ThrowBadDef($"Bad Prefix Char. ({prefix})");
+      _ = Op.ThrowBadDef($"Bad Prefix Char. ({prefix})");
     }
 
     if (m.Groups.ContainsKey("type_def"))
@@ -108,15 +110,14 @@ public sealed class ChkToken () : IEquatable<IToken>
         allowed_types.Add(c.Value);
 
     if (m.Groups.ContainsKey("literal_def"))
-      foreach (Capture c in m.Groups["literal_def"].Captures)
-        allowed_literals.Add(c.Value);
+      regex_validator = m.Groups["literal_def"].Value;
 
     Collection<string> expanded_types = spec is null ? allowed_types : AllAllowedTypes(allowed_types, spec);
 
     ChkToken result = new()
     {
       CustomPropertyName = prop,
-      AllowedContents = allowed_literals,
+      RegexValidator = regex_validator,
       AllowedTypes = expanded_types,
       TokenRule = rule,
       _spec = spec
@@ -124,6 +125,8 @@ public sealed class ChkToken () : IEquatable<IToken>
 
     return result;
   }
+  private bool IsFullRegexMatch (IToken? token) =>
+    token is not null && (RegexValidator.IsEmpty() || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) ? ROIC : RON)).Value.Length == token.Content.Length);
   internal static Collection<string> AllAllowedTypes (IEnumerable<string> types, Spec spec)
   {
     HashSet<string> all_types_allowed = [.. types];
@@ -150,11 +153,10 @@ public sealed class ChkToken () : IEquatable<IToken>
     return [.. all_types_allowed];
   }
   internal bool Check_Type (IToken? token) => token is not null && token.HasType && AllowedTypes.Any(type => token.Type.Like(type)) || AllowedTypes.Count == 0;
-  internal bool Check_Content (IToken? token) => token is not null && token.Content.Length > 0 && AllowedContents.Count > 0 && AllowedContents.Any(i => i.Equals(token.Content, SC)) || AllowedContents.Count == 0;
   /// <summary>Checks if the specified token satisfies this object's conditions.</summary>
   /// <param name="other">The token to check.</param>
   /// <returns><see langword="true"/> if the token satisfies this object's conditions, <see langword="false"/> otherwise.</returns>
   public bool Equals (IToken? other) =>
-    Check_Content(other) && Check_Type(other);
-  public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (AllowedContents.Count > 0 ? $"{{{AllowedContents.TextJoin("|")}}}" : "");
+    IsFullRegexMatch(other) && Check_Type(other);
+  public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (RegexValidator.Length > 0 ? $"{{{RegexValidator}}}" : "");
 }

@@ -34,7 +34,7 @@ public class TokenizeOperation : Operation
     }
     else
     {
-      Op.ThrowBadInput("string", $"{WorkData?.GetType()}");
+      Status = Op.ThrowBadInput("string", $"{WorkData?.GetType()}");
     }
   }
 }

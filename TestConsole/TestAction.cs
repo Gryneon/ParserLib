@@ -3,7 +3,7 @@ using System.IO;
 using Debug = Parser.Debug;
 
 namespace TestConsole;
-
+/*
 internal sealed class TestAction : MenuAction
 {
   public override void Execute () => Execute(out _);
@@ -28,3 +28,4 @@ internal sealed class TestAction : MenuAction
     data_return = Program.Parser;
   }
 }
+*/

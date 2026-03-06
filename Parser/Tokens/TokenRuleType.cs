@@ -63,7 +63,7 @@ public enum TokenRuleType : long
   /// <summary>The bits to remove to get the type correctly.</summary>
   FlagBits = Mult | Opt | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
   /// <summary>This token sequence entry will supply any fields not already filled by other definitions from its own respective values.</summary>
-  /// <remarks>If a <see cref="ComplexToken"/> was passed to any field of a <see cref="ComplexToken"/> with this flag assigned, it would copy all of its fields to the parent <see cref="TokenObject"/>.
+  /// <remarks>If a <see cref="ComplexToken"/> was passed to any field of a <see cref="ComplexToken"/> with this flag assigned, all of its parts would populate the one being created..
   /// These properties would be overwritten by any defined token sequence entries.</remarks>
   Descendant = 0x40000000,
   /// <summary>This flag means a character was not recognized.</summary>
