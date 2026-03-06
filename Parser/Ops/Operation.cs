@@ -252,16 +252,15 @@ public abstract class Operation : IOperation
 
     object loadkey (string key)
     {
-      if (Parser.Data.TryGetValue(key, out object? value))
+      if (Parser.Data.TryLoad(key, out object? value))
       {
         Log(MsgClass.Debug, "Operation.Initialize->loadkey()", $"Loaded {key} with value {value}.");
         return value;
       }
       else
       {
-        Log("Operation.Initialize", $"Key {key} does not exist or is null.");
-        Status = Op.ThrowNoVar(key);
-        throw null;
+        Log(MsgClass.Error, "Operation.Initialize", $"Key {key} does not exist or is null.");
+        return Op.ThrowNoVar(key);
       }
     }
     if (InputKeys.Count == 1)

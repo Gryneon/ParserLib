@@ -54,9 +54,9 @@ public sealed class ChkToken () : IEquatable<IToken>
     ['y'] = RT.Error,
     ['z'] = RT.Error,
 
-    ['<'] = RT.LookAround,
-    ['>'] = RT.LookAround,
-    ['!'] = RT.Negative,
+    //['<'] = RT.LookAround,
+    //['>'] = RT.LookAround,
+    //['!'] = RT.Negative,
   };
   public required RT TokenRule { get; init; } = RT.None;
   public string? CustomPropertyName { get; set; }

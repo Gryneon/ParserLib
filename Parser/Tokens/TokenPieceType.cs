@@ -22,6 +22,9 @@ public enum TokenPieceType
   /// <summary>The tokens representing this object's values, if there are more than 1.</summary>
   /// <remarks>This will be a TokenCollection.</remarks>
   ValueList,
+  /// <summary>The tokens representing this object's ordered statements.</summary>
+  /// <remarks>This will be a TokenCollection.</remarks>
+  StatementList,
   /// <summary>The token representing this object's left item.</summary>
   Left,
   /// <summary>The token representing this object's right item.</summary>

@@ -6,7 +6,6 @@ using Parser.Tokens;
 
 using static Parser.Debug;
 
-using CK = System.ConsoleKey;
 using ResWAD = Specification.WAD.Resources;
 using ResZDoom = Specification.ZDoom.Properties.Resources;
 using SCC = Parser.Condition.StringCompareConditionType;

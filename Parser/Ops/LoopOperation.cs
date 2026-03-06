@@ -82,17 +82,6 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
 
     switch (Type)
     {
-      case LoopType.While:
-        if (Condition is null)
-          Status = Op.ThrowBadDef("Condition is null on a while loop");
-        if (Condition.Evaluate(Parser))
-        {
-          Parser.SetNextOperationIndex(OpIndex);
-        }
-        goto Pass;
-      case LoopType.None:
-        Parser.SetNextOperationIndex(OpIndex);
-        goto Pass;
       case LoopType.ForEach when CursorKey is not null:
         initializeCursor();
         goto Pass;
@@ -123,7 +112,6 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
         return;
       case LoopType.ForEach:
       case LoopType.Until:
-      case LoopType.ForCount:
       default:
         Status = OpStatus.FailBadOpDefinition;
         return;
