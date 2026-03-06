@@ -98,6 +98,10 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Else">
             <summary>Keyword: else</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
+            <summary>An expression that can also be used as an independent statement.</summary>
+        </member>
+        
         <member name="P:Specification.ZDoom.Definition.ZScript">
             <summary>https://regex101.com/r/En5C8c/7</summary>
         </member>
