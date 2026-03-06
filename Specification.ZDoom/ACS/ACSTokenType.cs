@@ -81,8 +81,11 @@ public enum ACSTokenType
 
   FunctionCall,
   FunctionCallStmt,
+  /// <summary>Keyword: script</summary>
   Script,
+  /// <summary>Keyword: function</summary>
   Function,
+  /// <summary>Group: <c>world</c> or <c>global</c></summary>
   MapVar,
   ScriptType,
   /// <summary>Placeholder representing any value, expression, or function call.</summary>
@@ -104,7 +107,7 @@ public enum ACSTokenType
   /// <summary>Array close ']'</summary>
   Ac,
   Preprocessor,
-  /// <summary>Equals</summary>
+  /// <summary>Operator: =</summary>
   Eq,
   /// <summary>Keyword: if</summary>
   If,
@@ -155,6 +158,8 @@ public enum ACSTokenType
   VarInc,
   ParamDef,
   ArrayValue,
+  /// <summary>Assembled: An array dimension.</summary>
+  /// <remarks><c>[43]</c> or <c>[x]</c></remarks>
   ArrayDim,
   Block,
   CaseLabel,
@@ -181,4 +186,6 @@ public enum ACSTokenType
   SwitchBlock,
   ValueNoName,
   WaitStmt,
+  ForBlock,
+  ForHeader,
 }

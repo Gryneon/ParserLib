@@ -23,6 +23,15 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Name">
             <summary>A name or identifier of some sort.</summary>
         </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Script">
+            <summary>Keyword: script</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Function">
+            <summary>Keyword: function</summary>
+        </member>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.MapVar">
+            <summary>Group: <c>world</c> or <c>global</c></summary>
+        </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Value">
             <summary>Placeholder representing any value, expression, or function call.</summary>
         </member>
@@ -48,7 +57,7 @@
             <summary>Array close ']'</summary>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Eq">
-            <summary>Equals</summary>
+            <summary>Operator: =</summary>
         </member>
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.If">
             <summary>Keyword: if</summary>
@@ -98,10 +107,10 @@
         <member name="F:Specification.ZDoom.ACS.ACSTokenType.Else">
             <summary>Keyword: else</summary>
         </member>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.ExpressionStandalone">
-            <summary>An expression that can also be used as an independent statement.</summary>
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.ArrayDim">
+            <summary>Assembled: An array dimension.</summary>
+            <remarks><c>[43]</c> or <c>[x]</c></remarks>
         </member>
-        
         <member name="P:Specification.ZDoom.Definition.ZScript">
             <summary>https://regex101.com/r/En5C8c/7</summary>
         </member>

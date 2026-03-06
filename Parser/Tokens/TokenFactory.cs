@@ -43,9 +43,9 @@ public sealed class TokenFactory
   private string AssignType => _currentRule?.TypeToAssign ?? SE;
   #endregion
   #region Private Logging Methods
-  private static void DebugLog (string msg) => Debug.Log(MsgClass.Debug, Area, s_method, msg);
-  private static void WarnLog (string msg) => Debug.Log(MsgClass.Warning, Area, s_method, msg);
-  private static void ErrorLog (string msg) => Debug.Log(MsgClass.Error, Area, s_method, msg);
+  private static void DebugLog (string msg) => Log(MsgClass.Debug, Area, s_method, msg);
+  private static void WarnLog (string msg) => Log(MsgClass.Warning, Area, s_method, msg);
+  private static void ErrorLog (string msg) => Log(MsgClass.Error, Area, s_method, msg);
   #endregion
   #region Private Static Methods
   private static RT GetMaskedType (RT type) => type.RemoveBitLong<RT>(RT.FlagBits);
@@ -72,7 +72,6 @@ public sealed class TokenFactory
       Index = match.Start,
       Content = match.Content,
       Type = rule.TypeToAssign,
-      Ignored = rule.Type.HasFlag(RT.IgnoredToken),
       Exempt = rule.Type.HasFlag(RT.ExemptAllWithin),
     };
     bool any = _result.Any(t => t.Index == token.Index);
@@ -124,9 +123,10 @@ public sealed class TokenFactory
   }
   private void StoreOther ()
   {
+    s_method = "StoreOther";
     foreach (Section applicant in CannotMatch.Inverse())
     {
-      Debug.Log(Area, "Tokens_StoreOther", $"Section: {applicant} Found with no token.");
+      DebugLog($"Section: {applicant} Found with no token.");
       CannotMatch.Add(Section.ByLength(applicant.Start, applicant.Length, Input));
       MakeAddToken(applicant);
     }

@@ -7,7 +7,6 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
   string Type { get; set; }
   bool HasType { get; }
   bool Exempt { get; set; }
-  bool Ignored { get; }
   IList<IToken> Children { get; init; }
   string Content => Children.Select(static t => t.Content).TextJoin();
   string ContentNoNewLine => Content.

@@ -63,8 +63,6 @@ public sealed class ChkToken () : IEquatable<IToken>
   public Collection<string> AllowedTypes { get; init; } = [];
   public string RegexValidator { get; init; } = SE;
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
-  public bool LookAround => TokenRule.HasFlag(RT.LookAround);
-  public bool Negative => TokenRule.HasFlag(RT.Negative);
   private StringComparison SC => IgnoreCase || _spec?.SC == SCOIC ? SCOIC : SCO;
   /// <summary>Creates a <see cref="ChkToken"/> object from the <see langword="string"/>.</summary>
   /// <param name="definition">The definition string.</param>
