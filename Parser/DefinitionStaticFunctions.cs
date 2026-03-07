@@ -8,7 +8,6 @@ public static class DefinitionStaticFunctions
   // Methods
   public static RxS NmOr (string name, Collection<string> options) => RxS.GrpNm(name, Or(options));
   public static RxS Nm (string name, [SS("Regex")] string rx) => RxS.GrpNm(name, rx);
-  public static RxS Nm (string common) => RxS.GrpNm(common, common);
   public static RxS Gp ([SS("Regex")] string rx) => RxS.Grp(rx);
   public static RxS Rx ([SS("Regex")] string rx) => RxS.Rx(rx);
   public static RxS Rx ([SS("Regex")] params Collection<string> values) => Or(values);
@@ -17,8 +16,6 @@ public static class DefinitionStaticFunctions
   public static InferenceNode IfN (IT it, string value) => new(it, value);
   public static InferenceNodeOr IfNOr (params IEnumerable<IInferenceNode> nodes) => new(nodes);
   public static InferenceNodeAnd IfNAnd (params IEnumerable<IInferenceNode> nodes) => new(nodes);
-  public static KeyValuePair<string, T> K<T> (string key, T value) => new(key, value);
-  public static KeyValuePair<TKey, TValue> K<TKey, TValue> (TKey key, TValue value) => new(key, value);
 
   // Word Start RxS
   public static readonly RxS St = Rx(@"\b");

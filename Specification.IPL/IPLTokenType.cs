@@ -21,14 +21,19 @@ public enum IPLTokenType
   Gs,         // <GS>
   Us,         // <US>
   Si,         // <SI>
-  TextProp,   // d3,[^;<\n]*
-  Ignored,    // 
-  FieldText,  // 
-  Text,       //
-  Rs,
-  Cmd,
-  Break,
-  Line,
-  Prop,
-  Fmt,
+  FieldText,  // Field Text Content
+  Text,       // Property Text Content
+  Rs,         // <RS>
+  Cmd,        // Any Non-Prop Cmd
+  Line,       // Any Line Cmd
+  Prop,       // Any Prop Cmd
+  Fmt,        // Any Fmt Cmd
+  OriginX,    // Origin X Value
+  OriginY,    // Origin Y Value
+  Eot,        // <EOT>
+  SmplCmd,    // Any Single Letter Cmd
+  FieldNum,   // <ESC> F## Cmd
+  Qty,        // Any Qty Cmd
+  Ack,        // <ACK>
+  Mode,       // Any Mode Changing Cmd
 }

@@ -38,8 +38,4 @@
     </COMReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Library.ico" />
-  </ItemGroup>
-
 </Project>

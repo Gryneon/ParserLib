@@ -19,12 +19,9 @@ public interface IFactory
   }
 }
 
-public interface IComplexToken : IToken
+public interface IComplexToken : IToken, ICloneable
 {
   new string Content { get; }
-  IToken? NameToken { get; set; }
-  IToken? ValueToken { get; set; }
-  IToken? TypeToken { get; set; }
   string IToken.Content => Content;
   IReadOnlyCollection<TPT> PiecesPresent { get; }
   IToken this[TPT piece_type] { get; }

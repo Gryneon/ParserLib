@@ -2,13 +2,15 @@
 
 namespace Parser.Tokens;
 
-
-
 public sealed class ComplexToken : IComplexToken
 {
   private readonly Dictionary<TPT, IToken> _token_pieces = [];
 
-  public Dictionary<TPT, IToken?> TokenPieces { init => _token_pieces = [..value]; }
+  public Dictionary<TPT, IToken?> TokenPieces
+  {
+    init => _token_pieces = [.. value];
+    get => [.. _token_pieces];
+  }
   public Dictionary<string, IToken> CustomProperties { get; } = [];
   public IToken this[TPT piece_type]
   {
@@ -16,42 +18,13 @@ public sealed class ComplexToken : IComplexToken
     set => _token_pieces[piece_type] = value;
   }
 
-  public string Content => Children.Select(i => i.Content).TextJoin();
+  public string Content => Children.Select(i => i.Content).TextJoin(" ");
   public IReadOnlyCollection<TPT> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
   public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
   public bool Exempt { get; set; }
-  public IList<IToken> Children { get; init; } = [];
+  public IList<IToken> Children { get; set; } = [];
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
-  public IToken? ValueToken
-  {
-    get => _token_pieces.TryGetValue(TPT.Value, out IToken? f) ? f : null;
-    set
-    {
-      if (value is null) return;
-      _token_pieces[TPT.Value] = value;
-    }
-  }
-
-  public IToken? NameToken
-  {
-    get => _token_pieces.TryGetValue(TPT.Name, out IToken? f) ? f : null;
-    set
-    {
-      if (value is null) return;
-      _token_pieces[TPT.Name] = value;
-    }
-  }
-
-  public IToken? TypeToken
-  {
-    get => _token_pieces.TryGetValue(TPT.Type, out IToken? f) ? f : null;
-    set
-    {
-      if (value is null) return;
-      _token_pieces[TPT.Type] = value;
-    }
-  }
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is IComplexToken && Children.SequenceEqual(other.Children);
   public IToken GetPieceToken (TPT piece_type) => _token_pieces[piece_type];
@@ -105,21 +78,38 @@ public sealed class ComplexToken : IComplexToken
 
   public override string ToString ()
   {
+    return ToString("  ");
+  }
+
+  public string ToString (string indent)
+  {
     string temp = SE;
 
     temp += $"{Type} ";
 
-    if (HasPieceType(TPT.Name)) temp += $"\n  Name = {GetPieceContent(TPT.Name)}";
-    if (HasPieceType(TPT.Type)) temp += $"\n  Type = {GetPieceContent(TPT.Type)}";
-    if (HasPieceType(TPT.Value)) temp += $"\n  Value = {GetPieceContent(TPT.Value)}";
-    if (HasPieceType(TPT.Left)) temp += $"\n  Left = {GetPieceContent(TPT.Left)}";
-    if (HasPieceType(TPT.Center)) temp += $"\n  Center = {GetPieceContent(TPT.Center)}";
-    if (HasPieceType(TPT.Right)) temp += $"\n  Right = {GetPieceContent(TPT.Right)}";
-    if (HasPieceType(TPT.FlagList)) temp += $"\n  FlagList = {GetPieceTokens(TPT.FlagList)?.ListString()}";
-    if (HasPieceType(TPT.ParameterList)) temp += $"\n  ParameterList = {GetPieceTokens(TPT.ParameterList)?.ListString()}";
-    if (HasPieceType(TPT.PropertyList)) temp += $"\n  PropertyList = {GetPieceTokens(TPT.PropertyList)?.ListString()}";
-    if (HasPieceType(TPT.ValueList)) temp += $"\n  ValueList = {GetPieceTokens(TPT.ValueList)?.ListString()}";
+    if (HasPieceType(TPT.Name)) temp += $"\n{indent}Name = {GetPieceToken(TPT.Name).ToString(indent + "  ")}";
+    if (HasPieceType(TPT.Type)) temp += $"\n{indent}Type = {GetPieceToken(TPT.Type).ToString(indent + "  ")}";
+    if (HasPieceType(TPT.Value)) temp += $"\n{indent}Value = {GetPieceToken(TPT.Value).ToString(indent + "  ")}";
+    if (HasPieceType(TPT.Left)) temp += $"\n{indent}Left = {GetPieceToken(TPT.Left).ToString(indent + "  ")}";
+    if (HasPieceType(TPT.Center)) temp += $"\n{indent}Center = {GetPieceToken(TPT.Center).ToString(indent + "  ")}";
+    if (HasPieceType(TPT.Right)) temp += $"\n{indent}Right = {GetPieceContent(TPT.Right)}";
+    if (HasPieceType(TPT.FlagList)) temp += $"\n{indent}FlagList = {GetPieceTokens(TPT.FlagList)?.ListString(indent + "  ")}";
+    if (HasPieceType(TPT.ParameterList)) temp += $"\n{indent}ParameterList = {GetPieceTokens(TPT.ParameterList)?.ListString(indent + "  ")}";
+    if (HasPieceType(TPT.PropertyList)) temp += $"\n{indent}PropertyList = {GetPieceTokens(TPT.PropertyList)?.ListString(indent + "  ")}";
+    if (HasPieceType(TPT.ValueList)) temp += $"\n{indent}ValueList = {GetPieceTokens(TPT.ValueList)?.ListString(indent + "  ")}";
 
     return temp;
+  }
+
+  public object Clone ()
+  {
+    ComplexToken clone = new()
+    {
+      TokenPieces = [.. _token_pieces],
+      Children = [.. Children],
+      Exempt = Exempt,
+      Type = Type,
+    };
+    return clone;
   }
 }

@@ -35,7 +35,6 @@ public sealed class TokenFactory
   private StringComparison IC => IgnoreCase ? SCOIC : SCO;
   private bool Competes => (_currentRule?.Type.HasFlag(RT.Competitive) ?? false) || _default_rule.HasFlag(RT.Competitive);
   private bool IgnoredToken => (_currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false) || _default_rule.HasFlag(RT.IgnoredToken);
-  private bool FindInTokens => (_currentRule?.Type.HasFlag(RT.FromTokens) ?? false) || _default_rule.HasFlag(RT.FromTokens);
   private bool ExemptAllWithin => (_currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false) || _default_rule.HasFlag(RT.ExemptAllWithin);
   private bool HasError => _currentRule?.Type.HasFlag(RT.Error) ?? false;
   private RT Type => GetMaskedType(_currentRule?.Type ?? RT.None);
@@ -67,6 +66,10 @@ public sealed class TokenFactory
   private void MakeAddToken (Section match, TokenRule? rule = null)
   {
     rule ??= _currentRule!;
+
+    if (rule.Type.HasFlag(RT.IgnoredToken))
+      return;
+
     Token token = new()
     {
       Index = match.Start,
@@ -83,44 +86,44 @@ public sealed class TokenFactory
 
     _result.Add(token);
   }
-  private void FromTokens ()
-  {
-    foreach (Token tokendata in _result.Cast<Token>())
-    {
-      if (tokendata.Exempt)
-        continue;
-
-      if (_currentRule is null)
-        break;
-
-      if (Type is RT.TokenExact)
-      {
-        if (tokendata.Content.Equals(RuleData, IC))
-        {
-          tokendata.Type = AssignType;
-          tokendata.Exempt = ExemptAllWithin;
-        }
-      }
-      else if (Type is RT.TokenMatch)
-      {
-        if (Regex.Match(tokendata.Content, GetRuleRegex(_currentRule)).Length == tokendata.Content.Length)
-        {
-          tokendata.Type = AssignType;
-          tokendata.Exempt = ExemptAllWithin;
-        }
-      }
-      else if (Type is RT.TokenExtract)
-      {
-        Match m = Regex.Match(tokendata.Content, GetRuleRegex(_currentRule));
-        if (m.Length == tokendata.Content.Length)
-        {
-          tokendata.Type = AssignType;
-          tokendata.Exempt = ExemptAllWithin;
-          tokendata.Content = m.Groups["keep"].Value;
-        }
-      }
-    }
-  }
+  //private void FromTokens ()
+  //{
+  //  foreach (Token tokendata in _result.Cast<Token>())
+  //  {
+  //    if (tokendata.Exempt)
+  //      continue;
+  //
+  //    if (_currentRule is null)
+  //      break;
+  //
+  //    if (Type is RT.TokenExact)
+  //    {
+  //      if (tokendata.Content.Equals(RuleData, IC))
+  //      {
+  //        tokendata.Type = AssignType;
+  //        tokendata.Exempt = ExemptAllWithin;
+  //      }
+  //    }
+  //    else if (Type is RT.TokenMatch)
+  //    {
+  //      if (Regex.Match(tokendata.Content, GetRuleRegex(_currentRule)).Length == tokendata.Content.Length)
+  //      {
+  //        tokendata.Type = AssignType;
+  //        tokendata.Exempt = ExemptAllWithin;
+  //      }
+  //    }
+  //    else if (Type is RT.TokenExtract)
+  //    {
+  //      Match m = Regex.Match(tokendata.Content, GetRuleRegex(_currentRule));
+  //      if (m.Length == tokendata.Content.Length)
+  //      {
+  //        tokendata.Type = AssignType;
+  //        tokendata.Exempt = ExemptAllWithin;
+  //        tokendata.Content = m.Groups["keep"].Value;
+  //      }
+  //    }
+  //  }
+  //}
   private void StoreOther ()
   {
     s_method = "StoreOther";
@@ -255,15 +258,11 @@ public sealed class TokenFactory
         case RT.None:
           WarnLog("Warning: Bad type defined.");
           break;
-        case RT.TokenExact or RT.TokenMatch or RT.TokenExtract or RT.SplitMatch or RT.SplitExact when FindInTokens:
-          DebugLog("Token matching starting, from Tokens");
-          FromTokens();
-          break;
-        case RT.TokenMatch or RT.TokenExtract or RT.SplitMatch when !FindInTokens:
+        case RT.TokenMatch or RT.TokenExtract or RT.SplitMatch:
           DebugLog("Token matching starting, from input string.");
           RegexMatch();
           break;
-        case RT.TokenExact or RT.SplitExact when !FindInTokens:
+        case RT.TokenExact or RT.SplitExact:
           DebugLog("Token Exact starting, from input string.");
           ExactMatch();
           break;

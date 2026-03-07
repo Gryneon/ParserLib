@@ -4,7 +4,7 @@ namespace Parser.Tokens;
 public sealed class TokenCollection () : IList<IToken>, IToken
 {
   /// <summary>The internal token list.</summary>
-  private readonly List<IToken> _tokens = [];
+  private List<IToken> _tokens = [];
   private readonly Type _restrictedTo = typeof(IToken);
 
   /// <summary>Creates the collection from a collection of tokens.</summary>
@@ -29,7 +29,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   public IList<IToken> Children
   {
     get => _tokens;
-    init => _tokens = [.. value];
+    set => _tokens = [.. value];
   }
   public int Index => _tokens.Count > 0 ? _tokens[0].Index : -1;
 
@@ -71,15 +71,15 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   }
 
   public void SortByIndex () => _tokens.Sort((item, item2) => item.CompareTo(item2));
-  internal string GetContent () => Count == 0 ? SE : _tokens.Select(s => s.Content).Aggregate((first, second) => first + second);
+  internal string GetContent () => Count == 0 ? SE : _tokens.Select(s => s.Content).Aggregate((first, second) => $"{first} {second}");
   public override string ToString () => $"TokenCollection ({GetContent()})";
-  public string ListString ()
+  public string ListString (string indent)
   {
     string ret = $"{Type} : {Count} Items";
 
     foreach (IToken item in _tokens)
     {
-      ret += $"\n    {item}";
+      ret += $"\n{indent}{item.ToString(indent + "  ")}";
     }
     return ret;
   }

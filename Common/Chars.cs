@@ -8,13 +8,17 @@ public static class Chars
   /// <summary>Beep control code.</summary>
   public const char BEEP = '\a';
   /// <summary>Vertical Tab.</summary>
-  public const char
-    VT = '\v',
-    TAB = '\t',
-    CR = '\r',
-    LF = '\n',
-    FF = '\f',
-    ESC = '\e';
+  public const char VT = '\v';
+  /// <summary>Horizontal Tab</summary>
+  public const char TAB = '\t';
+  /// <summary>Carraige Return</summary>
+  public const char CR = '\r';
+  /// <summary>Line Feed</summary>
+  public const char LF = '\n';
+  /// <summary>Form Feed</summary>
+  public const char FF = '\f';
+  /// <summary>Escape</summary>
+  public const char ESC = '\e';
 
   /// <summary>Backspace Character.</summary>
   public const char BSPC = '\b';

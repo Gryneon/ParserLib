@@ -102,74 +102,53 @@ public sealed partial class TokenAssembler
     }
     ComplexToken buildObject ()
     {
-      IToken? originalType = null;
-      IToken? originalName = null;
-      IToken? originalValue = null;
-      TokenCollection originalProps = [];
-      TokenCollection originalFlags = [];
-      TokenCollection originalValues = [];
-      TokenCollection originalParams = [];
-      if (tryGetToken(RT.Descendant, out IToken? baseToken))
+      ComplexToken new_token;
+
+      if (tryGetToken(RT.Descendant, out IToken? baseToken) && baseToken is ComplexToken ct)
       {
-        if (baseToken is ComplexToken ct)
-        {
-          originalType = ct.TypeToken;
-          originalName = ct.NameToken;
-          originalValue = ct.ValueToken;
-          originalValues = ct.GetPieceToken(TPT.ValueList) as TokenCollection ?? [];
-          originalParams = ct.GetPieceToken(TPT.ParameterList) as TokenCollection ?? [];
-          originalProps = ct.GetPieceToken(TPT.PropertyList) as TokenCollection ?? [];
-          originalFlags = ct.GetPieceToken(TPT.FlagList) as TokenCollection ?? [];
-        }
+        new_token = (ComplexToken) ct.Clone();
+        new_token.Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin);
+        new_token.Type = _rule.TypeToAssign;
+        new_token.Children = [.. tokens_to_assemble];
       }
-      ComplexToken result = new()
+      else
       {
-        TokenPieces =
+        new_token = new()
         {
-          [TPT.Name] = originalName,
-          [TPT.Value] = originalValue,
-          [TPT.Type] = originalType,
-        },
-        
-        Type = _rule.TypeToAssign,
-        Children = [.. tokens_to_assemble],
-        Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-      };
+          Type = _rule.TypeToAssign,
+          Children = [.. tokens_to_assemble],
+          Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
+        };
+      }
 
-      result.AddPieceTypes(TPT.PropertyList, originalProps);
-      result.AddPieceTypes(TPT.FlagList, originalFlags);
-      result.AddPieceTypes(TPT.ParameterList, originalParams);
-      result.AddPieceTypes(TPT.ValueList, originalValues);
-
-      if (tryGetToken(RT.AssignName, out IToken? name)) result[TPT.Name] = name;
-      if (tryGetToken(RT.AssignType, out IToken? type)) result[TPT.Type] = type;
-
+      if (tryGetToken(RT.AssignName, out IToken? name)) new_token[TPT.Name] = name;
+      if (tryGetToken(RT.AssignType, out IToken? type)) new_token[TPT.Type] = type;
       if (tryGetTokens(RT.AssignValue, out IList<IToken> list))
       {
         if (list.Count > 1)
-          result.AddPieceType(TPT.ValueList, new TokenCollection(list));
+          new_token.AddPieceType(TPT.ValueList, new TokenCollection(list));
         else if (list.Count == 1)
-          result.ValueToken = list[0];
+          new_token[TPT.Value] = list[0];
       }
-
-      if (tryGetToken(RT.AssignLeft, out IToken? left))
-        result.SetPieceType(TPT.Left, left);
-      if (tryGetToken(RT.AssignRight, out IToken? right))
-        result.SetPieceType(TPT.Right, right);
-      if (tryGetToken(RT.AssignCenter, out IToken? center))
-        result.SetPieceType(TPT.Center, center);
-
+      if (tryGetToken(RT.AddFlag, out IToken? aflag)) new_token[TPT.FlagState] = aflag;
+      if (tryGetToken(RT.SubFlag, out IToken? sflag)) new_token[TPT.FlagState] = sflag;
+      if (tryGetToken(RT.AssignLeft, out IToken? left)) new_token[TPT.Left] = left;
+      if (tryGetToken(RT.AssignRight, out IToken? right)) new_token[TPT.Right] = right;
+      if (tryGetToken(RT.AssignCenter, out IToken? center)) new_token[TPT.Center] = center;
       if (tryGetTokens(RT.AddProperty, out IList<IToken> list2))
         foreach (IToken item in list2)
-          result.AddPieceType(TPT.PropertyList, item);
+          new_token.AddPieceType(TPT.PropertyList, item);
       if (tryGetTokens(RT.AddFlag, out IList<IToken> list3))
         foreach (IToken item in list3)
-          result.AddPieceType(TPT.FlagList, item);
+          new_token.AddPieceType(TPT.FlagList, item);
       if (tryGetTokens(RT.AddParameter, out IList<IToken> list4))
         foreach (IToken item in list4)
-          result.AddPieceType(TPT.ParameterList, item);
+          new_token.AddPieceType(TPT.ParameterList, item);
+      if (tryGetTokens(RT.AddStatement, out IList<IToken> list5))
+        foreach (IToken item in list5)
+          new_token.AddPieceType(TPT.StatementList, item);
 
-      return result;
+      return new_token;
     }
     _constructed_items++;
 
@@ -331,6 +310,12 @@ public sealed partial class TokenAssembler
         LogInfo($"Rule {r} Executed {times} Times.");
       else
         LogInfo($"Rule {r} Did not match any content.");
+
+      if (wasInBlock() && hasMatched() && r + 1 == _rules.Count)
+      {
+        r = jumpRule - 1;
+        recurseCounter = 0;
+      }
     }
 
     LogInfo("Token Assembly Complete");

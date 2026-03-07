@@ -5,25 +5,6 @@ using ComDebug = Common.Debug;
 
 namespace Parser;
 
-/// <summary>A predefined debug message.</summary>
-public enum DebugMsg
-{
-  DM_None,
-  Tokenize_Ignore_Token,
-  Tokenize_Wrong_Type,
-  Debug_Log_Extra_Values,
-  Tokenize_Token_Added,
-}
-
-/// <summary>A predefined exception message.</summary>
-public enum ExceptionMsg
-{
-  EM_None,
-  Debug_Unknown_Exception,
-  Override_Required,
-
-}
-
 /// <summary>Static class containing debugging logs.</summary>
 public static class Debug
 {
@@ -60,30 +41,6 @@ public static class Debug
       throw;
     }
   }
-  private static readonly Dictionary<DebugMsg, Func<string, string, string>> MsgFormats = new()
-  {
-    (DM_None, static (_, __) => SE),
-    (Debug_Log_Extra_Values, static (_, __) => $"Debug.Log(): I have extra values!"),
-    (Tokenize_Wrong_Type, static (type, _) => $"TokenizeOperation.Execute(): My type is wrong! I am a {type}"),
-    (Tokenize_Ignore_Token, static (mdd, _) => $"TokenizeOperation.Execute(): Token is whitespace or ignored \"{mdd}\""),
-    (Tokenize_Token_Added, static (type, content) => $"TokenizeOperation.Execute(): Token type \"{type}\" added. ({content})")
-  };
-  private static readonly Dictionary<ExceptionMsg, Func<string, string, string>> XMsgFormats = new()
-  {
-    (EM_None, static (_, __) => "Exception not defined."),
-    (Debug_Unknown_Exception, static (_, __) => "Invalid Exception Parameters, or Unknown Exception Message"),
-    (Override_Required, static (_, __) => "This needs to be overridden by the inheriting class."),
-  };
-  public static void Log (DebugMsg msg, params Collection<string> values)
-  {
-    values.ThrowIfNull();
-    if (values.Count == 0)
-      DoLog(MsgFormats[msg](SE, SE));
-    else if (values.Count == 1)
-      DoLog(MsgFormats[msg](values[0], SE));
-    else if (values.Count == 2)
-      DoLog(MsgFormats[msg](values[0], values[1]));
-  }
   public static ConsoleColor GetTextColor (MsgClass msg) => msg switch
   {
     MsgClass.Debug => C_Blue,
@@ -105,28 +62,6 @@ public static class Debug
     Log(className, methodName, msg, GetBackColor(msgClass), GetTextColor(msgClass));
   public static void Log (MsgClass msgClass, string className, string msg) =>
     Log(className, msg, GetBackColor(msgClass), GetTextColor(msgClass));
-  [DoesNotReturn]
-  internal static void Throw<T> (ExceptionMsg msg, params Collection<string> values) where T : Exception =>
-    _ = Throw<T, object>(msg, values);
-  [DoesNotReturn]
-  internal static TReturn Throw<T, TReturn> (ExceptionMsg msg, params Collection<string> values) where T : Exception
-  {
-    string text;
-
-    if (values.Count == 0)
-      text = XMsgFormats[msg](SE, SE);
-    else if (values.Count == 1)
-      text = XMsgFormats[msg](values[0], SE);
-    else if (values.Count == 2)
-      text = XMsgFormats[msg](values[0], values[1]);
-    else
-    {
-      Log(Debug_Log_Extra_Values);
-      throw new InvalidOperationException(XMsgFormats[Debug_Unknown_Exception](SE, SE));
-    }
-
-    throw new InvalidOperationException(text);
-  }
 
   /// <summary>Logs a message to the output stream.</summary>
   /// <param name="msg">The message to log.</param>

@@ -59,7 +59,6 @@ internal sealed partial class RuleEditForm : Form
         TypeToAssignListBox.SelectedItem = WorkingCopy.TypeToAssign;
     }
 
-    FromTokensCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.FromTokens);
     RecursiveCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Recursive);
     ExemptCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.ExemptAllWithin);
     IgnoreCaseCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.IgnoreCase);
@@ -86,7 +85,6 @@ internal sealed partial class RuleEditForm : Form
     }
     TokenRuleType assembled = TokenRuleType.None;
 
-    assembled |= FromTokensCheck.Checked ? TokenRuleType.FromTokens : TokenRuleType.None;
     assembled |= RecursiveCheck.Checked ? TokenRuleType.Recursive : TokenRuleType.None;
     assembled |= ExemptCheck.Checked ? TokenRuleType.ExemptAllWithin : TokenRuleType.None;
     assembled |= IgnoreCaseCheck.Checked ? TokenRuleType.IgnoreCase : TokenRuleType.None;

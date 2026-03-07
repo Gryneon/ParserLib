@@ -53,7 +53,7 @@ internal sealed class Program
   internal static void LogWarn (string message) => Log(MsgClass.Warning, Area, s_method, message);
   #endregion
 
-  private static readonly Spec TestSpec = new()
+  internal static readonly Spec TestSpec = new()
   {
     Name = "testSpec",
     Operations = [
@@ -96,12 +96,12 @@ internal sealed class Program
     Library.InitializeLibrary(AppDomain.CurrentDomain);
     LogInfo("Program Start");
 
-    InitialTest(TestSpec, Paths.ini_vncdefault);
-    InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
-    InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
-    InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
-    InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
-    InitialTest(SpecIPL.Spec, Paths.ipl_batch6458);
+    //InitialTest(TestSpec, Paths.ini_vncdefault);
+    //InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
+    //InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
+    //InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
+    //InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
+    InitialTest(SpecIPL.Spec, Paths.ipl_label);
     InitialTest(SpecXML.Spec, Paths.xsd_specification);
     InitialTest(SpecWAD.WAD, ResWAD.wad_rpg03);
     InitialTest(SpecWAD.WAD, ResWAD.wad_pl2);
@@ -177,9 +177,10 @@ internal sealed class Program
       TokenCollection tokens = [.. result];
       TokenCollection tokens_assembled = assembler.Execute(tokens);
       LogWarn($"Tokens After Assembly : {tokens_assembled.Count}");
+      Console.WriteLine("\n\n");
       foreach (IToken token in tokens_assembled)
       {
-        LogDebug($"{token}");
+        Console.WriteLine($"{token}");
       }
       LogInfo($"Token Log Complete");
     }

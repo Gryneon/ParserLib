@@ -11,10 +11,10 @@ public class Token : IToken
   public bool Exempt { get; set; }
   public int Index { get; init; }
   public string Type { get; set; } = SE;
-  public IList<IToken> Children { get; init; } = [];
+  public IList<IToken> Children { get; set; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
-  public override string ToString () => $"{Index} : {GetType().Name} is {Type} = {((IToken) this).ToStringSm()}";
+  public override string ToString () => $"{Type} : {Content}";
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);

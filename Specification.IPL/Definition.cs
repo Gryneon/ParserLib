@@ -3,6 +3,7 @@
 using Parser.Inference;
 using Parser.Ops;
 using Parser.Ops.Text;
+using Parser.Tokens;
 
 using static Common.Chars;
 using static Parser.DefinitionStaticFunctions;
@@ -99,10 +100,10 @@ public static class Definition
     DefaultRuleSet = ExemptAllWithin,
     TokenType = typeof(ITT),
     TokenRules = [
-      new(TokenMatch | IgnoredToken, ITT.None, $"(?<={Etx}).*?(?={Stx})"),
-      new(TokenMatch | IgnoredToken, ITT.None, $@"\A.*?(?={Stx})"),
-      new(TokenMatch, ITT.Stx, $"{Stx}"),
-      new(TokenMatch, ITT.Etx, $"{Etx}"),
+      .. TokenRule.MakeSingleCharRules(",;", TokenExact, new ITT[] {ITT.Cm, ITT.Sc}),
+      new(ThrowMatch, ITT.None, $"({Etx}).*?({Stx})"),
+      new(ThrowMatch, ITT.None, $@"\A.*?({Stx})"),
+      new(ThrowMatch, ITT.None, $@"({Etx})[^<\u0002]*?\z"),
       new(TokenMatch, ITT.Esc, $"{Esc}"),
       new(TokenMatch, ITT.Si, $"{Si}"),
       new(TokenMatch, ITT.Sc, $";"),
@@ -112,24 +113,31 @@ public static class Definition
       new(TokenMatch, ITT.Us, $"{Us}"),
       new(TokenMatch, ITT.Can, $"{Can}"),
       new(TokenMatch, ITT.Fs, $"{FS}|<FS>"),
-      new(TokenMatch, ITT.TextProp, Rx(@$"d3,.*?(?=$|;|{Etx})")),
-      new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=[0-9])"),
-      new(TokenMatch, ITT.Letter, @"(?<=\>|;|<LF>|\n)\b[A-Z]\b(?=\< | ;|<LF>|\n)"),
-      new(TokenMatch, ITT.Value, @"(?<=\b[A-Za-z])[0-9]+(?=,|;|\<)"),
+      new(TokenMatch, ITT.Eot, $"{Eot}"),
+      new(TokenMatch, ITT.SmplCmd, $@"(?<={Esc})[CcPT]"),
+      new(TokenMatch, ITT.Text, Rx($@"(?<=d3,).+?(?=;|{Etx}|{Etb}|{Can}|{Lf})")),
+      new(TokenMatch, ITT.OriginX, Rx(@"(?<=o)\d+(?=,)")),
+      new(TokenMatch, ITT.OriginY, Rx(@"(?<=o\d+,)\d+(?=;|\<)")),
+      new(TokenMatch, ITT.Letter, @"\b[A-Za-z](?=[0-9])"),
+      new(TokenMatch, ITT.Letter, @"\b[A-Za-z](?=\< | ;)"),
+      new(TokenMatch, ITT.Value, @"(?<=[A-Za-z])[0-9]+(?=,|;|\<)"),
       new(TokenMatch, ITT.Value, @"(?<=,)[0-9]+(?=,|;|\<)"),
     ],
     SC = SCO,
     TokenCompatLookup = new()
     {
-      [ITT.Cmd] = [ITT.Etb, ITT.Stx, ITT.Etx, ITT.Can],
-      [ITT.Break] = [ITT.Sc, ITT.Lf, ITT.Etx]
+      [ITT.Cmd] = [ITT.Etb, ITT.Can, ITT.Prop, ITT.Ack, ITT.Qty],
     },
     GroupTokenRules = [
-      new(ITT.Prop, "n:Letter{o} p:Value, x:Cm p:Value"),
-      new(ITT.Prop, "n:Letter{l} p:Value"),
-      new(ITT.Prop, "n:Letter{w} p:Value"),
-      new(ITT.Fmt, "n:Letter{E|F} p:Value"),
-      new(ITT.Line, "n:Letter t:Value pa:(TextProp|Prop)")
+      new(ITT.Mode, "x:Esc n:SmplCmd{P} xo:Sc"),
+      new(ITT.Prop, "n:Letter{o} q:OriginX, x:Cm q:OriginY xo:Sc"),
+      new(ITT.Prop, "n:Letter{l} q:Value xo:Sc"),
+      new(ITT.Prop, "n:Letter{w} q:Value xo:Sc"),
+      new(ITT.FieldNum, "x:Esc n:Letter{F} v:Value xo:Sc"),
+      new(ITT.Fmt, "n:Letter{E|F} q:Value xo:Sc"),
+      new(ITT.Line, "n:Letter{[ABHILMQD]} v:Value qa:Prop xo:Sc"),
+      new(ITT.Prop, "n:Letter{[clhw]} q:Value xo:Sc"),
+      new(ITT.Qty, "n:(Rs|Us) q:Value xo:Sc")
     ]
   };
 }

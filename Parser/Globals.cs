@@ -16,14 +16,12 @@ global using Common.Extensions;
 global using Common.Regex;
 
 global using Parser.Condition;
+global using Parser.Exceptions;
 global using Parser.Ops;
 global using Parser.Tokens;
-global using Parser.Exceptions;
 
 global using static Common.Names;
 global using static Parser.Debug;
-global using static Parser.DebugMsg;
-global using static Parser.ExceptionMsg;
 
 global using DM = Common.DictionaryMode;
 global using IT = Parser.Inference.InferenceType;

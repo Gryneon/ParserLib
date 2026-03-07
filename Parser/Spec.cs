@@ -1,11 +1,11 @@
 #pragma warning disable CA1822 // Mark members as static
 
-using Parser.Exceptions;
 using Parser.Inference;
 
 namespace Parser;
 
 /// <summary>A class containing the operations, requirements, and instructions for reading a file.</summary>
+/// <remarks>This class is immutable, and should never be altered during operation, aside from the <see langword="static"/> property <see cref="Active"/>.</remarks>
 public class Spec
 {
   #region Static Members

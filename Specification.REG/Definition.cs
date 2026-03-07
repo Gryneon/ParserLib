@@ -10,35 +10,23 @@ namespace Specification.REG;
 [Flags]
 public enum RegTokenType
 {
-  None = 0,
-  Head = 1,
-  KeyPart = 2,
-  AddVal = 3,
-  SubVal = 4,
-  AddDefVal = 5,
-  SubDefVal = 6,
-  DWordHex = 7,
-  QWordHex = 8,
-  HexPair = 9,
-  HexOne = 10,
-  AInt = 11,
-  Co = 14, // ':'
-  Eq = 15, // '='
-  Sl = 16, // '/'
-  Cm = 17, // ','
-  Bo = 18, // '['
-  Bc = 19, // ']'
-  Po = 20, // '('
-  Pc = 21, // ')'
-  At = 22, // '@'
-  Mn = 23, // '-'
-  TypeName = 24, // dword, hex
-  Key = 25,
-  AddKey = 27,
-  RemKey = 28,
-  AddProp = 29,
-  RemProp = 30,
+  None,
 
+  Head,
+  KeyPart,
+  AddVal, SubVal,
+  AddDefVal, SubDefVal,
+  DWordHex, QWordHex,
+  HexPair, HexOne,
+  AInt,
+  Co, Eq,
+  Sl, Cm,
+  Bo, Bc,
+  Po, Pc,
+  At, Mn,
+  TypeName, Key,
+  AddKey, RemKey,
+  AddProp, RemProp,
 };
 
 /// <summary>Defines the registry spec.</summary>

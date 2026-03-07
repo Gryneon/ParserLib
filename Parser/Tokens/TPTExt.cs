@@ -16,6 +16,7 @@ public static class TPTExt
     [TPT.FlagList] = true,
     [TPT.ParameterList] = true,
     [TPT.PropertyList] = true,
+    [TPT.StatementList] = true,
   };
 
   public static bool IsTokenCollection (this TPT type) => TokenCollectionByPieceType[type];

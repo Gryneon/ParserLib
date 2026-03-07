@@ -32,5 +32,4 @@ public enum TokenPieceType
   /// <summary>The token representing this object's center item.</summary>
   Center,
   FlagState,
-  StatementList,
 }

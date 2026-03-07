@@ -22,6 +22,7 @@ public enum TokenRuleType : long
   StoreOther = 0x20,
   /// <summary>This token or sequence means the parsed content is not valid.</summary>
   ErrorMatch = 0x40,
+  ThrowMatch = TokenMatch | IgnoredToken,
   /// <summary>Extracts and uses the value(s) stored in the group named 'keep'.
   /// If there are multiple captures, they will be stored as additional tokens of this type.</summary>
   /// <remarks>The entire match is exempted if flagged as exempt, but the value of the created tokens will ONLY be what is in the named matching group 'keep'.</remarks>
@@ -38,9 +39,6 @@ public enum TokenRuleType : long
   AddFlag = 0x80000,
   /// <summary>This Token Group Token Code will set <see cref="TokenPieceType.FlagState"/> to <see langword="false"/> in a <see cref="ComplexToken"/>.</summary>
   SubFlag = 0x100000,
-  /// <summary>This Token Rule will only match from existing tokens.</summary>
-  /// <remarks>This is useful for special keywords.</remarks>
-  FromTokens = 0x200000,
   /// <summary>This Token Rule will exempt all matches from being checked.</summary>
   /// <remarks>This is useful for strings, comments, and quoted or escaped items.</remarks>
   ExemptAllWithin = 0x400000,
@@ -61,7 +59,7 @@ public enum TokenRuleType : long
   Mult = 0x10000000,
   Any = Opt | Mult,
   /// <summary>The bits to remove to get the type correctly.</summary>
-  FlagBits = Mult | Opt | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | FromTokens | ErrorMatch,
+  FlagBits = Any | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | Error,
   /// <summary>This token sequence entry will supply any fields not already filled by other definitions from its own respective values.</summary>
   /// <remarks>If a <see cref="ComplexToken"/> was passed to any field of a <see cref="ComplexToken"/> with this flag assigned, all of its parts would populate the one being created..
   /// These properties would be overwritten by any defined token sequence entries.</remarks>

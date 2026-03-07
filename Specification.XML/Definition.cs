@@ -105,7 +105,8 @@ public static class Definition
     GroupTokenRules = [
       new (XTT.Attribute, "n:AttrKey x:Eq v:String"),
       new (XTT.Header, "x:Ao x:Qm n:ElementName pa:Attribute x:Qm x:Ac"),
-      new (XTT.DocumentNamespace, "n:NamespaceAttr x:Co t:Namespace x:Eq v:String"),
+      new (XTT.DocumentNamespace, "t:NamespaceAttr x:Co d:Attribute"),
+      new (XTT.DocumentNamespace, "t:NamespaceAttr x:Eq v:String"),
       new (XTT.AttributeWithNamespace, "t:Namespace x:Co n:AttrKey x:Eq v:String"),
       new (XTT.ElementEndWithNamespace, "x:Ao x:Sl t:Namespace x:Co n:ElementName x:Ac"),
       new (XTT.ElementEnd, "x:Ao x:Sl n:ElementName x:Ac"),
@@ -113,8 +114,8 @@ public static class Definition
       new (XTT.ElementSingle, "x:Ao n:ElementName pa:Attribute x:Sl x:Ac"),
       new (XTT.ElementStartWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Ac"),
       new (XTT.ElementStart, "x:Ao n:ElementName pa:Attribute x:Ac"),
-      new (XTT.ElementPair, "d:ElementStart v:Content x:ElementEnd"),
-      new (XTT.ElementPair, "d:ElementStartWithNamespace v:Content x:ElementEndWithNamespace"),
+      new (Recursive, XTT.ElementPair, "d:ElementStart v:(Content|ElementSingleWithNamespace|ElementSingle|ElementPair) x:ElementEnd"),
+      new (Recursive, XTT.ElementPair, "d:ElementStartWithNamespace va:(Content|ElementSingleWithNamespace|ElementSingle|ElementPair) x:ElementEndWithNamespace"),
 
     ],
     TokenCompatLookup = {

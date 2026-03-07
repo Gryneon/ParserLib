@@ -14,19 +14,19 @@
             <summary>Vertical Tab.</summary>
         </member>
         <member name="F:Common.Chars.TAB">
-            <summary>Vertical Tab.</summary>
+            <summary>Horizontal Tab</summary>
         </member>
         <member name="F:Common.Chars.CR">
-            <summary>Vertical Tab.</summary>
+            <summary>Carraige Return</summary>
         </member>
         <member name="F:Common.Chars.LF">
-            <summary>Vertical Tab.</summary>
+            <summary>Line Feed</summary>
         </member>
         <member name="F:Common.Chars.FF">
-            <summary>Vertical Tab.</summary>
+            <summary>Form Feed</summary>
         </member>
         <member name="F:Common.Chars.ESC">
-            <summary>Vertical Tab.</summary>
+            <summary>Escape</summary>
         </member>
         <member name="F:Common.Chars.BSPC">
             <summary>Backspace Character.</summary>
