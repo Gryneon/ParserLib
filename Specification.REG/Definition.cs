@@ -57,7 +57,8 @@ public static class Definition
         (@"\s+$", ""), //Remove ending ws
         (@"\s*\=\s*", "="), //Remove ws around eq sign
         (@"\\" + RX.LnEnd, "") //Remove escaped newlines
-      ], "text", "text"),
+      ], "text", "text"){
+      },
       new TokenizeOperation("text", "tokens"),
       new TokenAssembleOperation("tokens", "tokens_assembled")
       ],

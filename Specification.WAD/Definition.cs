@@ -16,7 +16,7 @@ public static class Definition
     Name = "wad",
     FileInferences = [
       IfNAnd([IfN(HeadSt, "IWAD"), IfN(ExtIs, "wad") ]),
-      IfN(HeadSt, "PWAD")
+      IfNAnd([IfN(HeadSt, "PWAD"), IfN(ExtIs, "wad") ]),
     ],
     Operations = [
       CreateCursor("bytes", 0),
@@ -40,7 +40,7 @@ public static class Definition
   {
     Name = "pack",
     FileInferences = [
-      IfN(HeadSt, "PACK")
+      IfNAnd([IfN(HeadSt, "PACK"), IfN(ExtIs, "pak") ]),
     ],
     Operations = [
       CreateCursor("bytes", 0),
@@ -65,7 +65,7 @@ public static class Definition
   {
     Name = "wad2",
     FileInferences = [
-      IfN(HeadSt, "WAD2")
+      IfNAnd([IfN(HeadSt, "WAD2"), IfN(ExtIs, "wad") ]),
     ],
     Operations = [
       CreateCursor("bytes", 0),

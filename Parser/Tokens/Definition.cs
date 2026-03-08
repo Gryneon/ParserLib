@@ -17,8 +17,8 @@ internal enum CTT
 
 internal static class Definition
 {
-  private const RT TExact = RT.TokenExact | RT.ExemptAllWithin | RT.IgnoreCase;
-  private const RT TMatch = RT.TokenMatch | RT.ExemptAllWithin | RT.IgnoreCase;
+  private const RT TExact = RT.TokenExact | RT.IgnoreCase;
+  private const RT TMatch = RT.TokenMatch | RT.IgnoreCase;
 
   public static Spec Dummy = new()
   {

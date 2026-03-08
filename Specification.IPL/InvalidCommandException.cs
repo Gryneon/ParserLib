@@ -1,7 +1,9 @@
+using Parser.Exceptions;
+
 namespace Specification.IPL;
 
 /// <summary>Exception that is thrown when a command is executed in the wrong mode.</summary>
-public class InvalidCommandException : InvalidOperationException
+public class InvalidCommandException : OperationException
 {
   /// <summary>Creates the default <see cref="InvalidCommandException"/>.</summary>
   public InvalidCommandException () : base("Command was not in the proper place, or a preceding command was missing.") { }

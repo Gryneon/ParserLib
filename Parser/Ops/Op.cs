@@ -26,13 +26,6 @@ public static class Op
   public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
 
   public static IOperation While (string cursor_key, ICondition condition, IEnumerable<IOperation> operations) => new WhileOperation(cursor_key, condition, operations);
-  public static IOperation Until (IEnumerable<IOperation> operations, ICondition condition) => new LoopOperation()
-  {
-    Operations = [.. operations],
-    Type = LoopType.Until,
-    Condition = condition,
-    Count = null
-  };
   public static IOperation ForEach (IEnumerable<IOperation> operations, string cursor_key) => new LoopOperation()
   {
     Operations = [.. operations],

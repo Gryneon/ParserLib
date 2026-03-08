@@ -35,7 +35,6 @@ public sealed class TokenFactory
   private StringComparison IC => IgnoreCase ? SCOIC : SCO;
   private bool Competes => (_currentRule?.Type.HasFlag(RT.Competitive) ?? false) || _default_rule.HasFlag(RT.Competitive);
   private bool IgnoredToken => (_currentRule?.Type.HasFlag(RT.IgnoredToken) ?? false) || _default_rule.HasFlag(RT.IgnoredToken);
-  private bool ExemptAllWithin => (_currentRule?.Type.HasFlag(RT.ExemptAllWithin) ?? false) || _default_rule.HasFlag(RT.ExemptAllWithin);
   private bool HasError => _currentRule?.Type.HasFlag(RT.Error) ?? false;
   private RT Type => GetMaskedType(_currentRule?.Type ?? RT.None);
   private string RuleData => _currentRule?.RuleStringData ?? SE;
@@ -75,7 +74,6 @@ public sealed class TokenFactory
       Index = match.Start,
       Content = match.Content,
       Type = rule.TypeToAssign,
-      Exempt = rule.Type.HasFlag(RT.ExemptAllWithin),
     };
     bool any = _result.Any(t => t.Index == token.Index);
     if (any)
@@ -86,44 +84,6 @@ public sealed class TokenFactory
 
     _result.Add(token);
   }
-  //private void FromTokens ()
-  //{
-  //  foreach (Token tokendata in _result.Cast<Token>())
-  //  {
-  //    if (tokendata.Exempt)
-  //      continue;
-  //
-  //    if (_currentRule is null)
-  //      break;
-  //
-  //    if (Type is RT.TokenExact)
-  //    {
-  //      if (tokendata.Content.Equals(RuleData, IC))
-  //      {
-  //        tokendata.Type = AssignType;
-  //        tokendata.Exempt = ExemptAllWithin;
-  //      }
-  //    }
-  //    else if (Type is RT.TokenMatch)
-  //    {
-  //      if (Regex.Match(tokendata.Content, GetRuleRegex(_currentRule)).Length == tokendata.Content.Length)
-  //      {
-  //        tokendata.Type = AssignType;
-  //        tokendata.Exempt = ExemptAllWithin;
-  //      }
-  //    }
-  //    else if (Type is RT.TokenExtract)
-  //    {
-  //      Match m = Regex.Match(tokendata.Content, GetRuleRegex(_currentRule));
-  //      if (m.Length == tokendata.Content.Length)
-  //      {
-  //        tokendata.Type = AssignType;
-  //        tokendata.Exempt = ExemptAllWithin;
-  //        tokendata.Content = m.Groups["keep"].Value;
-  //      }
-  //    }
-  //  }
-  //}
   private void StoreOther ()
   {
     s_method = "StoreOther";
@@ -169,9 +129,8 @@ public sealed class TokenFactory
         if (Type is RT.TokenExact)
         {
           MakeAddToken(match);
-        }
-        if (ExemptAllWithin || Type is RT.SplitExact)
           CannotMatch.Add(match);
+        }
       }
       cursor = next + 1;
       next = Input.IndexOf(RuleData, cursor, IC);
@@ -196,8 +155,7 @@ public sealed class TokenFactory
         else if (Type is RT.TokenMatch)
           MakeAddToken(rng);
 
-        if (ExemptAllWithin)
-          CannotMatch.Add(rng);
+        CannotMatch.Add(rng);
       }
     }
   }
@@ -218,8 +176,7 @@ public sealed class TokenFactory
       if (!IgnoredToken)
         MakeAddToken(rng);
 
-      if (ExemptAllWithin)
-        CannotMatch.Add(rng);
+      CannotMatch.Add(rng);
     }
   }
   #region Public Methods

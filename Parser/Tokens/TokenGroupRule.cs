@@ -26,24 +26,4 @@ public class TokenGroupRule : TokenRule
     RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign?.ToString() ?? SE;
   }
-  public TokenGroupRule () => TypeToAssign = SE;
-
-  public static Dictionary<char, RT> CharacterReference => new()
-  {
-    ['b'] = RT.None,
-    ['c'] = RT.AssignCenter,
-    ['f'] = RT.AddFlag,
-    ['i'] = RT.IgnoreCase,
-    ['l'] = RT.AssignLeft,
-    ['m'] = RT.Mult,
-    ['n'] = RT.AssignName,
-    ['o'] = RT.Opt,
-    ['p'] = RT.AddProperty,
-    ['r'] = RT.AssignRight,
-    ['s'] = RT.SubFlag,
-    ['t'] = RT.None,
-    ['v'] = RT.AssignValue,
-    ['x'] = RT.IgnoredToken,
-    ['y'] = RT.AssignType,
-  };
 }

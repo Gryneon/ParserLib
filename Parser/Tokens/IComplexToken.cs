@@ -23,11 +23,11 @@ public interface IComplexToken : IToken, ICloneable
 {
   new string Content { get; }
   string IToken.Content => Content;
-  IReadOnlyCollection<TPT> PiecesPresent { get; }
-  IToken this[TPT piece_type] { get; }
-  bool HasPieceType (TPT piece_type);
-  void SetPieceType (TPT piece_type, IToken token);
-  void AddPieceType (TPT piece_type, IToken token);
-  IToken GetPieceToken (TPT piece_type);
-  string GetPieceContent (TPT piece_type);
+  IReadOnlyCollection<TokenRef> PiecesPresent { get; }
+  IToken this[TokenRef piece_type] { get; }
+  bool HasPieceType (TokenRef piece_type);
+  void SetPieceType (TokenRef piece_type, IToken token);
+  void AddPieceType (TokenRef piece_type, IToken token);
+  IToken GetPieceToken (TokenRef piece_type);
+  string GetPieceContent (TokenRef piece_type);
 }

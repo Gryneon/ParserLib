@@ -101,7 +101,7 @@ public static class Definition
       new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=\:)"),
       new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
     ],
-    DefaultRuleSet = ExemptAllWithin | IgnoreCase,
+    DefaultRuleSet = IgnoreCase,
     GroupTokenRules = [
       new (XTT.Attribute, "n:AttrKey x:Eq v:String"),
       new (XTT.Header, "x:Ao x:Qm n:ElementName pa:Attribute x:Qm x:Ac"),

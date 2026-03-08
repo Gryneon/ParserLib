@@ -97,7 +97,6 @@ public static class Definition
       IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
     IsTextFile = true,
-    DefaultRuleSet = ExemptAllWithin,
     TokenType = typeof(ITT),
     TokenRules = [
       .. TokenRule.MakeSingleCharRules(",;", TokenExact, new ITT[] {ITT.Cm, ITT.Sc}),

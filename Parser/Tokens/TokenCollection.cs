@@ -6,7 +6,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   /// <summary>The internal token list.</summary>
   private List<IToken> _tokens = [];
   private readonly Type _restrictedTo = typeof(IToken);
-
+  public TokenRef? AssignTo { get; set; }
   /// <summary>Creates the collection from a collection of tokens.</summary>
   /// <param name="tokens">The tokens to add to the list.</param>
   public TokenCollection (IEnumerable<IToken> tokens) : this() => _tokens = tokens.Any() ? [.. tokens] : [];

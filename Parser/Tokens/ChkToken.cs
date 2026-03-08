@@ -1,6 +1,6 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using System.Net.NetworkInformation;
+using T = Parser.Tokens.TokenRef;
 
 namespace Parser.Tokens;
 
@@ -28,38 +28,15 @@ public sealed class ChkToken () : IEquatable<IToken>
   private Spec? _spec;
   internal static Dictionary<char, RT> LetterReference { get; } = new()
   {
-    ['a'] = RT.Any,
-    ['b'] = RT.Error,
-    ['c'] = RT.AssignCenter,
-    ['d'] = RT.Descendant,
-    ['e'] = RT.Error,
-    ['f'] = RT.AddFlag,
-    ['g'] = RT.SubFlag,
-    ['h'] = RT.Error,
-    ['i'] = RT.IgnoreCase,
-    ['j'] = RT.Error,
-    ['l'] = RT.AssignLeft,
-    ['m'] = RT.Mult,
-    ['n'] = RT.AssignName,
-    ['o'] = RT.Opt,
-    ['p'] = RT.AddProperty,
-    ['q'] = RT.AddParameter,
-    ['r'] = RT.AssignRight,
-    ['s'] = RT.AddStatement,
-    ['t'] = RT.AssignType,
-    ['u'] = RT.Error,
-    ['v'] = RT.AssignValue,
-    ['w'] = RT.Error,
-    ['x'] = RT.IgnoredToken,
-    ['y'] = RT.Error,
-    ['z'] = RT.Error,
-
-    //['<'] = RT.LookAround,
-    //['>'] = RT.LookAround,
-    //['!'] = RT.Negative,
+    ['A'] = RT.Any,
+    ['I'] = RT.IgnoreCase,
+    ['M'] = RT.Mult,
+    ['O'] = RT.Opt,
   };
+
+  public T AssignTo { get; private set; }
   public required RT TokenRule { get; init; } = RT.None;
-  public string? CustomPropertyName { get; set; }
+  public string? CustomPropertyName { get; private set; }
   public Collection<string> AllowedTypes { get; init; } = [];
   public string RegexValidator { get; init; } = SE;
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
@@ -80,25 +57,26 @@ public sealed class ChkToken () : IEquatable<IToken>
     RT rule = RT.None;
     string prefix = SE;
     string? prop = null;
+    T assnTo = T.Custom;
 
     if (m.Groups.ContainsKey("custom_prop") && m.Groups["custom_prop"].Value.IsNotEmpty())
     {
-      rule = RT.AssignCustomProp;
       prop = m.Groups["custom_prop"].Value;
     }
     else
     {
       prefix = m.Groups["prefix"].Value;
+      assnTo = GetTokenRef(prefix);
     }
     Collection<string> allowed_types = [];
     string regex_validator = SE;
 
-    foreach (char c in prefix)
+    foreach (char c in prefix.ToUpperInvariant().RemoveAllButChars("AOMI"))
     {
       rule |= LetterReference[c];
     }
 
-    if (rule.HasFlag(RT.Error))
+    if (assnTo == T.Error)
     {
       _ = Op.ThrowBadDef($"Bad Prefix Char. ({prefix})");
     }
@@ -118,10 +96,38 @@ public sealed class ChkToken () : IEquatable<IToken>
       RegexValidator = regex_validator,
       AllowedTypes = expanded_types,
       TokenRule = rule,
-      _spec = spec
+      _spec = spec,
+      AssignTo = assnTo,
     };
 
     return result;
+  }
+  public static T GetTokenRef (string prefix)
+  {
+    prefix.ThrowIfNull("Prefix was null");
+    prefix = prefix.ToUpperInvariant();
+    prefix = prefix.RemoveChars("AOMI"); // Any, Opt, Mult, IgnoreCase
+
+    return prefix.Length != 1
+      ? T.Error
+      : prefix[0] switch
+      {
+        'C' => T.Center,
+        'D' => T.Inherit,
+        'F' => T.AddFlag,
+        'G' => T.SubFlag,
+        'L' => T.Left,
+        'N' => T.Name,
+        'P' => T.Property,
+        'Q' => T.Parameter,
+        'R' => T.Right,
+        'S' => T.Statement,
+        'T' => T.Type,
+        'V' => T.Value,
+        'X' => T.Ignore,
+
+        _ => T.Error,
+      };
   }
   private bool IsFullRegexMatch (IToken? token) =>
     token is not null && (RegexValidator.IsEmpty() || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) ? ROIC : RON)).Value.Length == token.Content.Length);

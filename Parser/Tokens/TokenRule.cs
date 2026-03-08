@@ -15,14 +15,14 @@ public class TokenRule
   public string TypeToAssign { get; set; }
 
   [SetsRequiredMembers]
-  public TokenRule (RT type, string typeToAssign, [SS("regex")] string? ruleStringData)
+  public TokenRule (RT type, string typeToAssign, [SS("regex")] string ruleStringData)
   {
     Type = type;
     RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign;
   }
   [SetsRequiredMembers]
-  public TokenRule (RT type, object typeToAssign, [SS("regex")] string? ruleStringData)
+  public TokenRule (RT type, object typeToAssign, [SS("regex")] string ruleStringData)
   {
     Type = type;
     RuleStringData = ruleStringData;
@@ -47,7 +47,7 @@ public class TokenRule
     rules ??= [];
     foreach (TokenRule rule in rules)
     {
-      TokenRule new_rule = new(rule.Type, rule.TypeToAssign, rule.RuleStringData);
+      TokenRule new_rule = new(rule.Type, rule.TypeToAssign, rule.RuleStringData ?? SE);
       new_rules.Add(new_rule);
     }
     return [.. new_rules];
@@ -74,7 +74,7 @@ public class TokenRule
         chars.
         ToArray().
         AsCollection().
-        Select(i => new TokenRule(type, typeToAssign, i.ToString()))];
+        Select(i => new TokenRule(type, typeToAssign, i.ToString() ?? SE))];
 
     return [.. tokenRules];
   }
@@ -89,7 +89,7 @@ public class TokenRule
 
     foreach ((string word, dynamic type) in rules)
     {
-      TokenRule r = new(RT.TokenMatch | RT.ExemptAllWithin | (ignore_case ? RT.IgnoreCase : RT.None), type, @$"\b{word}\b");
+      TokenRule r = new(RT.TokenMatch | (ignore_case ? RT.IgnoreCase : RT.None), type, @$"\b{word}\b");
       tokenRules.Add(r);
     }
 
@@ -104,7 +104,7 @@ public class TokenRule
 
     foreach (object type in rules)
     {
-      TokenRule r = new(RT.TokenMatch | RT.ExemptAllWithin | (ignore_case ? RT.IgnoreCase : RT.None), type, @$"\b{type}\b");
+      TokenRule r = new(RT.TokenMatch | (ignore_case ? RT.IgnoreCase : RT.None), type, @$"\b{type}\b");
       tokenRules.Add(r);
     }
 

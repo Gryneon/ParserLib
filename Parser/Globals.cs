@@ -28,7 +28,6 @@ global using IT = Parser.Inference.InferenceType;
 global using OAT = Parser.OperationActionType;
 global using RT = Parser.Tokens.TokenRuleType;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
-global using TPT = Parser.Tokens.TokenPieceType;
 
 [assembly: AssemblyCompany("Parser")]
 [assembly: AssemblyConfiguration("Debug")]

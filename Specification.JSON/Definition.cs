@@ -10,10 +10,6 @@ namespace Specification.JSON;
 [DefinitionExport]
 public static class Definition
 {
-  // Flags
-  internal const RT RT_Comment = RT.TokenMatch | RT.Competitive | RT.IgnoredToken;
-  internal const RT RT_String = RT.TokenMatch | RT.Competitive;
-
   [DefinitionExport]
   public static Spec Spec => new()
   {
@@ -35,16 +31,16 @@ public static class Definition
     IsTextFile = true,
     SC = SCO,
     GroupTokenRules = [
-      new(RT.AddProperty | RT.Recursive, Property, "n:Str x:Co v:Value"),
-      new(RT.AddProperty | RT.Recursive, JTT.Array, "x:Ao va:Value x:Ac"),
-      new(RT.AddProperty | RT.Recursive, JTT.Object, "x:Bo va:Property x:Bc"),
+      new(RT.Recursive, Property, "n:Str x:Co v:Value"),
+      new(RT.Recursive, JTT.Array, "x:Ao va:Value x:Ac"),
+      new(RT.Recursive, JTT.Object, "x:Bo va:Property x:Bc"),
     ],
     TokenType = typeof(JTT),
     TokenCompatLookup = {
       [Value] = [Null, Bool, JTT.Array, Undef, Num, Str, JTT.Object],
     },
     TokenRules = [
-      new(RT_String, Str, $"\"{Gp(@"[^\\]|\\.").Any.Lazy}\""),
+      new(RT.Competitive, Str, $"\"{Gp(@"[^\\]|\\.").Any.Lazy}\""),
       new(RT.TokenMatch, Bool, @"\b(true|false)\b"),
       new(RT.TokenMatch, Null, @"\b(null)\b"),
       new(RT.TokenMatch, Undef, @"\b(undefined)\b"),
@@ -56,7 +52,6 @@ public static class Definition
         ("undefined", Undef)
       ]),
       .. TokenRule.MakeSingleCharRules("{}[]:,", RT.TokenExact, new Collection<JTT>() {Bo,Bc,Ao,Ac,Co,Cm})
-      ],
-    DefaultRuleSet = RT.ExemptAllWithin
+      ]
   };
 }

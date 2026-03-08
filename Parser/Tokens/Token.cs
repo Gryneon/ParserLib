@@ -4,6 +4,7 @@ namespace Parser.Tokens;
 
 public class Token : IToken
 {
+  public TokenRef? AssignTo { get; set; }
   public string Content { get; set; } = SE;
   // Calculated Properties
   public int LastPosition => Index + Length - 1;

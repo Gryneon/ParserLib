@@ -73,15 +73,6 @@ public sealed class OperationAction : IOperation
             goto Pass;
           }
           return OpStatus.FailNoSuchVarName;
-        // State actions
-        case OAT.NextLoop:
-          Parser.GetCursorByKey(SData[0]).Index += IData[0];
-          Parser.SetNextOperationIndex(LoopStart);
-          goto Pass;
-        case OAT.ContinueLoop:
-          Parser.GetCursorByKey(SData[0]).Index += IData[0];
-          Parser.SetNextOperationIndex(LoopStart);
-          goto Pass;
 
         // Cursor actions
         case OAT.CreateCursor:

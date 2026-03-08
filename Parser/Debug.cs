@@ -41,7 +41,7 @@ public static class Debug
       throw;
     }
   }
-  public static ConsoleColor GetTextColor (MsgClass msg) => msg switch
+  private static ConsoleColor GetTextColor (MsgClass msg) => msg switch
   {
     MsgClass.Debug => C_Blue,
     MsgClass.Forced => C_Cyan,
@@ -50,14 +50,12 @@ public static class Debug
     MsgClass.Critical => C_Black,
     MsgClass.None or MsgClass.Informational or _ => C_White,
   };
-#pragma warning disable IDE0072 // Add missing cases
-  public static ConsoleColor GetBackColor (MsgClass msg) => msg switch
+  private static ConsoleColor GetBackColor (MsgClass msg) => msg switch
   {
     MsgClass.Error => C_DarkRed,
     MsgClass.Critical => C_Red,
     _ => C_Black,
   };
-#pragma warning restore IDE0072 // Add missing cases
   public static void Log (MsgClass msgClass, string className, string methodName, string msg) =>
     Log(className, methodName, msg, GetBackColor(msgClass), GetTextColor(msgClass));
   public static void Log (MsgClass msgClass, string className, string msg) =>

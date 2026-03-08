@@ -40,6 +40,6 @@ public static class Definition
       new(ITT.Property, "n:Key x:Eq v:Value"),
       new(ITT.SectionWProps, "n:Section pa:Property")],
 
-    DefaultRuleSet = ExemptAllWithin | IgnoreCase,
+    DefaultRuleSet = IgnoreCase,
   };
 }

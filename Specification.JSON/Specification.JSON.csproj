@@ -23,9 +23,7 @@
   </ItemGroup>
 
   <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties />
-    </VisualStudio>
+    <VisualStudio><UserProperties schemas_4terminal_x0020_settings_1json__JsonSchema="https://www.schemastore.org/jsonld.json" /></VisualStudio>
   </ProjectExtensions>
 
 </Project>

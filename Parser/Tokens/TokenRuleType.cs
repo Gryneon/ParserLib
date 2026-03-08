@@ -1,7 +1,6 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
 namespace Parser.Tokens;
-
 /// <summary>The type of rule to enforce.</summary>
 [Flags]
 public enum TokenRuleType : long
@@ -27,21 +26,6 @@ public enum TokenRuleType : long
   /// If there are multiple captures, they will be stored as additional tokens of this type.</summary>
   /// <remarks>The entire match is exempted if flagged as exempt, but the value of the created tokens will ONLY be what is in the named matching group 'keep'.</remarks>
   TokenExtract = 0x80,
-  /// <summary>This Token Group Token Code will store the value as the 'Value' in a <see cref="ComplexToken"/>.</summary>
-  AssignValue = 0x8000,
-  /// <summary>This Token Group Token Code will store the value as the 'Name' in a <see cref="ComplexToken"/>.</summary>
-  AssignName = 0x10000,
-  /// <summary>This Token Group Token Code will store the value as the 'Type' in a <see cref="ComplexToken"/>.</summary>
-  AssignType = 0x20000,
-  /// <summary>This Token Group Token Code will store the value as a 'Property' in a <see cref="ComplexToken"/>.</summary>
-  AddProperty = 0x40000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenPieceType.FlagState"/> to <see langword="true"/> in a <see cref="ComplexToken"/>.</summary>
-  AddFlag = 0x80000,
-  /// <summary>This Token Group Token Code will set <see cref="TokenPieceType.FlagState"/> to <see langword="false"/> in a <see cref="ComplexToken"/>.</summary>
-  SubFlag = 0x100000,
-  /// <summary>This Token Rule will exempt all matches from being checked.</summary>
-  /// <remarks>This is useful for strings, comments, and quoted or escaped items.</remarks>
-  ExemptAllWithin = 0x400000,
   /// <summary>Flags the created token as ignored.</summary>
   /// <remarks>This is useful for whitespace and comments.</remarks>
   IgnoredToken = 0x800000,
@@ -59,22 +43,9 @@ public enum TokenRuleType : long
   Mult = 0x10000000,
   Any = Opt | Mult,
   /// <summary>The bits to remove to get the type correctly.</summary>
-  FlagBits = Any | Recursive | IgnoreCase | IgnoredToken | ExemptAllWithin | Error,
-  /// <summary>This token sequence entry will supply any fields not already filled by other definitions from its own respective values.</summary>
-  /// <remarks>If a <see cref="ComplexToken"/> was passed to any field of a <see cref="ComplexToken"/> with this flag assigned, all of its parts would populate the one being created..
-  /// These properties would be overwritten by any defined token sequence entries.</remarks>
-  Descendant = 0x40000000,
+  FlagBits = Any | Recursive | IgnoreCase | IgnoredToken | Error,
   /// <summary>This flag means a character was not recognized.</summary>
   Error = 0x20000000,
-  /// <summary>This flag means a character was not recognized.</summary>
-  AssignLeft = 0x200,
-  /// <summary>This flag means a character was not recognized.</summary>
-  AssignRight = 0x400,
-  /// <summary>This flag means a character was not recognized.</summary>
-  AssignCenter = 0x100,
-  AddParameter = 0x800,
-  AddStatement = 0x1000,
-  AssignCustomProp = 0x2000,
   /// <summary>This Token Rule alias is short for <see cref="Competitive"/> and <see cref="IgnoredToken"/>.</summary>
   TokenComment = Competitive | IgnoredToken,
 }

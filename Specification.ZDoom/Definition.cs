@@ -28,7 +28,7 @@ public static class Definition
       [ZT.StateEntry] = [ZT.StateCmd, ZT.State, ZT.FrameDef]
     },
     TokenType = typeof(ZT),
-    DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
+    DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
       new(RT.TokenComment, ZT.None, @"\/\/[^\n]*"),
       new(RT.TokenComment, ZT.None, @"\/\*[\s\S]*?\*\/"),
@@ -51,7 +51,7 @@ public static class Definition
       new TokenAssembleOperation(),
       Op.End,
     ],
-    DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
+    DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
       new(RT.Competitive, UT.String, Rx(@"""(?:[^""\\\n\r]|\\.)*""")),
       new(RT.TokenComment, UT.None, Rx(@"//[^\n\r]*")),
@@ -122,7 +122,7 @@ public static class Definition
   [DefinitionExport]
   public static Spec MapInfo { get; } = new()
   {
-    DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
+    DefaultRuleSet = RT.IgnoreCase,
     Name = "zdoom.mapinfo",
     FileInferences = [
       IfN(ExtIs, "mapinfo"),
@@ -190,7 +190,7 @@ public static class Definition
     IsTextFile = true,
     SC = SCOIC,
     TokenType = typeof(AT),
-    DefaultRuleSet = RT.ExemptAllWithin | RT.IgnoreCase,
+    DefaultRuleSet = RT.IgnoreCase,
     TokenCompatLookup = {
       [AT.Value] = [AT.Int, AT.Char, AT.Str, AT.Fixed, AT.Expression, AT.ExprName, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStandalone],
       [AT.Stmt] = [AT.VarDecl, AT.BasicCmd, AT.FunctionCallStmt, AT.VarAssn, AT.VarInc, AT.ArrayDecl, AT.WaitStmt, AT.VarDeclAssn],
@@ -327,7 +327,7 @@ public static class Definition
     GroupTokenRules = [
       //TODO: Start Group Defs
     ],
-    DefaultRuleSet = RT.IgnoreCase | RT.ExemptAllWithin,
+    DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
       .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
     ],

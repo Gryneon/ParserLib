@@ -95,21 +95,54 @@ internal sealed class Program
     //MenuController.StartMenu(InitialMenu);
     Library.InitializeLibrary(AppDomain.CurrentDomain);
     LogInfo("Program Start");
+  Start:
+    string? choice = Console.ReadLine();
+    switch (choice?.ToLowerInvariant())
+    {
+      case "wad":
+        InitialTest(SpecWAD.WAD, ResWAD.wad_rpg03);
+        InitialTest(SpecWAD.WAD, ResWAD.wad_pl2);
+        InitialTest(SpecWAD.WAD, ResWAD.wad_tnt);
+        break;
+      case "mapinfo":
+        InitialTest(SpecZDoom.MapInfo, ResZDoom.mapinfo_common);
+        break;
+      case "acs":
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
+        break;
+      case "xml":
+        InitialTest(SpecXML.Spec, Paths.xsd_specification);
+        break;
+      case "sndinfo":
+        //InitialTest(SpecXML.Spec, Paths.xsd_specification);
+        break;
+      case "udmf":
+        InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
+        break;
+      case "ini":
+        InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
+        break;
+      case "zs" or "zscript":
+        InitialTest(SpecZDoom.ZScript, ResZDoom.zs_demon);
+        break;
+      case "ipl":
+        InitialTest(SpecIPL.Spec, Paths.ipl_simple);
+        InitialTest(SpecIPL.Spec, Paths.ipl_label);
+        break;
+      case null:
+      case "exit" or "quit":
+        goto Exit;
+      case "ops":
+        InitialTest(TestSpec, Paths.ini_vncdefault);
+        break;
+      default:
+        Log("Unknown test.");
+        break;
+    }
+    goto Start;
 
-    //InitialTest(TestSpec, Paths.ini_vncdefault);
-    //InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
-    //InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
-    //InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
-    //InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
-    InitialTest(SpecIPL.Spec, Paths.ipl_label);
-    InitialTest(SpecXML.Spec, Paths.xsd_specification);
-    InitialTest(SpecWAD.WAD, ResWAD.wad_rpg03);
-    InitialTest(SpecWAD.WAD, ResWAD.wad_pl2);
-    InitialTest(SpecWAD.WAD, ResWAD.wad_tnt);
-    InitialTest(SpecZDoom.MapInfo, ResZDoom.mapinfo_common);
-    InitialTest(SpecIPL.Spec, Paths.ipl_simple);
-    InitialTest(SpecZDoom.ZScript, ResZDoom.zs_demon);
-
+  Exit:
     if (args.Length == 0)
     {
       LogWarn("No files specified.");

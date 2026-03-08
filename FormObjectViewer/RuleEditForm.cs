@@ -60,7 +60,6 @@ internal sealed partial class RuleEditForm : Form
     }
 
     RecursiveCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Recursive);
-    ExemptCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.ExemptAllWithin);
     IgnoreCaseCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.IgnoreCase);
     IgnoreTokenCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.IgnoredToken);
     MultCheck.Checked = (WorkingCopy.Type | Spec.DefaultRuleSet).HasFlag(TokenRuleType.Mult);
@@ -86,7 +85,6 @@ internal sealed partial class RuleEditForm : Form
     TokenRuleType assembled = TokenRuleType.None;
 
     assembled |= RecursiveCheck.Checked ? TokenRuleType.Recursive : TokenRuleType.None;
-    assembled |= ExemptCheck.Checked ? TokenRuleType.ExemptAllWithin : TokenRuleType.None;
     assembled |= IgnoreCaseCheck.Checked ? TokenRuleType.IgnoreCase : TokenRuleType.None;
     assembled |= MultCheck.Checked ? TokenRuleType.Mult : TokenRuleType.None;
     assembled |= OptCheck.Checked ? TokenRuleType.Opt : TokenRuleType.None;
