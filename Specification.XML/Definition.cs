@@ -80,7 +80,6 @@ public static class Definition
   public static Spec Spec => new()
   {
     FileInferences = [
-
       IfN(ExtIs, "xml"),
       IfN(ExtIs, "csproj"),
       IfN(HeadSt, "<?xm")
@@ -100,11 +99,12 @@ public static class Definition
       new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*\=)"),
       new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=\:)"),
       new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
+      new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)(?<!xml)"),
     ],
     DefaultRuleSet = IgnoreCase,
     GroupTokenRules = [
       new (XTT.Attribute, "n:AttrKey x:Eq v:String"),
-      new (XTT.Header, "x:Ao x:Qm n:ElementName pa:Attribute x:Qm x:Ac"),
+      new (XTT.Header, "x:Ao x:Qm n:ElementName{xml} pa:Attribute x:Qm x:Ac"),
       new (XTT.DocumentNamespace, "t:NamespaceAttr x:Co d:Attribute"),
       new (XTT.DocumentNamespace, "t:NamespaceAttr x:Eq v:String"),
       new (XTT.AttributeWithNamespace, "t:Namespace x:Co n:AttrKey x:Eq v:String"),
