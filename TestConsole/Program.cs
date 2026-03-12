@@ -11,6 +11,7 @@ using ResZDoom = Specification.ZDoom.Properties.Resources;
 using SCC = Parser.Condition.StringCompareConditionType;
 using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
+using SpecJSON = Specification.JSON.Definition;
 using SpecWAD = Specification.WAD.Definition;
 using SpecXML = Specification.XML.Definition;
 using SpecZDoom = Specification.ZDoom.Definition;
@@ -135,6 +136,9 @@ internal sealed class Program
         goto Exit;
       case "ops":
         InitialTest(TestSpec, Paths.ini_vncdefault);
+        break;
+      case "json":
+        InitialTest(SpecJSON.Spec, Paths.json_error);
         break;
       default:
         Log("Unknown test.");

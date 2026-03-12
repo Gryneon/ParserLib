@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
@@ -15,7 +15,21 @@
     <Platforms>AnyCPU;x86;x64</Platforms>
     <TargetFramework>net11.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
+    <Title>XML Format Specification</Title>
+    <PackageIcon>XMLFile.ico</PackageIcon>
+    <ApplicationIcon>CPPXMLProject.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="CPPXMLProject.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Icons\XMLFile.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />

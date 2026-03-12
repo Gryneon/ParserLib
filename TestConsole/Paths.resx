@@ -135,6 +135,9 @@
   <data name="ipl_label" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\label.ipl</value>
   </data>
+  <data name="json_error" xml:space="preserve">
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\errors.json</value>
+  </data>
   <data name="json_launch" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json</value>
   </data>

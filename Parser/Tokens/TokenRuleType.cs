@@ -20,6 +20,7 @@ public enum TokenRuleType : long
   /// <summary>This Token Rule will store the unmatched data parts as tokens with this type.</summary>
   StoreOther = 0x20,
   /// <summary>This token or sequence means the parsed content is not valid.</summary>
+  /// <remarks>Use <c>error_pos</c> to specify the character position to point at in the error report.</remarks>
   ErrorMatch = 0x40,
   ThrowMatch = TokenMatch | IgnoredToken,
   /// <summary>Extracts and uses the value(s) stored in the group named 'keep'.

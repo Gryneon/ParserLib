@@ -8,6 +8,13 @@ namespace Specification.ZDoom;
 [DefinitionExport]
 public static class Definition
 {
+  // Common Rules (No Backtracking, Very Efficient Atomic Groups)
+  private static readonly TokenRule s_cLineComment = new(RT.TokenComment, "None", @"(?>\/\/[^\n]*)");
+  private static readonly TokenRule s_cBlkComment = new(RT.TokenComment, "None", @"(?>\/\*(?>[^*]|\*[^\/])*\*\/)");
+  private static readonly TokenRule s_cString = new(RT.Competitive, "String", @"(?>""(?>[^""\\]|\\"")*"")");
+  private static readonly TokenRule s_int = new(RT.TokenMatch, "Int", @"-?\d+");
+  private static readonly TokenRule s_dec = new(RT.TokenMatch, "Dec", @"(?>-?(?>\d+(?>\.\d*)?|\.\d+))");
+
   /// <summary>https://regex101.com/r/En5C8c/7</summary>
   [DefinitionExport]
   public static Spec ZScript => new()
@@ -30,8 +37,8 @@ public static class Definition
     TokenType = typeof(ZT),
     DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
-      new(RT.TokenComment, ZT.None, @"\/\/[^\n]*"),
-      new(RT.TokenComment, ZT.None, @"\/\*[\s\S]*?\*\/"),
+      s_cLineComment,
+      s_cBlkComment,
       new(RT.Competitive, ZT.String, @"""([^""\\]|\\.)*"""),
       .. TokenRule.MakeSingleCharRules("{}();=,:+-", RT.TokenExact, new ZT[] { ZT.Bo, ZT.Bc, ZT.Po, ZT.Pc, ZT.Sc, ZT.Eq, ZT.Cm, ZT.Co, ZT.Pl, ZT.Mn })
     ],
@@ -53,22 +60,15 @@ public static class Definition
     ],
     DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
-      new(RT.Competitive, UT.String, Rx(@"""(?:[^""\\\n\r]|\\.)*""")),
-      new(RT.TokenComment, UT.None, Rx(@"//[^\n\r]*")),
-      new(RT.TokenComment, UT.None, Rx(@"/\*.*?\*/")),
-      new(RT.TokenExact, UT.Bo, "{"),
-      new(RT.TokenExact, UT.Bc, "}"),
-      new(RT.TokenExact, UT.Eq, "="),
-      new(RT.TokenExact, UT.Sc, ";"),
+      s_cString,
+      s_cLineComment,
+      s_cBlkComment,
+      .. TokenRule.MakeSingleCharRules("{}=;", RT.TokenExact, new UT[] {UT.Bo, UT.Bc, UT.Eq, UT.Sc}),
       new(RT.TokenMatch, UT.Bool,  @"\b(true|false)\b"),
-      new(RT.TokenMatch, UT.Dec,  Rx(@"-?\b(\d+\.\d+|\.?\d+)\b")),
-      new(RT.TokenMatch, UT.Namespace, @"\bnamespace\b"),
-      new(RT.TokenMatch, UT.Vertex,    @"\bvertex\b"),
-      new(RT.TokenMatch, UT.Thing,     @"\bthing\b"),
-      new(RT.TokenMatch, UT.SideDef,   @"\bsidedef\b"),
-      new(RT.TokenMatch, UT.LineDef,   @"\blinedef\b"),
-      new(RT.TokenMatch, UT.Sector,    @"\bsector\b(?=[^=}]*\{)"),
-      new(RT.TokenMatch, UT.Name, Rx(@"\b[a-z]\w*\b"))],
+      s_dec,
+      .. TokenRule.MakeWordMatchRules(true, UT.Namespace, UT.Vertex, UT.Thing, UT.SideDef, UT.LineDef),
+      new(RT.TokenMatch, UT.Sector, @"\bsector\b(?=[^=}]*\{)"),
+      new(RT.TokenMatch, UT.Name, @"\b[a-z]\w*\b")],
     // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
     //new(RT.StoreOther, None)],
     GroupTokenRules = [
@@ -138,9 +138,9 @@ public static class Definition
     TokenType = typeof(MT),
     TokenRules = [
       new (RT.Competitive, MT.LangRef, @"""\$\w+"""),
-      new (RT.Competitive, MT.String, @""".+?"""),
-      new (RT.TokenComment, MT.None, @"\/\/.*?$"),
-      new (RT.TokenComment, MT.None, @"\/\*[\s\S]*?\*\/"),
+      s_cString,
+      s_cLineComment,
+      s_cBlkComment,
       .. TokenRule.MakeWordMatchRules(true,
         MT.Doomednums, MT.AddDefaultMap, MT.GameInfo,
         MT.Skill, MT.Map, MT.DamageType, MT.Episode,
@@ -148,6 +148,8 @@ public static class Definition
         MT.Cast, MT.Fader, MT.GotoTitle, MT.Image,
         MT.Scroller, MT.TextScreen, MT.Wiper, MT.Cutscene),
       new (RT.TokenMatch, MT.PropertyName, "Background2?|Draw(Conditional)?|Music|Sound|Time|Cast(Class|Name)|AttackSound|FadeType|InitialDelay|Scroll(Direction|Time)|WipeType"),
+      s_int,
+      s_dec
     ],
     SC = SCOIC,
     TokenCompatLookup = {
@@ -208,8 +210,8 @@ public static class Definition
       // Data
       new(RT.Competitive,   AT.Str,   @"""([^\\""]|\\.)*"""),
       new(RT.Competitive,   AT.Char,  @"'([^\\']|\\.)*'"),
-      new(RT.TokenComment,  AT.None,  @"\/\/.*?$"),
-      new(RT.TokenComment,  AT.None,  @"\/\*.*?\*\/"),
+      s_cLineComment,
+      s_cBlkComment,
 
       // Preprocessor
       Tm(AT.Int, @"-?(?<!\.|\w)(\d+|0x[a-f0-9]+)(?!\.|\w)"),
@@ -289,12 +291,12 @@ public static class Definition
       new(RT.None, AT.CaseLabel,                   "x:Case n:Value x:Co"),
       new(RT.None, AT.CaseLabel,                   "n:Default x:Co"),
 
-      new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc x:Bo sa:Stmt x:Bc"),
-      new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc s:Stmt"),
-      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc x:Bo sa:Stmt x:Bc"),
-      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc s:Stmt"),
-      new(RT.None, AT.ElseBlock,                   "x:Else x:Bo sa:Stmt x:Bc"),
-      new(RT.None, AT.ElseBlock,                   "x:Else s:Stmt"),
+      new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
+      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc s:(Stmt|Block)"),
+      new(RT.None, AT.ElseBlock,                   "x:Else x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.None, AT.ElseBlock,                   "x:Else s:(Stmt|Block)"),
       new(RT.None, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
       new(RT.None, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
       new(RT.None, AT.SwitchBlock,                 "x:Switch x:Po v:Value x:Pc x:Bo sa:(CaseLabel|Stmt|Block) x:Bc"),
@@ -329,6 +331,8 @@ public static class Definition
     ],
     DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
+      s_cLineComment,
+      s_cBlkComment,
       .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
     ],
     Operations = [
@@ -339,4 +343,45 @@ public static class Definition
       new DebugWaitForInputOperation(),
     ]
   };
+
+  [DefinitionExport]
+  public static Spec SndSeq => new()
+  {
+    FileInferences = [IfNOr(
+      IfN(ExtIs, "sndseq"),
+      IfN(FName|Is, "sndseq"))],
+    Name = "zdoom.sndseq",
+    RxOpt = ROML | ROIC | ROIPW | ROEC,
+    SC = SCOIC,
+    IsTextFile = true,
+    TokenType = typeof(MdlT),
+    GroupTokenRules = [
+      //TODO: Start Group Defs
+    ],
+    DefaultRuleSet = RT.IgnoreCase,
+    TokenRules = [
+      s_cLineComment,
+      s_cBlkComment,
+      .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
+    ],
+    Operations = [
+      new TokenizeOperation(),
+      new DebugToStringOperation("tokens"),
+      new DebugWaitForInputOperation(),
+      new TokenAssembleOperation(),
+      new DebugWaitForInputOperation(),
+    ]
+  };
+}
+
+public enum SndSeqTokenType
+{
+  None,
+
+  // Constructs
+
+  // Basic Tokens
+
+  // Primitive Data
+
 }

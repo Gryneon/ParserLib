@@ -51,7 +51,8 @@ public static class Definition
         ("null", Null),
         ("undefined", Undef)
       ]),
-      .. TokenRule.MakeSingleCharRules("{}[]:,", RT.TokenExact, new Collection<JTT>() {Bo,Bc,Ao,Ac,Co,Cm})
+      .. TokenRule.MakeSingleCharRules("{}[]:,", RT.TokenExact, new Collection<JTT>() {Bo,Bc,Ao,Ac,Co,Cm}),
+      new(RT.ErrorMatch, None, @"}(?=[^}]*\z)\s*(?<error_pos>\S[\s\S]*?)\s*\z"),
       ]
   };
 }

@@ -115,6 +115,15 @@ namespace TestConsole {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\errors.json.
+        /// </summary>
+        public static string json_error {
+            get {
+                return ResourceManager.GetString("json_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
         /// </summary>
         public static string json_launch {
