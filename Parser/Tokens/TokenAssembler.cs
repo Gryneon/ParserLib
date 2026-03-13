@@ -6,15 +6,15 @@ public sealed partial class TokenAssembler
 {
   private const string Area = "TokenAssembler";
   private string _method = SE;
-  private readonly TokenGroupRuleCollection _rules;
+  private readonly TokenRuleCollection _rules;
 
   // Temp fields
   private TokenCollection? _tokens;
-  private TokenGroupRule? _rule;
+  private TokenRule? _rule;
   private int _constructed_items;
   private readonly Spec _spec;
 
-  public TokenAssembler (TokenGroupRuleCollection rules, Spec spec)
+  public TokenAssembler (TokenRuleCollection rules, Spec spec)
   {
     _rules = rules;
     _spec = spec;
@@ -38,7 +38,7 @@ public sealed partial class TokenAssembler
     _method = "Parse";
 
     Validate();
-    if (_rule.Sequence.IsEmpty())
+    if (_rule.GroupSequence.IsEmpty())
     {
       if (_rule.RuleStringData is null)
         throw new InvalidOperationException("No valid data in rule.");
@@ -50,7 +50,7 @@ public sealed partial class TokenAssembler
       {
         try
         {
-          _rule.Sequence.Add(ChkToken.Parse(item, _spec));
+          _rule.GroupSequence.Add(ChkToken.Parse(item, _spec));
         }
         catch (ArgumentException ae)
         {
@@ -185,7 +185,7 @@ public sealed partial class TokenAssembler
 
     while (true)
     {
-      ChkToken? node = node_index >= _rule.Sequence.Count ? null : _rule.Sequence[node_index];
+      ChkToken? node = node_index >= _rule.GroupSequence.Count ? null : _rule.GroupSequence[node_index];
       IToken? token = token_index >= _tokens.Count ? null : _tokens[token_index];
       bool isMult = node?.TokenRule.HasFlag(RT.Mult) ?? false;
       bool isOpt = node?.TokenRule.HasFlag(RT.Opt) ?? false;
@@ -216,7 +216,7 @@ public sealed partial class TokenAssembler
         continue;
       }
       // End of Tokens and all remaining are optional
-      if (token is null && _rule.Sequence[node_index..].AllOptional)
+      if (token is null && _rule.GroupSequence[node_index..].AllOptional)
       {
         Construct(first_token_index, assembly);
         token_index = first_token_index + 1;
@@ -294,7 +294,7 @@ public sealed partial class TokenAssembler
 
     for (int r = 0; r < _rules.Count; r++)
     {
-      _rule = (TokenGroupRule?) _rules[r];
+      _rule = (TokenRule?) _rules[r];
       _rule.ThrowIfNull();
       Parse();
       int times = 0;

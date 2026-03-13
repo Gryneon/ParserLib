@@ -52,4 +52,6 @@ public static class Chars
   public const string QT = "\"";
   /// <summary>Single quote symbol.</summary>
   public const char SQ = '\'';
+
+  public static readonly Collection<string> NewLines = [CRLF, LFs, CRs, $"{VT}"];
 }

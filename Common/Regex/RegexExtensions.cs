@@ -1,9 +1,5 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System.Collections.Immutable;
-
-using RegexObj = System.Text.RegularExpressions.Regex;
-
 namespace Common.Regex;
 
 /// <summary>A static class contianing extension methods for <see cref="RegexObj"/> related types.</summary>

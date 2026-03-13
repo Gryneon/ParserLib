@@ -133,6 +133,15 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\ACS Rules.xml.
+        /// </summary>
+        public static string xml_acs {
+            get {
+                return ResourceManager.GetString("xml_acs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs.
         /// </summary>
         public static string zs_demon {

@@ -45,7 +45,7 @@ internal sealed partial class ParserForm : Form
     ];
   private Spec LoadedSpec => SpecComboBox.SelectedIndex >= 0 ? SpecList[SpecComboBox.SelectedIndex] : DefaultSpec.Unknown;
   private readonly BindingList<TokenRule> _workingRules = [];
-  private readonly BindingList<TokenGroupRule> _workingGroupRules = [];
+  private readonly BindingList<TokenRule> _workingGroupRules = [];
   private readonly BindingList<IToken> _currentTokens = [];
   private SectionCollection _sections = [];
   private string _parseFile = "";
@@ -118,7 +118,7 @@ internal sealed partial class ParserForm : Form
   private void LoadGroupRules (object sender, EventArgs e)
   {
 
-    foreach (TokenGroupRule rule in LoadedSpec.GroupTokenRules)
+    foreach (TokenRule rule in LoadedSpec.GroupTokenRules)
     {
       _workingGroupRules.Add(rule);
     }

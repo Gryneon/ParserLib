@@ -27,9 +27,10 @@ public sealed class MatchDataSet : GroupDataSet,
   bool ICollection<GroupDataSet>.IsReadOnly { get; }
   /// <summary>
   /// Represents data extracted from a regular expression match, including its groups,  and provides additional
-  /// functionality for working with the match.</summary>
-  /// <remarks>The <see cref="Groups"/> property is initialized by converting the groups in the provided  <see
-  /// cref="Match"/> object into a sorted dictionary for easier access and manipulation.</remarks>
+  /// functionality for working with the match.
+  /// </summary>
+  /// <remarks>The <see cref="Groups"/> property is initialized by converting the groups in the provided
+  /// <see cref="Match"/> object into a sorted dictionary for easier access and manipulation.</remarks>
   /// <param name="m">The <see cref="Match"/> object containing the results of a regular expression match.  Cannot be <see
   /// langword="null"/>.</param>
   /// <param name="i"></param>

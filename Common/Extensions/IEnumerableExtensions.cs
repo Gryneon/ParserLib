@@ -1,5 +1,7 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using System.Diagnostics.CodeAnalysis;
+
 using Common.Regex;
 
 namespace Common.Extensions;
@@ -57,7 +59,7 @@ public static class IEnumerableExtensions
     return result;
   }
   public static Collection<string> ToStringCollection (this IEnumerable list) => list.AsCollection<string>();
-  public static bool IsEmpty (this IEnumerable? list) => list is null || list.Count() == 0;
+  public static bool IsEmpty ([NotNullWhen(true)] this IEnumerable? list) => list is null || list.Count() == 0;
 
   // IEnumerable<string>
   public static RxS AggregateRegex (this IEnumerable<string> list) => list.TextJoin("|");

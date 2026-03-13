@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 using Common.Regex;
 
+using static Common.Names;
+
 using SysRegex = System.Text.RegularExpressions.Regex;
 
 namespace Common.Extensions;
@@ -40,28 +42,71 @@ public static class StringExtensions
   public static bool Any (this string? text, IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
   public static bool ContainsAny ([NotNullWhen(true)] this string text, IEnumerable<string> other, StringComparison sc = SCO) => other.Any(x => text.Contains(x, sc));
   public static bool ContainsNewLine ([NotNullWhen(true)] this string s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
+  public static int FirstIndexOfAny (this string s, IEnumerable<string> checkFor, int startAt, StringComparison sc, out int found_len)
+  {
+    found_len = DNE;
+
+    if (s.IsEmpty() || checkFor is null || checkFor.IsEmpty())
+      return DNE;
+
+    int index = DNE;
+
+    foreach (string item in checkFor)
+    {
+      if (item.IsEmpty())
+        continue;
+
+      int cur = s.IndexOf(item, startAt, sc);
+
+      if (index == DNE || cur < index && cur != DNE)
+      {
+        index = cur;
+        found_len = item.Length;
+      }
+    }
+
+    return index;
+  }
   public static int ContainsCount (this string s, string checkFor, StringComparison sc = SCO)
   {
     if (s is null || checkFor is null || s.Length == 0 || checkFor.Length == 0)
       return 0;
 
     int count = 0;
-    int pos = -1;
+    int pos = DNE;
     do
     {
-      pos = s.IndexOf(checkFor, pos, sc);
-      if (pos != -1)
+      pos = s.IndexOf(checkFor, pos == DNE ? 0 : pos, sc);
+      if (pos != DNE)
       {
         count++;
         pos++;
       }
-    } while (pos != -1);
+    } while (pos != DNE);
+    return count;
+  }
+  public static int ContainsCount (this string s, IList<string> checkForAny, StringComparison sc = SCO)
+  {
+    if (s is null || checkForAny is null || s.Length == 0 || checkForAny.Count == 0)
+      return 0;
+
+    int count = 0;
+    int pos = DNE;
+    do
+    {
+      pos = s.FirstIndexOfAny(checkForAny, pos == DNE ? 0 : pos, sc, out int found_len);
+      if (pos != DNE)
+      {
+        count++;
+        pos += found_len;
+      }
+    } while (pos != DNE);
     return count;
   }
   public static int? ToInt (this string s) => int.TryParse(s, out int value) ? value : null;
   public static decimal? ToDecimal (this string s) => decimal.TryParse(s, out decimal value) ? value : null;
   public static bool? ToBool (this string s) => bool.TryParse(s, out bool value) ? value : null;
-  public static bool ValidateWithRegex (this string s, RxS validation_expression, RegexOptions options = RegexOptions.None)
+  public static bool ValidateWithRegex (this string s, [SS("regex")] string validation_expression, RegexOptions options = RegexOptions.None)
   {
     MatchCollection matches = SysRegex.Matches(s, validation_expression);
     return matches.Count == 1 && matches[0].Length == s?.Length;
@@ -202,12 +247,12 @@ public static class StringExtensions
   public static (int Line, int Col) Get2DPosition (this string text, int position)
   {
     if (text is null || position < 0)
-      return (-1, -1);
+      return (DNE, DNE);
     string before = text[..position];
 
     int lnst = before.LastIndexOfAny(['\n', '\r', '\v']);
-    int lines = 0; // Count newlines, \r, \n or \r\n.
-    int col = text.Length - lnst;
+    int lines = before.ContainsCount(Chars.NewLines, SCO);
+    int col = before.Length - lnst;
     return (lines, col);
   }
   public static void ThrowIfNullOrEmpty ([NotNull] this string? text)

@@ -141,6 +141,9 @@
   <data name="udmf_sample" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf</value>
   </data>
+  <data name="xml_acs" xml:space="preserve">
+    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\ACS Rules.xml</value>
+  </data>
   <data name="zs_demon" xml:space="preserve">
     <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs</value>
   </data>

@@ -3,14 +3,5 @@ namespace Parser.Tokens;
 
 public sealed class TokenRuleCollection : Collection<TokenRule>, ICanAddChildren<TokenRule>, ICanAccessChildren<int, TokenRule>
 {
-  public void AddRange (IEnumerable<TokenRule> children)
-  {
-    if (children is null)
-      return;
-
-    foreach (TokenRule child in children)
-    {
-      Add(child);
-    }
-  }
+  public void AddRange (IEnumerable<TokenRule> children) => IListExtensions.AddRange(this, children);
 }

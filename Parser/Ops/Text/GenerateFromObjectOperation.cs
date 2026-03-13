@@ -13,17 +13,9 @@ namespace Parser.Ops.Text;
 /// <remarks><code>
 /// Inputs: IDictionary&lt;int, MatchData>, IEnumerable&lt;MatchData>
 /// Output: <see cref="Dictionary{TKey,TValue}">Dictionary&lt;int, TOutput></see></code>
-/// <br/>
-/// Statuses:
-/// <code>
-/// <see cref="OpStatus.Pass"/>: Operation completed successfully.
-/// <see cref="OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
-/// <see cref="OpStatus.FailOverride"/>: Operation failed, but is allowed to continue.
-/// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
-/// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataStore"/>.
-/// </code>
 /// </remarks>
+/// <exception cref="OperationBadInputTypeException"/>
+/// <exception cref="OperationNoSuchVarException"/>
 public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, string output_key, string group_name) : Operation(input_key, output_key)
   where TOutput : IGeneratable
 {
@@ -31,7 +23,7 @@ public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, str
   protected override void Execute ()
   {
     Dictionary<int, TOutput> output_items = [];
-    if (CheckInput(out IDictionary<int, MatchDataSet>? dCasted))
+    if (WorkData is IDictionary<int, MatchDataSet> dCasted)
     {
       Dictionary<int, MatchDataSet> dict = [.. dCasted];
       foreach (KeyValuePair<int, MatchDataSet> kvp in dict)
@@ -44,7 +36,7 @@ public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, str
         }
       }
     }
-    else if (CheckInput(out IEnumerable<MatchDataSet>? eCasted))
+    else if (WorkData is IEnumerable<MatchDataSet> eCasted)
     {
       Collection<MatchDataSet> iterator = [.. eCasted];
       for (int index = 0; index < iterator.Count; index++)
@@ -58,7 +50,7 @@ public class GenerateFromObjectOperation<TInput, TOutput> (string input_key, str
     }
     else
     {
-      Status = OpStatus.FailBadInputType;
+      Status = Op.ThrowBadInput("IDictionary<int, MatchDataSet> or IEnumerable<MatchDataSet>", $"{WorkData?.GetType()}");
       return;
     }
 

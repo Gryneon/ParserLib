@@ -45,7 +45,7 @@ public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupG
       }
       else
       {
-        Status = OpStatus.FailBadInputType;
+        Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
         return;
       }
     Status = OpStatus.Pass;

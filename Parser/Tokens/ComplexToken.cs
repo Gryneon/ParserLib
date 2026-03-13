@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class ComplexToken : IComplexToken
+public sealed class ComplexToken : IToken
 {
   private readonly Dictionary<TokenRef, IToken> _token_pieces = [];
   public TokenRef? AssignTo { get; set; }
@@ -26,7 +26,7 @@ public sealed class ComplexToken : IComplexToken
   public IList<IToken> Children { get; set; } = [];
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
-  public bool Equals (IToken? other) => other is IComplexToken && Children.SequenceEqual(other.Children);
+  public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
   public IToken GetPieceToken (TokenRef piece_type) => _token_pieces[piece_type];
   public TokenCollection? GetPieceTokens (TokenRef piece_type) => _token_pieces[piece_type] as TokenCollection;
   public string GetPieceContent (TokenRef piece_type) => _token_pieces[piece_type].Content;

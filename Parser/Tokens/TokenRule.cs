@@ -1,18 +1,12 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 namespace Parser.Tokens;
 
-public static class TokenRules
-{
-  public static Collection<TokenRule> Paren { get; } = [.. TokenRule.MakeSingleCharRules("()", RT.TokenExact, new string[] { "Po", "Pc" })];
-  public static Collection<TokenRule> Brack { get; } = [.. TokenRule.MakeSingleCharRules("{}", RT.TokenExact, new string[] { "Bo", "Bc" })];
-  public static Collection<TokenRule> Brace { get; } = [.. TokenRule.MakeSingleCharRules("[]", RT.TokenExact, new string[] { "Ao", "Ac" })];
-}
-
 public class TokenRule
 {
   public required RT Type { get; set; }
   public string? RuleStringData { get; set; }
   public string TypeToAssign { get; set; }
+  public ChkSequence GroupSequence { get; } = [];
 
   [SetsRequiredMembers]
   public TokenRule (RT type, string typeToAssign, [SS("regex")] string ruleStringData)
@@ -28,19 +22,27 @@ public class TokenRule
     RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign?.ToString() ?? SE;
   }
+  public TokenRule () => TypeToAssign = SE;
+  /// <summary>Use this constructor to make a basic non-recurrsive group rule.</summary>
+  /// <param name="typeToAssign">The type to assign to the assembled token.</param>
+  /// <param name="ruleStringData">The assembly definition.</param>
   [SetsRequiredMembers]
-  public TokenRule (RT type, string typeToAssign)
+  public TokenRule (string typeToAssign, [SS("regex")] string ruleStringData)
   {
-    Type = type;
+    Type = RT.None;
+    RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign;
   }
+  /// <summary>Use this constructor to make a basic non-recurrsive group rule.</summary>
+  /// <param name="typeToAssign">The type to assign to the assembled token.</param>
+  /// <param name="ruleStringData">The assembly definition.</param>
   [SetsRequiredMembers]
-  public TokenRule (RT type, object typeToAssign)
+  public TokenRule (object typeToAssign, [SS("regex")] string ruleStringData)
   {
-    Type = type;
+    Type = RT.None;
+    RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign?.ToString() ?? SE;
   }
-  public TokenRule () => TypeToAssign = SE;
   public static TokenRule[] CopyOfRuleSet (TokenRuleCollection rules)
   {
     Collection<TokenRule> new_rules = [];

@@ -37,7 +37,7 @@ public class Spec
   /// <summary>Token rules for the tokenize operration..</summary>
   public TokenRuleCollection TokenRules { get; init; } = [];
   /// <summary>Group token rules for the tokenize operration..</summary>
-  public TokenGroupRuleCollection GroupTokenRules { get; init; } = [];
+  public TokenRuleCollection GroupTokenRules { get; init; } = [];
   /// <summary>Marks this instance as the active specification.</summary>
   /// <remarks>Subsequent operations that depend on the active object will reference this instance after calling
   /// this method. If another instance was previously active, it will be replaced.</remarks>

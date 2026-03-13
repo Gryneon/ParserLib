@@ -70,7 +70,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini.
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.INI\Samples\default.ini.
         /// </summary>
         public static string ini_vncdefault {
             get {
@@ -133,6 +133,15 @@ namespace TestConsole {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\dllfile.reg.
+        /// </summary>
+        public static string reg_dllfile {
+            get {
+                return ResourceManager.GetString("reg_dllfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
         /// </summary>
         public static string reg_iplfile {
@@ -147,6 +156,24 @@ namespace TestConsole {
         public static string wad_pl2 {
             get {
                 return ResourceManager.GetString("wad_pl2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\errors.xml.
+        /// </summary>
+        public static string xml_errors {
+            get {
+                return ResourceManager.GetString("xml_errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\operation.xml.
+        /// </summary>
+        public static string xml_operation {
+            get {
+                return ResourceManager.GetString("xml_operation", resourceCulture);
             }
         }
         

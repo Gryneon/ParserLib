@@ -114,6 +114,8 @@ internal sealed class Program
         break;
       case "xml":
         InitialTest(SpecXML.Spec, Paths.xsd_specification);
+        InitialTest(SpecXML.Spec, Paths.xml_operation);
+        InitialTest(SpecXML.Spec, Paths.xml_errors);
         break;
       case "sndinfo":
         //InitialTest(SpecXML.Spec, Paths.xsd_specification);

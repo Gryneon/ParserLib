@@ -29,13 +29,12 @@
   <ItemGroup>
     <Content Include="Samples\demon.zs" />
     <Content Include="Samples\label.ipl" />
-    <Content Include="Samples\mapinfo.lmp" />
     <Content Include="Samples\sample.cfg" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="11.0.0-preview.2.26159.112" />
+    <PackageReference Include="System.Drawing.Common" Version="11.0.0-preview.2.26159.112" />
   </ItemGroup>
 
   <ItemGroup>

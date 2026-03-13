@@ -15,17 +15,11 @@ namespace Parser.Ops.Text;
 /// <remarks><code>
 /// Inputs: <typeparamref name="TIn"/><br/>
 /// Output: <typeparamref name="TOut"/>
-/// </code><br/>
-/// Statuses:
-/// <code>
-/// <see cref="OpStatus.Pass"/>: Operation completed successfully.
-/// <see cref="OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
-/// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/>.
-/// <see cref="OpStatus.FailNoSuchVarName"/>: There was no data at the input key.
-/// <see cref="OpStatus.FailBadOpResult"/>: The validation function failed.
 /// </code>
 /// </remarks>
+/// <exception cref="OperationBadResultException"/>
+/// <exception cref="OperationNoSuchVarException"/>
+/// <exception cref="OperationBadInputTypeException"/>
 public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut, bool> validation, string input_key, string output_key) : Operation(input_key, output_key) where TIn : class where TOut : class
 {
   private readonly Func<TIn, TOut> _operation = operation;
@@ -36,12 +30,12 @@ public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut,
     if (WorkData is TIn casted)
     {
       TOut result = _operation(casted);
-      Status = _validation(result) ? OpStatus.Pass : OpStatus.FailBadOpResult;
+      Status = _validation(result) ? OpStatus.Pass : Op.ThrowBadResult("Validation Failed");
       WorkData = result;
     }
     else
     {
-      Status = OpStatus.FailBadInputType;
+      Status = Op.ThrowBadInput($"{typeof(TIn)}", $"{WorkData?.GetType()}");
     }
   }
 }

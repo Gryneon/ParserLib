@@ -1,6 +1,7 @@
 global using System;
 global using System.Collections;
 global using System.Collections.Generic;
+global using System.Collections.Immutable;
 global using System.Collections.ObjectModel;
 global using System.Globalization;
 global using System.IO;
@@ -14,6 +15,7 @@ global using Common.Extensions;
 global using static Common.Names;
 
 global using ANEx = System.ArgumentNullException;
+global using RegexObj = System.Text.RegularExpressions.Regex;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 global using StringTuple = (string Key, string Value);
 
