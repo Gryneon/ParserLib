@@ -8,6 +8,9 @@ public class DebugWaitForInputOperation (ConsoleKey? key = null) : Operation()
   private readonly ConsoleKey? _key = key;
   private const string Area = "DebugWaitForInputOperation";
 
+  public override bool NoInput => true;
+  public override bool NoOutput => true;
+
   protected override void Execute ()
   {
     ConsoleKeyInfo keyInfo;

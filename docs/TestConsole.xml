@@ -27,7 +27,7 @@
         </member>
         <member name="P:TestConsole.Paths.ini_vncdefault">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini.
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.INI\Samples\default.ini.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ipl_batch6456">
@@ -60,6 +60,11 @@
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
             </summary>
         </member>
+        <member name="P:TestConsole.Paths.reg_dllfile">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\dllfile.reg.
+            </summary>
+        </member>
         <member name="P:TestConsole.Paths.reg_iplfile">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
@@ -68,6 +73,16 @@
         <member name="P:TestConsole.Paths.wad_pl2">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
+            </summary>
+        </member>
+        <member name="P:TestConsole.Paths.xml_errors">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\errors.xml.
+            </summary>
+        </member>
+        <member name="P:TestConsole.Paths.xml_operation">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\operation.xml.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.xsd_specification">

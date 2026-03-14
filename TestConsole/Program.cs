@@ -4,7 +4,7 @@ using System.IO;
 using Parser.Condition;
 using Parser.Tokens;
 
-using static Parser.Debug;
+using static Parser.DebugHelper;
 
 using ResWAD = Specification.WAD.Resources;
 using ResZDoom = Specification.ZDoom.Properties.Resources;
@@ -18,7 +18,7 @@ using SpecZDoom = Specification.ZDoom.Definition;
 
 namespace TestConsole;
 
-internal sealed class Program
+internal static class Program
 {
   #region Constants
   internal const string SamplePath = @"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\";
@@ -48,10 +48,10 @@ internal sealed class Program
   [MemberNotNull(nameof(UserInput))]
   internal static void UserLine () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
   internal static string UserLineReturn () => Console.ReadLine() ?? SE;
-  internal static void LogError (string message) => Log(MsgClass.Error, Area, s_method, message);
-  internal static void LogDebug (string message) => Log(MsgClass.Debug, Area, s_method, message);
-  internal static void LogInfo (string message) => Log(MsgClass.Informational, Area, s_method, message);
-  internal static void LogWarn (string message) => Log(MsgClass.Warning, Area, s_method, message);
+  internal static void LogError (string message) => Log(MsgClass.Error, message);
+  internal static void LogDebug (string message) => Log(MsgClass.Debug, message);
+  internal static void LogInfo (string message) => Log(MsgClass.Informational, message);
+  internal static void LogWarn (string message) => Log(MsgClass.Warning, message);
   #endregion
 
   internal static readonly Spec TestSpec = new()
@@ -86,7 +86,7 @@ internal sealed class Program
   [STAThread]
   internal static int Main (string[] args)
   {
-    s_method = "Main";
+    DebugIn("Program", "Main");
     Console.Clear();
 #if DEBUG
     Common.Debug.Verbosity = LogClass.DebugAll;
@@ -97,6 +97,7 @@ internal sealed class Program
     Library.InitializeLibrary(AppDomain.CurrentDomain);
     LogInfo("Program Start");
   Start:
+    LogInfo("");
     string? choice = Console.ReadLine();
     switch (choice?.ToLowerInvariant())
     {
@@ -118,7 +119,7 @@ internal sealed class Program
         InitialTest(SpecXML.Spec, Paths.xml_errors);
         break;
       case "sndinfo":
-        //InitialTest(SpecXML.Spec, Paths.xsd_specification);
+        InitialTest(SpecZDoom.SndInfo, ResZDoom.sndinfo_test);
         break;
       case "udmf":
         InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
@@ -143,7 +144,7 @@ internal sealed class Program
         InitialTest(SpecJSON.Spec, Paths.json_error);
         break;
       default:
-        Log("Unknown test.");
+        Log(MsgClass.Warning, "Unknown test.");
         break;
     }
     goto Start;
@@ -158,7 +159,7 @@ internal sealed class Program
       ProcessArgs(args);
     }
 
-    Log(MsgClass.Critical, Area, "Main", "Press enter to exit.");
+    LogWarn("Press enter to exit.");
     _ = Console.ReadLine();
     return 0;
   }
@@ -284,7 +285,7 @@ internal sealed class Program
 
   GetFile:
 
-    Log("Program", "Load", "Path to file:");
+    LogDebug("Path to file:");
     userPath = UserLineReturn();
 
     if (userPath.IsAny(["back", "quit", "exit"]))
@@ -297,10 +298,10 @@ internal sealed class Program
     byteContent = File.ReadAllBytes(userPath);
     specName = Library.CheckFile(userPath);
     userSpec = Library.LookupOrDefault(specName);
-    Log(Area, "Load", $"Spec Chosen is {userSpec.Name}");
+    LogInfo($"Spec Chosen is {userSpec.Name}");
 
   GetSpec:
-    Log(Area, "Load", $"Input a new spec or press enter to use chosen ({userSpec.Name})");
+    LogInfo($"Input a new spec or press enter to use chosen ({userSpec.Name})");
     UserInput = UserLineReturn();
 
     if (UserInput.IsEmpty())
@@ -334,9 +335,9 @@ internal sealed class Program
       OpStatus status = parser.Parse(byteContent);
 
       if (status.IsFail())
-        Log("Program.Load", $"Failed, status is {status}");
+        Log(MsgClass.Error, $"Failed, status is {status}");
       else
-        Log("Program.Load", $"Good, status is {status}");
+        Log(MsgClass.Informational, $"Good, status is {status}");
     }
   }
 }

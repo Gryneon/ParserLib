@@ -79,6 +79,6 @@ public class GenerateOperation<TIn, TOut> : Operation
       }
     }
     else
-      Status = OS.FailBadInputType;
+      Status = Op.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", $"{WorkData?.GetType()}");
   }
 }

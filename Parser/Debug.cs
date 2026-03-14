@@ -9,7 +9,12 @@ namespace Parser;
 public static class Debug
 {
   /// <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
-  public static LogClass Verbosity => ComDebug.Verbosity;
+  public static LogClass Verbosity
+  {
+    get => ComDebug.Verbosity;
+    set => ComDebug.Verbosity = value;
+  }
+
   /// <summary>Set to the line you must go to when making logs.</summary>
   public static int LineStart { get; set; }
   /// <summary>This increments when a log is written. Set to 0 to reset to top.</summary>

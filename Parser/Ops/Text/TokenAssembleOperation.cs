@@ -16,5 +16,9 @@ public class TokenAssembleOperation : Operation
       WorkData = assembled;
       Status = OpStatus.Pass;
     }
+    else
+    {
+      Status = Op.ThrowBadInput("TokenCollection", $"{WorkData?.GetType()}");
+    }
   }
 }

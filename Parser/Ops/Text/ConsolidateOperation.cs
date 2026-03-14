@@ -23,8 +23,12 @@ public class ConsolidateOperation<TCommon> (IEnumerable<string> input_keys, stri
           index++;
           break;
         }
+        else
+        {
+          Status = Op.ThrowBadResult($"Type mismatch against {typeof(TCommon)}");
+        }
       }
-      Debug.Log("ConsolidateOperation", "Execute", $"Index {index} Skipped.");
+      Log("ConsolidateOperation", "Execute", $"Index {index} Skipped.");
       index++;
     }
 

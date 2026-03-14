@@ -1,5 +1,7 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Common.Extensions;
 
 public static class IListExtensions
@@ -10,7 +12,7 @@ public static class IListExtensions
   /// <param name="list"></param>
   /// <returns></returns>
   public static bool IsEmpty<T> (this IList<T>? list) => list is null || list.Count == 0;
-  public static void AddRange<T> (this IList<T> list, IEnumerable<T> additions)
+  public static void AddRange<T> ([NotNull] this IList<T> list, IEnumerable<T> additions)
   {
     list ??= [];
     if (additions is null)
@@ -20,33 +22,41 @@ public static class IListExtensions
   }
   public static void RemoveCount<T> (this IList<T> list, int count, int startat = 0)
   {
-    ANEx.ThrowIfNull(list);
+    if (list is null)
+      return;
+
     for (int i = 0; i <= count; i++)
       list.RemoveAt(startat);
   }
-  public static void InsertMany<T> (this IList<T> list, int index, IEnumerable<T> additions)
+  public static void InsertMany<T> ([NotNull] this IList<T> list, int index, IEnumerable<T> additions)
   {
-    ANEx.ThrowIfNull(list);
+    list ??= [];
+
     if (additions is null)
       return;
+
+    Action<T> doThing = list.Count <= index ? list.Add : i => list.Insert(index, i);
+
     foreach (T item in additions)
-      list.Insert(index, item);
+      doThing.Invoke(item);
   }
   public static void Replace<T> (this IList<T> list, int atIndex, IEnumerable<T> replaceWith)
   {
-    ANEx.ThrowIfNull(list);
+    if (list is null)
+      return;
+
     list.RemoveAt(atIndex);
     list.InsertMany(atIndex, replaceWith);
   }
-  public static void RemoveLast<T> (this IList<T> list)
+  public static void RemoveLast<T> ([NotNull] this IList<T> list)
   {
-    ANEx.ThrowIfNull(list);
+    list ??= [];
     list.RemoveAt(list.Count - 1);
   }
 
-  public static void TrimEmpty (this IList<string> list)
+  public static void TrimEmpty ([NotNull] this IList<string> list)
   {
-    ANEx.ThrowIfNull(list);
+    list ??= [];
     while (list.Remove(SE)) { }
   }
 
@@ -55,12 +65,11 @@ public static class IListExtensions
   /// <summary>Performs a 'pop' action, but discards the popped item.</summary>
   /// <typeparam name="T">The type of item.</typeparam>
   /// <param name="list">The list to perform the action on.</param>
-  public static void Drop<T> (this IList<T> list)
+  public static void Drop<T> (this IList<T>? list)
   {
-    list.ThrowIfNull();
-    list.RemoveAt(list.Count - 1);
+    list?.RemoveAt(list.Count - 1);
   }
-  public static T Pop<T> (this IList<T> list)
+  public static T Pop<T> ([NotNull] this IList<T> list)
   {
     list.ThrowIfNull();
 
@@ -68,20 +77,24 @@ public static class IListExtensions
     list.RemoveAt(list.Count - 1);
     return item;
   }
-  public static T Peek<T> (this IList<T> list)
+  public static T Peek<T> ([NotNull] this IList<T> list) where T : class
   {
+    // Return an empty string if it is peeking at an empty string collection.
+    if (typeof(T).Name.Is("String") && list.IsEmpty())
+      return (SE as T)!;
+
     list.ThrowIfNull();
     return list.Last();
   }
 
   // Queue Functions for IList<T>
 
-  public static void Enqueue<T> (this IList<T> list, T item)
+  public static void Enqueue<T> ([NotNull] this IList<T> list, T item)
   {
     list.ThrowIfNull();
     list.Add(item);
   }
-  public static T Dequeue<T> (this IList<T> list)
+  public static T Dequeue<T> ([NotNull] this IList<T> list)
   {
     list.ThrowIfNull();
 
@@ -93,13 +106,13 @@ public static class IListExtensions
     return item;
   }
 
-  public static IList<T?> Nullify<T> (this IList<T> list) where T : struct
+  public static IList<T?> Nullify<T> ([NotNull] this IList<T> list) where T : struct
   {
     list.ThrowIfNull();
     return list.IsEmpty() ? [] : [.. from item in list let item2 = (T?) item select item2];
   }
 
-  public static IList<T> DeNullify<T> (this IList<T?> list) where T : struct
+  public static IList<T> DeNullify<T> ([NotNull] this IList<T?> list) where T : struct
   {
     list.ThrowIfNull();
     return list.IsEmpty() ? [] : [.. from item in list let item2 = item is null ? default : item.Value select item2];

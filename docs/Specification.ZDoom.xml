@@ -180,6 +180,11 @@
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
             </summary>
         </member>
+        <member name="P:Specification.ZDoom.Properties.Resources.xml_acs">
+            <summary>
+              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\ACS Rules.xml.
+            </summary>
+        </member>
         <member name="P:Specification.ZDoom.Properties.Resources.zs_demon">
             <summary>
               Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs.

@@ -13,9 +13,9 @@ namespace Common.Extensions;
 /// <summary>Extensions for string objects.</summary>
 public static class StringExtensions
 {
-  /// <summary>Case sensitive comparison.</summary>
+  /// <summary>Shorthand for case sensitive ordinal comparison.</summary>
   /// <param name="text">This text.</param>
-  /// <param name="other">The other text.</param>
+  /// <param name="other">The text to compare to.</param>
   /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
   public static bool Is (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCO) ?? false);
   public static bool IsAny (this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || text.Any(other, Equals);
@@ -26,22 +26,26 @@ public static class StringExtensions
   /// <summary>Checks if this string is a positive integer.</summary>
   /// <param name="text">The string to check.</param>
   /// <returns><see langword="true"/> if the <see langword="string"/> is a positive integer, <see langword="false"/> otherwise.</returns>
-  public static bool IsPosInteger (this string text) => int.TryParse(text, out int i) && int.IsPositive(i);
+  public static bool IsPosInteger (this string text) => int.TryParse(text, out int i) && i >= 0;
   /// <summary>Checks if a <see langword="string"/> is <see langword="null"/> or empty.</summary>
   /// <param name="text">The <see langword="string"/> to check.</param>
   /// <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
   public static bool IsEmpty ([NotNullWhen(false)][MaybeNullWhen(true)] this string? text) => string.IsNullOrEmpty(text);
+  /// <summary>Checks if a <see langword="string"/> is not <see langword="null"/> or empty.</summary>
+  /// <param name="text">The <see langword="string"/> to check.</param>
+  /// <returns><see langword="false"/> if the <see langword="string"/> is empty or <see langword="null"/>, <see langword="true"/> otherwise.</returns>
   public static bool IsNotEmpty ([NotNullWhen(true)] this string? text) => !text.IsEmpty();
   public static bool IsNamedGroup (this string text) => !text.IsPosInteger();
-  /// <summary>Case insensitive comparison.</summary>
+  /// <summary>Shorthand for case insensitive ordinal comparison.</summary>
   /// <param name="text">This text.</param>
   /// <param name="other">The other text.</param>
-  /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
-  public static bool Like (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCOIC) ?? false);
-  public static bool Like (this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || (text?.Any(other, Like) ?? false);
-  public static bool Any (this string? text, IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
+  /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/>.<br/>
+  /// If either <paramref name="other"/> or <paramref name="text"/> are <see langword="null"/>, this method will return <see langword="false"/>.</returns>
+  public static bool Like ([NotNullWhen(true)] this string? text, [NotNullWhen(true)] string? other) => text?.Equals(other, SCOIC) ?? false;
+  public static bool Like ([NotNullWhen(true)] this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || (text?.Any(other, Like) ?? false);
+  public static bool Any ([NotNullWhen(true)] this string? text, IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
   public static bool ContainsAny ([NotNullWhen(true)] this string text, IEnumerable<string> other, StringComparison sc = SCO) => other.Any(x => text.Contains(x, sc));
-  public static bool ContainsNewLine ([NotNullWhen(true)] this string s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
+  public static bool ContainsNewLine ([NotNullWhen(true)] this string? s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
   public static int FirstIndexOfAny (this string s, IEnumerable<string> checkFor, int startAt, StringComparison sc, out int found_len)
   {
     found_len = DNE;
@@ -116,7 +120,7 @@ public static class StringExtensions
   public static Collection<string> Expand (this string s) => [.. s.Select(item => item.ToString())];
   public static string Remove (this string? text, string regex, RegexOptions options = RegexOptions.None) => text is null ? SE : SysRegex.Replace(text, regex, SE, options);
   public static string Remove (this string s, Match match) => s is null ? SE : match is null ? s : s.Remove(match.Index, match.Length);
-  public static string Remove (this string? text, int changed_pos, int changed_length) => text.Replace(changed_pos, changed_length);
+  public static string Remove (this string? text, int changed_pos, int changed_length) => text is null ? SE : text.Replace(changed_pos, changed_length);
   public static string RemoveChars (this string? text, string chars) => new(text?.Where(item => !chars.Contains(item, SCO)).ToArray());
   public static string RemoveAllButChars (this string? text, string chars) => new(text?.Where(item => chars.Contains(item, SCO)).ToArray());
   public static string RemoveAll (this string? text, string regex, RegexOptions options = RegexOptions.None)
@@ -262,7 +266,7 @@ public static class StringExtensions
   }
   public static T ToEnum<T> (this string data) where T : notnull => (T) Enum.Parse(typeof(T), data);
   public static int ToEnum (this string data, Type type) => (int) Enum.Parse(type, data);
-  public static bool TryMatchAt (this string rx, RegexOptions options, int index, string input, [NotNullWhen(true)] out MatchDataSet? match)
+  public static bool TryMatchAt ([SS("regex")] this string rx, RegexOptions options, int index, string input, [NotNullWhen(true)] out MatchDataSet? match)
   {
     match = null;
     Match attempt = SysRegex.Match(input, rx, options);

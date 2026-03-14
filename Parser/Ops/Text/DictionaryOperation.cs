@@ -1,4 +1,3 @@
-
 namespace Parser.Ops.Text;
 
 public class DictionaryOperation (RxSCollection list, RegexOptions options = RegexOptions.None, bool fullMatchText = false, string input_key = "text", string output_key = "matches", RxS? full_match_fail = null) : Operation(input_key, output_key)

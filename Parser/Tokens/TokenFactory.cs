@@ -212,11 +212,11 @@ public sealed class TokenFactory
       (int line, int col) = Input.Get2DPosition(error_pos);
       string[] lines = Input.Split('\n');
       int line_max = lines.Length;
-      ErrorLog($"Error at line {line}, column {col}.");
-      ErrorLog($"  {(line > 0 ? lines[line - 1] : "*** FIRST LINE BELOW ***")}");
-      ErrorLog($"> {lines[line]}");
-      ErrorLog($"  {(line < line_max ? lines[line + 1] : "*** LAST LINE ABOVE ***")}");
-      ErrorLog($"  {new string(' ', col)}^");
+      WarnLog($"Error at line {line}, column {col}.");
+      WarnLog($"  {(line > 0 ? lines[line - 1] : "*** FIRST LINE BELOW ***")}");
+      WarnLog($"> {lines[line]}");
+      WarnLog($"  {(line + 1 < line_max ? lines[line + 1] : "*** LAST LINE ABOVE ***")}");
+      WarnLog($"  {new string(' ', col)}^");
     }
 
     if (failUponEnding)

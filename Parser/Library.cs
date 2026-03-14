@@ -2,6 +2,8 @@
 
 using Parser.Inference;
 
+using static Parser.DebugHelper;
+
 namespace Parser;
 
 public sealed class Library : IReadOnlyDictionary<string, Spec>
@@ -19,11 +21,14 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
   public static Spec? Lookup (string? name) => name is not null && Instance is not null && Instance.ContainsKey(name) ? Instance[name] : null;
   public static Spec LookupOrDefault (string? name)
   {
+    DebugIn("LookupOrDefault");
     if (Instance is null)
     {
-      Log(MsgClass.Error, "Library", "Must initialize library before using.");
+      Log(MsgClass.Error, "Must initialize library before using.");
+      DebugOut();
       return DefaultSpec.Unknown;
     }
+    DebugOut();
     return (name is null || !TryLookup(name, out Spec? spec)) ? DefaultSpec.Unknown : spec;
   }
   public static bool TryLookup (string name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
@@ -39,9 +44,12 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
       return false;
     }
   }
-
+  /// <summary>Initializes the library.</summary>
+  /// <remarks>This must be called before the library is used.</remarks>
+  /// <param name="domain">The domain that we are loading the <see cref="Spec"/> objects from.</param>
   public static void InitializeLibrary (AppDomain domain)
   {
+    DebugIn("InitializeLibrary");
     domain.ThrowIfNull();
     Instance = new();
     List<Assembly> assemblies = [.. domain.GetAssemblies()];
@@ -53,7 +61,6 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
       if (assembly.GetName().Name?.StartsWithAny(SCO, "System", "Microsoft", "Common") ?? false)
         continue;
 
-      Log(MsgClass.Debug, "Library", $"Loaded assembly ({assembly.GetName().Name})");
       Type[] types = assembly.GetTypes();
 
       foreach (Type type in types)
@@ -74,24 +81,31 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
         }
       }
     }
+    Log(MsgClass.Informational, $"{Instance._specs.Count} Specs Loaded.");
+    DebugOut();
   }
   /// <summary>Provides the <see cref="Spec"/> for the provided file path.</summary>
   public static string? CheckFile (string path)
   {
+    DebugIn("CheckFile");
     if (Instance is null)
+    {
+      DebugOut();
       throw new InvalidOperationException("Library must be initialized.");
-
+    }
     foreach (KeyValuePair<string, ReadOnlyCollection<IInferenceNode>> fi in SpecInferences)
     {
       foreach (IInferenceNode node in fi.Value)
       {
         if (node.CheckFile(path))
         {
-          Log($"CheckFile({path})", "File match found. S");
+          Log(MsgClass.Informational, $"File match found. Using {fi.Key} as Spec.");
+          DebugOut();
           return fi.Key;
         }
       }
     }
+    DebugOut();
     return null;
   }
 

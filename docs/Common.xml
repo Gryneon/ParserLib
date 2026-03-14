@@ -436,9 +436,9 @@
             <summary>Extensions for string objects.</summary>
         </member>
         <member name="M:Common.Extensions.StringExtensions.Is(System.String,System.String)">
-            <summary>Case sensitive comparison.</summary>
+            <summary>Shorthand for case sensitive ordinal comparison.</summary>
             <param name="text">This text.</param>
-            <param name="other">The other text.</param>
+            <param name="other">The text to compare to.</param>
             <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
         </member>
         <member name="M:Common.Extensions.StringExtensions.IsPosInteger(System.String)">
@@ -451,11 +451,17 @@
             <param name="text">The <see langword="string"/> to check.</param>
             <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
         </member>
+        <member name="M:Common.Extensions.StringExtensions.IsNotEmpty(System.String)">
+            <summary>Checks if a <see langword="string"/> is not <see langword="null"/> or empty.</summary>
+            <param name="text">The <see langword="string"/> to check.</param>
+            <returns><see langword="false"/> if the <see langword="string"/> is empty or <see langword="null"/>, <see langword="true"/> otherwise.</returns>
+        </member>
         <member name="M:Common.Extensions.StringExtensions.Like(System.String,System.String)">
-            <summary>Case insensitive comparison.</summary>
+            <summary>Shorthand for case insensitive ordinal comparison.</summary>
             <param name="text">This text.</param>
             <param name="other">The other text.</param>
-            <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
+            <returns><see langword="true"/> if the values match, otherwise <see langword="false"/>.<br/>
+            If either <paramref name="other"/> or <paramref name="text"/> are <see langword="null"/>, this method will return <see langword="false"/>.</returns>
         </member>
         <member name="M:Common.Extensions.StringExtensions.RemoveNulls(System.String)">
             <summary>Removes all null characters from the string.</summary>
@@ -801,9 +807,10 @@
         <member name="M:Common.Regex.MatchDataSet.#ctor(System.Text.RegularExpressions.Match,System.Int32)">
             <summary>
             Represents data extracted from a regular expression match, including its groups,  and provides additional
-            functionality for working with the match.</summary>
-            <remarks>The <see cref="P:Common.Regex.MatchDataSet.Groups"/> property is initialized by converting the groups in the provided  <see
-            cref="T:System.Text.RegularExpressions.Match"/> object into a sorted dictionary for easier access and manipulation.</remarks>
+            functionality for working with the match.
+            </summary>
+            <remarks>The <see cref="P:Common.Regex.MatchDataSet.Groups"/> property is initialized by converting the groups in the provided
+            <see cref="T:System.Text.RegularExpressions.Match"/> object into a sorted dictionary for easier access and manipulation.</remarks>
             <param name="m">The <see cref="T:System.Text.RegularExpressions.Match"/> object containing the results of a regular expression match.  Cannot be <see
             langword="null"/>.</param>
             <param name="i"></param>
