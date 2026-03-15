@@ -5,33 +5,31 @@ namespace Parser.Ops;
 /// <param name="message">The message to prompt.</param>
 /// <param name="output_key">The key to store the input in.</param>
 /// <param name="validation">An optional validator.</param>
-public sealed class PromptOperation (string message, string output_key, Predicate<string>? validation = null) : Operation
+/// <param name="accept_empty">Allow empty strings from the user.</param>
+public sealed class PromptOperation (string message, string output_key, Predicate<string>? validation = null, bool accept_empty = false) : Operation(SE, output_key)
 {
+  public override bool NoInput => true;
+  public bool AcceptEmpty { get; } = accept_empty;
   public string Message { get; } = message;
   public Predicate<string>? Validation { get; } = validation;
 
   protected override void Execute ()
   {
     Console.Write(Message);
-    string? userInput = Console.ReadLine();
+    string userInput = Console.ReadLine() ?? SE;
 
-    if (userInput is null)
+    if (userInput.IsEmpty() && !AcceptEmpty)
     {
-      Status = OpStatus.FailBadInputNull;
-      return;
+      Status = Op.ThrowBadInput("not empty", "empty");
     }
-
-    if (Validation is null || Validation(userInput))
+    else if (Validation is null || Validation.Invoke(userInput))
     {
-      Data[output_key] = userInput;
       Status = OpStatus.Pass;
       WorkData = userInput;
-      return;
     }
     else
     {
-      Status = OpStatus.FailBadOpResult;
-      return;
+      Status = Op.ThrowBadResult("Validation failed.");
     }
   }
 }

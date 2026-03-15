@@ -14,36 +14,22 @@ public static class Debug
     get => ComDebug.Verbosity;
     set => ComDebug.Verbosity = value;
   }
-
-  /// <summary>Set to the line you must go to when making logs.</summary>
-  public static int LineStart { get; set; }
-  /// <summary>This increments when a log is written. Set to 0 to reset to top.</summary>
-  public static int LineCount { get; set; }
-  /// <summary>Sets the output stream.</summary>
-  /// <param name="stream">The stream to output to.</param>
-  public static void SetStream (TextWriter stream) => Console.SetOut(stream);
-  private static void DoLog (string msg, ConsoleColor? back = null, ConsoleColor? text = null)
+  private static void DoLog (string msg, ConsoleColor? back = null, ConsoleColor? text = null, bool partial = false)
   {
-    try
+    if (Verbosity != LogClass.None)
     {
-      //if (Console.CursorTop < LineStart + LineCount)
-      //  Console.SetCursorPosition(0, LineStart + LineCount);
-      if (Verbosity != LogClass.None)
-      {
-        if (back is not null) Console.BackgroundColor = back.Value;
-        if (text is not null) Console.ForegroundColor = text.Value;
-        Console.WriteLine(msg);
-        if (back is not null || text is not null) Console.ResetColor();
-        LineCount++;
-      }
-    }
-    catch (ArgumentOutOfRangeException)
-    {
+      if (back is not null)
+        Console.BackgroundColor = back.Value;
+      if (text is not null)
+        Console.ForegroundColor = text.Value;
 
-    }
-    catch (Exception)
-    {
-      throw;
+      if (partial)
+        Console.Write(msg);
+      else
+        Console.WriteLine(msg);
+
+      if (back is not null || text is not null)
+        Console.ResetColor();
     }
   }
   private static ConsoleColor GetTextColor (MsgClass msg) => msg switch
@@ -85,6 +71,14 @@ public static class Debug
   /// <param name="text">The foreground color.</param>
   public static void Log (string src, string target, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White) =>
     DoLog($"{src}.{target} : {msg}", back, text);
+  /// <summary>Logs a portion of aspecially formatted message to the output stream.</summary>
+  /// <param name="src">The orignating class.</param>
+  /// <param name="target">The originating method.</param>
+  /// <param name="msg">The message to log.</param>
+  /// <param name="back">The background color.</param>
+  /// <param name="text">The foreground color.</param>
+  public static void LogPiece (string src, string target, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White) =>
+    DoLog($"{src}.{target} : {msg}", back, text, true);
   public static void LogException (Exception e)
   {
     e.ThrowIfNull();

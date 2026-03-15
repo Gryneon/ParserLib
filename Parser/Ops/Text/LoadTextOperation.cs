@@ -26,7 +26,7 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
         if (!File.Exists(ea) && ignoreMissing)
           continue;
         else if (!File.Exists(ea))
-          Status = OpStatus.FailBadOpResult;
+          Status = Op.ThrowBadResult("File does not exist, and no ignore missing flag.");
 
         result.Add(File.ReadAllText(ea));
       }
@@ -35,6 +35,6 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
       return;
     }
     else
-      Status = OpStatus.FailBadInputType;
+      Status = Op.ThrowBadInput("string or IEnumerable<string>", WorkDataType);
   }
 }

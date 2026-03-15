@@ -1,5 +1,7 @@
 using Parser.Exceptions;
 
+using static Parser.DebugHelper;
+
 namespace Parser.Ops;
 
 /// <summary>
@@ -72,6 +74,7 @@ public abstract class Operation : IOperation
   /// <summary>The adjusted status taking into account operation flags.</summary>
   protected virtual OpStatus AdjustedStatus =>
     Status is OpStatus.Skipped ? OpStatus.Skipped : Status.IsFail() && ContinueOnFail ? OpStatus.FailOverride : Status;
+  protected virtual string WorkDataType => WorkData?.GetType().Name ?? "null";
   #endregion
   #region Operation Flags
   public bool ContinueOnFail { get; set; }
@@ -82,7 +85,7 @@ public abstract class Operation : IOperation
   /// <remarks>Set this to false on any operation that does not use or load data.</remarks>
 
   [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkData))]
-  public virtual bool NoInput => InputKey.IsEmpty();
+  public virtual bool NoInput => SkipOperation || InputKey.IsEmpty();
   #endregion
   #region Input Checks
   /// <summary>
@@ -92,7 +95,7 @@ public abstract class Operation : IOperation
 
   protected void CheckInputNull ()
   {
-    if (InputKey == SE || NoInput)
+    if (NoInput)
     {
       Log(MsgClass.Debug, "Operation.CheckInputNull", $"No key checked.");
       Status = OpStatus.Skipped;
@@ -103,7 +106,7 @@ public abstract class Operation : IOperation
     }
     else
     {
-      Log(MsgClass.Debug, "Operation.CheckInputNull", $"Key {InputKey} is not null.");
+      Log(MsgClass.Debug, $"Key {InputKey} is not null.");
       Status = OpStatus.Pass;
     }
   }

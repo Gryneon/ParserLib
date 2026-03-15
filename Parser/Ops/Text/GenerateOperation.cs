@@ -65,7 +65,7 @@ public class GenerateOperation<TIn, TOut> : Operation
       WorkData = Results;
       Status = OS.Pass;
     }
-    else if (CheckInput(out TIn? mdd))
+    else if (WorkData is TIn mdd)
     {
       if (Predicate(mdd))
       {

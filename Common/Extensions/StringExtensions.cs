@@ -30,7 +30,7 @@ public static class StringExtensions
   /// <summary>Checks if a <see langword="string"/> is <see langword="null"/> or empty.</summary>
   /// <param name="text">The <see langword="string"/> to check.</param>
   /// <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
-  public static bool IsEmpty ([NotNullWhen(false)][MaybeNullWhen(true)] this string? text) => string.IsNullOrEmpty(text);
+  public static bool IsEmpty ([NotNullWhen(false)] this string? text) => string.IsNullOrEmpty(text);
   /// <summary>Checks if a <see langword="string"/> is not <see langword="null"/> or empty.</summary>
   /// <param name="text">The <see langword="string"/> to check.</param>
   /// <returns><see langword="false"/> if the <see langword="string"/> is empty or <see langword="null"/>, <see langword="true"/> otherwise.</returns>
