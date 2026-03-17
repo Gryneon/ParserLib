@@ -44,7 +44,7 @@ public sealed class ByteReadOperation : Operation, IOperation
   private string ReadChars (string cursorName, int count) => ReadBytes(cursorName, count).Span.ByteArrToString();
   protected override void Execute ()
   {
-    if (!NoInput && CheckInput(out int size))
+    if (WorkData is int size)
     {
       Size = size;
     }
@@ -93,13 +93,8 @@ public sealed class ByteReadOperation : Operation, IOperation
       > 0 when adjusted_mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size),
       -1 when adjusted_mode is ByteReadMode.Text => ReadChars(CursorKey, remaining),
       -1 when adjusted_mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining),
-      _ => null
+      _ => Op.ThrowBadResult("Size was 0, cannot have a size of 0.")
     };
-    if (value is null)
-    {
-      Status = FailBadOpDefinition;
-      return;
-    }
 
     Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Read: {value}");
 
