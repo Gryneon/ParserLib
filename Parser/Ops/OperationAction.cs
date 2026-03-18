@@ -61,10 +61,10 @@ public sealed class OperationAction : IOperation
         case OAT.DebugKey:
           Log(Area, "Dumping Key.\n\n\n");
           if (Parser.Data.TryLoad(SData[0], out object? keyData))
-            Log(keyData.ToString() ?? "No string representation.");
+            Log(MsgClass.Warning, keyData.ToString() ?? "No string representation.");
           else
-            Log("Key not found.");
-          Log("\n\n\n");
+            Log(MsgClass.Warning, "Key not found.");
+          Log(MsgClass.None, "\n\n\n");
           goto Pass;
         case OAT.CopyKey:
           if (Parser.Data.ContainsKey(SData[0]))

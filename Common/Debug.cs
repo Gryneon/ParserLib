@@ -1,73 +1,92 @@
-//#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
 namespace Common;
 
-/// <summary>The logging level of the program.</summary>
-public enum LogClass
-{
-  None,
-  NoLog,
-  Minimal,
-  Standard,
-  Verbose,
-  All,
-  DebugAll
-}
-
-/// <summary>The log level of the log command.</summary>
-public enum MsgClass
-{
-  None,
-  Debug,
-  Forced,
-  Error,
-  Warning,
-  Informational,
-  Critical,
-}
-
-/// <summary>Static class containing debugging logs.</summary>
+/// <summary>Static class containing debugging log functions and other useful tools.</summary>
 public static class Debug
 {
-  /// <summary>The level of logs to display.</summary>
-  public static LogClass Verbosity { get; set; }
-  /// <summary>Set to the line you must go to when making logs.</summary>
-  public static int LineStart { get; set; }
-  /// <summary>This increments when a log is written. Set to 0 to reset to top.</summary>
-  public static int LineCount { get; set; }
+  /// <summary>A pair of strings, that store the classname and the method name.</summary>
+  /// <param name="ClassName">The classname.</param>
+  /// <param name="Method">The method name.</param>
+  private record class StackLoc (string ClassName, string Method);
+  private static Collection<StackLoc> CallStack { get; } = [];
+  private static string ThisClass => CallStack.Peek().ClassName;
+  private static string ThisMethod => CallStack.Peek().Method;
+  public static void Log (MsgClass cls, string message) => Debug.Log(cls, ThisClass, ThisMethod, message);
+  public static void DebugIn (string method) => CallStack.Add(new(ThisClass, method));
+  public static void DebugOut () => CallStack.Drop();
+  public static void DebugIn (string classname, string method) => CallStack.Add(new(classname, method));
+
+  /// <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
+  public static LogClass Verbosity
+  {
+    get => field;
+    set => field = value;
+  }
+
   /// <summary>Sets the output stream.</summary>
   /// <param name="stream">The stream to output to.</param>
   public static void SetStream (TextWriter stream) => Console.SetOut(stream);
-
-  private static void DoLog (string msg, MsgClass msgClass)
+  public static void ClearLog () => Console.Clear();
+  private static void DoLog (string msg, ConsoleColor? back = null, ConsoleColor? text = null)
   {
-    //if (Console.CursorTop < LineStart + LineCount)
-    //  Console.SetCursorPosition(0, LineStart + LineCount);
-    if (msgClass is not MsgClass.None)
-      Console.WriteLine(msg);
-    LineCount++;
+    try
+    {
+      //if (Console.CursorTop < LineStart + LineCount)
+      //  Console.SetCursorPosition(0, LineStart + LineCount);
+      if (Verbosity != LogClass.None)
+      {
+        if (back is not null) Console.BackgroundColor = back.Value;
+        if (text is not null) Console.ForegroundColor = text.Value;
+        Console.WriteLine(msg);
+        if (back is not null || text is not null) Console.ResetColor();
+      }
+    }
+    catch (ArgumentOutOfRangeException)
+    {
+
+    }
+    catch (Exception)
+    {
+      throw;
+    }
   }
-  /// <summary>Logs a message to the output stream.</summary>
-  /// <param name="msg">The message to log.</param>
-  /// <param name="msgClass">The type of message to log.</param>
-  public static void Log (string msg, MsgClass msgClass = MsgClass.Debug) =>
-    DoLog(msg, msgClass);
+  private static ConsoleColor GetTextColor (MsgClass msg) => msg switch
+  {
+    MsgClass.Debug => C_Blue,
+    MsgClass.Forced => C_Cyan,
+    MsgClass.Error => C_Red,
+    MsgClass.Warning => C_Yellow,
+    MsgClass.Critical => C_Black,
+    MsgClass.None or MsgClass.Informational or _ => C_White,
+  };
+  private static ConsoleColor GetBackColor (MsgClass msg) => msg switch
+  {
+    MsgClass.Error => C_DarkRed,
+    MsgClass.Critical => C_Red,
+    _ => C_Black,
+  };
+  public static void Log (MsgClass msgClass, string className, string methodName, string msg) =>
+    Log(className, methodName, msg, GetBackColor(msgClass), GetTextColor(msgClass));
+  public static void Log (MsgClass msgClass, string className, string msg) =>
+    Log(className, msg, GetBackColor(msgClass), GetTextColor(msgClass));
+
   /// <summary>Logs a message to the output stream.</summary>
   /// <param name="src">The orignating class.</param>
   /// <param name="msg">The message to log.</param>
-  public static void Log (string src, string msg) => DoLog($"{src} : {msg}", MsgClass.Debug);
-  /// <summary>Logs a message to the output stream.</summary>
-  /// <param name="src">The orignating class.</param>
-  /// <param name="msg">The message to log.</param>
-  /// <param name="proc">The method that called the log command.</param>
-  public static void Log (string src, string proc, string msg) => DoLog($"{src}.{proc} : {msg}", MsgClass.Debug);
-  public static void LogException (Exception e) =>
-    LogFrom(e?.Source, e?.TargetSite?.Name, e?.Message, MsgClass.Error);
+  /// <param name="back">The background color.</param>
+  /// <param name="text">The foreground color.</param>
+  public static void Log (string src, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White) =>
+    DoLog($"{src} : {msg}", back, text);
   /// <summary>Logs a message to the output stream.</summary>
   /// <param name="src">The orignating class.</param>
   /// <param name="target">The originating method.</param>
   /// <param name="msg">The message to log.</param>
-  /// <param name="msgClass">The type of message to log.</param>
-  private static void LogFrom (string? src, string? target, string? msg, MsgClass msgClass) =>
-    DoLog($"{src}.{target} : {msg}", msgClass);
+  /// <param name="back">The background color.</param>
+  /// <param name="text">The foreground color.</param>
+  public static void Log (string src, string target, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White) =>
+    DoLog($"{src}.{target} : {msg}", back, text);
+  public static void LogException (Exception e)
+  {
+    e.ThrowIfNull();
+    DoLog($"{e.Source}.{e.TargetSite?.Name} : {e.Message}", C_DarkRed, C_Red);
+  }
 }

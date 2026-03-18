@@ -1,7 +1,5 @@
 using Parser.Ops;
 
-using Debug = Parser.Debug;
-
 namespace Specification.IPL;
 
 /// <summary>An operation that fills out the mode, format, and field numbers.</summary>

@@ -112,13 +112,14 @@ public abstract class BasicCondition : ICondition
 
     if (DebugMsg.IsNotEmpty())
     {
-      DebugHelper.Log(MsgClass.Debug, DebugMsg);
+      Log(MsgClass.Debug, DebugMsg);
     }
 
     return Result;
   }
 
-  /// <summary>THis method sets <c><see cref="Result"/></c> with the results of the condition.<br/>
+  /// <summary>THis method must set <c><see cref="Result"/></c> with the results of the condition,
+  /// or it needs to throw an <see cref="OperationException"/> to be caught by the parser.<br/>
   /// This may optionally set <c><see cref="DebugMsg"/></c> as well.</summary>
   protected abstract void Execute ();
 }

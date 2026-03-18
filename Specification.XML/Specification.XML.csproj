@@ -17,7 +17,7 @@
     <WarningLevel>9999</WarningLevel>
     <Title>XML Format Specification</Title>
     <PackageIcon>XMLFile.ico</PackageIcon>
-    <ApplicationIcon>CPPXMLProject.ico</ApplicationIcon>
+    <!-- <ApplicationIcon>CPPXMLProject.ico</ApplicationIcon> -->
   </PropertyGroup>
 
   <ItemGroup>

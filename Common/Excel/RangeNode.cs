@@ -10,7 +10,7 @@ public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGenerat
   #region Static Members
   public static RangeNode Empty => new();
   private static void Log (string msg) =>
-    Debug.Log("RangeNode: " + msg);
+    Debug.Log(MsgClass.Debug, msg);
   #endregion
 
   #region Public Properties

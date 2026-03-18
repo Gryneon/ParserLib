@@ -3,8 +3,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-using Debug = Parser.Debug;
-
 namespace Specification.IPL;
 
 /// <summary>Contains the details of an IPL command.</summary>

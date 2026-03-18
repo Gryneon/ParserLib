@@ -92,6 +92,7 @@ public abstract class Operation : IOperation
 
   protected void CheckInputNull ()
   {
+    DebugIn("Operation", "CheckInputNull");
     if (InputKey == SE || NoInput)
     {
       Log(MsgClass.Debug, "Operation.CheckInputNull", $"No key checked.");
@@ -106,6 +107,7 @@ public abstract class Operation : IOperation
       Log(MsgClass.Debug, "Operation.CheckInputNull", $"Key {InputKey} is not null.");
       Status = OpStatus.Pass;
     }
+    DebugOut();
   }
   /// <summary>
   /// Checks the parsers current working data, and sets the Status to <see cref="OpStatus.FailNoSuchVarName"/> if it is missing.
@@ -114,6 +116,7 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected bool CheckInputsNull ()
   {
+    DebugIn("Operation", "CheckInputsNull");
     if (InputKeys is null)
     {
       Status = Op.ThrowBadDef("InputKeys is null.");
@@ -132,6 +135,7 @@ public abstract class Operation : IOperation
     Log("Operation.CheckInputsNull", $"All keys are not null.");
     Status = OpStatus.Pass;
     InputKey ??= SE;
+    DebugOut();
     return true;
   }
   /// <summary>Checks if the data stored in <see cref="InputKey"/> is of type <typeparamref name="T"/>.</summary>

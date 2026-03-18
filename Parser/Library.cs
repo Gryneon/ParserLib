@@ -2,8 +2,6 @@
 
 using Parser.Inference;
 
-using static Parser.DebugHelper;
-
 namespace Parser;
 
 public sealed class Library : IReadOnlyDictionary<string, Spec>

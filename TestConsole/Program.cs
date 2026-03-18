@@ -4,11 +4,10 @@ using System.IO;
 using Parser.Condition;
 using Parser.Tokens;
 
-using static Parser.DebugHelper;
+using static Common.Debug;
 
 using ResWAD = Specification.WAD.Resources;
 using ResZDoom = Specification.ZDoom.Properties.Resources;
-using SCC = Parser.Condition.StringCompareConditionType;
 using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecJSON = Specification.JSON.Definition;
@@ -59,7 +58,7 @@ internal static class Program
     Name = "testSpec",
     Operations = [
       Op.StoreKey("test_key", "string_value"),
-      Op.While("while_loop", new StringCompareCondition(SCC.LeftIsKey, "test_key", "string_value"),
+      Op.While("while_loop", new ("test_key", "string_value"),
       [
         Op.CopyKey("test_key", "copied_key"),
         Op.StoreKey("test_key", "different_value"),
@@ -68,7 +67,19 @@ internal static class Program
       Op.DebugKey("test_key"),
     ],
   };
-
+  internal static readonly Spec TestSpec2 = new()
+  {
+    Name = "testSpec",
+    Operations = [
+      Op.StoreKey("test_key", "string_value"),
+      Op.ForCount([
+        Op.CopyKey("test_key", "copied_key"),
+        Op.StoreKey("test_key", "different_value"),
+      ], "for_count_loop"),
+      Op.DebugKey("copied_key"),
+      Op.DebugKey("test_key"),
+    ],
+  };
   #region Menu Definition
   internal static Action<IList<object>> DoTest => item => _ = item[0] is string s && item[1] is Spec sp ? TestTextParser(s, sp) : throw new InvalidOperationException("Invalid data passed to TestTextParser");
   // MenuItem 2 "Quit"
@@ -203,9 +214,25 @@ internal static class Program
   }
   internal static void InitialTest (Spec spec, string file)
   {
-    s_method = "InitialTest";
+    DebugIn("InitialTest");
+    Debug.ClearLog();
     LogWarn($"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
     Parser = new(spec);
+    OpStatus status;
+
+    if (spec.IsTextFile)
+    {
+      string data = File.ReadAllText(file);
+      status = Parser.StepThrough(data);
+    }
+    else
+    {
+      byte[] data = File.ReadAllBytes(file);
+      status = Parser.StepThrough(data);
+    }
+    LogWarn($"Operations have concluded.");
+
+
     if (spec.IsTextFile)
     {
       //Load Data
@@ -236,11 +263,7 @@ internal static class Program
         LogError($"{de.Message}");
         bytes = [];
       }
-      OpStatus status = Parser.Parse(bytes);
-      LogDebug($"Status = {status}, HasResult = {Parser.HasResult}, LastStatus = {Parser.LastStatus}");
     }
-    _ = Console.ReadLine();
-    Console.Clear();
   }
 
   internal static XParser TestTextParser (string path, Spec spec)

@@ -21,7 +21,7 @@ global using Parser.Ops;
 global using Parser.Tokens;
 
 global using static Common.Names;
-global using static Parser.Debug;
+global using static Common.Debug;
 
 global using DM = Common.DictionaryMode;
 global using IT = Parser.Inference.InferenceType;

@@ -3,15 +3,13 @@ using System.Security.Cryptography;
 using Parser.Exceptions;
 
 using static Parser.OpStatus;
+using static Common.Debug;
 
 namespace Parser;
 
 /// <summary>A parser the takes a file's content and turns it into tokens or objects.</summary>
 public sealed class XParser
 {
-  /// <summary>The class name for debugging.</summary>
-  private const string Area = "XParser";
-  private string _method = "";
   #region Public Properties
   /// <summary>The current operation index.</summary>
   public int OpIndex { get; private set; }
@@ -70,6 +68,7 @@ public sealed class XParser
   /// <summary>Loads the operations into a flat pattern.</summary>
   private void OperationLoad ()
   {
+    DebugIn("OperationLoad");
     Operations.AddRange(Spec.Operations);
     Operations.Add(Op.End);
 
@@ -81,9 +80,10 @@ public sealed class XParser
       if (op is IPlaceholderOperation ipo)
       {
         int newCount = ipo.Unpack(Operations, i, this);
-        Log(Area, "OperationLoad", $"Operation Group Expanded From {oldCount} to {newCount}.", ConsoleColor.Black, ConsoleColor.Cyan);
+        Log(MsgClass.Debug, $"Operation Group Expanded From {oldCount} to {newCount}.");
       }
     }
+    DebugOut();
   }
   private void InitializeData<T> (T data)
   {
@@ -123,37 +123,39 @@ public sealed class XParser
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   private OpStatus ParseLoop ()
   {
-    Log(Area, "StepInit", "Initialized");
+    DebugIn("ParseLoop");
+    Log(MsgClass.Debug, "Initialized");
 
     while (NextOpIndex >= 0 && !LastStatus.IsFail(CurrentOp.ContinueOnFail))
     {
       OpStatus status = PerformOperation();
       Console.WriteLine($"{OpIndex} : {status}");
     }
+    DebugOut();
     return LastStatus;
   }
   /// <summary>Performs the operation indicated by <see cref="OpIndex"/> and advances to the next operation.</summary>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   private OpStatus PerformOperation ()
   {
-    _method = "PerformOperation";
+    DebugIn("PerformOperation");
     if (CurrentOp.SkipOperation)
     {
-      Log(MsgClass.Debug, Area, "Skip Operation Encountered");
+      Log(MsgClass.Debug, "Skip Operation Encountered");
       LastStatus = Skipped;
       AdvanceOperation();
       return LastStatus;
     }
     if (CurrentOp is IfElseOperation ifop)
     {
-      Log(MsgClass.Debug, Area, _method, "If Operation Encountered");
+      Log(MsgClass.Debug, "If Operation Encountered");
       LastStatus = ifop.DoOperation(this);
-      Log(MsgClass.Warning, Area, _method, $"If Operation Evaluated to {LastStatus}");
+      Log(MsgClass.Warning, $"If Operation Evaluated to {LastStatus}");
       AdvanceOperation();
       return LastStatus;
     }
 
-    Log(MsgClass.Informational, Area, _method, $"Performing Operation {CurrentOp.GetType().Name}.");
+    Log(MsgClass.Informational, $"Performing Operation {CurrentOp.GetType().Name}.");
 
     void setExceptionData (OpStatus status, Exception toLog)
     {
@@ -168,7 +170,7 @@ public sealed class XParser
     catch (OperationNoSuchVarException onsv) { setExceptionData(FailNoSuchVarName, onsv); }
     catch (UnknownOperationException uoe) { setExceptionData(FailNoSpec, uoe); }
     catch (OperationException o) { setExceptionData(Fail, o); }
-    Log(MsgClass.Debug, Area, _method, $"Operation resulted in {LastStatus}.");
+    Log(MsgClass.Debug, $"Operation resulted in {LastStatus}.");
 
     if (LastStatus is EndCommand)
       NextOpIndex = -1;
@@ -237,15 +239,34 @@ public sealed class XParser
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   public OpStatus StepThrough<TData> (TData input)
   {
+    DebugIn("StepThrough");
     InitializeData(input);
-    Log(MsgClass.Debug, Area, "StepInit", "Initialized");
+    Log(MsgClass.Debug, "Initialized");
 
     while (NextOpIndex >= 0)
     {
       OpStatus status = PerformOperation();
-      Console.WriteLine($"{OpIndex} : {status} (Press enter to advance)");
-      _ = Console.Read();
+      Log(MsgClass.Debug, $"{OpIndex} : {status} Allowed Commands: (data|next|)");
+      string userInput;
+
+      string[] allow_continue = [SE, "next"];
+
+      do
+      {
+        userInput = Console.ReadLine() ?? SE;
+
+        if (userInput.Like("data"))
+        {
+          Log(MsgClass.Debug, Data.ToString()!);
+        }
+        else if (userInput.Like("show next"))
+        {
+          Log(MsgClass.Debug, $"Next Operation: {NextOpIndex} : {NextOp}");
+        }
+
+      } while (!userInput.EqualsAny(allow_continue, SCOIC));
     }
+    DebugOut();
     return LastStatus;
   }
 }
