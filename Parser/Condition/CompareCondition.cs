@@ -1,12 +1,12 @@
 namespace Parser.Condition;
 
 /// <summary>This condition compares 2 keys.</summary>
-internal class CompareCondition : BasicCondition
+public class CompareCondition : BasicCondition
 {
-  internal required string LeftKey { get; init; }
-  internal required string RightKey { get; init; }
-  internal required Type DefinedType { get; init; }
-  internal required bool IgnoreCase { get; init; }
+  public required string LeftKey { get; init; }
+  public required string RightKey { get; init; }
+  public required Type DefinedType { get; init; }
+  public required bool IgnoreCase { get; init; }
   private CompareCondition () { }
 
   public static ICondition AsString (string left_key, string right_key, bool ignore_case) => new CompareCondition()

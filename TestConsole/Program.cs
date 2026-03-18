@@ -58,7 +58,7 @@ internal static class Program
     Name = "testSpec",
     Operations = [
       Op.StoreKey("test_key", "string_value"),
-      Op.While("while_loop", new ("test_key", "string_value"),
+      Op.While("while_loop", CompareCondition.AsString("test_key", "string_value", true),
       [
         Op.CopyKey("test_key", "copied_key"),
         Op.StoreKey("test_key", "different_value"),
@@ -230,7 +230,7 @@ internal static class Program
       byte[] data = File.ReadAllBytes(file);
       status = Parser.StepThrough(data);
     }
-    LogWarn($"Operations have concluded.");
+    LogWarn($"Operations have concluded with status {status}.");
 
 
     if (spec.IsTextFile)
