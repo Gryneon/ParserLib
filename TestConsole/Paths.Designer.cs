@@ -61,7 +61,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\WAD.txt.
+        ///   Looks up a localized string similar to ParserLib\Specification.WAD\WAD.txt.
         /// </summary>
         public static string binparse_wad {
             get {
@@ -70,7 +70,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.INI\Samples\default.ini.
+        ///   Looks up a localized string similar to ParserLib\Specification.INI\Samples\default.ini.
         /// </summary>
         public static string ini_vncdefault {
             get {
@@ -79,7 +79,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt.
+        ///   Looks up a localized string similar to ParserLib\Specification.IPL\Samples\6456 batch.txt.
         /// </summary>
         public static string ipl_batch6456 {
             get {
@@ -88,7 +88,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt.
+        ///   Looks up a localized string similar to ParserLib\Specification.IPL\Samples\6458 batch.txt.
         /// </summary>
         public static string ipl_batch6458 {
             get {
@@ -97,7 +97,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\label.ipl.
+        ///   Looks up a localized string similar to ParserLib\Parser\Samples\label.ipl.
         /// </summary>
         public static string ipl_label {
             get {
@@ -106,7 +106,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\simple.txt.
+        ///   Looks up a localized string similar to ParserLib\Specification.IPL\Samples\simple.txt.
         /// </summary>
         public static string ipl_simple {
             get {
@@ -115,7 +115,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\errors.json.
+        ///   Looks up a localized string similar to ParserLib\Specification.JSON\Samples\errors.json.
         /// </summary>
         public static string json_error {
             get {
@@ -124,7 +124,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
+        ///   Looks up a localized string similar to ParserLib\Specification.JSON\Samples\launchSettings.json.
         /// </summary>
         public static string json_launch {
             get {
@@ -133,7 +133,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\dllfile.reg.
+        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\dllfile.reg.
         /// </summary>
         public static string reg_dllfile {
             get {
@@ -142,7 +142,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
+        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
         /// </summary>
         public static string reg_iplfile {
             get {
@@ -151,7 +151,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
+        ///   Looks up a localized string similar to ParserLib\Specification.WAD\Samples\PL2.WAD.
         /// </summary>
         public static string wad_pl2 {
             get {
@@ -160,7 +160,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\errors.xml.
+        ///   Looks up a localized string similar to ParserLib\Specification.XML\Samples\errors.xml.
         /// </summary>
         public static string xml_errors {
             get {
@@ -169,7 +169,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\operation.xml.
+        ///   Looks up a localized string similar to ParserLib\Specification.XML\Samples\operation.xml.
         /// </summary>
         public static string xml_operation {
             get {
@@ -178,7 +178,7 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
+        ///   Looks up a localized string similar to ParserLib\Specification.XML\Schemas\specification.xsd.
         /// </summary>
         public static string xsd_specification {
             get {

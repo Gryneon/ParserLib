@@ -61,7 +61,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\FooLib.acs.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\ACS\FooLib.acs.
         /// </summary>
         public static string acs_foolib {
             get {
@@ -70,7 +70,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGLevel.acs.
+        ///   Looks up a localized string similar to DoomRPG\doomrpg-code\src\RPGLevel.acs.
         /// </summary>
         public static string acs_rpglevel {
             get {
@@ -79,7 +79,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGMFunc.acs.
+        ///   Looks up a localized string similar to DoomRPG\doomrpg-code\src\RPGMFunc.acs.
         /// </summary>
         public static string acs_rpgmfunc {
             get {
@@ -88,7 +88,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\sample.acs.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\ACS\sample.acs.
         /// </summary>
         public static string acs_sample {
             get {
@@ -97,7 +97,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt.
         /// </summary>
         public static string mapinfo_common {
             get {
@@ -106,7 +106,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\SndInfo\sndinfo.txt.
         /// </summary>
         public static string sndinfo_test {
             get {
@@ -115,7 +115,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\map00.udmf.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\UDMF\map00.udmf.
         /// </summary>
         public static string udmf_map00 {
             get {
@@ -124,7 +124,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\UDMF\sample.udmf.
         /// </summary>
         public static string udmf_sample {
             get {
@@ -133,7 +133,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\ACS Rules.xml.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\ACS\ACS Rules.xml.
         /// </summary>
         public static string xml_acs {
             get {
@@ -142,7 +142,7 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs.
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\ZScript\demon.zs.
         /// </summary>
         public static string zs_demon {
             get {

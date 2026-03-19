@@ -6,7 +6,7 @@ public static class Debug
   /// <summary>A pair of strings, that store the classname and the method name.</summary>
   /// <param name="ClassName">The classname.</param>
   /// <param name="Method">The method name.</param>
-  private record class StackLoc (string ClassName, string Method);
+  private sealed record class StackLoc (string ClassName, string Method);
   private static Collection<StackLoc> CallStack { get; } = [];
   private static string ThisClass => CallStack.Peek().ClassName;
   private static string ThisMethod => CallStack.Peek().Method;

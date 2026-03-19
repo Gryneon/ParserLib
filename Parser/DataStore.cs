@@ -49,6 +49,18 @@ public sealed class DataStore
     }
   }
 
+  public override string ToString ()
+  {
+    string alldata = "\n";
+
+    foreach (KeyValuePair<string, object> kvp in _dict)
+    {
+      alldata += $"[{kvp.Key}] = {kvp.Value}\n";
+    }
+
+    return alldata;
+  }
+
   // TODO: Implement These
   private bool DoSave<T> (string key, object data, DM mode)
   {

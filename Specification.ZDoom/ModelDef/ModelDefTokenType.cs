@@ -2,7 +2,7 @@
 #pragma warning disable IDE0052 // Remove unread private members
 #pragma warning disable CA1720 // Identifier contains type name
 
-namespace Specification.ZDoom;
+namespace Specification.ZDoom.ModelDef;
 
 public enum ModelDefTokenType
 {

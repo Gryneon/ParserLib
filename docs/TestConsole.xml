@@ -22,72 +22,72 @@
         </member>
         <member name="P:TestConsole.Paths.binparse_wad">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\WAD.txt.
+              Looks up a localized string similar to ParserLib\Specification.WAD\WAD.txt.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ini_vncdefault">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.INI\Samples\default.ini.
+              Looks up a localized string similar to ParserLib\Specification.INI\Samples\default.ini.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ipl_batch6456">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6456 batch.txt.
+              Looks up a localized string similar to ParserLib\Specification.IPL\Samples\6456 batch.txt.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ipl_batch6458">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 batch.txt.
+              Looks up a localized string similar to ParserLib\Specification.IPL\Samples\6458 batch.txt.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ipl_label">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\label.ipl.
+              Looks up a localized string similar to ParserLib\Parser\Samples\label.ipl.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.ipl_simple">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.IPL\Samples\simple.txt.
+              Looks up a localized string similar to ParserLib\Specification.IPL\Samples\simple.txt.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.json_error">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\errors.json.
+              Looks up a localized string similar to ParserLib\Specification.JSON\Samples\errors.json.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.json_launch">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.JSON\Samples\launchSettings.json.
+              Looks up a localized string similar to ParserLib\Specification.JSON\Samples\launchSettings.json.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.reg_dllfile">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\dllfile.reg.
+              Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\dllfile.reg.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.reg_iplfile">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.REG\Resources\Types\ipl.reg.
+              Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.wad_pl2">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
+              Looks up a localized string similar to ParserLib\Specification.WAD\Samples\PL2.WAD.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.xml_errors">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\errors.xml.
+              Looks up a localized string similar to ParserLib\Specification.XML\Samples\errors.xml.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.xml_operation">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Samples\operation.xml.
+              Looks up a localized string similar to ParserLib\Specification.XML\Samples\operation.xml.
             </summary>
         </member>
         <member name="P:TestConsole.Paths.xsd_specification">
             <summary>
-              Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.XML\Schemas\specification.xsd.
+              Looks up a localized string similar to ParserLib\Specification.XML\Schemas\specification.xsd.
             </summary>
         </member>
     </members>

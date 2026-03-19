@@ -20,28 +20,15 @@ namespace TestConsole;
 internal static class Program
 {
   #region Constants
-  internal const string SamplePath = @"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\";
+  internal const string LaptopPath = @"C:\Users\johntay4\source\repos\Git";
+  internal const string CheckPath = @"C:\Users\johntayl.adm";
+  internal const string DesktopPath = @"E:\Git";
   internal const int LogLine = 10;
-  internal const string Area = "Program";
   #endregion
   #region Fields
-  internal static Dictionary<string, string> TestPath = new()
-  {
-    ["ipl"] = Paths.ipl_label,
-    ["vnc"] = Paths.ini_vncdefault,
-    ["ipl2"] = Paths.ipl_batch6456,
-    ["sndinfo"] = ResZDoom.sndinfo_test,
-    ["reg"] = Paths.reg_iplfile,
-    ["acs"] = ResZDoom.acs_sample,
-    ["mapinfo"] = ResZDoom.mapinfo_common,
-    ["json"] = Paths.json_launch,
-    ["menu"] = "TODO: Add path",
-    ["wad"] = Paths.wad_pl2,
-  };
   internal static string? UserInput;
   internal static XParser Parser = new();
   internal static OpStatus Status = OpStatus.AtStart;
-  private static string s_method = SE;
   #endregion
   #region Basic Methods
   [MemberNotNull(nameof(UserInput))]
@@ -51,6 +38,10 @@ internal static class Program
   internal static void LogDebug (string message) => Log(MsgClass.Debug, message);
   internal static void LogInfo (string message) => Log(MsgClass.Informational, message);
   internal static void LogWarn (string message) => Log(MsgClass.Warning, message);
+  internal static string FinishPath (string path)
+  {
+    return Directory.Exists(CheckPath) ? $@"{LaptopPath}\{path}" : $@"{DesktopPath}\{path}";
+  }
   #endregion
 
   internal static readonly Spec TestSpec = new()
@@ -100,9 +91,9 @@ internal static class Program
     DebugIn("Program", "Main");
     Console.Clear();
 #if DEBUG
-    Common.Debug.Verbosity = LogClass.DebugAll;
+    Verbosity = LogClass.DebugAll;
 #else
-    Debug.Verbosity = LogClass.Standard;
+    Verbosity = LogClass.Standard;
 #endif
     //MenuController.StartMenu(InitialMenu);
     Library.InitializeLibrary(AppDomain.CurrentDomain);
@@ -123,11 +114,14 @@ internal static class Program
       case "acs":
         InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
         InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_foolib);
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_sample);
         break;
       case "xml":
         InitialTest(SpecXML.Spec, Paths.xsd_specification);
         InitialTest(SpecXML.Spec, Paths.xml_operation);
         InitialTest(SpecXML.Spec, Paths.xml_errors);
+        InitialTest(SpecZDoom.UDMF, ResZDoom.xml_acs);
         break;
       case "sndinfo":
         InitialTest(SpecZDoom.SndInfo, ResZDoom.sndinfo_test);
@@ -177,7 +171,7 @@ internal static class Program
 
   internal static void ProcessArgs (string[] args)
   {
-    s_method = "ProcessArgs";
+    DebugIn("ProcessArgs");
     foreach (string path in args)
     {
       string content;
@@ -199,10 +193,11 @@ internal static class Program
         LogDebug($">{item}");
       }
     }
+    DebugOut();
   }
   internal static void InitialTest (string spec, string file)
   {
-    s_method = "InitialTest";
+    DebugIn("InitialTest");
     if (!Library.TryLookup(spec, out Spec? lookup_spec))
     {
       LogError($"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.");
@@ -211,64 +206,64 @@ internal static class Program
     {
       InitialTest(lookup_spec, file);
     }
+    DebugOut();
   }
   internal static void InitialTest (Spec spec, string file)
   {
     DebugIn("InitialTest");
-    Debug.ClearLog();
+    ClearLog();
     LogWarn($"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
     Parser = new(spec);
     OpStatus status;
 
     if (spec.IsTextFile)
     {
-      string data = File.ReadAllText(file);
+      string data = File.ReadAllText(FinishPath(file));
       status = Parser.StepThrough(data);
     }
     else
     {
-      byte[] data = File.ReadAllBytes(file);
+      byte[] data = File.ReadAllBytes(FinishPath(file));
       status = Parser.StepThrough(data);
     }
     LogWarn($"Operations have concluded with status {status}.");
-
-
-    if (spec.IsTextFile)
-    {
-      //Load Data
-      string input = File.ReadAllText(file.UserDirFix());
-      TokenFactory factory = new(spec);
-      TokenCollection result = [.. factory.Produce(input)];
-      LogWarn($"Tokens Created : {result.Count}");
-      TokenAssembler assembler = new(spec);
-      TokenCollection tokens = [.. result];
-      TokenCollection tokens_assembled = assembler.Execute(tokens);
-      LogWarn($"Tokens After Assembly : {tokens_assembled.Count}");
-      Console.WriteLine("\n\n");
-      foreach (IToken token in tokens_assembled)
-      {
-        Console.WriteLine($"{token}");
-      }
-      LogInfo($"Token Log Complete");
-    }
-    else
-    {
-      byte[] bytes;
-      try
-      {
-        bytes = File.ReadAllBytes(file.UserDirFix());
-      }
-      catch (DirectoryNotFoundException de)
-      {
-        LogError($"{de.Message}");
-        bytes = [];
-      }
-    }
+    DebugOut();
+    //if (spec.IsTextFile)
+    //{
+    //  //Load Data
+    //  string input = File.ReadAllText(file.UserDirFix());
+    //  TokenFactory factory = new(spec);
+    //  TokenCollection result = [.. factory.Produce(input)];
+    //  LogWarn($"Tokens Created : {result.Count}");
+    //  TokenAssembler assembler = new(spec);
+    //  TokenCollection tokens = [.. result];
+    //  TokenCollection tokens_assembled = assembler.Execute(tokens);
+    //  LogWarn($"Tokens After Assembly : {tokens_assembled.Count}");
+    //  Console.WriteLine("\n\n");
+    //  foreach (IToken token in tokens_assembled)
+    //  {
+    //    Console.WriteLine($"{token}");
+    //  }
+    //  LogInfo($"Token Log Complete");
+    //}
+    //else
+    //{
+    //  byte[] bytes;
+    //  try
+    //  {
+    //    bytes = File.ReadAllBytes(file.UserDirFix());
+    //  }
+    //  catch (DirectoryNotFoundException de)
+    //  {
+    //    LogError($"{de.Message}");
+    //    bytes = [];
+    //  }
+    //}
   }
 
   internal static XParser TestTextParser (string path, Spec spec)
   {
-    s_method = "TestTextParser";
+    DebugIn("TestTextParser");
     if (spec.IsTextFile)
     {
       string content = File.ReadAllText(path);
@@ -283,11 +278,12 @@ internal static class Program
     }
 
     LogInfo($"The {spec.Name} test resulted in {Status}.");
+    DebugOut();
     return Parser;
   }
   internal static void DisplayOpOrder ()
   {
-    s_method = "DisplayOpOrder";
+    DebugIn("DisplayOpOrder");
     LogDebug("Parser Operation Order:");
     foreach (IOperation op in Parser?.Operations ?? [])
     {
@@ -296,10 +292,11 @@ internal static class Program
       else
         LogError("Error: Bad Op");
     }
+    DebugOut();
   }
   internal static void Load ()
   {
-    s_method = "Load";
+    DebugIn("Load");
     Spec userSpec;
     string userPath;
     string? specName;
@@ -312,8 +309,10 @@ internal static class Program
     userPath = UserLineReturn();
 
     if (userPath.IsAny(["back", "quit", "exit"]))
+    {
+      DebugOut();
       return;
-
+    }
     if (!File.Exists(userPath))
       goto GetFile;
 
@@ -362,5 +361,6 @@ internal static class Program
       else
         Log(MsgClass.Informational, $"Good, status is {status}");
     }
+    DebugOut();
   }
 }

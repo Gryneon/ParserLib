@@ -63,6 +63,7 @@ public abstract class Operation : IOperation
   /// <summary>The output key provided.</summary>
   protected string OutputKey { get; set; }
   /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
+  [MemberNotNull(nameof(WorkDataType))]
   protected object? WorkData { get; set; }
   /// <summary>The status of the operation.</summary>
   protected OpStatus Status { get; set; } = OpStatus.Pass;
@@ -83,6 +84,7 @@ public abstract class Operation : IOperation
 
   [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkData))]
   public virtual bool NoInput => InputKey.IsEmpty();
+  protected Type? WorkDataType => WorkData?.GetType();
   #endregion
   #region Input Checks
   /// <summary>

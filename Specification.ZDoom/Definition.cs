@@ -1,6 +1,8 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Rule Violation
 
+using Specification.ZDoom.Decorate;
+
 using static Parser.DefinitionStaticFunctions;
 
 namespace Specification.ZDoom;
@@ -12,7 +14,7 @@ public static class Definition
   private static readonly TokenRule s_cLineComment = new(RT.TokenComment, "None", @"(?>\/\/[^\n]*)");
   private static readonly TokenRule s_cBlkComment = new(RT.TokenComment, "None", @"(?>\/\*(?>[^*]|\*[^\/])*\*\/)");
   private static readonly TokenRule s_cString = new(RT.Competitive, "String", @"(?>""(?>[^""\\]|\\"")*"")");
-  private static readonly TokenRule s_int = new(RT.TokenMatch, "Int", @"-?\d+");
+  private static readonly TokenRule s_int = new(RT.TokenMatch, "Int", @"(?>-?\d+)");
   private static readonly TokenRule s_dec = new(RT.TokenMatch, "Dec", @"(?>-?(?>\d+(?>\.\d*)?|\.\d+))");
 
   /// <summary>https://regex101.com/r/En5C8c/7</summary>
@@ -39,7 +41,7 @@ public static class Definition
     TokenRules = [
       s_cLineComment,
       s_cBlkComment,
-      new(RT.Competitive, ZT.String, @"""([^""\\]|\\.)*"""),
+      s_cString,
       .. TokenRule.MakeSingleCharRules("{}();=,:+-", RT.TokenExact, new ZT[] { ZT.Bo, ZT.Bc, ZT.Po, ZT.Pc, ZT.Sc, ZT.Eq, ZT.Cm, ZT.Co, ZT.Pl, ZT.Mn })
     ],
     GroupTokenRules = [
@@ -106,9 +108,9 @@ public static class Definition
     TokenType = typeof(SndIT),
     SC = SCOIC,
     TokenRules = [
-      new (RT.TokenComment, SndIT.None, @"\/\/.*?$"),
-      new (RT.TokenComment, SndIT.None, @"\/\*[\s\S]*?\*\/"),
-      new (RT.Competitive, SndIT.String, @""".+?""")
+      s_cString,
+      s_cLineComment,
+      s_cBlkComment,
     ],
     GroupTokenRules = [],
     Operations = [
@@ -172,6 +174,11 @@ public static class Definition
       new TokenizeOperation(),
       new TokenAssembleOperation(),
       Op.End
+    ],
+    TokenRules = [
+      s_cString,
+      s_cLineComment,
+      s_cBlkComment,
     ]
   };
 
@@ -231,9 +238,7 @@ public static class Definition
       ]),
 
       // Script Functions
-      Tm(AT.ScriptFunc, @"\b(ACS_Execute\w*)\b"),
-      Tm(AT.ScriptFunc, @"\b(ACS_NamedExecute\w*)\b"),
-
+      Tm(AT.ScriptFunc, @"\b(ACS_(Named)?Execute\w*)\b"),
       Tm(AT.ScriptType, @"\b(enter|re(turn|open|spawn)|death|kill|open|unloading|disconnect|lightning)\b"),
 
       // Operators
@@ -372,16 +377,4 @@ public static class Definition
       new DebugWaitForInputOperation(),
     ]
   };
-}
-
-public enum SndSeqTokenType
-{
-  None,
-
-  // Constructs
-
-  // Basic Tokens
-
-  // Primitive Data
-
 }
