@@ -20,9 +20,12 @@ namespace TestConsole;
 internal static class Program
 {
   #region Constants
-  internal const string SamplePath = @"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\";
   internal const int LogLine = 10;
   internal const string Area = "Program";
+  /// <summary>Only present on work laptop.</summary>
+  internal const string TestDir = @"C:\Users\johntayl.adm";
+  internal const string DesktopPath = @"E:\Git";
+  internal const string LaptopPath = @"C:\Users\johntay4\source\repos\Git";
   #endregion
   #region Fields
   internal static Dictionary<string, string> TestPath = new()
@@ -44,6 +47,10 @@ internal static class Program
   private static string s_method = SE;
   #endregion
   #region Basic Methods
+  internal static string MakePath (string path) =>
+
+
+     @$"{(Directory.Exists(TestDir) ? LaptopPath : DesktopPath)}\{path}";
   [MemberNotNull(nameof(UserInput))]
   internal static void UserLine () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
   internal static string UserLineReturn () => Console.ReadLine() ?? SE;
