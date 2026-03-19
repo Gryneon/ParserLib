@@ -1,5 +1,9 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using System.Runtime.InteropServices;
+
+using Parser.Ops;
+
 using static Parser.DefinitionStaticFunctions;
 using static Parser.Ops.Binary.ByteReadOperation;
 using static Parser.Ops.Op;
@@ -57,7 +61,8 @@ public static class Definition
         new ByteJumpVarOperation("offset"),
         ReadBinary("size", "data"),
         new ByteRecallOperation("savepos"),
-      ], "entrycount")
+      ], "entrycount"),
+      Op.End
     ]
   };
   [DefinitionExport]

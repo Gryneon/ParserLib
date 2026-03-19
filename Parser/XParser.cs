@@ -2,8 +2,8 @@ using System.Security.Cryptography;
 
 using Parser.Exceptions;
 
-using static Parser.OpStatus;
 using static Common.Debug;
+using static Parser.OpStatus;
 
 namespace Parser;
 
@@ -245,14 +245,16 @@ public sealed class XParser
 
     while (NextOpIndex >= 0)
     {
+      Log(MsgClass.Debug, $"OpIndex {OpIndex} Executing");
       OpStatus status = PerformOperation();
-      Log(MsgClass.Debug, $"{OpIndex} : {status} Allowed Commands: (data|next|)");
+      Log(MsgClass.Debug, $"OpIndex {OpIndex} resulted in {status}");
       string userInput;
 
       string[] allow_continue = [SE, "next"];
 
       do
       {
+        Log(MsgClass.Debug, $"Enter a command to analyse parser state.");
         userInput = Console.ReadLine() ?? SE;
 
         if (userInput.Like("data"))
@@ -263,7 +265,6 @@ public sealed class XParser
         {
           Log(MsgClass.Debug, $"Next Operation: {NextOpIndex} : {NextOp}");
         }
-
       } while (!userInput.EqualsAny(allow_continue, SCOIC));
     }
     DebugOut();

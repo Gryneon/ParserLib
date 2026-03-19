@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="acs_foolib" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\FooLib.acs</value>
+    <value>ParserLib\Specification.ZDoom\ACS\FooLib.acs</value>
   </data>
   <data name="acs_rpglevel" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGLevel.acs</value>
+    <value>DoomRPG\doomrpg-code\src\RPGLevel.acs</value>
   </data>
   <data name="acs_rpgmfunc" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\DoomRPG\doomrpg-code\src\RPGMFunc.acs</value>
+    <value>DoomRPG\doomrpg-code\src\RPGMFunc.acs</value>
   </data>
   <data name="acs_sample" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\sample.acs</value>
+    <value>ParserLib\Specification.ZDoom\ACS\sample.acs</value>
   </data>
   <data name="mapinfo_common" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt</value>
+    <value>ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt</value>
   </data>
   <data name="sndinfo_test" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sndinfo.txt</value>
+    <value>ParserLib\Specification.ZDoom\SndInfo\sndinfo.txt</value>
   </data>
   <data name="udmf_map00" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\map00.udmf</value>
+    <value>ParserLib\Specification.ZDoom\UDMF\map00.udmf</value>
   </data>
   <data name="udmf_sample" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\sample.udmf</value>
+    <value>ParserLib\Specification.ZDoom\UDMF\sample.udmf</value>
   </data>
   <data name="xml_acs" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ACS\ACS Rules.xml</value>
+    <value>ParserLib\Specification.ZDoom\ACS\ACS Rules.xml</value>
   </data>
   <data name="zs_demon" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.ZDoom\ZScript\demon.zs</value>
+    <value>ParserLib\Specification.ZDoom\ZScript\demon.zs</value>
   </data>
 </root>

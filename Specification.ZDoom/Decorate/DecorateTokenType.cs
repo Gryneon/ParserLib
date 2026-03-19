@@ -2,7 +2,7 @@
 #pragma warning disable CA1720 // Identifier contains type name
 //#pragma warning disable IDE1006 // Naming Rule Violation
 
-namespace Specification.ZDoom;
+namespace Specification.ZDoom.Decorate;
 
 //Decorate Prototype
 //https://regex101.com/r/YtlFqj/1
