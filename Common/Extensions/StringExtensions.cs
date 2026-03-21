@@ -259,6 +259,24 @@ public static class StringExtensions
     int col = before.Length - lnst;
     return (lines, col);
   }
+  public static int Get1DPosition (this string text, int line, int col)
+  {
+    if (text is null || text.Length == 0 || line < 0 || col < 0)
+      return DNE;
+    string[] lines = text.Split('\n');
+    string[] beforelns = lines[0..line];
+    string flat = beforelns.TextJoin("\n");
+    return flat.Length + col; ;
+  }
+  public static int Get1DPosition (this string[] lines, int line, int col)
+  {
+    if (lines is null || lines.Length == 0 || line < 0 || col < 0)
+      return DNE;
+    string[] beforelns = lines[0..line];
+    string flat = beforelns.TextJoin("\n");
+    return flat.Length + col; ;
+  }
+
   public static void ThrowIfNullOrEmpty ([NotNull] this string? text)
   {
     if (text.IsEmpty())

@@ -29,7 +29,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
       }
       if (result.Count != list.Count() && fullMatchText)
       {
-        Log("DictionaryOperation", "Execute()", $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
+        Log("DictionaryOperation", "Execute", $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
       }
 
       Status = OpStatus.Pass;
@@ -37,7 +37,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
     }
     else
     {
-      Status = OpStatus.FailBadInputType;
+      Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
     }
   }
 

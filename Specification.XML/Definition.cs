@@ -9,8 +9,6 @@ using Parser.Tokens;
 using static Parser.DefinitionStaticFunctions;
 using static Parser.Tokens.TokenRuleType;
 
-using XTT = Specification.XML.XMLTokenType;
-
 namespace Specification.XML;
 
 public enum XMLTokenType
@@ -50,6 +48,7 @@ public enum XMLTokenType
   ElementStartWithNamespace,
   ElementPair,
   DocumentNamespace,
+  ValidContent,
 }
 
 /// <summary>The XML definition object.</summary>
@@ -99,7 +98,7 @@ public static class Definition
       new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*\=)"),
       new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=\:)"),
       new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
-      new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)(?<!xml)"),
+      new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)\b(?<!xml)"),
     ],
     DefaultRuleSet = IgnoreCase,
     GroupTokenRules = [
@@ -114,13 +113,14 @@ public static class Definition
       new (XTT.ElementSingle, "x:Ao n:ElementName pa:Attribute x:Sl x:Ac"),
       new (XTT.ElementStartWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Ac"),
       new (XTT.ElementStart, "x:Ao n:ElementName pa:Attribute x:Ac"),
-      new (Recursive, XTT.ElementPair, "d:ElementStart v:(Content|ElementSingleWithNamespace|ElementSingle|ElementPair) x:ElementEnd"),
-      new (Recursive, XTT.ElementPair, "d:ElementStartWithNamespace va:(Content|ElementSingleWithNamespace|ElementSingle|ElementPair) x:ElementEndWithNamespace"),
+      new (Recursive, XTT.ElementPair, "d:ElementStart v:ValidContent x:ElementEnd"),
+      new (Recursive, XTT.ElementPair, "d:ElementStartWithNamespace va:ValidContent x:ElementEndWithNamespace"),
 
     ],
     TokenCompatLookup = {
       [XTT.String] = [XTT.DString, XTT.SString],
-      [XTT.Attribute] = [XTT.DocumentNamespace, XTT.AttributeWithNamespace]
+      [XTT.Attribute] = [XTT.DocumentNamespace, XTT.AttributeWithNamespace],
+      [XTT.ValidContent] = [XTT.Content, XTT.ElementSingleWithNamespace, XTT.ElementSingle, XTT.ElementPair]
     },
     Operations = [
       new TokenizeOperation(),

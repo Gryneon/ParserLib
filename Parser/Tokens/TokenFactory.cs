@@ -1,6 +1,62 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using MC = Common.MsgClass;
+
 namespace Parser.Tokens;
+
+public class ErrorPlacement
+{
+  public MC McPrev;
+  public MC McOuter;
+  public MC McInner;
+  public string PrevLine;
+  public string ErrorLine;
+  public int StartLine;
+  public int StartOuter;
+  public int PointCol;
+  public int StartInner;
+  public int EndInner;
+  public int EndOuter;
+  public void WriteError ()
+  {
+    WritePrevLine();
+    WriteErrorLine();
+    WritePointLine();
+  }
+  public void WritePrevLine ()
+  {
+
+  }
+  public void WriteErrorLine ()
+  {
+    LogHead(MC.Debug);
+    LogPart(McPrev, $"> ");
+    if (StartOuter == StartLine)
+    {
+      LogPart(McOuter, ErrorLine[0..StartInner]);
+    }
+    else
+    {
+      LogPart(McPrev, ErrorLine[0..StartOuter]);
+      LogPart(McOuter, ErrorLine[StartOuter..StartInner]);
+    }
+    LogPart(McInner, ErrorLine[StartInner..EndInner]);
+    if (EndOuter == ErrorLine.Length - 1)
+    {
+      LogPart(McOuter, ErrorLine[EndInner..]);
+    }
+    else
+    {
+      LogPart(McOuter, ErrorLine[EndInner..EndOuter]);
+      LogPart(McPrev, ErrorLine[EndOuter..]);
+    }
+    NewLine();
+  }
+  public void WritePointLine ()
+  {
+
+  }
+}
 
 public sealed class TokenFactory
 {
@@ -17,6 +73,7 @@ public sealed class TokenFactory
   #region Public Properties
   public string Input { get; private set; } = SE;
   public SectionCollection CannotMatch { get; } = [];
+  public bool PromptAfterEach { get; set; }
   #endregion
   #region Constructors
   public TokenFactory (IEnumerable<TokenRule> rules, Spec spec, bool no_rules_from_spec = false)
@@ -55,9 +112,19 @@ public sealed class TokenFactory
   };
   #endregion
   #region Private Logging Methods
-  private static void DebugLog (string msg) => Log(MsgClass.Debug, Area, s_method, msg);
-  private static void WarnLog (string msg) => Log(MsgClass.Warning, Area, s_method, msg);
-  private static void ErrorLog (string msg) => Log(MsgClass.Error, Area, s_method, msg);
+  private static void DebugLog (string msg)
+  {
+    LogHead(MC.Debug, Area, s_method);
+    LogPart(MC.Informational, msg);
+    NewLine();
+  }
+  private static void WarnLog (string msg)
+  {
+    LogHead(MC.Debug, Area, s_method);
+    LogPart(MC.Warning, msg);
+    NewLine();
+  }
+  private static void ErrorLog (string msg) => Log(MC.Error, Area, s_method, msg);
   #endregion
   #region Private Static Methods
   private static string GetRuleRegex (TokenRule rule, int? index = null)
@@ -208,15 +275,24 @@ public sealed class TokenFactory
       failUponEnding = true;
 
       int error_pos = match.Groups.ContainsKey("error_pos") ? match.Groups["error_pos"].Index : match.Index;
-
-      (int line, int col) = Input.Get2DPosition(error_pos);
+      int error_len = match.Groups.ContainsKey("error_pos") ? match.Groups["error_pos"].Length : match.Index;
+      int error_surround_pos = match.Groups.ContainsKey("error_surround") ? match.Groups["error_surround"].Index : -1;
+      int error_surround_len = match.Groups.ContainsKey("error_surround") ? match.Groups["error_surround"].Length : -1;
+      (int err_line, int err_col) = Input.Get2DPosition(error_pos);
       string[] lines = Input.Split('\n');
       int line_max = lines.Length;
-      WarnLog($"Error at line {line}, column {col}.");
-      WarnLog($"  {(line > 0 ? lines[line - 1] : "*** FIRST LINE BELOW ***")}");
-      WarnLog($"> {lines[line]}");
-      WarnLog($"  {(line + 1 < line_max ? lines[line + 1] : "*** LAST LINE ABOVE ***")}");
-      WarnLog($"  {new string(' ', col)}^");
+      WarnLog($"Error at line {err_line}, column {err_col}.");
+      WarnLog($"  {(err_line > 0 ? lines[err_line - 1] : "*** FIRST LINE BELOW ***")}");
+      if (error_surround_pos == -1)
+      {
+        LogHead(MC.Debug);
+        LogPart(MC.Warning, $"> {lines[err_line][0..err_col]}");
+        LogPart(MC.Critical, lines[err_line][err_col..(err_col + error_len - 1)]);
+        LogPart(MC.Warning, lines[err_line][(err_col + error_len - 1)..]);
+        NewLine();
+      }
+      string pushoff = new(' ', err_col < 1 ? 0 : err_col - 1);
+      WarnLog($"  {pushoff}^");
     }
 
     if (failUponEnding)

@@ -1,10 +1,34 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Common;
 
+/// <summary>Now uses internal Pos struct for speed.</summary>
 public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren<Section>, ICanAccessChildren<int, Section>
 {
-  private readonly List<Section> _sections = [];
+  private struct Pos (int start, int length) : IEquatable<Pos>, IIndexSortable
+  {
+    public int Start { get; set; } = start;
+    public int Length { get; set; } = length;
+    public int End
+    {
+      readonly get => Start + Length - 1;
+      set => Length = value + 1 - Start;
+    }
+    public readonly bool IsNull => Equals(Null);
+    public static Pos Null { get; } = new(-1, -1);
+    readonly int IIndexSortable.Index => Start;
+
+    public readonly Section ToSection (string full_text) => Section.ByLength(Start, Length, full_text);
+    public readonly bool IsWithin (int point) => point >= Start && point <= End;
+    public readonly bool Overlaps (Pos other) => other.Start <= End && other.End >= Start;
+    public readonly bool Equals (Pos other) => Start == other.Start && Length == other.Length;
+    public override readonly bool Equals ([NotNullWhen(true)] object? obj) => obj is Pos p && Equals(p);
+    public override readonly int GetHashCode () => HashCode.Combine(Start, Length);
+  }
+
+  private readonly List<Pos> _sections = [];
   private readonly Dictionary<int, bool> _bit_array = [];
 
   public Collection<bool> GetGetParsedFromSections ()
@@ -38,12 +62,12 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
 
     for (int i = 0; i < _sections.Count; i++)
     {
-      Section section = _sections[i];
-      Section? next = i + 1 < _sections.Count ? _sections[i + 1] : null;
+      Pos pos = _sections[i];
+      Pos next = i + 1 < _sections.Count ? _sections[i + 1] : Pos.Null;
 
-      if (next is not null && section.End + 1 >= next.Start)
+      if (!next.IsNull && pos.End + 1 >= next.Start)
       {
-        section.End = next.End;
+        pos.End = next.End;
         _sections.RemoveAt(i + 1);
         result = true;
       }
@@ -52,23 +76,25 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
   }
   public bool IsWithin (int point) => _sections.Any(item => item.IsWithin(point));
   public bool Overlaps (Section section) => _sections.Any(ea => ea.Start <= section.End && ea.End >= section.Start);
-
+  private Collection<Section> CastedSections => _sections.Select(p => p.ToSection(FullText ?? SE)).ToCollection();
   public string? FullText { get; private set; }
   public int TextLength => FullText?.Length ?? -1;
   public int Count => _sections.Count;
-  public bool IsReadOnly => false;
-  public Section this[int index] => _sections[index];
-  public void Add (Section item)
+  bool ICollection<Section>.IsReadOnly => false;
+  public Section this[int index] => _sections[index].ToSection(FullText ?? SE);
+  public void Add (Section section)
   {
-    item.ThrowIfNull();
-    _sections.Add(item);
+    section.ThrowIfNull();
+    Add(section.Start, section.Length);
+  }
+  public void Add (int start, int length)
+  {
+    _sections.Add(new(start, length));
     _sections.Sort();
 
-    FullText ??= _sections[0].FullContent;
-
-    for (int i = 0; i < item.Length; i++)
+    for (int i = 0; i < length; i++)
     {
-      _bit_array[item.Start + i] = true;
+      _bit_array[start + i] = true;
     }
 
     while (Compress()) { }
@@ -78,16 +104,16 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
     _sections.ThrowIfNull();
     int start = -1;
     SectionCollection result = [];
-    for (int i = 0; i <= _sections[0].FullContent.Length; i++)
+    for (int i = 0; i <= TextLength; i++)
     {
-      SectionCollection relevant_sections = [.. _sections.Where(s => s.Start <= i && s.End >= i)];
+      List<Pos> relevant_sections = [.. _sections.Where(s => s.Start <= i && s.End >= i)];
       if (relevant_sections.Any(s => s.IsWithin(i)))
       {
         if (start == -1)
           continue;
         else
         {
-          result.Add(new() { Start = start, End = i - 1, FullContent = _sections[0].FullContent });
+          result.Add(start, i - 1);
           start = -1;
           continue;
         }
@@ -105,10 +131,10 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
     return result;
   }
   public void Clear () => _sections.Clear();
-  public bool Contains (Section item) => _sections.Contains(item);
-  public void CopyTo (Section[] array, int arrayIndex) => _sections.CopyTo(array, arrayIndex);
-  public IEnumerator<Section> GetEnumerator () => _sections.GetEnumerator();
-  public bool Remove (Section item) => _sections.Remove(item);
+  bool ICollection<Section>.Contains (Section item) => _sections.Any(i => i.Equals(new(item.Start, item.Length)));
+  void ICollection<Section>.CopyTo (Section[] array, int arrayIndex) => CastedSections.CopyTo(array, arrayIndex);
+  public IEnumerator<Section> GetEnumerator () => CastedSections.GetEnumerator();
+  public bool Remove (Section item) => item is not null && _sections.Remove(new(item.Start, item.Length));
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   public void AddRange (IEnumerable<Section> children)
   {

@@ -32,6 +32,7 @@ public sealed class OperationAction : IOperation
 
   public OpStatus DoOperation (XParser parser_ref)
   {
+    DebugIn("OperationAction", "DoOperation");
     try
     {
       parser_ref.ThrowIfNull();
@@ -91,14 +92,17 @@ public sealed class OperationAction : IOperation
           goto Pass;
 
         Pass:
+          DebugOut();
           return OpStatus.Pass;
 
         default:
+          DebugOut();
           return OpStatus.FailBadOpDefinition;
       }
     }
     catch (InvalidOperationException)
     {
+      DebugOut();
       return OpStatus.FailBadOpDefinition;
     }
   }
@@ -112,12 +116,8 @@ public sealed class OperationAction : IOperation
 
   private string GetMessage () => Type switch
   {
-    OAT.None => $"No Action",
     OAT.StoreKey => $"Storing {SData[1]} in {SData[0]}.",
     OAT.EraseKey => $"Data erased from {SData[0]}.",
-    OAT.StartLoop => "Break if loop is done.",
-    OAT.NextLoop => "Next Loop Action Triggered",
-    OAT.ContinueLoop => "Loop continue.",
     OAT.DebugKey => "Dumping Key.",
     OAT.SetCursor => $"Setting Cursor {SData[0]} to {IData[0]}",
     OAT.ClearCursor => $"Cursor on {SData[0]} cleared",
@@ -125,7 +125,6 @@ public sealed class OperationAction : IOperation
     OAT.CreateCursor => $"Creating cursor on {SData[0]}",
     OAT.CopyKey => $"Copying key from {SData[0]} to {SData[1]}",
     OAT.JumpIf => throw new NotImplementedException(),
-    OAT.Prompt => $"Prompt Encountered.",
-    _ => "Error: Unknown Action"
+    _ => "Error: Invalid Action"
   };
 }

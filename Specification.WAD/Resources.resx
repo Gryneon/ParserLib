@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="wad_pl2" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD</value>
+    <value>ParserLib\Specification.WAD\Samples\PL2.WAD</value>
   </data>
   <data name="wad_tnt" xml:space="preserve">
     <value>C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD</value>
     <comment>Requires Final Doom to be installed.</comment>
   </data>
   <data name="wad_rpg03" xml:space="preserve">
-    <value>C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\rpg03.WAD</value>
+    <value>ParserLib\Specification.WAD\Samples\rpg03.WAD</value>
   </data>
 </root>

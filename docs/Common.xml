@@ -540,18 +540,6 @@
             <summary>Creates a lossless representation of the calling object.</summary>
             <returns>A <see langword="string"/> representation of the calling object.</returns>
         </member>
-        <member name="T:Common.IRetainOrigin">
-            <summary>An object that retains a reference to the object it was created from.</summary>
-        </member>
-        <member name="M:Common.IRetainOrigin.TrySaveOrigin(System.Object)">
-            <summary>Attempts to save a reference to a given object.</summary>
-            <param name="origin">The object to store reference to.</param>
-            <returns>Returns <see langword="true"/> if the reference was stored, <see langword="false"/> otherwise.</returns>
-        </member>
-        <member name="M:Common.IRetainOrigin`1.GetOrigin">
-            <summary>Gets a typed reference to the origin object.</summary>
-            <returns>A reference to the origin object, casted to <typeparamref name="T"/>.</returns>
-        </member>
         <member name="T:Common.Names">
             <summary>Shorthand for common enum names.</summary>
         </member>
