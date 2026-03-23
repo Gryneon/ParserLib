@@ -63,7 +63,7 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGene
     "E" when IsEscaped && !IsShifted => ICT.SelectFormat,
     "P" or "R" when !IsEscaped && !IsShifted => ICT.Simple,
     "C" or "P" or "c" when IsEscaped && !IsShifted => ICT.Simple,
-    string when Mode is IPLPrinterMode.Print => ICT.FieldData,
+    string when Mode is IPLPrinterMode.Print && !IsEscaped => ICT.FieldData,
     "F" when IsEscaped && Mode is IPLPrinterMode.Print => ICT.FieldSet,
     _ => ICT.Unknown
   };
