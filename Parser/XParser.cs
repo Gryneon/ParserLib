@@ -1,8 +1,3 @@
-using System.Security.Cryptography;
-
-using Parser.Exceptions;
-
-using static Common.Debug;
 using static Parser.OpStatus;
 
 namespace Parser;
@@ -144,6 +139,7 @@ public sealed class XParser
       Log(MsgClass.Debug, "Skip Operation Encountered");
       LastStatus = Skipped;
       AdvanceOperation();
+      DebugOut();
       return LastStatus;
     }
     if (CurrentOp is IfElseOperation ifop)
@@ -152,6 +148,7 @@ public sealed class XParser
       LastStatus = ifop.DoOperation(this);
       Log(MsgClass.Warning, $"If Operation Evaluated to {LastStatus}");
       AdvanceOperation();
+      DebugOut();
       return LastStatus;
     }
 
@@ -172,11 +169,11 @@ public sealed class XParser
     catch (OperationException o) { setExceptionData(Fail, o); }
     Log(MsgClass.Debug, $"Operation resulted in {LastStatus}.");
 
-    if (LastStatus is EndCommand)
+    if (LastStatus is EndCommand || LastStatus.IsFail(CurrentOp.ContinueOnFail))
       NextOpIndex = -1;
 
     AdvanceOperation();
-
+    DebugOut();
     return LastStatus;
   }
   #endregion
@@ -245,14 +242,12 @@ public sealed class XParser
 
     while (NextOpIndex >= 0)
     {
-      Log(MsgClass.Debug, $"OpIndex {OpIndex} Executing");
       OpStatus status = PerformOperation();
-      Log(MsgClass.Debug, $"OpIndex {OpIndex} resulted in {status}");
       string userInput;
 
       string[] allow_continue = [SE, "next"];
 
-      do
+      if (status != EndCommand) do
       {
         Log(MsgClass.Debug, $"Enter a command to analyse parser state.");
         userInput = Console.ReadLine() ?? SE;

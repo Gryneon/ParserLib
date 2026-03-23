@@ -4,7 +4,7 @@ namespace Specification.JSON;
 
 public class JSONOperation (string input_key, string output_key) : Operation(input_key, output_key)
 {
-  protected static void Log (string s) => Debug.Log("JSONOperation", "Execute", s);
+  protected static void Log (string s) => Debug.Log(MsgClass.Debug, "JSONOperation", "Execute", s);
   protected int Index { get; set; }
   protected IToken? TCurrent => Index >= Tokens.Count ? null : Tokens[Index];
   protected Collection<IToken> Tokens { get; } = [];

@@ -120,14 +120,14 @@
             <summary>Sets the output stream.</summary>
             <param name="stream">The stream to output to.</param>
         </member>
-        <member name="M:Common.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
+        <member name="M:Common.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
             <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="msg">The message to log.</param>
             <param name="back">The background color.</param>
             <param name="text">The foreground color.</param>
         </member>
-        <member name="M:Common.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
+        <member name="M:Common.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
             <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="target">The originating method.</param>
@@ -539,18 +539,6 @@
         <member name="M:Common.ITextSerializer.ToString">
             <summary>Creates a lossless representation of the calling object.</summary>
             <returns>A <see langword="string"/> representation of the calling object.</returns>
-        </member>
-        <member name="T:Common.IRetainOrigin">
-            <summary>An object that retains a reference to the object it was created from.</summary>
-        </member>
-        <member name="M:Common.IRetainOrigin.TrySaveOrigin(System.Object)">
-            <summary>Attempts to save a reference to a given object.</summary>
-            <param name="origin">The object to store reference to.</param>
-            <returns>Returns <see langword="true"/> if the reference was stored, <see langword="false"/> otherwise.</returns>
-        </member>
-        <member name="M:Common.IRetainOrigin`1.GetOrigin">
-            <summary>Gets a typed reference to the origin object.</summary>
-            <returns>A reference to the origin object, casted to <typeparamref name="T"/>.</returns>
         </member>
         <member name="T:Common.Names">
             <summary>Shorthand for common enum names.</summary>
@@ -1097,6 +1085,12 @@
         </member>
         <member name="M:Common.Section.CompareTo(Common.Section)">
             <inheritdoc/>
+        </member>
+        <member name="T:Common.SectionCollection">
+            <summary>Now uses Pos struct for speed.</summary>
+        </member>
+        <member name="M:Common.SectionCollection.#ctor">
+            <summary>Now uses Pos struct for speed.</summary>
         </member>
         <member name="T:Common.Types.FileExt">
             <summary>A definition for a file extension.</summary>

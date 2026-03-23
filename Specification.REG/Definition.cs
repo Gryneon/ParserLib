@@ -69,4 +69,8 @@ public static class Definition
     RxOpt = ROIPW | ROEC | ROML,
     SC = SCOIC,
   };
+  private static object Generate<TOut> () where TOut : class, new()
+  {
+    return new();
+  }
 }

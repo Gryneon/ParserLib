@@ -24,7 +24,7 @@ internal sealed partial class UnparsedViewer : Form
 
     int count = Sections.Count;
     int inverse_count = inverse.Count;
-    int inverse_chars = inverse.Sum(s => s.Length);
+    int inverse_chars = inverse.Select<Pos, int>(p => p.Length).Sum();
 
     SectionCountTextBox.Text = $"{count}";
     InverseCountTextBox.Text = $"{inverse_count}";

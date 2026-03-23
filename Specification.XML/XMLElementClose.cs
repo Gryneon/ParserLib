@@ -11,6 +11,6 @@ public class XMLElement () : XMLNodeAttr, IXMLObject
 {
   /// <summary>The contents of this XML node.</summary>
   public Collection<IXMLObject> Content { get; } = [];
-  public override string Serialize () => $"<{Tag} {Attributes.TextJoin(" ")}>{Content.TextJoin()}</{Tag}>";
+  public override string Serialize () => $"<{Tag} {Attributes.TextJoin(" ")}>{Content.TextJoin(" ")}</{Tag}>";
   public override string ToString () => Serialize();
 }

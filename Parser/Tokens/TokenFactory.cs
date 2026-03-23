@@ -1,13 +1,113 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using MC = Common.MsgClass;
+
 namespace Parser.Tokens;
+
+public class ErrorPlacement
+{
+  public required Match Error { get; init; }
+  public required string Text { get; init; }
+
+  private MC McHead;
+  private MC McPrev;
+  private MC McOuter;
+  private MC McInner;
+  [AllowNull]
+  private string PrevLine;
+  [AllowNull]
+  private string ErrorLine;
+  private int ErrLineNo;
+  private int StartOuter;
+  private int PointCol;
+  private int StartInner;
+  private int EndInner;
+  private int EndOuter;
+  public void WriteError ()
+  {
+    McHead = MC.Debug;
+    McPrev = MC.Warning;
+    McOuter = MC.Error;
+    McInner = MC.Critical;
+
+    Group? inner = Error.Groups.ContainsKey("error_pos") ? Error.Groups["error_pos"] : null;
+    Group? outer = Error.Groups.ContainsKey("error_surround") ? Error.Groups["error_surround"] : null;
+
+    (ErrLineNo, StartInner) = Text.Get2DPosition(inner is not null ? inner.Index : Error.Index);
+
+    string[] lines = Text.Split('\n');
+
+    ErrorLine = lines[ErrLineNo];
+
+    if (ErrLineNo > 0)
+      PrevLine = lines[ErrLineNo - 1];
+
+    if (outer is not null)
+    {
+      (_, StartOuter) = Text.Get2DPosition(outer.Index);
+      EndOuter = StartOuter + outer.Length - 1;
+    }
+    else
+    {
+      EndOuter = ErrorLine.Length - 1;
+    }
+
+    EndInner = StartInner + (inner is not null ? inner.Length : Error.Length) - 1;
+
+    PointCol = (StartInner + EndInner) / 2;
+
+    WritePrevLine();
+    WriteErrorLine();
+    WritePointLine();
+  }
+  public void WritePrevLine ()
+  {
+    LogHead(McHead);
+    LogPart(McPrev, $"  ");
+    LogPart(McPrev, PrevLine);
+    NewLine();
+  }
+  public void WriteErrorLine ()
+  {
+    LogHead(McHead);
+    LogPart(McPrev, $"> ");
+    if (StartOuter == 0)
+    {
+      LogPart(McOuter, ErrorLine[0..StartInner]);
+    }
+    else
+    {
+      LogPart(McPrev, ErrorLine[0..StartOuter]);
+      LogPart(McOuter, ErrorLine[StartOuter..StartInner]);
+    }
+    LogPart(McInner, ErrorLine[StartInner..EndInner]);
+    if (EndOuter == ErrorLine.Length - 1)
+    {
+      LogPart(McOuter, ErrorLine[EndInner..]);
+    }
+    else
+    {
+      LogPart(McOuter, ErrorLine[EndInner..EndOuter]);
+      LogPart(McPrev, ErrorLine[EndOuter..]);
+    }
+    NewLine();
+  }
+  public void WritePointLine ()
+  {
+    LogHead(McHead);
+    LogPart(McPrev, $"  ");
+    LogPart(McPrev, new string(' ', PointCol - 1));
+    LogPart(McPrev, "^");
+    NewLine();
+  }
+}
 
 public sealed class TokenFactory
 {
   #region Private Fields
   private const string Area = "TokenFactory";
   private static string s_method = SE;
-  private TokenRuleCollection _rules;
+  private readonly TokenRuleCollection _rules = [];
   private readonly TokenCollection _result = [];
   private TokenRule? _currentRule;
   private Spec _spec;
@@ -17,18 +117,19 @@ public sealed class TokenFactory
   #region Public Properties
   public string Input { get; private set; } = SE;
   public SectionCollection CannotMatch { get; } = [];
+  public bool PromptAfterEach { get; set; }
   #endregion
   #region Constructors
-  public TokenFactory (IEnumerable<TokenRule> rules, Spec spec, bool no_rules_from_spec = false)
+  public TokenFactory (IEnumerable<TokenRule> rules, Spec spec)
   {
     SetSpec(spec);
-    if (no_rules_from_spec)
-    {
-      _rules.Clear();
-    }
     _rules.AddRange(rules);
   }
-  public TokenFactory (Spec spec) => SetSpec(spec);
+  public TokenFactory (Spec spec)
+  {
+    SetSpec(spec);
+    _rules.AddRange(spec.TokenRules);
+  }
   public TokenFactory () => SetSpec(DefaultSpec.Unknown);
   #endregion
   #region Private Helper Properties
@@ -55,9 +156,24 @@ public sealed class TokenFactory
   };
   #endregion
   #region Private Logging Methods
-  private static void DebugLog (string msg) => Log(MsgClass.Debug, Area, s_method, msg);
-  private static void WarnLog (string msg) => Log(MsgClass.Warning, Area, s_method, msg);
-  private static void ErrorLog (string msg) => Log(MsgClass.Error, Area, s_method, msg);
+  private static void DebugLog (string msg)
+  {
+    LogHead(MC.Debug);
+    LogPart(MC.Informational, msg);
+    NewLine();
+  }
+  private static void WarnLog (string msg)
+  {
+    LogHead(MC.Debug);
+    LogPart(MC.Warning, msg);
+    NewLine();
+  }
+  private static void ErrorLog (string msg)
+  {
+    LogHead(MC.Debug);
+    LogPart(MC.Error, msg);
+    NewLine();
+  }
   #endregion
   #region Private Static Methods
   private static string GetRuleRegex (TokenRule rule, int? index = null)
@@ -78,7 +194,7 @@ public sealed class TokenFactory
   private static RT GetMaskedType (RT type) => type.RemoveBitLong<RT>(RT.FlagBits);
   private static int GetRuleGroupIndex (Match match)
   {
-    s_method = "GetRuleGroupIndex";
+    DebugIn("GetRuleGroupIndex");
     string num = match.Groups.
       AsReadOnly().
       First(static g => g.Name.StartsWith("_R", SCO) && g.Value.Length > 0).
@@ -88,28 +204,29 @@ public sealed class TokenFactory
     {
       ErrorLog("GetRuleGroupIndex Returned -1");
     }
+    DebugOut();
     return result;
   }
   #endregion
-  private void MakeAddToken (Section match, TokenRule? rule = null)
+  private void MakeAddToken (Pos match, TokenRule? rule = null)
   {
     rule ??= _currentRule!;
 
     if (rule.Type.HasFlag(RT.IgnoredToken))
       return;
 
+    bool singleChar = false;
+    if (match.Start - match.End == 0)
+    {
+      singleChar = true;
+    }
+
     Token token = new()
     {
       Index = match.Start,
-      Content = match.Content,
-      Type = rule.TypeToAssign,
+      Content = singleChar ? $"{Input[match.Start]}" : Input[match.Start..(match.End + 1)],
+      Type = rule.TypeToAssign
     };
-    bool any = _result.Any(t => t.Index == token.Index);
-    if (any)
-    {
-      IToken first = _result.First(t => t.Index == token.Index);
-      throw new InvalidOperationException($"Index {token.Index} already has a token! ({first.Content}) adding ({token.Content})");
-    }
 
     _result.Add(token);
   }
@@ -120,7 +237,7 @@ public sealed class TokenFactory
     foreach (Section applicant in CannotMatch.Inverse())
     {
       DebugLog($"Section: {applicant} Found with no token.");
-      CannotMatch.Add(Section.ByLength(applicant.Start, applicant.Length, Input));
+      CannotMatch.Add(applicant.Start, applicant.Length);
       MakeAddToken(applicant);
     }
   }
@@ -181,12 +298,12 @@ public sealed class TokenFactory
 
     foreach (Match match in mc)
     {
-      Section rng = new(match, Input);
+      Pos rng = new(match.Index, match.Length);
 
       if (!CannotMatch.Overlaps(rng))
       {
         if (Type is RT.TokenExtract)
-          foreach (Section c in match.Groups["keep"].Captures.Select(c => new Section(c, Input)))
+          foreach (Pos c in match.Groups["keep"].Captures.Select(c => new Pos(c.Index, c.Length)))
             MakeAddToken(c);
 
         else if (Type is RT.TokenMatch)
@@ -198,6 +315,7 @@ public sealed class TokenFactory
   }
   private void ErrorMatch ()
   {
+    DebugIn("ErrorMatch");
     DebugLog("Error matching starting, from input string.");
     Regex regex = new(RuleData, IgnoreCase ? _spec.RxOpt | ROIC : _spec.RxOpt);
 
@@ -208,16 +326,18 @@ public sealed class TokenFactory
       failUponEnding = true;
 
       int error_pos = match.Groups.ContainsKey("error_pos") ? match.Groups["error_pos"].Index : match.Index;
-
-      (int line, int col) = Input.Get2DPosition(error_pos);
+      int error_len = match.Groups.ContainsKey("error_pos") ? match.Groups["error_pos"].Length : match.Index;
+      int error_surround_pos = match.Groups.ContainsKey("error_surround") ? match.Groups["error_surround"].Index : -1;
+      int error_surround_len = match.Groups.ContainsKey("error_surround") ? match.Groups["error_surround"].Length : -1;
+      (int err_line, int err_col) = Input.Get2DPosition(error_pos);
       string[] lines = Input.Split('\n');
       int line_max = lines.Length;
-      WarnLog($"Error at line {line}, column {col}.");
-      WarnLog($"  {(line > 0 ? lines[line - 1] : "*** FIRST LINE BELOW ***")}");
-      WarnLog($"> {lines[line]}");
-      WarnLog($"  {(line + 1 < line_max ? lines[line + 1] : "*** LAST LINE ABOVE ***")}");
-      WarnLog($"  {new string(' ', col)}^");
+      WarnLog($"Error at line {err_line}, column {err_col}.");
+      ErrorPlacement err = new() { Error = match, Text = Input };
+      err.WriteError();
     }
+
+    DebugOut();
 
     if (failUponEnding)
     {
@@ -226,6 +346,7 @@ public sealed class TokenFactory
   }
   private void RunCompete ()
   {
+    DebugIn("RunCompete");
     DebugLog("Running competition.");
     Collection<(TokenRule Rule, int Index)> contestants = [.. _rules.Where(r => r.Type.HasFlag(RT.Competitive) && r.RuleStringData is not null).Select((r, i) => (r, i))];
     string regexPatterns = contestants.Select(r => GetRuleRegex(r.Rule, r.Index)).TextJoin("|");
@@ -235,7 +356,7 @@ public sealed class TokenFactory
     foreach (Match match in mc)
     {
       int index = GetRuleGroupIndex(match);
-      Section rng = new(match, Input);
+      Pos rng = new(match.Index, match.Length);
 
       _currentRule = contestants[index].Rule;
 
@@ -245,6 +366,7 @@ public sealed class TokenFactory
       CannotMatch.Add(rng);
     }
     _competed = true;
+    DebugOut();
   }
   private void ActionInvalidLog () => ErrorLog("Error: Invalid rule. Skipping rule.");
   private void ActionCompetedLog () => DebugLog("Already ran competition. Skipping rule.");
@@ -255,22 +377,22 @@ public sealed class TokenFactory
   {
     _spec = spec;
     _default_rule = _spec.DefaultRuleSet;
-    _rules = _spec.TokenRules;
   }
   public TokenCollection Produce (string input)
   {
-    s_method = "Produce";
+    DebugIn("TokenFactory", "Produce");
     _competed = false;
-    DebugLog("Method Started");
     input.ThrowIfNull();
     Input = input;
     foreach (TokenRule rule in _rules)
     {
       _currentRule = rule;
 
-      try { RuleAction.Invoke(); } catch (OperationException e) { LogException(e); }
+      try { RuleAction.Invoke(); } catch (OperationException e) { LogException(e); throw new OperationException("Error found.", e); }
+      _result.SortByIndex();
     }
     _result.SortByIndex();
+    DebugOut();
     return [.. _result];
   }
   #endregion

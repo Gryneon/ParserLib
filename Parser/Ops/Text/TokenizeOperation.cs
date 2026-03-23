@@ -4,23 +4,20 @@ namespace Parser.Ops.Text;
 public class TokenizeOperation : Operation
 {
   protected TokenRuleCollection Rules { get; }
-  protected bool UseSpec { get; } = true;
 
   public TokenizeOperation (IEnumerable<TokenRule> rules, string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
   {
     Rules = [.. rules];
-    UseSpec = false;
   }
   public TokenizeOperation (string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
   {
     Rules = [];
-    UseSpec = true;
   }
 
   protected override void Execute ()
   {
     // Load Tokens if loading from Spec
-    if (UseSpec)
+    if (!Rules.Any())
     {
       Rules.AddRange(Spec.TokenRules);
     }

@@ -28,40 +28,31 @@ public class Section () : IEquatable<Section>, IComparable<Section>
       _length = value - Start + 1;
     }
   }
-
+  public required string Content { get; set; }
   public static Section ByEnd (int start, int end, string input) => new()
   {
     Start = start,
     End = end,
-    FullContent = input
+    Content = input[start..end],
   };
   public static Section ByLength (int start, int length, string input) => new()
   {
     Start = start,
     Length = length,
-    FullContent = input
+    Content = input[start..(length + start - 1)],
   };
-  [SetsRequiredMembers]
-  public Section (Capture c, string input) : this()
+  public Section (Capture c) : this()
   {
     c.ThrowIfNull();
     Start = c.Index;
     Length = c.Length;
-    FullContent = input;
+    Content = c.Value;
   }
-
-  public bool IsWithin (int point) => point <= End && point >= Start;
-  public bool Overlaps (Section other) => End >= other?.Start && Start <= other.End;
-  public bool Overlaps (IEnumerable<Section> others) => others.Any(Overlaps);
   public override bool Equals (object? obj) => obj is Section s && Equals(s);
   public override int GetHashCode () => HashCode.Combine(Start, Length);
   public static bool operator == (Section left, Section right) => left?.Equals(right) ?? false;
   public static bool operator != (Section left, Section right) => !(left == right);
-
   public bool Equals (Section? other) => Start == other?.Start && Length == other.Length;
-
-  public required string FullContent { get; init; }
-  public string Content => FullContent[Start..(End + 1)];
   /// <inheritdoc/>
   public int CompareTo (Section? other) => Start.CompareTo(other?.Start);
   public override string ToString () => $"Section-{Start}-{End} : {Content}";
@@ -69,4 +60,5 @@ public class Section () : IEquatable<Section>, IComparable<Section>
   public static bool operator <= (Section left, Section right) => left?.CompareTo(right) <= 0;
   public static bool operator > (Section left, Section right) => left?.CompareTo(right) > 0;
   public static bool operator >= (Section left, Section right) => left?.CompareTo(right) >= 0;
+  public static implicit operator Pos (Section section) => section is null ? Pos.Null : new(section.Start, section.Length);
 }

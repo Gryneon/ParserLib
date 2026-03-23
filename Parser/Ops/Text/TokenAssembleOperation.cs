@@ -10,9 +10,9 @@ public class TokenAssembleOperation : Operation
   {
     TokenAssembler assembler = new([.. _rules], Spec);
 
-    if (base.CheckInput<TokenCollection>(out TokenCollection? list))
+    if (WorkData is TokenCollection tc)
     {
-      TokenCollection assembled = assembler.Execute(list);
+      TokenCollection assembled = [.. assembler.Execute(tc)];
       WorkData = assembled;
       Status = OpStatus.Pass;
     }

@@ -61,7 +61,7 @@ namespace Specification.WAD {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\PL2.WAD.
+        ///   Looks up a localized string similar to ParserLib\Specification.WAD\Samples\PL2.WAD.
         /// </summary>
         public static string wad_pl2 {
             get {
@@ -70,7 +70,7 @@ namespace Specification.WAD {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\$user$\source\repos\Git\ParserLib\Specification.WAD\Samples\rpg03.WAD.
+        ///   Looks up a localized string similar to ParserLib\Specification.WAD\Samples\rpg03.WAD.
         /// </summary>
         public static string wad_rpg03 {
             get {

@@ -10,7 +10,8 @@ public class ByteJumpVarOperation (string input_key, string cursor_key = "bytes"
 
   protected override void Execute ()
   {
-    if (!CheckInput(out int pos))
+    DebugIn("ByteJumpVarOperation", "Execute");
+    if (WorkData is not int pos)
     {
       Status = FailBadInputType;
       return;
@@ -18,12 +19,13 @@ public class ByteJumpVarOperation (string input_key, string cursor_key = "bytes"
 
     if (pos >= (int) Data["file_size"])
     {
-      Status = FailBufferOverflow;
+      Status = Op.ThrowBadResult
       return;
     }
 
     Parser.SetCursorByKey(_cursor_key, pos);
-    Log("ByteStartAtOperation:", $"Position set to {pos} from '{InputKey}'.");
+    Log(MsgClass.Debug, $"Position set to {pos} from '{InputKey}'.");
     Status = Pass;
+    DebugOut();
   }
 }

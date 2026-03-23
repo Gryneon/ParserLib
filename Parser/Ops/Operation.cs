@@ -260,12 +260,11 @@ public abstract class Operation : IOperation
     {
       if (Parser.Data.TryLoad(key, out object? value))
       {
-        Log(MsgClass.Debug, "Operation.Initialize->loadkey()", $"Loaded {key} with value {value}.");
         return value;
       }
       else
       {
-        Log(MsgClass.Error, "Operation.Initialize", $"Key {key} does not exist or is null.");
+        Log(MsgClass.Error, $"Key {key} does not exist or is null.");
         return Op.ThrowNoVar(key);
       }
     }

@@ -53,6 +53,7 @@ public static class Definition
       ]),
       .. TokenRule.MakeSingleCharRules("{}[]:,", RT.TokenExact, new Collection<JTT>() {Bo,Bc,Ao,Ac,Co,Cm}),
       new(RT.ErrorMatch, None, @"}(?=[^}]*\z)\s*(?<error_pos>\S[\s\S]*?)\s*\z"),
+      new(RT.ErrorMatch, None, @"[]}](?=[^}\][{]*[\]\}])\s*(?<error_pos>\,)\s*[\}\]]"),
       ]
   };
 }

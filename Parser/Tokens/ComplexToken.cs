@@ -18,6 +18,19 @@ public sealed class ComplexToken : IToken
     set => _token_pieces[piece_type] = value;
   }
 
+  public IToken? Name => GetPieceToken(TokenRef.Name);
+  public IToken? ObjType => GetPieceToken(TokenRef.Type);
+  public IToken? Value => GetPieceToken(TokenRef.Value);
+  public IToken? Left => GetPieceToken(TokenRef.Left);
+  public IToken? Right => GetPieceToken(TokenRef.Right);
+  public IToken? Center => GetPieceToken(TokenRef.Center);
+  public TokenCollection? AddFlags => GetPieceTokens(TokenRef.AddFlagList);
+  public TokenCollection? SubFlags => GetPieceTokens(TokenRef.SubFlagList);
+  public TokenCollection? Properties => GetPieceTokens(TokenRef.PropertyList);
+  public TokenCollection? Parameters => GetPieceTokens(TokenRef.ParameterList);
+  public TokenCollection? Statements => GetPieceTokens(TokenRef.StatementList);
+  public TokenCollection? Values => GetPieceTokens(TokenRef.ValueList);
+
   public string Content => Children.Select(i => i.Content).TextJoin(" ");
   public IReadOnlyCollection<TokenRef> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
@@ -27,9 +40,9 @@ public sealed class ComplexToken : IToken
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
-  public IToken GetPieceToken (TokenRef piece_type) => _token_pieces[piece_type];
+  public IToken? GetPieceToken (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value : null;
   public TokenCollection? GetPieceTokens (TokenRef piece_type) => _token_pieces[piece_type] as TokenCollection;
-  public string GetPieceContent (TokenRef piece_type) => _token_pieces[piece_type].Content;
+  public string? GetPieceContent (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value.Content : null;
   public bool HasPieceType (TokenRef piece_type) => _token_pieces.ContainsKey(piece_type) && piece_type.IsUsed(_token_pieces);
 
   public void AddPieceType (TokenRef piece_type, IToken token)
@@ -81,12 +94,12 @@ public sealed class ComplexToken : IToken
 
     temp += $"{Type} ";
 
-    if (HasPieceType(TokenRef.Name)) temp += $"\n{indent}Name = {GetPieceToken(TokenRef.Name).ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Type)) temp += $"\n{indent}Type = {GetPieceToken(TokenRef.Type).ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Value)) temp += $"\n{indent}Value = {GetPieceToken(TokenRef.Value).ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Left)) temp += $"\n{indent}Left = {GetPieceToken(TokenRef.Left).ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Center)) temp += $"\n{indent}Center = {GetPieceToken(TokenRef.Center).ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Right)) temp += $"\n{indent}Right = {GetPieceContent(TokenRef.Right)}";
+    if (HasPieceType(TokenRef.Name)) temp += $"\n{indent}Name = {GetPieceToken(TokenRef.Name)?.ToString(indent + "  ")}";
+    if (HasPieceType(TokenRef.Type)) temp += $"\n{indent}Type = {GetPieceToken(TokenRef.Type)?.ToString(indent + "  ")}";
+    if (HasPieceType(TokenRef.Value)) temp += $"\n{indent}Value = {GetPieceToken(TokenRef.Value)?.ToString(indent + "  ")}";
+    if (HasPieceType(TokenRef.Left)) temp += $"\n{indent}Left = {GetPieceToken(TokenRef.Left)?.ToString(indent + "  ")}";
+    if (HasPieceType(TokenRef.Center)) temp += $"\n{indent}Center = {GetPieceToken(TokenRef.Center)?.ToString(indent + "  ")}";
+    if (HasPieceType(TokenRef.Right)) temp += $"\n{indent}Right = {GetPieceToken(TokenRef.Right)?.ToString(indent + "  ")}";
     if (HasPieceType(TokenRef.AddFlagList)) temp += $"\n{indent}AddFlagList = {GetPieceTokens(TokenRef.AddFlagList)?.ListString(indent + "  ")}";
     if (HasPieceType(TokenRef.SubFlagList)) temp += $"\n{indent}SubFlagList = {GetPieceTokens(TokenRef.SubFlagList)?.ListString(indent + "  ")}";
     if (HasPieceType(TokenRef.ParameterList)) temp += $"\n{indent}ParameterList = {GetPieceTokens(TokenRef.ParameterList)?.ListString(indent + "  ")}";

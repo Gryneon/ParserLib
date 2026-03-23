@@ -67,9 +67,6 @@ public sealed class DataStore
     if (data is null)
       return false;
 
-    if (data is not T or IEnumerable<T>)
-      return false;
-
     if (mode.HasFlag(DM.MergeCollection) && TryLoadArray(key, out IEnumerable<T>? existing_to_merge) && data is IEnumerable<T> new_list)
     {
       Collection<T> big_list = [.. existing_to_merge, .. new_list];
@@ -151,7 +148,13 @@ public sealed class DataStore
     data = CanLoad<IEnumerable<T>>(key) ? this[key] as IEnumerable<T> : null;
     return data is not null;
   }
-  public void Save<T> ([NotNull] string key, object data, DM mode = DM.Overwrite) => DoSave<T>(key, data, mode);
+  public void Save<T> ([NotNull] string key, object data, DM mode = DM.Overwrite)
+  {
+    bool saved = DoSave<T>(key, data, mode);
+
+    if (!saved)
+      throw new OperationException("DATA NOT SAVED");
+  }
   public int GetCountOfKey (string key) =>
     !ContainsKey(key) ? 0 :
     _dict[key] is IEnumerable<object> list ? list.Count() :

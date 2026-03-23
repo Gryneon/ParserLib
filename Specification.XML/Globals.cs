@@ -1,3 +1,4 @@
+global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.Reflection;
 global using System.Resources;
@@ -7,6 +8,8 @@ global using Common.Extensions;
 global using Common.Regex;
 
 global using static Common.Names;
+
+global using XTT = Specification.XML.XMLTokenType;
 
 [assembly: AssemblyCompany("Specification.XML")]
 [assembly: AssemblyConfiguration("Debug")]
