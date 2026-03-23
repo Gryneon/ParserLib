@@ -60,4 +60,5 @@ public class Section () : IEquatable<Section>, IComparable<Section>
   public static bool operator <= (Section left, Section right) => left?.CompareTo(right) <= 0;
   public static bool operator > (Section left, Section right) => left?.CompareTo(right) > 0;
   public static bool operator >= (Section left, Section right) => left?.CompareTo(right) >= 0;
+  public static implicit operator Pos (Section section) => section is null ? Pos.Null : new(section.Start, section.Length);
 }

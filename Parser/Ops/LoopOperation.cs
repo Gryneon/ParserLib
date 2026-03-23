@@ -12,6 +12,7 @@ public enum LoopType
 
 /// <summary>Creates an iterative loop within the parser. This can iterate through data, or a binary file.</summary>
 /// <remarks><see cref="OpIndex"/> must be set in the operation loader in the parser. This is the loop's position the operation list.</remarks>
+[Obsolete("Use the new loop objects ForCountOperation, and WhileOperation")]
 public sealed class LoopOperation : Operation, IPlaceholderOperation
 {
   /// <summary>The type of loop to perform.</summary>
@@ -67,11 +68,11 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
   };
   protected override void Execute ()
   {
+    DebugIn("LoopOperation", "Execute");
+
     if (OpIndex == 0)
     {
-      Log(MsgClass.Error, "LoopOperation", "Loop Pre-processing not complete.");
-      Status = OpStatus.FailBadOpImpossible;
-      return;
+      Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
     }
 
     void initializeCursor ()
@@ -109,12 +110,13 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
         goto Pass;
       Pass:
         Status = OpStatus.Pass;
+        DebugOut();
         return;
       case LoopType.ForEach:
       case LoopType.Until:
       default:
-        Status = OpStatus.FailBadOpDefinition;
-        return;
+        Status = Op.ThrowBadDef("Loop was not setup correctly.");
+        throw null;
     }
   }
 }

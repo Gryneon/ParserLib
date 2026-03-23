@@ -4,30 +4,34 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Common;
 
-/// <summary>Now uses internal Pos struct for speed.</summary>
-public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren<Section>, ICanAccessChildren<int, Section>
+public struct Pos (int start, int length) : IEquatable<Pos>, IIndexSortable, IComparable<Pos>
 {
-  private struct Pos (int start, int length) : IEquatable<Pos>, IIndexSortable
+  public int Start { get; set; } = start;
+  public int Length { get; set; } = length;
+  public int End
   {
-    public int Start { get; set; } = start;
-    public int Length { get; set; } = length;
-    public int End
-    {
-      readonly get => Start + Length - 1;
-      set => Length = value + 1 - Start;
-    }
-    public readonly bool IsNull => Equals(Null);
-    public static Pos Null { get; } = new(-1, -1);
-    readonly int IIndexSortable.Index => Start;
-
-    public readonly Section ToSection (string full_text) => Section.ByLength(Start, Length, full_text);
-    public readonly bool IsWithin (int point) => point >= Start && point <= End;
-    public readonly bool Overlaps (Pos other) => other.Start <= End && other.End >= Start;
-    public readonly bool Equals (Pos other) => Start == other.Start && Length == other.Length;
-    public override readonly bool Equals ([NotNullWhen(true)] object? obj) => obj is Pos p && Equals(p);
-    public override readonly int GetHashCode () => HashCode.Combine(Start, Length);
+    readonly get => Start + Length - 1;
+    set => Length = value + 1 - Start;
   }
+  public readonly bool IsNull => Equals(Null);
+  public static Pos Null { get; } = new(-1, -1);
+  readonly int IIndexSortable.Index => Start;
 
+  public readonly Section ToSection (string full_text) => Section.ByLength(Start, Length, full_text);
+  public readonly bool IsWithin (int point) => point >= Start && point <= End;
+  public readonly bool Overlaps (Pos other) => other.Start <= End && other.End >= Start;
+  public readonly bool Equals (Pos other) => Start == other.Start && Length == other.Length;
+  public override readonly bool Equals ([NotNullWhen(true)] object? obj) => obj is Pos p && Equals(p);
+  public override readonly int GetHashCode () => HashCode.Combine(Start, Length);
+  public int CompareTo (Pos other) => Start.CompareTo(other.Start);
+
+  public static bool operator == (Pos left, Pos right) => left.Equals(right);
+  public static bool operator != (Pos left, Pos right) => !(left == right);
+}
+
+/// <summary>Now uses Pos struct for speed.</summary>
+public sealed class SectionCollection () : ICollection<Pos>, ICanAddChildren<Pos>, ICanAccessChildren<int, Section>
+{
   private readonly List<Pos> _sections = [];
   private readonly Dictionary<int, bool> _bit_array = [];
 
@@ -75,17 +79,18 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
     return result;
   }
   public bool IsWithin (int point) => _sections.Any(item => item.IsWithin(point));
-  public bool Overlaps (Section section) => _sections.Any(ea => ea.Start <= section.End && ea.End >= section.Start);
+  public bool Overlaps (Pos section) => _sections.Any(ea => ea.Start <= section.End && ea.End >= section.Start);
   private Collection<Section> CastedSections => _sections.Select(p => p.ToSection(FullText ?? SE)).ToCollection();
   public string? FullText { get; private set; }
   public int TextLength => FullText?.Length ?? -1;
   public int Count => _sections.Count;
-  bool ICollection<Section>.IsReadOnly => false;
+  bool ICollection<Pos>.IsReadOnly => false;
   public Section this[int index] => _sections[index].ToSection(FullText ?? SE);
-  public void Add (Section section)
+  public void Add (Pos section)
   {
     section.ThrowIfNull();
     Add(section.Start, section.Length);
+    _sections.Sort();
   }
   public void Add (int start, int length)
   {
@@ -131,14 +136,15 @@ public sealed class SectionCollection () : ICollection<Section>, ICanAddChildren
     return result;
   }
   public void Clear () => _sections.Clear();
-  bool ICollection<Section>.Contains (Section item) => _sections.Any(i => i.Equals(new(item.Start, item.Length)));
-  void ICollection<Section>.CopyTo (Section[] array, int arrayIndex) => CastedSections.CopyTo(array, arrayIndex);
+  bool ICollection<Pos>.Contains (Pos item) => _sections.Any(i => i.Equals(new(item.Start, item.Length)));
+  void ICollection<Pos>.CopyTo (Pos[] array, int arrayIndex) => _sections.CopyTo(array, arrayIndex);
   public IEnumerator<Section> GetEnumerator () => CastedSections.GetEnumerator();
-  public bool Remove (Section item) => item is not null && _sections.Remove(new(item.Start, item.Length));
+  IEnumerator<Pos> IEnumerable<Pos>.GetEnumerator () => _sections.GetEnumerator();
+  public bool Remove (Pos item) => item != Pos.Null && _sections.Remove(new(item.Start, item.Length));
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  public void AddRange (IEnumerable<Section> children)
+  public void AddRange (IEnumerable<Pos> children)
   {
-    foreach (Section item in children ?? [])
+    foreach (Pos item in children ?? [])
       Add(item);
   }
 }

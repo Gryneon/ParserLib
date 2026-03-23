@@ -4,5 +4,6 @@ public enum LogClass
 {
   None,
   Standard,
+  Verbose,
   DebugAll
 }

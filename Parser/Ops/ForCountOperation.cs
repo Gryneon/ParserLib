@@ -56,6 +56,8 @@ public sealed class ForCountOperation : Operation, IPlaceholderOperation
     {
       if (InputKey.IsEmpty())
         Status = Op.ThrowNoVar("Key name is invalid.");
+      if (WorkData is not int)
+        Status = Op.ThrowBadInput("int", $"{WorkDataType}");
       TargetCount = (int) Data[InputKey];
     }
 

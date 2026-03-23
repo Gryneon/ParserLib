@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using Parser;
+using Parser.Exceptions;
 using Parser.Ops;
 using Parser.Tokens;
 
@@ -59,9 +60,11 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
         break;
       default:
         _ = Op.ThrowBadResult($"Invalid Type {ct.Type}");
+        throw null;
 
     }
     DebugOut();
-    return initial;
+
+    return initial is null ? throw new OperationException() : initial;
   }
 }

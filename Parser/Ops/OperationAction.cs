@@ -21,10 +21,12 @@ public sealed class OperationAction : IOperation
   bool IOperation.NoOutput => true;
   public int LoopBreak { get; set; }
   public int LoopStart { get; set; }
+  /// <summary>Integer Arguments.</summary>
   public Collection<int> IData { get; } = [];
   public Collection<string> SData { get; } = [];
   public Collection<decimal> DData { get; } = [];
   public Collection<object> OData { get; } = [];
+  /// <summary>All Arguments.</summary>
   public Collection<object> AData { get; } = [];
   [NotNull] private XParser? Parser { get; set; }
   public OAT Type { get; set; }
@@ -37,7 +39,7 @@ public sealed class OperationAction : IOperation
     {
       parser_ref.ThrowIfNull();
       Parser = parser_ref;
-      Log(Area, "DoOperation", GetMessage());
+      Log(MsgClass.Informational, GetMessage());
 
       switch (Type)
       {
@@ -96,13 +98,11 @@ public sealed class OperationAction : IOperation
           return OpStatus.Pass;
 
         default:
-          DebugOut();
           return OpStatus.FailBadOpDefinition;
       }
     }
     catch (InvalidOperationException)
     {
-      DebugOut();
       return OpStatus.FailBadOpDefinition;
     }
   }

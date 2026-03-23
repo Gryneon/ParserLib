@@ -120,14 +120,14 @@
             <summary>Sets the output stream.</summary>
             <param name="stream">The stream to output to.</param>
         </member>
-        <member name="M:Common.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
+        <member name="M:Common.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
             <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="msg">The message to log.</param>
             <param name="back">The background color.</param>
             <param name="text">The foreground color.</param>
         </member>
-        <member name="M:Common.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor)">
+        <member name="M:Common.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
             <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
             <param name="target">The originating method.</param>
@@ -1085,6 +1085,12 @@
         </member>
         <member name="M:Common.Section.CompareTo(Common.Section)">
             <inheritdoc/>
+        </member>
+        <member name="T:Common.SectionCollection">
+            <summary>Now uses Pos struct for speed.</summary>
+        </member>
+        <member name="M:Common.SectionCollection.#ctor">
+            <summary>Now uses Pos struct for speed.</summary>
         </member>
         <member name="T:Common.Types.FileExt">
             <summary>A definition for a file extension.</summary>

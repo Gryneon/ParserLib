@@ -4,8 +4,6 @@ namespace Parser.Tokens;
 
 public sealed partial class TokenAssembler
 {
-  private const string Area = "TokenAssembler";
-  private string _method = SE;
   private readonly TokenRuleCollection _rules;
 
   // Temp fields
@@ -25,7 +23,7 @@ public sealed partial class TokenAssembler
     _rules = spec.GroupTokenRules;
     _spec = spec;
   }
-  private void LogInfo (string message) => Log(MsgClass.Informational, Area, _method, message);
+  private static void LogInfo (string message) => Log(MsgClass.Informational, message);
 
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
   private void Validate ()
@@ -35,7 +33,7 @@ public sealed partial class TokenAssembler
   }
   public void Parse ()
   {
-    _method = "Parse";
+    DebugIn("Parse");
 
     Validate();
     if (_rule.GroupSequence.IsEmpty())
@@ -59,6 +57,7 @@ public sealed partial class TokenAssembler
         }
       }
     }
+    DebugOut();
   }
   private void Construct (int first_token_index, TokenCollection tokens_to_assemble)
   {
@@ -176,6 +175,7 @@ public sealed partial class TokenAssembler
   }
   private int ExecRule ()
   {
+    DebugIn("ExecRule");
     Validate();
     TokenCollection assembly = [];
     int first_token_index = -1;
@@ -278,11 +278,12 @@ public sealed partial class TokenAssembler
         continue;
       }
     }
+    DebugOut();
     return _constructed_items;
   }
   public TokenCollection Execute (TokenCollection tokens)
   {
-    _method = "Execute";
+    DebugIn("TokenAssembler", "Execute");
     _tokens = [.. tokens];
 
     int recurseCounter = 0;
@@ -339,7 +340,7 @@ public sealed partial class TokenAssembler
     }
 
     LogInfo("Token Assembly Complete");
-
+    DebugOut();
     return _tokens;
   }
 
