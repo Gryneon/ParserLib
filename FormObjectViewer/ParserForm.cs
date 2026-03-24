@@ -1,6 +1,7 @@
 #pragma warning disable CA1416 // Validate platform compatibility
 #pragma warning disable CA1812 // Remove unused classes
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -47,7 +48,8 @@ internal sealed partial class ParserForm : Form
   private readonly BindingList<TokenRule> _workingRules = [];
   private readonly BindingList<TokenRule> _workingGroupRules = [];
   private readonly BindingList<IToken> _currentTokens = [];
-  private SectionCollection _sections = [];
+  [AllowNull]
+  private SectionCollection _sections;
   private string _parseFile = "";
   private TokenFactory? _factory = new();
 
@@ -165,7 +167,7 @@ internal sealed partial class ParserForm : Form
       return;
     }
 
-    _factory = new(_workingRules, LoadedSpec, no_rules_from_spec: true);
+    _factory = new(_workingRules, LoadedSpec);
 
     foreach (IToken token in _factory.Produce(contents))
     {

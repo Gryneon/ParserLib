@@ -13,7 +13,6 @@ namespace Parser;
 /// <remarks>Any string may be used as a key.</remarks>
 public sealed class DataStore
 {
-  private const string Area = "DataStore";
   private readonly Dictionary<string, object> _dict = [];
   public required XParser Parser { get; init; }
   public bool HasData => Count > 0;
@@ -31,6 +30,7 @@ public sealed class DataStore
     get => TryLoad(key, out object? value) ? value : null;
     set
     {
+      DebugIn("DataStore", $"[{key}]");
       key.ThrowIfNull();
       bool hasKey = _dict.ContainsKey(key);
       if (key.StartsWith('+', SCO) && hasKey)
@@ -39,7 +39,7 @@ public sealed class DataStore
         bool success = DoSave<object>(key, value, DM.Overwrite | DM.AddToCollection | DM.MakeCollection | DM.MergeCollection);
         if (!success)
         {
-          Log(MsgClass.Error, Area, $"Accessor tried to make list, but failed. Value:{value} & Key:{key} & Current: {_dict[key]}.");
+          Log(MsgClass.Error, $"Accessor tried to make list, but failed. Value:{value} & Key:{key} & Current: {_dict[key]}.");
         }
       }
       else
@@ -89,7 +89,7 @@ public sealed class DataStore
       _dict[key] = data;
       return true;
     }
-    else if (mode.HasFlag(DM.Ignore) && !ContainsKey(key))
+    else if (mode.HasFlag(DM.Ignore) && !CanLoad(key))
     {
       _dict[key] = data;
       return true;
@@ -138,9 +138,9 @@ public sealed class DataStore
   public void Save (string key, object data, DM mode = DM.Overwrite) => DoSave<object>(key, data, mode);
   public bool CanLoad<T> ([NotNullWhen(true)] string key) =>
     CanLoad(key) && _dict[key] is T;
-  public bool TryLoad<T> ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out T data) where T : allows ref struct
+  public bool TryLoad<T> ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out T data)
   {
-    data = ContainsKey(key) && _dict[key] is T casted ? casted : default;
+    data = CanLoad<T>(key) && _dict[key] is T casted ? casted : default;
     return data is not null;
   }
   public bool TryLoadArray<T> ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable<T> data)
@@ -156,7 +156,7 @@ public sealed class DataStore
       throw new OperationException("DATA NOT SAVED");
   }
   public int GetCountOfKey (string key) =>
-    !ContainsKey(key) ? 0 :
+    !CanLoad(key) ? 0 :
     _dict[key] is IEnumerable<object> list ? list.Count() :
     1;
   // IDictionary Interface
@@ -167,7 +167,6 @@ public sealed class DataStore
     else
       Save(key, value);
   }
-  public bool ContainsKey (string key) => CanLoad(key);
   public bool Remove (string key) => _dict.Remove(key);
   public bool TryGetValue (string key, [NotNullWhen(true)] out object? value) => TryLoad(key, out value);
   public IEnumerator<KeyValuePair<string, object>> GetEnumerator () => _dict.GetEnumerator();

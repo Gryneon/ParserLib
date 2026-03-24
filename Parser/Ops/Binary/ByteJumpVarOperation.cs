@@ -16,11 +16,12 @@ public class ByteJumpVarOperation (string input_key, string cursor_key = "bytes"
       Status = FailBadInputType;
       return;
     }
+    int size = (int) Data["file_size"];
 
-    if (pos >= (int) Data["file_size"])
+    if (pos >= size)
     {
-      Status = Op.ThrowBadResult
-      return;
+      Status = Op.ThrowBufferOver(pos, size);
+      throw null;
     }
 
     Parser.SetCursorByKey(_cursor_key, pos);

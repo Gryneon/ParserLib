@@ -1,20 +1,25 @@
 namespace Parser.Ops;
 
-public sealed class OperationJump : Operation
+public class OperationJump : Operation
 {
-  private int TargetIndex { get; set; }
+  protected int TargetIndex { get; set; }
   private string? TargetLabel { get; set; }
   public override bool NoInput => true;
   public override bool NoOutput => true;
   public OperationJump (int index)
   {
+    DebugIn("OperationJump", $"({index})");
     TargetIndex = index;
+
+    if (TargetIndex < 0)
+      _ = Op.ThrowBadDef("Cannot jump to a negative index.");
   }
   public OperationJump (string label)
   {
     TargetIndex = -1;
     TargetLabel = label;
   }
+  protected OperationJump () { }
   protected override void Execute ()
   {
     if (TargetIndex >= Parser.OpCount)
@@ -23,8 +28,6 @@ public sealed class OperationJump : Operation
       Status = Op.ThrowBadDef("Neagtive Jump Target");
     else if (TargetIndex == -1 && TargetLabel is not null)
       Parser.SetNextOperationIndex(Parser.Labels[TargetLabel]);
-    else if (TargetIndex == Op.JumpToEnd)
-      Parser.SetNextOperationIndex(-1);
     else
       Parser.SetNextOperationIndex(TargetIndex);
   }

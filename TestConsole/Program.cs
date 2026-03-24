@@ -21,7 +21,7 @@ internal static class Program
   #region Constants
   internal const string LaptopPath = @"C:\Users\johntay4\source\repos\Git";
   internal const string CheckPath = @"C:\Users\johntayl.adm";
-  internal const string DesktopPath = @"E:\Git";
+  internal const string DesktopPath = @"D:\Git";
   internal const int LogLine = 10;
   #endregion
   #region Fields
@@ -62,10 +62,10 @@ internal static class Program
     Name = "testSpec",
     Operations = [
       Op.StoreKey("test_key", "string_value"),
-      Op.ForCount([
+      Op.ForCount( "for_count_loop", 3, [
         Op.CopyKey("test_key", "copied_key"),
-        Op.StoreKey("test_key", "different_value"),
-      ], "for_count_loop"),
+        Op.StoreKey("test_key", "different_value")
+      ]),
       Op.DebugKey("copied_key"),
       Op.DebugKey("test_key"),
     ],

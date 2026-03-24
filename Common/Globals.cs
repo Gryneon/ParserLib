@@ -13,6 +13,7 @@ global using System.Text.RegularExpressions;
 global using Common.Extensions;
 
 global using static Common.Names;
+global using static Common.Debug;
 
 global using ANEx = System.ArgumentNullException;
 global using RegexObj = System.Text.RegularExpressions.Regex;

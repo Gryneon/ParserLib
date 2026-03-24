@@ -2,22 +2,14 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <Deterministic>true</Deterministic>
-    <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
-    <NeutralLanguage>en-US</NeutralLanguage>
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
-    <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <TargetFramework>net11.0</TargetFramework>
     <UserSecretsId>37d036cf-7713-4a90-a266-751a9fd18f93</UserSecretsId>
     <Version>1.0.0</Version>
-    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>

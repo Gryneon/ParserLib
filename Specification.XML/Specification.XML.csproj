@@ -3,18 +3,10 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <Deterministic>true</Deterministic>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <ErrorReport>send</ErrorReport>
-    <ImplicitUsings>disable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>preview</LangVersion>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <TargetFramework>net11.0</TargetFramework>
-    <WarningLevel>9999</WarningLevel>
     <Title>XML Format Specification</Title>
     <PackageIcon>XMLFile.ico</PackageIcon>
     <!-- <ApplicationIcon>CPPXMLProject.ico</ApplicationIcon> -->

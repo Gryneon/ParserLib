@@ -3,6 +3,8 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
+using Parser.Ops;
+
 namespace Specification.IPL;
 
 /// <summary>Contains the details of an IPL command.</summary>
@@ -170,20 +172,18 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGene
   /// <returns>The data at the given index as an <see langword="int"/>.</returns>
   public int GetIntData (int index)
   {
-    if (!Data.TryGetValue(index, out object? value))
+    DebugIn("CommandDataSet", "GetIntData");
+    if (!Data.TryGetValue(index, out object? data_obj))
     {
-      Debug.Log("CommandDataSet", $"GetIntData({index})", "No data.");
-      return ErrVal;
+      _ = Op.ThrowBadDef($"No data at index {index}.");
+      throw null;
     }
-    try
+    if (data_obj is int data_int)
     {
-      return (int) value;
+      return data_int;
     }
-    catch (InvalidCastException ice)
-    {
-      Debug.LogException(ice);
-      return ErrVal;
-    }
+    _ = Op.ThrowBadInput("int", $"{data_obj.GetType()}");
+    throw null;
   }
   /// <summary>Gets the data field at the given index as a <see langword="decimal"/>.</summary>
   /// <param name="index">The data index to access.</param>

@@ -70,7 +70,7 @@ public sealed class OperationAction : IOperation
           Log(MsgClass.None, "\n\n\n");
           goto Pass;
         case OAT.CopyKey:
-          if (Parser.Data.ContainsKey(SData[0]))
+          if (Parser.Data.CanLoad(SData[0]))
           {
             Parser.Data[SData[1]] = Parser.Data[SData[0]];
             goto Pass;

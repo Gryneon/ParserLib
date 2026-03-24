@@ -39,8 +39,6 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
     CursorKey.ThrowIfNull();
     Collection<IOperation> additions = [];
     OpIndex = operations.Count;
-    IOperation start = Op.StartLoop(this, OpIndex, index);
-    additions.Add(start);
     additions.AddRange(Operations);
     additions.Add(new OperationContinue());
     foreach (IOperation op in additions)

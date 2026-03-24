@@ -9,6 +9,7 @@ namespace Common.Extensions;
 public static class IEnumerableExtensions
 {
   // IEnumerable<T>
+  public static T At<T> (this IEnumerable<T> list, int index) => list.ToArray()[index];
   public static Collection<T> ToCollection<T> (this IEnumerable<T> list) => [.. list];
   public static string TextJoin<T> (this IEnumerable<T> list, string separator = EmptyString)
   {

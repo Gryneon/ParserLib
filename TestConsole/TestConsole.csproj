@@ -3,16 +3,9 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <Deterministic>true</Deterministic>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <ErrorReport>send</ErrorReport>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <NeutralResourcesLanguage>en-us</NeutralResourcesLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using Common;
@@ -9,7 +10,8 @@ internal sealed partial class UnparsedViewer : Form
   private SectionCollection Inverse => Sections.Inverse();
 
   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-  public SectionCollection Sections { get; internal set; } = [];
+  [AllowNull]
+  public SectionCollection Sections { get; internal set; }
 
   public UnparsedViewer () => InitializeComponent();
 

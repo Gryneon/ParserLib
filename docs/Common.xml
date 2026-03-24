@@ -113,6 +113,15 @@
         <member name="P:Common.Debug.StackLoc.Method">
             <summary>The method name.</summary>
         </member>
+        <member name="M:Common.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
+            <summary>Logs a message to the output stream.</summary>
+            <param name="src">The orignating class.</param>
+            <param name="target">The originating method.</param>
+            <param name="msg">The message to log.</param>
+            <param name="back">The background color.</param>
+            <param name="text">The foreground color.</param>
+            <param name="partial"> If <see langword="true"/>, no newline will be appended.</param>
+        </member>
         <member name="P:Common.Debug.Verbosity">
             <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
         </member>
@@ -126,14 +135,11 @@
             <param name="msg">The message to log.</param>
             <param name="back">The background color.</param>
             <param name="text">The foreground color.</param>
+            <param name="partial"> If <see langword="true"/>, no newline will be appended.</param>
         </member>
-        <member name="M:Common.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
-            <summary>Logs a message to the output stream.</summary>
-            <param name="src">The orignating class.</param>
-            <param name="target">The originating method.</param>
-            <param name="msg">The message to log.</param>
-            <param name="back">The background color.</param>
-            <param name="text">The foreground color.</param>
+        <member name="M:Common.Debug.LogException(System.Exception)">
+            <summary>Logs an exception that was handled internally.</summary>
+            <param name="e">The exception to log.</param>
         </member>
         <member name="T:Common.DictionaryMode">
             <summary>The procedure to follow when writing to a dictionary.</summary>
@@ -539,6 +545,36 @@
         <member name="M:Common.ITextSerializer.ToString">
             <summary>Creates a lossless representation of the calling object.</summary>
             <returns>A <see langword="string"/> representation of the calling object.</returns>
+        </member>
+        <member name="T:Common.MsgClass">
+            <summary>Designates the color and required verbosity to display the message.</summary>
+        </member>
+        <member name="F:Common.MsgClass.None">
+            <summary>Unused</summary>
+        </member>
+        <member name="F:Common.MsgClass.Debug">
+            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/> is set at program start.</summary>
+            <remarks>Color is blue on black.</remarks>
+        </member>
+        <member name="F:Common.MsgClass.Forced">
+            <summary>Always displays, for important program functionality.</summary>
+            <remarks>Color is cyan on black.</remarks>
+        </member>
+        <member name="F:Common.MsgClass.Error">
+            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/>, <see cref="F:Common.LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <remarks>Color is black on dark red.</remarks>
+        </member>
+        <member name="F:Common.MsgClass.Warning">
+            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/>, <see cref="F:Common.LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <remarks>Color is yellow on black.</remarks>
+        </member>
+        <member name="F:Common.MsgClass.Critical">
+            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/>, <see cref="F:Common.LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <remarks>Color is black on red.</remarks>
+        </member>
+        <member name="F:Common.MsgClass.Informational">
+            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/> or <see cref="F:Common.LogClass.Verbose"/> is set at program start.</summary>
+            <remarks>Color is white on black.</remarks>
         </member>
         <member name="T:Common.Names">
             <summary>Shorthand for common enum names.</summary>
@@ -1086,10 +1122,20 @@
         <member name="M:Common.Section.CompareTo(Common.Section)">
             <inheritdoc/>
         </member>
+        <member name="T:Common.Pos">
+            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
+            <param name="start">The start position.</param>
+            <param name="length">The length.</param>
+        </member>
+        <member name="M:Common.Pos.#ctor(System.Int32,System.Int32)">
+            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
+            <param name="start">The start position.</param>
+            <param name="length">The length.</param>
+        </member>
         <member name="T:Common.SectionCollection">
             <summary>Now uses Pos struct for speed.</summary>
         </member>
-        <member name="M:Common.SectionCollection.#ctor">
+        <member name="M:Common.SectionCollection.#ctor(System.String)">
             <summary>Now uses Pos struct for speed.</summary>
         </member>
         <member name="T:Common.Types.FileExt">

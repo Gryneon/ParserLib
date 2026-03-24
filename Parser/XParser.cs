@@ -13,7 +13,7 @@ public sealed class XParser
   /// <summary>The current operation.</summary>
   public IOperation CurrentOp => Operations[OpIndex];
   /// <summary>The next operation.</summary>
-  public IOperation NextOp => Operations[NextOpIndex];
+  public IOperation NextOp => NextOpIndex == -1 ? Op.End : Operations[NextOpIndex];
   /// <summary>The status of the last operation performed.</summary>
   public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>Gets the file data as a list of bytes.</summary>

@@ -9,6 +9,7 @@ public class ConsolidateOperation<TCommon> (IEnumerable<string> input_keys, stri
   /// <inheritdoc/>
   protected override void Execute ()
   {
+    DebugIn("ConsolidateOperation", "Execute");
     Collection<TCommon> output_items = [];
 
     int index = 0;
@@ -28,12 +29,13 @@ public class ConsolidateOperation<TCommon> (IEnumerable<string> input_keys, stri
           Status = Op.ThrowBadResult($"Type mismatch against {typeof(TCommon)}");
         }
       }
-      Log("ConsolidateOperation", "Execute", $"Index {index} Skipped.");
+      Log(MsgClass.Informational, $"Index {index} Skipped.");
       index++;
     }
 
     WorkData = output_items;
     Status = OpStatus.Pass;
+    DebugOut();
   }
 }
 

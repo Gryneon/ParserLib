@@ -9,7 +9,7 @@ public static class Op
   public static IOperation JumpIf (int index, ICondition condition) => new OperationAction(OAT.JumpIf, index, condition);
   public static IOperation ToStart => new OperationJump(0);
   public static IOperation Fail => new OperationFail();
-  public static IOperation End => new OperationJump(JumpToEnd);
+  public static IOperation End => new OperationEnd();
   public static IOperation Prompt => new OperationAction(OAT.Prompt);
   public static IOperation Break => new OperationBreak();
   public static IOperation ClearCursor => new OperationAction(OAT.ClearCursor);
@@ -18,8 +18,8 @@ public static class Op
   public static IOperation DebugKey (string key) => new OperationAction(OAT.DebugKey, key);
   public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
   public static IOperation SetResultKey (string key) => new OperationAction(OAT.CopyKey, key, "result");
-  public static IOperation StartLoop (LoopOperation loopOperation, int continue_index, int break_index) => new OperationAction(OAT.StartLoop, loopOperation) { LoopBreak = break_index, LoopStart = continue_index };
-  public static IOperation ContinueLoop (string loop_key, int increment = 1) => new OperationAction(OAT.ContinueLoop, loop_key, increment);
+  //public static IOperation StartLoop (LoopOperation loopOperation, int continue_index, int break_index) => new OperationC
+  //public static IOperation ContinueLoop (string loop_key, int increment = 1) => new OperationAction(OAT.ContinueLoop, loop_key, increment);
   public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
   public static IOperation SetCursor (int position) => new OperationAction(OAT.SetCursor, position);
   public static IOperation While (string cursor_key, ICondition condition, IEnumerable<IOperation> operations) => new WhileOperation(cursor_key, condition, operations);

@@ -7,6 +7,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
 
   protected override void Execute ()
   {
+    DebugIn("DictionaryOperation", "Execute");
     if (WorkData is string s)
     {
       WorkData = OpRegex.Matches(s).ToMDDCollection();
@@ -29,7 +30,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
       }
       if (result.Count != list.Count() && fullMatchText)
       {
-        Log("DictionaryOperation", "Execute", $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
+        Log(MsgClass.Error, $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
       }
 
       Status = OpStatus.Pass;
@@ -39,6 +40,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
     {
       Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
     }
+    DebugOut();
   }
 
   public override string ToString ()

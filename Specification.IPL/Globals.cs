@@ -10,6 +10,7 @@ global using Common.Regex;
 global using Parser;
 
 global using static Common.Names;
+global using static Common.Debug;
 
 global using ICT = Specification.IPL.IPLCommandType;
 global using ITT = Specification.IPL.IPLTokenType;

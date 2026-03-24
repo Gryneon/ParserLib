@@ -2,18 +2,10 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <Deterministic>true</Deterministic>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <ErrorReport>send</ErrorReport>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <ProjectGuid>{B1D0522D-B271-6DFE-EE74-01968AB563FC}</ProjectGuid>
     <TargetFramework>net11.0</TargetFramework>
-    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />

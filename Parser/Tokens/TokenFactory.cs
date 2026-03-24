@@ -9,52 +9,52 @@ public class ErrorPlacement
   public required Match Error { get; init; }
   public required string Text { get; init; }
 
-  private MC McHead;
-  private MC McPrev;
-  private MC McOuter;
-  private MC McInner;
+  private MC _mcHead;
+  private MC _mcPrev;
+  private MC _mcOuter;
+  private MC _mcInner;
   [AllowNull]
-  private string PrevLine;
+  private string _prevLine;
   [AllowNull]
-  private string ErrorLine;
-  private int ErrLineNo;
-  private int StartOuter;
-  private int PointCol;
-  private int StartInner;
-  private int EndInner;
-  private int EndOuter;
+  private string _errorLine;
+  private int _errLineNo;
+  private int _startOuter;
+  private int _pointCol;
+  private int _startInner;
+  private int _endInner;
+  private int _endOuter;
   public void WriteError ()
   {
-    McHead = MC.Debug;
-    McPrev = MC.Warning;
-    McOuter = MC.Error;
-    McInner = MC.Critical;
+    _mcHead = MC.Debug;
+    _mcPrev = MC.Warning;
+    _mcOuter = MC.Error;
+    _mcInner = MC.Critical;
 
     Group? inner = Error.Groups.ContainsKey("error_pos") ? Error.Groups["error_pos"] : null;
     Group? outer = Error.Groups.ContainsKey("error_surround") ? Error.Groups["error_surround"] : null;
 
-    (ErrLineNo, StartInner) = Text.Get2DPosition(inner is not null ? inner.Index : Error.Index);
+    (_errLineNo, _startInner) = Text.Get2DPosition(inner is not null ? inner.Index : Error.Index);
 
     string[] lines = Text.Split('\n');
 
-    ErrorLine = lines[ErrLineNo];
+    _errorLine = lines[_errLineNo];
 
-    if (ErrLineNo > 0)
-      PrevLine = lines[ErrLineNo - 1];
+    if (_errLineNo > 0)
+      _prevLine = lines[_errLineNo - 1];
 
     if (outer is not null)
     {
-      (_, StartOuter) = Text.Get2DPosition(outer.Index);
-      EndOuter = StartOuter + outer.Length - 1;
+      (_, _startOuter) = Text.Get2DPosition(outer.Index);
+      _endOuter = _startOuter + outer.Length - 1;
     }
     else
     {
-      EndOuter = ErrorLine.Length - 1;
+      _endOuter = _errorLine.Length - 1;
     }
 
-    EndInner = StartInner + (inner is not null ? inner.Length : Error.Length) - 1;
+    _endInner = _startInner + (inner is not null ? inner.Length : Error.Length) - 1;
 
-    PointCol = (StartInner + EndInner) / 2;
+    _pointCol = (_startInner + _endInner) / 2;
 
     WritePrevLine();
     WriteErrorLine();
@@ -62,42 +62,42 @@ public class ErrorPlacement
   }
   public void WritePrevLine ()
   {
-    LogHead(McHead);
-    LogPart(McPrev, $"  ");
-    LogPart(McPrev, PrevLine);
+    LogHead(_mcHead);
+    LogPart(_mcPrev, $"  ");
+    LogPart(_mcPrev, _prevLine);
     NewLine();
   }
   public void WriteErrorLine ()
   {
-    LogHead(McHead);
-    LogPart(McPrev, $"> ");
-    if (StartOuter == 0)
+    LogHead(_mcHead);
+    LogPart(_mcPrev, $"> ");
+    if (_startOuter == 0)
     {
-      LogPart(McOuter, ErrorLine[0..StartInner]);
+      LogPart(_mcOuter, _errorLine[0.._startInner]);
     }
     else
     {
-      LogPart(McPrev, ErrorLine[0..StartOuter]);
-      LogPart(McOuter, ErrorLine[StartOuter..StartInner]);
+      LogPart(_mcPrev, _errorLine[0.._startOuter]);
+      LogPart(_mcOuter, _errorLine[_startOuter.._startInner]);
     }
-    LogPart(McInner, ErrorLine[StartInner..EndInner]);
-    if (EndOuter == ErrorLine.Length - 1)
+    LogPart(_mcInner, _errorLine[_startInner.._endInner]);
+    if (_endOuter == _errorLine.Length - 1)
     {
-      LogPart(McOuter, ErrorLine[EndInner..]);
+      LogPart(_mcOuter, _errorLine[_endInner..]);
     }
     else
     {
-      LogPart(McOuter, ErrorLine[EndInner..EndOuter]);
-      LogPart(McPrev, ErrorLine[EndOuter..]);
+      LogPart(_mcOuter, _errorLine[_endInner.._endOuter]);
+      LogPart(_mcPrev, _errorLine[_endOuter..]);
     }
     NewLine();
   }
   public void WritePointLine ()
   {
-    LogHead(McHead);
-    LogPart(McPrev, $"  ");
-    LogPart(McPrev, new string(' ', PointCol - 1));
-    LogPart(McPrev, "^");
+    LogHead(_mcHead);
+    LogPart(_mcPrev, $"  ");
+    LogPart(_mcPrev, new string(' ', _pointCol - 1));
+    LogPart(_mcPrev, "^");
     NewLine();
   }
 }
@@ -105,8 +105,6 @@ public class ErrorPlacement
 public sealed class TokenFactory
 {
   #region Private Fields
-  private const string Area = "TokenFactory";
-  private static string s_method = SE;
   private readonly TokenRuleCollection _rules = [];
   private readonly TokenCollection _result = [];
   private TokenRule? _currentRule;
@@ -116,7 +114,8 @@ public sealed class TokenFactory
   #endregion
   #region Public Properties
   public string Input { get; private set; } = SE;
-  public SectionCollection CannotMatch { get; } = [];
+  [NotNull]
+  public SectionCollection? CannotMatch { get; private set; }
   public bool PromptAfterEach { get; set; }
   #endregion
   #region Constructors
@@ -127,6 +126,7 @@ public sealed class TokenFactory
   }
   public TokenFactory (Spec spec)
   {
+    spec.ThrowIfNull();
     SetSpec(spec);
     _rules.AddRange(spec.TokenRules);
   }
@@ -232,7 +232,7 @@ public sealed class TokenFactory
   }
   private void StoreOther ()
   {
-    s_method = "StoreOther";
+    DebugIn("StoreOther");
     DebugLog($"Storing remaining zones.");
     foreach (Section applicant in CannotMatch.Inverse())
     {
@@ -240,12 +240,13 @@ public sealed class TokenFactory
       CannotMatch.Add(applicant.Start, applicant.Length);
       MakeAddToken(applicant);
     }
+    DebugOut();
   }
   /// <summary>Checks every unmatched section for a match, and if said section matches, adds the token.</summary>
   /// <remarks>This will NOT see anything but the unmatched section, so any lookaheads or lookbehinds will FAIL.</remarks>
   private void StoreExtra ()
   {
-    s_method = "StoreExtra";
+    DebugIn("StoreExtra");
     DebugLog($"Storing remaining zones matching {RuleData}");
     foreach (Section applicant in CannotMatch.Inverse())
     {
@@ -260,10 +261,12 @@ public sealed class TokenFactory
         }
       }
     }
+    DebugOut();
   }
   /// <summary>Exact (no regex) match, uses the rule's ignore case property, not the spec's one.</summary>
   private void ExactMatch ()
   {
+    DebugIn("ExactMatch");
     DebugLog("Token Exact starting, from input string.");
     int length = 0;
     if (RuleData.Length > 0)
@@ -288,9 +291,11 @@ public sealed class TokenFactory
       cursor = next + 1;
       next = Input.IndexOf(RuleData, cursor, IC);
     }
+    DebugOut();
   }
   private void RegexMatch ()
   {
+    DebugIn("RegexMatch");
     DebugLog("Token matching starting, from input string.");
     Regex regex = new(RuleData, IgnoreCase ? _spec.RxOpt | ROIC : _spec.RxOpt);
 
@@ -312,6 +317,7 @@ public sealed class TokenFactory
         CannotMatch.Add(rng);
       }
     }
+    DebugOut();
   }
   private void ErrorMatch ()
   {
@@ -336,13 +342,9 @@ public sealed class TokenFactory
       ErrorPlacement err = new() { Error = match, Text = Input };
       err.WriteError();
     }
-
-    DebugOut();
-
     if (failUponEnding)
-    {
       _ = Op.ThrowBadResult("You must correct the above listed errors to parse this file.");
-    }
+    DebugOut();
   }
   private void RunCompete ()
   {
@@ -372,15 +374,17 @@ public sealed class TokenFactory
   private void ActionCompetedLog () => DebugLog("Already ran competition. Skipping rule.");
   private void ActionBadLog () => WarnLog("Warning: Bad type defined. Skipping rule.");
   #region Public Methods
-  [MemberNotNull(nameof(_spec), nameof(_default_rule), nameof(_rules))]
+  [MemberNotNull(nameof(_spec), nameof(_default_rule))]
   public void SetSpec (Spec spec)
   {
     _spec = spec;
     _default_rule = _spec.DefaultRuleSet;
   }
+  [MemberNotNull(nameof(CannotMatch))]
   public TokenCollection Produce (string input)
   {
     DebugIn("TokenFactory", "Produce");
+    CannotMatch = new(input);
     _competed = false;
     input.ThrowIfNull();
     Input = input;

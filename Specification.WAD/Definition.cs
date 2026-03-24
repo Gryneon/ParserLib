@@ -28,7 +28,7 @@ public static class Definition
       ReadInt("numlumps"),
       ReadInt("diroffset"),
       new ByteJumpVarOperation("diroffset"),
-      ForCount([
+      ForCount("dataloop", "numlumps", [
         ReadInt("filepos"),
         ReadInt("size"),
         ReadString("name", 8),
@@ -36,7 +36,7 @@ public static class Definition
         new ByteJumpVarOperation("filepos"),
         ReadBinary("size", "data"),
         new ByteRecallOperation("savepos"),
-      ], "numlumps")
+      ])
     ]
   };
   [DefinitionExport]
@@ -53,7 +53,7 @@ public static class Definition
       ReadInt("dirsize"),
       new ByteDivideOperation(64, "dirsize", "entrycount"),
       new ByteJumpVarOperation("diroffset"),
-      ForCount( [
+      ForCount("dataloop", "entrycount", [
         ReadString("name", 50),
         ReadInt("offset"),
         ReadInt("size"),
@@ -61,7 +61,7 @@ public static class Definition
         new ByteJumpVarOperation("offset"),
         ReadBinary("size", "data"),
         new ByteRecallOperation("savepos"),
-      ], "entrycount"),
+      ]),
       Op.End
     ]
   };
@@ -78,7 +78,7 @@ public static class Definition
       ReadInt("numlumps"),
       ReadInt("diroffset"),
       new ByteJumpVarOperation("diroffset"),
-      ForCount([
+      ForCount("dataloop", "numlumps", [
         ReadInt("filepos"),
         ReadInt("dsize"),
         ReadInt("size"),
@@ -90,7 +90,7 @@ public static class Definition
         new ByteJumpVarOperation("filepos"),
         ReadBinary("dsize", "data"),
         new ByteRecallOperation("savepos"),
-      ], "numlumps"),
+      ]),
     ]
   };
 }

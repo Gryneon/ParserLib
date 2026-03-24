@@ -97,7 +97,7 @@ public abstract class Operation : IOperation
     DebugIn("Operation", "CheckInputNull");
     if (InputKey == SE || NoInput)
     {
-      Log(MsgClass.Debug, "Operation.CheckInputNull", $"No key checked.");
+      Log(MsgClass.Debug, "Operation", "CheckInputNull", $"No key checked.");
       Status = OpStatus.Skipped;
     }
     else if (!Data.CanLoad(InputKey))
@@ -106,7 +106,7 @@ public abstract class Operation : IOperation
     }
     else
     {
-      Log(MsgClass.Debug, "Operation.CheckInputNull", $"Key {InputKey} is not null.");
+      Log(MsgClass.Debug, "Operation", "CheckInputNull", $"Key {InputKey} is not null.");
       Status = OpStatus.Pass;
     }
     DebugOut();
@@ -127,9 +127,9 @@ public abstract class Operation : IOperation
 
     foreach (string key in InputKeys)
     {
-      if (!Parser.Data.ContainsKey(key))
+      if (!Parser.Data.CanLoad(key))
       {
-        Log(MsgClass.Error, "Operation.CheckInputsNull", $"Key {key} does not exist.");
+        Log(MsgClass.Error, $"Key {key} does not exist.");
         Status = Op.ThrowNoVar(key);
         return false;
       }
@@ -147,14 +147,19 @@ public abstract class Operation : IOperation
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
+    DebugIn("Operation", "CheckInput");
     casted = default;
     if (NoInput)
+    {
+      DebugOut();
       return false;
+    }
 
     if (Parser.Data.TryLoad(InputKey, out T? temp))
     {
       Status = OpStatus.Pass;
       casted = temp;
+      DebugOut();
       return true;
     }
     Status = Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
@@ -175,7 +180,7 @@ public abstract class Operation : IOperation
         casted.Add(temp);
       else
       {
-        Status = !Parser.Data.ContainsKey(InputKeys[i]) ? OpStatus.FailNoSuchVarName : OpStatus.FailBadInputType;
+        Status = !Parser.Data.CanLoad(InputKeys[i]) ? OpStatus.FailNoSuchVarName : OpStatus.FailBadInputType;
         return false;
       }
     }
@@ -249,6 +254,7 @@ public abstract class Operation : IOperation
   /// <param name="parser">The parser reference to pass to the operation.</param>
   private void Initialize (XParser parser)
   {
+    DebugIn("Initialize");
     parser.ThrowIfNull();
     Parser = parser;
     WorkData = null;
@@ -276,6 +282,7 @@ public abstract class Operation : IOperation
     {
       MultipleInputValues = [.. InputKeys.Select(loadkey)];
     }
+    DebugOut();
   }
   private void AssignResult ()
   {
