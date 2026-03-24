@@ -14,8 +14,11 @@ namespace Parser;
 public sealed class DataStore
 {
   private readonly Dictionary<string, object> _dict = [];
+  /// <summary>A reference to the parser containting this data.</summary>
   public required XParser Parser { get; init; }
+  /// <summary>Gets a value indicating whether the collection contains any elements.</summary>
   public bool HasData => Count > 0;
+  /// <summary>Gets the number of elements contained in the collection.</summary>
   public int Count => _dict.Count;
   public ReadOnlyCollection<string> Keys => [.. _dict.Keys];
   /// <summary>Gets or sets data to a given key.</summary>
@@ -61,7 +64,12 @@ public sealed class DataStore
     return alldata;
   }
 
-  // TODO: Implement These
+  /// <summary>The internal saving logic.</summary>
+  /// <typeparam name="T">The data type to save.</typeparam>
+  /// <param name="key"></param>
+  /// <param name="data"></param>
+  /// <param name="mode"></param>
+  /// <returns></returns>
   private bool DoSave<T> (string key, object data, DM mode)
   {
     if (data is null)
@@ -101,6 +109,7 @@ public sealed class DataStore
   }
   public void Initialize<T> ([NotNull] T initial)
   {
+    DebugIn("DataStore", "Initialize");
     initial.ThrowIfNull();
     Save("initial", initial);
 
@@ -117,11 +126,12 @@ public sealed class DataStore
     }
     else if (initial is IEnumerable list)
     {
-      Log("DataStore", "Initialization of an unknown list.");
+      Log(MsgClass.Warning, "Initialization of an unknown list.");
       Collection<object> coll = [.. list.OfType<object>()];
       Save("list", coll);
       Save<int>("list_size", coll.Count);
     }
+    DebugOut();
   }
   public bool CanLoad ([NotNullWhen(true)] string key) =>
     _dict.ContainsKey(key) && _dict[key] != null;
@@ -159,15 +169,8 @@ public sealed class DataStore
     !CanLoad(key) ? 0 :
     _dict[key] is IEnumerable<object> list ? list.Count() :
     1;
-  // IDictionary Interface
-  public void Add (string key, object? value)
-  {
-    if (value is null)
-      _ = Remove(key);
-    else
-      Save(key, value);
-  }
+  /// <summary>Removes the indicated key from storage.</summary>
+  /// <param name="key">The key to clear.</param>
+  /// <returns><see langword="true"/> if the key existed to be cleared, <see langword="false"/> otherwise.</returns>
   public bool Remove (string key) => _dict.Remove(key);
-  public bool TryGetValue (string key, [NotNullWhen(true)] out object? value) => TryLoad(key, out value);
-  public IEnumerator<KeyValuePair<string, object>> GetEnumerator () => _dict.GetEnumerator();
 }
