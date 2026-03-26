@@ -11,7 +11,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
   protected void Init (IEnumerable<IToken> tokens) => Tokens.AddRange([.. tokens]);
   protected override void Execute ()
   {
-    if (!CheckInput(out IEnumerable<IToken>? tokens))
+    if (WorkData is not IEnumerable<IToken> tokens)
     {
       Status = OpStatus.FailBadInputType;
       return;

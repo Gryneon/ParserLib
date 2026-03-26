@@ -39,14 +39,15 @@ public abstract class Operation : IOperation
   #endregion
   #region Stored Keys & Data
   /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
-  protected Collection<object?> MultipleInputValues { get; private set; } = [];
+  protected Collection<object> MultipleInputValues { get; private set; } = [];
   /// <summary>A collection of all of the input keys. This will only contain one key if only one key is provided.</summary>
   [NotNull]
   protected Collection<string> InputKeys { get; private set; } = [];
   /// <summary>The input key provided, or the first input key if multiple are provided.</summary>
-  protected string? InputKey
+  [NotNull]
+  protected string InputKey
   {
-    get => InputKeys.IsEmpty() ? null : InputKeys[0];
+    get => InputKeys.IsEmpty() ? $"{Op.ThrowBadInput("string", "an empty input Collection")}" : InputKeys[0];
     set
     {
       value ??= SE;
@@ -68,6 +69,7 @@ public abstract class Operation : IOperation
   /// <summary>The status of the operation.</summary>
   protected OpStatus Status { get; set; } = OpStatus.Pass;
   protected bool MakeListOnSave { get; set; }
+  protected Type? WorkDataType => WorkData?.GetType();
   #endregion
   #region Calculated Properties
   /// <summary>The adjusted status taking into account operation flags.</summary>
@@ -84,66 +86,43 @@ public abstract class Operation : IOperation
 
   [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkData))]
   public virtual bool NoInput => InputKey.IsEmpty();
-  protected Type? WorkDataType => WorkData?.GetType();
   #endregion
   #region Input Checks
   /// <summary>
-  /// Checks the parsers current working data, and sets the Status to <see cref="OpStatus.FailNoSuchVarName"/> if it is missing.
-  /// This method is for when one input is provided.
+  /// Checks the parsers current working data, and throws an <see cref="OperationNoSuchVarException"/> if it is missing.
+  /// This method works for one or many input keys. It will check each one.
   /// </summary>
-
+  /// <exception cref="OperationNoSuchVarException"/>
   protected void CheckInputNull ()
   {
     DebugIn("Operation", "CheckInputNull");
     if (InputKey == SE || NoInput)
     {
-      Log(MsgClass.Debug, "Operation", "CheckInputNull", $"No key checked.");
+      Log(MsgClass.Debug, $"No key checked.");
       Status = OpStatus.Skipped;
+      DebugOut();
+      return;
     }
-    else if (!Data.CanLoad(InputKey))
-    {
-      Status = Op.ThrowNoVar(InputKey);
-    }
-    else
-    {
-      Log(MsgClass.Debug, "Operation", "CheckInputNull", $"Key {InputKey} is not null.");
-      Status = OpStatus.Pass;
-    }
-    DebugOut();
-  }
-  /// <summary>
-  /// Checks the parsers current working data, and sets the Status to <see cref="OpStatus.FailNoSuchVarName"/> if it is missing.
-  /// This method is for when more than one input is provided.
-  /// </summary>
-  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
-  protected bool CheckInputsNull ()
-  {
-    DebugIn("Operation", "CheckInputsNull");
-    if (InputKeys is null)
-    {
-      Status = Op.ThrowBadDef("InputKeys is null.");
-      return false;
-    }
-
     foreach (string key in InputKeys)
     {
       if (!Parser.Data.CanLoad(key))
       {
         Log(MsgClass.Error, $"Key {key} does not exist.");
         Status = Op.ThrowNoVar(key);
-        return false;
       }
     }
-    Log("Operation.CheckInputsNull", $"All keys are not null.");
+    if (InputKeys.Count == 1)
+      Log(MsgClass.Debug, $"Key {InputKey} is not null.");
+    else
+      Log(MsgClass.Debug, $"All keys are not null.");
     Status = OpStatus.Pass;
-    InputKey ??= SE;
     DebugOut();
-    return true;
   }
   /// <summary>Checks if the data stored in <see cref="InputKey"/> is of type <typeparamref name="T"/>.</summary>
   /// <typeparam name="T">The type or interface to check against.</typeparam>
   /// <param name="casted">The data casted to the type specified.</param>
   /// <returns>Returns <see langword="true"/> if the data is of the correct type, <see langword="false"/> otherwise.</returns>
+  [Obsolete("Use pattern matching with the WorkData or MultipleInputValues objects.")]
   [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
   protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
   {
@@ -164,30 +143,6 @@ public abstract class Operation : IOperation
     }
     Status = Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
     return false;
-  }
-  /// <summary>Checks all the inputs provided and validates them to a common class or interface.</summary>
-  /// <typeparam name="T">The common class or interface.</typeparam>
-  /// <param name="casted">The collection of inputs.</param>
-  /// <returns>Returns <see langword="true"/> if the check passed, <see langword="false"/> otherwise.</returns>
-  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
-  protected bool CheckInputs<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out Collection<T> casted)
-  {
-    casted = [];
-    if (InputKeys is null) throw new InvalidOperationException();
-    for (int i = 0; i < InputKeys.Count; i++)
-    {
-      if (Parser.Data.TryLoad(InputKeys[i], out T? temp))
-        casted.Add(temp);
-      else
-      {
-        Status = !Parser.Data.CanLoad(InputKeys[i]) ? OpStatus.FailNoSuchVarName : OpStatus.FailBadInputType;
-        return false;
-      }
-    }
-
-    Status = OpStatus.Pass;
-    InputKey ??= SE;
-    return true;
   }
   #endregion
   #region Reference Properties
@@ -241,11 +196,14 @@ public abstract class Operation : IOperation
   }
   /// <summary>
   /// Performs the operation and stores the value in <c><see cref="WorkData"/></c>,
-  /// and the <see cref="OpStatus"/> in <c><see cref="Status"/></c><br/>
-  /// Use <c><see cref="CheckInput{T}(out T)"/></c>to validate single variables.
-  /// Use <see cref="CheckInputs{T}(out Collection{T})"/> to validate mulitple.
+  /// and the <c><see cref="OpStatus"/></c> in <c><see cref="Status"/></c>.<br/>
+  /// Use <c><see cref="WorkData"/></c> for a single passed input, and
+  /// <c><see cref="MultipleInputValues"/></c> for multiple values.<br/>
+  /// If you output multiple values, set <c><see cref="NoOutput"/></c> to
+  /// <c><see langword="true"/></c> and handle the data saving here.
   /// </summary>
   /// <exception cref="OperationException"/>
+  /// <exception cref="OperationBadDefinitionException"/>
   protected virtual void Execute ()
   {
     Status = Op.ThrowBadDef("Method not overridden, or NoExecute not set.");
@@ -286,7 +244,7 @@ public abstract class Operation : IOperation
   }
   private void AssignResult ()
   {
-    if (NoOutput || WorkData is null) return;
+    if (WorkData is null) return;
 
     if (!MakeListOnSave)
     {

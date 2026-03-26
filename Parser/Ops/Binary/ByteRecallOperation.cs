@@ -8,7 +8,7 @@ public class ByteRecallOperation (string input_key = "recall_pos", string cursor
 
   protected override void Execute ()
   {
-    if (CheckInput(out int pos))
+    if (WorkData is int pos)
     {
       Parser.SetCursorByKey(_cursor_key, pos);
       _ = Parser.Data.Remove(InputKey);

@@ -18,7 +18,7 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
       WorkData = File.ReadAllText(s2);
       Status = OpStatus.Skipped;
     }
-    else if (CheckInput(out IEnumerable<string>? list))
+    else if (WorkData is IEnumerable<string> list)
     {
       Collection<string> result = [];
       foreach (string ea in list)

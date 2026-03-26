@@ -59,17 +59,15 @@ public class SplitOperation : Operation
   #endregion
   protected override void Execute ()
   {
-    string? str = null;
-    IEnumerable<string>? list = null;
     IEnumerable<string> delimSplit (string input) => input.Split([.. _items ?? []], SSORT);
 
     WorkData = _type switch
     {
-      Type.None when CheckInput(out str) => RX.LineEnd.Split(str),
-      Type.Delim when CheckInput(out str) => delimSplit(str),
-      Type.Delim when CheckInput(out list) => list.SelectMany(delimSplit),
-      Type.Regex when CheckInput(out str) => new Regex((_items ?? []).TextJoin("|"), _options).Split(str),
-      Type.Regex when CheckInput(out list) => list.SelectMany(str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str)),
+      Type.None when WorkData is string str => RX.LineEnd.Split(str),
+      Type.Delim when WorkData is string str => delimSplit(str),
+      Type.Delim when WorkData is IEnumerable<string> list => list.SelectMany(delimSplit),
+      Type.Regex when WorkData is string str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str),
+      Type.Regex when WorkData is IEnumerable<string> list => list.SelectMany(str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str)),
       _ => Op.ThrowBadInput($"string or list", $"{WorkData?.GetType()}"),
     };
 

@@ -146,7 +146,7 @@ public class TranslateOperation (
 
   protected override void Execute ()
   {
-    if (CheckInput(out string? casted))
+    if (WorkData is string casted)
     {
       try
       {
@@ -155,13 +155,13 @@ public class TranslateOperation (
       }
       catch (InvalidOperationException)
       {
-        Status = OpStatus.FailBadOpDefinition;
+        Status = Op.ThrowBadResult("This operation has failed.");
         return;
       }
     }
     else
     {
-      Status = OpStatus.FailBadInputType;
+      Status = Op.ThrowBadInput("string", $"{WorkDataType}");
     }
   }
 }

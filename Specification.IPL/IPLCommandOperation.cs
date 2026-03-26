@@ -18,12 +18,12 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       bqty = 1;
     IEnumerable<CommandDataSet>? items;
 
-    if (CheckInput(out IDictionary<int, CommandDataSet>? dic))
+    if (WorkData is IDictionary<int, CommandDataSet> dic)
     {
       Debug.Log("IPLCommandOperation", "Input is a dictionary of CommandDataSet.");
       items = dic.Values;
     }
-    else if (CheckInput(out IEnumerable<CommandDataSet>? enm))
+    else if (WorkData is IEnumerable<CommandDataSet> enm)
     {
       Debug.Log("IPLCommandOperation", "Input is a collection of CommandData.");
       items = enm;

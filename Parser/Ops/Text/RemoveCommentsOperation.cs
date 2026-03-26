@@ -12,11 +12,11 @@ public class RemoveCommentsOperation ([SS("Regex")] string comment, [SS("Regex")
   protected override void Execute ()
   {
     Status = OpStatus.Pass;
-    if (CheckInput(out string? s))
+    if (WorkData is string s)
       WorkData = Task(s);
-    else if (CheckInput(out IEnumerable<string>? list))
+    else if (WorkData is IEnumerable<string> list)
       WorkData = list.Select(Task);
     else
-      Status = Op.ThrowBadInput($"string or list", $"{WorkData?.GetType()}");
+      Status = Op.ThrowBadInput($"string or IEnumerable<string>", $"{WorkDataType}");
   }
 }

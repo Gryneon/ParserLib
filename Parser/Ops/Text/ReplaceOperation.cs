@@ -30,7 +30,7 @@ public class ReplaceOperation : Operation
 
   protected override void Execute ()
   {
-    if (CheckInput(out string? s))
+    if (WorkData is string s)
     {
       foreach (ReplaceNode node in _nodes)
       {
@@ -39,7 +39,7 @@ public class ReplaceOperation : Operation
       WorkData = s;
       Status = OpStatus.Pass;
     }
-    else if (CheckInput(out IEnumerable<string>? list))
+    else if (WorkData is IEnumerable<string> list)
     {
       foreach (ReplaceNode node in _nodes)
       {

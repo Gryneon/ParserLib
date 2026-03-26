@@ -2,7 +2,7 @@ namespace Parser.Ops;
 /// <summary>An operation that logs the contents of the provided key.</summary>
 /// <remarks>Constructs an operation that logs the contents of the provided key.</remarks>
 /// <param name="input_key">The key to output the contents of.</param>
-public class DebugToStringOperation (string input_key) : Operation(input_key, EmptyString)
+public class DebugToStringOperation (string input_key) : Operation(input_key, SE)
 {
   public override bool NoOutput => true;
 
