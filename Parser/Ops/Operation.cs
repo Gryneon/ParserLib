@@ -9,34 +9,14 @@ namespace Parser.Ops;
 public abstract class Operation : IOperation
 {
   #region Throwing Functions
-  /// <summary>Throws an <see cref="InvalidOperationException"/> if condition is <see langword="true"/>.</summary>
+  /// <summary>Throws an <see cref="OperationException"/> if condition is <see langword="true"/>.</summary>
   /// <param name="condition">The condition to check.</param>
   /// <param name="msg">The exception message.</param>
-  /// <exception cref="InvalidOperationException"></exception>
+  /// <exception cref="OperationException"></exception>
   protected static void ThrowIf ([DoesNotReturnIf(true)] bool condition, string msg)
   {
-    if (condition) throw new InvalidOperationException(msg);
+    if (condition) throw new OperationException(msg);
   }
-  /// <summary>Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.</summary>
-  /// <exception cref="NotImplementedException"/>
-  [DoesNotReturn]
-  protected static void ThrowNoOverrideError () => throw new NotImplementedException();
-  /// <summary>Throws an <see cref="NotImplementedException"/>. Use if you require an override in a class, and cannot make it abstract.</summary>
-  /// <exception cref="NotImplementedException"/>
-  [DoesNotReturn]
-  protected static T ThrowNoOverrideError<T> () => throw new NotImplementedException("This needs to be overridden by the inheriting class.");
-  /// <summary>Throws an <see cref="NotSupportedException"/>. Use if you must prevent a valid overload from a base class from being used.</summary>
-  /// <exception cref="NotSupportedException"/>
-  [DoesNotReturn]
-  protected static void ThrowUnusableOverrideError () => throw new NotSupportedException("This overload cannot be used by this class.");
-  /// <summary>Throws an <see cref="ArgumentException"/>. Use if the parser type was not correct and you cannot recover.</summary>
-  /// <param name="parser">The parser object.</param>
-  /// <param name="desired_parser">The type of parser you need.</param>
-  /// <exception cref="ArgumentException"/>
-  [DoesNotReturn]
-  protected static void ThrowBadParserError (object parser, [NotNull] Type desired_parser) =>
-    throw new ArgumentException($"Parser was not a {desired_parser.Name}. Got a {parser?.GetType()}.");
-  #endregion
   #region Stored Keys & Data
   /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
   protected Collection<object> MultipleInputValues { get; private set; } = [];
@@ -47,7 +27,7 @@ public abstract class Operation : IOperation
   [NotNull]
   protected string InputKey
   {
-    get => InputKeys.IsEmpty() ? $"{Op.ThrowBadInput("string", "an empty input Collection")}" : InputKeys[0];
+    get => InputKeys.IsEmpty() ? SE : InputKeys[0];
     set
     {
       value ??= SE;
@@ -62,7 +42,7 @@ public abstract class Operation : IOperation
     }
   }
   /// <summary>The output key provided.</summary>
-  protected string OutputKey { get; set; }
+  protected string OutputKey { get; init; }
   /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
   [MemberNotNull(nameof(WorkDataType))]
   protected object? WorkData { get; set; }
@@ -93,7 +73,7 @@ public abstract class Operation : IOperation
   /// This method works for one or many input keys. It will check each one.
   /// </summary>
   /// <exception cref="OperationNoSuchVarException"/>
-  protected void CheckInputNull ()
+  private void CheckInputNull ()
   {
     DebugIn("Operation", "CheckInputNull");
     if (InputKey == SE || NoInput)
@@ -117,32 +97,6 @@ public abstract class Operation : IOperation
       Log(MsgClass.Debug, $"All keys are not null.");
     Status = OpStatus.Pass;
     DebugOut();
-  }
-  /// <summary>Checks if the data stored in <see cref="InputKey"/> is of type <typeparamref name="T"/>.</summary>
-  /// <typeparam name="T">The type or interface to check against.</typeparam>
-  /// <param name="casted">The data casted to the type specified.</param>
-  /// <returns>Returns <see langword="true"/> if the data is of the correct type, <see langword="false"/> otherwise.</returns>
-  [Obsolete("Use pattern matching with the WorkData or MultipleInputValues objects.")]
-  [MemberNotNullWhen(true, nameof(InputKey), nameof(InputKeys))]
-  protected virtual bool CheckInput<T> ([NotNullWhen(true)][MaybeNullWhen(false)] out T casted)
-  {
-    DebugIn("Operation", "CheckInput");
-    casted = default;
-    if (NoInput)
-    {
-      DebugOut();
-      return false;
-    }
-
-    if (Parser.Data.TryLoad(InputKey, out T? temp))
-    {
-      Status = OpStatus.Pass;
-      casted = temp;
-      DebugOut();
-      return true;
-    }
-    Status = Op.ThrowBadInput($"{typeof(T)}", $"{Parser.Data[InputKey].GetType()}");
-    return false;
   }
   #endregion
   #region Reference Properties
@@ -178,6 +132,7 @@ public abstract class Operation : IOperation
   #endregion
   public OpStatus DoOperation (XParser parser_ref)
   {
+    DebugIn($"Operation", "DoOperation");
     if (SkipOperation)
       return OpStatus.Skipped;
 
@@ -187,11 +142,15 @@ public abstract class Operation : IOperation
       CheckInputNull();
 
     if (!NoExecution)
+    {
+      DebugIn($"{GetType()}", "Execute");
       Execute();
-
+      DebugOut();
+    }
     if (!NoOutput)
       AssignResult();
 
+    DebugOut();
     return AdjustedStatus;
   }
   /// <summary>
@@ -207,6 +166,11 @@ public abstract class Operation : IOperation
   protected virtual void Execute ()
   {
     Status = Op.ThrowBadDef("Method not overridden, or NoExecute not set.");
+  }
+  protected void CheckUnpacked (XParser parser)
+  {
+    if (parser is not null && parser.OpIndex == 0)
+      Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
   }
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
@@ -254,3 +218,4 @@ public abstract class Operation : IOperation
     Parser.Data.Save(OutputKey, WorkData, DM.AddToCollection | DM.MakeCollection);
   }
 }
+  #endregion

@@ -1,4 +1,4 @@
-#pragma warning disable CA1710 // Identifiers should have correct suffix
+//#pragma warning disable CA1710 // Identifiers should have correct suffix
 
 using System.Diagnostics.CodeAnalysis;
 
@@ -42,7 +42,7 @@ public readonly struct Pos (int start, int length) : IEquatable<Pos>, IIndexSort
 }
 
 /// <summary>Now uses Pos struct for speed.</summary>
-public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICanAddChildren<Pos>, ICanAccessChildren<int, Section>
+public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICanAddChildren<Pos>, ICanAccessChildren<int, Pos>
 {
   private List<Pos> _sections = [];
   private BitArray BitArray { get; init; } = new(full_text.Length);
@@ -51,7 +51,8 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
   public int Count => _sections.Count;
   bool ICollection<Pos>.IsReadOnly => false;
 
-  public Section this[int index] => _sections[index].ToSection(FullText ?? SE);
+  public Pos this[int index] => _sections[index].ToSection(FullText ?? SE);
+  public string this[Pos index] => $"{FullText.AsSpan().Slice(index.Start, index.Length)}";
   public Collection<bool> GetGetParsedFromSections ()
   {
     Collection<bool> result = [];
@@ -111,7 +112,7 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
           continue;
         else
         {
-          result.Add(start, i - 1);
+          result.Add(start, i - start);
           start = -1;
           continue;
         }
@@ -119,13 +120,14 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
       else if (start == -1)
         start = i;
     }
+    if (start != -1)
+      result.Add(start, TextLength - start);
     return result;
   }
   public void Clear () => _sections.Clear();
   bool ICollection<Pos>.Contains (Pos item) => _sections.Any(i => i.Equals(new(item.Start, item.Length)));
   void ICollection<Pos>.CopyTo (Pos[] array, int arrayIndex) => _sections.CopyTo(array, arrayIndex);
-  public IEnumerator<Section> GetEnumerator () => _sections.Select(p => p.ToSection(FullText ?? SE)).GetEnumerator();
-  IEnumerator<Pos> IEnumerable<Pos>.GetEnumerator () => _sections.GetEnumerator();
+  public IEnumerator<Pos> GetEnumerator () => _sections.GetEnumerator();
   public bool Remove (Pos item)
   {
     bool rem = item.Start != -1 && _sections.Remove(new(item.Start, item.Length));

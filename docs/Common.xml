@@ -113,21 +113,38 @@
         <member name="P:Common.Debug.StackLoc.Method">
             <summary>The method name.</summary>
         </member>
-        <member name="M:Common.Debug.Log(System.String,System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
+        <member name="M:Common.Debug.Log(Common.MsgClass,System.String)">
             <summary>Logs a message to the output stream.</summary>
-            <param name="src">The orignating class.</param>
-            <param name="target">The originating method.</param>
-            <param name="msg">The message to log.</param>
-            <param name="back">The background color.</param>
-            <param name="text">The foreground color.</param>
-            <param name="partial"> If <see langword="true"/>, no newline will be appended.</param>
+            <remarks>This method always assumes that <see cref="M:Common.Debug.DebugIn(System.String,System.String)"/> has been called, and uses that location as the caller.</remarks>
+            <param name="cls">The color and verbosity of the message.</param>
+            <param name="message">The message text.</param>
+        </member>
+        <member name="M:Common.Debug.DebugIn(System.String)">
+            <summary>Sets the logging location for any logs.</summary>
+            <remarks>This keeps the classname the same as it was since the last <c>DebugIn</c> call.</remarks>
+            <param name="method">The method name.</param>
+        </member>
+        <member name="M:Common.Debug.DebugOut">
+            <summary>Clears the last location set by DebugIn and restores the one before it.</summary>
+        </member>
+        <member name="M:Common.Debug.DebugIn(System.String,System.String)">
+            <summary>Sets the logging location for any logs.</summary>
+            <param name="classname">The class name.</param>
+            <param name="method">The method name.</param>
         </member>
         <member name="P:Common.Debug.Verbosity">
-            <summary>Set to <see langword="true"/> to output debugging information to the output stream.</summary>
+            <summary>Set to define what level of debugging information to display.</summary>
         </member>
         <member name="M:Common.Debug.SetStream(System.IO.TextWriter)">
             <summary>Sets the output stream.</summary>
             <param name="stream">The stream to output to.</param>
+        </member>
+        <member name="M:Common.Debug.ClearLog">
+            <summary>Clears the console.</summary>
+        </member>
+        <member name="M:Common.Debug.LogHead(Common.MsgClass)">
+            <summary>Only writes the location of the log, and does not add a newline.</summary>
+            <param name="cls">The color if not default.</param>
         </member>
         <member name="M:Common.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
             <summary>Logs a message to the output stream.</summary>

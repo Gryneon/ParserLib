@@ -72,7 +72,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken
 
   public void SortByIndex () => _tokens.Sort((item, item2) => item.CompareTo(item2));
   internal string GetContent () => Count == 0 ? SE : _tokens.Select(s => s.Content).Aggregate((first, second) => $"{first} {second}");
-  public override string ToString () => $"TokenCollection ({GetContent()})";
+  public override string ToString () => $"TokenCollection ({ListString("")})";
   public string ListString (string indent)
   {
     string ret = $"{Type} : {Count} Items";

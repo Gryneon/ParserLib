@@ -13,7 +13,7 @@ public sealed class XParser
   /// <summary>The current operation.</summary>
   public IOperation CurrentOp => Operations[OpIndex];
   /// <summary>The next operation.</summary>
-  public IOperation NextOp => NextOpIndex == -1 ? Op.End : Operations[NextOpIndex];
+  public IOperation NextOp => (NextOpIndex == -1 || NextOpIndex >= OpCount) ? Op.End : Operations[NextOpIndex];
   /// <summary>The status of the last operation performed.</summary>
   public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>Gets the file data as a list of bytes.</summary>
@@ -191,6 +191,7 @@ public sealed class XParser
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   public OpStatus ParseAccordingToSpec (string path)
   {
+    SetFilePath(path);
     if (Spec.IsTextFile)
     {
       string text = File.ReadAllText(path);
@@ -231,6 +232,7 @@ public sealed class XParser
   /// <summary>Sets the next operation to be the one at <paramref name="index"/>.</summary>
   /// <param name="index">AIM=</param>
   public void SetNextOperationIndex (int index) => NextOpIndex = index;
+  public void SetFilePath (string path) => Data.Save<string>("file_path", path);
   /// <summary>Incrementally steps through all the operations, requesting user confirmation to continue.</summary>
   /// <param name="input">The file data as a <see langword="string"/>.</param>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
@@ -245,21 +247,35 @@ public sealed class XParser
       OpStatus status = PerformOperation();
       string userInput;
 
+      void promptUser () => userInput = Console.ReadLine() ?? SE;
+      void checkLog (string input, string? message)
+      {
+        if (userInput.Like(input))
+        {
+          Log(MsgClass.Debug, message ?? SE);
+        }
+      }
+      void checkLogAsk(string input, string askmsg, Action<string> action)
+      {
+        if (userInput.Like(input))
+        {
+          Log(MsgClass.Debug, askmsg);
+          promptUser();
+          action(userInput);
+        }
+      }
+
       string[] allow_continue = [SE, "next"];
 
       if (status != EndCommand) do
       {
         Log(MsgClass.Debug, $"Enter a command to analyse parser state.");
-        userInput = Console.ReadLine() ?? SE;
+        promptUser();
 
-        if (userInput.Like("data"))
-        {
-          Log(MsgClass.Debug, Data.ToString()!);
-        }
-        else if (userInput.Like("show next"))
-        {
-          Log(MsgClass.Debug, $"Next Operation: {NextOpIndex} : {NextOp}");
-        }
+        checkLog("data", Data.ToString());
+        checkLog("show next", $"Next Operation: {NextOpIndex} : {NextOp}");
+        checkLogAsk("data in", "Enter the key to display.", s => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
+
       } while (!userInput.EqualsAny(allow_continue, SCOIC));
     }
     DebugOut();

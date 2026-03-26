@@ -4,7 +4,7 @@
         <name>Specification.ZDoom</name>
     </assembly>
     <members>
-        <member name="F:Specification.ZDoom.ACS.ACSTokenType.Str">
+        <member name="F:Specification.ZDoom.ACS.ACSTokenType.String">
             <summary>A string. (double quoted)</summary>
             <remarks>Ex. <c>"MapSpot"</c></remarks>
         </member>

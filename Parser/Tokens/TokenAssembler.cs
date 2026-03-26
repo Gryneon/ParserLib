@@ -295,7 +295,7 @@ public sealed partial class TokenAssembler
 
     for (int r = 0; r < _rules.Count; r++)
     {
-      _rule = (TokenRule?) _rules[r];
+      _rule = _rules[r];
       _rule.ThrowIfNull();
       Parse();
       int times = 0;

@@ -16,6 +16,7 @@ public class TokenizeOperation : Operation
 
   protected override void Execute ()
   {
+    DebugIn ("TokenizeOperation", "Execute");
     // Load Tokens if loading from Spec
     if (!Rules.Any())
     {

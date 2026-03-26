@@ -14,6 +14,7 @@ public static class Definition
   private static readonly TokenRule s_cLineComment = new(RT.TokenComment, "None", @"(?>\/\/[^\n]*)");
   private static readonly TokenRule s_cBlkComment = new(RT.TokenComment, "None", @"(?>\/\*(?>[^*]|\*[^\/])*\*\/)");
   private static readonly TokenRule s_cString = new(RT.Competitive, "String", @"(?>""(?>[^""\\]|\\"")*"")");
+  private static readonly TokenRule s_char = new(RT.Competitive, "Char", @"(?>'(?>[^'\\]|\\')*')");
   private static readonly TokenRule s_int = new(RT.TokenMatch, "Int", @"(?>-?\d+)");
   private static readonly TokenRule s_dec = new(RT.TokenMatch, "Dec", @"(?>-?(?>\d+(?>\.\d*)?|\.\d+))");
 
@@ -179,6 +180,9 @@ public static class Definition
       s_cString,
       s_cLineComment,
       s_cBlkComment,
+      .. TokenRule.MakeWordMatchRules(true, "const", "include", "states", "actor", "int", "goto", "replaces", ""),
+      new(RT.TokenMatch, DecorateTokenType.StateName, @"\b[\w\.-]+(?=\:)"),
+      new(RT.TokenMatch, DecorateTokenType.FlagName, @"(?<=[+-])[\w.]+\b"),
     ]
   };
 
@@ -201,7 +205,7 @@ public static class Definition
     TokenType = typeof(AT),
     DefaultRuleSet = RT.IgnoreCase,
     TokenCompatLookup = {
-      [AT.Value] = [AT.Int, AT.Char, AT.Str, AT.Fixed, AT.Expression, AT.ExprName, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStandalone],
+      [AT.Value] = [AT.Int, AT.Char, AT.String, AT.Fixed, AT.Expression, AT.ExprName, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStandalone],
       [AT.Stmt] = [AT.VarDecl, AT.BasicCmd, AT.FunctionCallStmt, AT.VarAssn, AT.VarInc, AT.ArrayDecl, AT.WaitStmt, AT.VarDeclAssn],
       [AT.FuncStmt] = [AT.VarDecl, AT.BasicCmd, AT.FunctionCallStmt, AT.VarAssn, AT.VarInc, AT.ArrayDecl, AT.VarDeclAssn, AT.ReturnStmt],
       [AT.Block] = [AT.IfBlock, AT.ElseBlock, AT.ElseIfBlock, AT.LoopBlock, AT.SwitchBlock],
@@ -209,20 +213,20 @@ public static class Definition
       [AT.Loop] = ["until", "while"],
       [AT.Wait] = ["delay", "tagwait", "scriptwait", "polywait", "NamedScriptWait", AT.ScriptCallWaitStmt],
       [AT.Name] = [AT.PreProcName, AT.ExprName, AT.FuncName, AT.FuncDefName, AT.ArrVarName, AT.VarName, AT.ParamName, AT.DefineName],
-      [AT.Literal] = [AT.Int, AT.Str, AT.Char, AT.Fixed],
+      [AT.Literal] = [AT.Int, AT.String, AT.Char, AT.Fixed],
       [AT.SimpleJump] = ["break", "continue", "terminate", "restart"]
     },
     TokenRules = [
 
       // Data
-      new(RT.Competitive,   AT.Str,   @"""([^\\""]|\\.)*"""),
-      new(RT.Competitive,   AT.Char,  @"'([^\\']|\\.)*'"),
+      s_cString,
+      s_char,
       s_cLineComment,
       s_cBlkComment,
 
       // Preprocessor
-      Tm(AT.Int, @"-?(?<!\.|\w)(\d+|0x[a-f0-9]+)(?!\.|\w)"),
-      Tm(AT.Fixed, @"-?(\d+\.\d*|\.\d+)"),
+      s_int,
+      s_dec,
 
       // Keywords
       .. TokenRule.MakeWordMatchRules(true, [
@@ -284,29 +288,29 @@ public static class Definition
       new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{i(mport|nclude)|library} v:Str"),
 
       // Statements
-      new(RT.None, AT.VarDecl,                     "t:Type n:VarName x:Sc"),
-      new(RT.None, AT.VarDeclAssn,                 "t:Type n:VarName x:Eq v:Value x:Sc"),
-      new(RT.None, AT.VarAssn,                     "n:(ArrayValue|ExprName) x:(Eq|Assign) v:Value x:Sc"),
-      new(RT.None, AT.ArrayDecl,                   "t:Type n:ArrVarName vm:ArrayDim x:Sc"),
-      new(RT.None, AT.BasicCmd,                    "n:SimpleJump x:Sc"),
-      new(RT.None, AT.ReturnStmt,                  "n:Return x:Sc"),
-      new(RT.None, AT.ReturnStmt,                  "n:Return v:value x:Sc"),
-      new(RT.None, AT.WaitStmt,                    "t:Wait x:Po p:Value x:Pc x:Sc"),
-      new(RT.None, AT.FunctionCallStmt,            "d:FunctionCall x:Sc"),
-      new(RT.None, AT.CaseLabel,                   "x:Case n:Value x:Co"),
-      new(RT.None, AT.CaseLabel,                   "n:Default x:Co"),
+      new(RT.Recursive, AT.VarDecl,                     "t:Type n:VarName x:Sc"),
+      new(RT.Recursive, AT.VarDeclAssn,                 "t:Type n:VarName x:Eq v:Value x:Sc"),
+      new(RT.Recursive, AT.VarAssn,                     "n:(ArrayValue|ExprName) x:(Eq|Assign) v:Value x:Sc"),
+      new(RT.Recursive, AT.ArrayDecl,                   "t:Type n:ArrVarName vm:ArrayDim x:Sc"),
+      new(RT.Recursive, AT.BasicCmd,                    "n:SimpleJump x:Sc"),
+      new(RT.Recursive, AT.ReturnStmt,                  "n:Return x:Sc"),
+      new(RT.Recursive, AT.ReturnStmt,                  "n:Return v:value x:Sc"),
+      new(RT.Recursive, AT.WaitStmt,                    "t:Wait x:Po p:Value x:Pc x:Sc"),
+      new(RT.Recursive, AT.FunctionCallStmt,            "d:FunctionCall x:Sc"),
+      new(RT.Recursive, AT.CaseLabel,                   "x:Case n:Value x:Co"),
+      new(RT.Recursive, AT.CaseLabel,                   "n:Default x:Co"),
 
-      new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
-      new(RT.None, AT.IfBlock,                     "x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
-      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
-      new(RT.None, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc s:(Stmt|Block)"),
-      new(RT.None, AT.ElseBlock,                   "x:Else x:Bo sa:(Stmt|Block) x:Bc"),
-      new(RT.None, AT.ElseBlock,                   "x:Else s:(Stmt|Block)"),
-      new(RT.None, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
-      new(RT.None, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
-      new(RT.None, AT.SwitchBlock,                 "x:Switch x:Po v:Value x:Pc x:Bo sa:(CaseLabel|Stmt|Block) x:Bc"),
-      new(RT.None, AT.ForHeader,                   "x:For x:Po qo:(VarAssn|VarDeclAssn) x:Sc qo:Value x:Sc qo:Value x:Pc"),
-      new(RT.None, AT.ForBlock,                    "d:ForHeader x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.Recursive, AT.IfBlock,                     "x:If x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.Recursive, AT.IfBlock,                     "x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
+      new(RT.Recursive, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.Recursive, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc s:(Stmt|Block)"),
+      new(RT.Recursive, AT.ElseBlock,                   "x:Else x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.Recursive, AT.ElseBlock,                   "x:Else s:(Stmt|Block)"),
+      new(RT.Recursive, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.Recursive, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
+      new(RT.Recursive, AT.SwitchBlock,                 "x:Switch x:Po v:Value x:Pc x:Bo sa:(CaseLabel|Stmt|Block) x:Bc"),
+      new(RT.Recursive, AT.ForHeader,                   "x:For x:Po qo:(VarAssn|VarDeclAssn) x:Sc qo:Value x:Sc qo:Value x:Pc"),
+      new(RT.Recursive, AT.ForBlock,                    "d:ForHeader x:Bo sa:(Stmt|Block) x:Bc"),
 
       new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:FuncDefName x:Po q:Void x:Pc"),
       new(RT.None, AT.FunctionHeader,              "x:Function t:(Type|Void) n:FuncDefName x:Po qm:ParamDef x:Pc"),
@@ -336,6 +340,7 @@ public static class Definition
     ],
     DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
+      s_cString,
       s_cLineComment,
       s_cBlkComment,
       .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),

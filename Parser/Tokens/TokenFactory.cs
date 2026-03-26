@@ -234,7 +234,7 @@ public sealed class TokenFactory
   {
     DebugIn("StoreOther");
     DebugLog($"Storing remaining zones.");
-    foreach (Section applicant in CannotMatch.Inverse())
+    foreach (Pos applicant in CannotMatch.Inverse())
     {
       DebugLog($"Section: {applicant} Found with no token.");
       CannotMatch.Add(applicant.Start, applicant.Length);
@@ -248,14 +248,14 @@ public sealed class TokenFactory
   {
     DebugIn("StoreExtra");
     DebugLog($"Storing remaining zones matching {RuleData}");
-    foreach (Section applicant in CannotMatch.Inverse())
+    foreach (Pos applicant in CannotMatch.Inverse())
     {
-      if (Regex.IsMatch(applicant.Content, RuleData))
+      if (Regex.IsMatch(CannotMatch[applicant], RuleData))
       {
-        MatchCollection mc = Regex.Matches(applicant.Content, RuleData);
+        MatchCollection mc = Regex.Matches(CannotMatch[applicant], RuleData);
         foreach (Match m in mc)
         {
-          Section tsec = Section.ByLength(applicant.Start + m.Index, m.Length, Input);
+          Pos tsec = new(applicant.Start + m.Index, m.Length);
           CannotMatch.Add(tsec);
           MakeAddToken(tsec);
         }

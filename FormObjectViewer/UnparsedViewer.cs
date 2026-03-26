@@ -60,7 +60,7 @@ internal sealed partial class UnparsedViewer : Form
     VisualRichBox.ReadOnly = false;
     try
     {
-      foreach (Section section in sections)
+      foreach (Pos section in sections)
       {
         VisualRichBox.Select(section.Start, section.Length);
         VisualRichBox.SelectionColor = text;

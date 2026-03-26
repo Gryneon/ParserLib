@@ -29,4 +29,6 @@ public enum DecorateTokenType
   Po, Pc, // ( )
   Co, Cm, // : ,
   Pl, Mn, // + -
+  StateName,
+  FlagName,
 }

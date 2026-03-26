@@ -58,7 +58,7 @@ public enum ACSTokenType
 
   /// <summary>A string. (double quoted)</summary>
   /// <remarks>Ex. <c>"MapSpot"</c></remarks>
-  Str,
+  String,
   /// <summary>A character. (single quoted)</summary>
   /// <remarks>Ex. <c>'c'</c></remarks>
   Char,

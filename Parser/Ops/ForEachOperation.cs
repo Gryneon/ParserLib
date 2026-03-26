@@ -43,8 +43,7 @@ public sealed class ForEachOperation : Operation, IPlaceholderOperation
 
   protected override void Execute ()
   {
-    if (OpIndex == 0)
-      Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
+    CheckUnpacked(Parser);
 
     Parser.AddCursor(CursorKey);
     Parser.SetNextOperationIndex(OpIndex);
