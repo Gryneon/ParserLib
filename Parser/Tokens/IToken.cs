@@ -22,4 +22,5 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
     _ => $"`{ContentNoNewLine}`"
   };
   string ToString (string indent) => $"{Type} : {Content}";
+  void Print (int indent_for_children);
 }

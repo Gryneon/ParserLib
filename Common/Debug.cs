@@ -57,6 +57,13 @@ public static class Debug
     _ => C_Black,
   };
   #endregion
+  public static int LogDepth => CallStack.Count - 1;
+  public static void PurgeStackTo (int depth)
+  {
+    while (CallStack.Count > depth + 1)
+      CallStack.Drop();
+    Log(MsgClass.Debug, ThisClass, ThisMethod, "Purged back to here.");
+  }
   /// <summary>Logs a message to the output stream.</summary>
   /// <remarks>This method always assumes that <see cref="DebugIn(string, string)"/> has been called, and uses that location as the caller.</remarks>
   /// <param name="cls">The color and verbosity of the message.</param>

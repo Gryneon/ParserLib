@@ -16,6 +16,17 @@ public class Token : IToken
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
   public override string ToString () => $"{Type} : {Content}";
+  public string ToString (string indent) => $"{Type} : {Content}";
+  public void Print (int indent_for_children)
+  {
+    LogPart(MsgClass.Forced, $"{Count}");
+    foreach (var item in _tokens)
+    {
+      NewLine();
+      LogPart(MsgClass.Forced, new(' ', indent_for_children));
+      item.Print(indent_for_children + 2);
+    }
+  }
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);

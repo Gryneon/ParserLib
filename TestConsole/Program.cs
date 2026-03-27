@@ -217,7 +217,15 @@ internal static class Program
 
     if (spec.IsTextFile)
     {
-      string data = File.ReadAllText(FinishPath(file));
+      string data;
+      try
+      {
+        data = File.ReadAllText(FinishPath(file));
+      }
+      catch (IOException)
+      {
+        data = "";
+      }
       status = Parser.StepThrough(data);
     }
     else

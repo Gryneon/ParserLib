@@ -205,7 +205,7 @@ public static class Definition
     TokenType = typeof(AT),
     DefaultRuleSet = RT.IgnoreCase,
     TokenCompatLookup = {
-      [AT.Value] = [AT.Int, AT.Char, AT.String, AT.Fixed, AT.Expression, AT.ExprName, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStandalone],
+      [AT.Value] = [AT.Int, AT.Char, AT.String, "Dec", AT.Expression, AT.ExprName, AT.FunctionCall, AT.ArrayValue, AT.ExpressionStandalone],
       [AT.Stmt] = [AT.VarDecl, AT.BasicCmd, AT.FunctionCallStmt, AT.VarAssn, AT.VarInc, AT.ArrayDecl, AT.WaitStmt, AT.VarDeclAssn],
       [AT.FuncStmt] = [AT.VarDecl, AT.BasicCmd, AT.FunctionCallStmt, AT.VarAssn, AT.VarInc, AT.ArrayDecl, AT.VarDeclAssn, AT.ReturnStmt],
       [AT.Block] = [AT.IfBlock, AT.ElseBlock, AT.ElseIfBlock, AT.LoopBlock, AT.SwitchBlock],
@@ -213,7 +213,7 @@ public static class Definition
       [AT.Loop] = ["until", "while"],
       [AT.Wait] = ["delay", "tagwait", "scriptwait", "polywait", "NamedScriptWait", AT.ScriptCallWaitStmt],
       [AT.Name] = [AT.PreProcName, AT.ExprName, AT.FuncName, AT.FuncDefName, AT.ArrVarName, AT.VarName, AT.ParamName, AT.DefineName],
-      [AT.Literal] = [AT.Int, AT.String, AT.Char, AT.Fixed],
+      [AT.Literal] = [AT.Int, AT.String, AT.Char, "Dec"],
       [AT.SimpleJump] = ["break", "continue", "terminate", "restart"]
     },
     TokenRules = [
@@ -285,7 +285,7 @@ public static class Definition
       new(RT.None, AT.ScriptCallStmt,              "n:ScriptFunc x:Po q:Value x:Cm q:Value xa:Cm qa:Value xa:Cm qa:Value xa:Cm qa:Value x:Pc x:Sc"),
 
       new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{(lib)?define} n:DefineName v:Value"),
-      new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{i(mport|nclude)|library} v:Str"),
+      new(RT.None, AT.Preprocessor,                "x:Pre ti:PreProcName{i(mport|nclude)|library} v:String"),
 
       // Statements
       new(RT.Recursive, AT.VarDecl,                     "t:Type n:VarName x:Sc"),

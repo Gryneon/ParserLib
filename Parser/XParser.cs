@@ -134,6 +134,7 @@ public sealed class XParser
   private OpStatus PerformOperation ()
   {
     DebugIn("PerformOperation");
+    int recoveryDepth = LogDepth;
     if (CurrentOp.SkipOperation)
     {
       Log(MsgClass.Debug, "Skip Operation Encountered");
@@ -154,10 +155,11 @@ public sealed class XParser
 
     Log(MsgClass.Informational, $"Performing Operation {CurrentOp.GetType().Name}.");
 
-    void setExceptionData (OpStatus status, Exception toLog)
+    void setExceptionData (OpStatus status, OperationException toLog)
     {
       LastStatus = status;
-      LogException(toLog);
+      Log(MsgClass.Error, toLog.Message);
+      PurgeStackTo(recoveryDepth);
     }
 
     try { LastStatus = CurrentOp.DoOperation(this); }
@@ -255,7 +257,7 @@ public sealed class XParser
           Log(MsgClass.Debug, message ?? SE);
         }
       }
-      void checkLogAsk(string input, string askmsg, Action<string> action)
+      void checkLogAsk (string input, string askmsg, Action<string> action)
       {
         if (userInput.Like(input))
         {

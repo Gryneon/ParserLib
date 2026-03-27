@@ -41,7 +41,7 @@ public sealed class ComplexToken : IToken
   public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
   public IToken? GetPieceToken (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value : null;
-  public TokenCollection? GetPieceTokens (TokenRef piece_type) => _token_pieces[piece_type] as TokenCollection;
+  public TokenCollection? GetPieceTokens (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value as TokenCollection : null;
   public string? GetPieceContent (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value.Content : null;
   public bool HasPieceType (TokenRef piece_type) => _token_pieces.ContainsKey(piece_type) && piece_type.IsUsed(_token_pieces);
 
@@ -83,29 +83,57 @@ public sealed class ComplexToken : IToken
   public static bool operator > (ComplexToken left, ComplexToken right) => left is not null && left.CompareTo(right) > 0;
   public static bool operator >= (ComplexToken left, ComplexToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
 
+  private Dictionary<string, IToken?> Parts => new()
+  {
+    ["Name"] = Name,
+    ["Type"] = ObjType,
+    ["Value"] = Value,
+    ["Left"] = Left,
+    ["Center"] = Center,
+    ["Right"] = Right,
+    ["AddFlagList"] = AddFlags,
+    ["SubFlagList"] = SubFlags,
+    ["ParameterList"] = Parameters,
+    ["PropertyList"] = Properties,
+    ["ValueList"] = Values,
+    ["StatementList"] = Statements,
+  };
+
   public override string ToString ()
   {
-    return ToString("  ");
+    return ToString("");
   }
-
-  public string ToString (string indent)
+  public void Print (int indent_for_children)
   {
-    string temp = SE;
+    LogPart(MsgClass.Forced, Type);
+    foreach (KeyValuePair<string, IToken?> kvp in Parts)
+    {
+      NewLine();
+      LogPart(MsgClass.Forced, new(' ', indent_for_children));
+      LogPart(MsgClass.Warning, kvp.Key);
+      LogPart(MsgClass.Informational, " : ");
+      kvp.Value?.Print(indent_for_children + 2);
+    }
+  }
+  public string ToString (string indent_for_children)
+  {
+    static string tab (int i) => new(' ', i * 2);
+    string indent2 = $"{indent}{tab(1)}";
 
-    temp += $"{Type} ";
+    string temp = $"{Type}";
 
-    if (HasPieceType(TokenRef.Name)) temp += $"\n{indent}Name = {GetPieceToken(TokenRef.Name)?.ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Type)) temp += $"\n{indent}Type = {GetPieceToken(TokenRef.Type)?.ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Value)) temp += $"\n{indent}Value = {GetPieceToken(TokenRef.Value)?.ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Left)) temp += $"\n{indent}Left = {GetPieceToken(TokenRef.Left)?.ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Center)) temp += $"\n{indent}Center = {GetPieceToken(TokenRef.Center)?.ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.Right)) temp += $"\n{indent}Right = {GetPieceToken(TokenRef.Right)?.ToString(indent + "  ")}";
-    if (HasPieceType(TokenRef.AddFlagList)) temp += $"\n{indent}AddFlagList = {GetPieceTokens(TokenRef.AddFlagList)?.ListString(indent + "  ")}";
-    if (HasPieceType(TokenRef.SubFlagList)) temp += $"\n{indent}SubFlagList = {GetPieceTokens(TokenRef.SubFlagList)?.ListString(indent + "  ")}";
-    if (HasPieceType(TokenRef.ParameterList)) temp += $"\n{indent}ParameterList = {GetPieceTokens(TokenRef.ParameterList)?.ListString(indent + "  ")}";
-    if (HasPieceType(TokenRef.PropertyList)) temp += $"\n{indent}PropertyList = {GetPieceTokens(TokenRef.PropertyList)?.ListString(indent + "  ")}";
-    if (HasPieceType(TokenRef.ValueList)) temp += $"\n{indent}ValueList = {GetPieceTokens(TokenRef.ValueList)?.ListString(indent + "  ")}";
-
+    if (HasPieceType(TokenRef.Name)) temp += $"\n{indent2}Name = {Name?.ToString(indent2)}";
+    if (HasPieceType(TokenRef.Type)) temp += $"\n{indent2}Type = {ObjType?.ToString(indent2)}";
+    if (HasPieceType(TokenRef.Value)) temp += $"\n{indent2}Value = {Value?.ToString(indent2)}";
+    if (HasPieceType(TokenRef.Left)) temp += $"\n{indent2}Left = {Left?.ToString(indent2)}";
+    if (HasPieceType(TokenRef.Center)) temp += $"\n{indent2}Center = {Center?.ToString(indent2)}";
+    if (HasPieceType(TokenRef.Right)) temp += $"\n{indent2}Right = {Right?.ToString(indent2)}";
+    if (HasPieceType(TokenRef.AddFlagList)) temp += $"\n{indent2}AddFlagList = {AddFlags?.ListString(indent2)}";
+    if (HasPieceType(TokenRef.SubFlagList)) temp += $"\n{indent2}SubFlagList = {SubFlags?.ListString(indent2)}";
+    if (HasPieceType(TokenRef.ParameterList)) temp += $"\n{indent2}ParameterList = {Parameters?.ListString(indent2)}";
+    if (HasPieceType(TokenRef.PropertyList)) temp += $"\n{indent2}PropertyList = {Properties?.ListString(indent2)}";
+    if (HasPieceType(TokenRef.ValueList)) temp += $"\n{indent2}ValueList = {Values?.ListString(indent2)}";
+    if (HasPieceType(TokenRef.StatementList)) temp += $"\n{indent2}StatementList = {Statements?.ListString(indent2)}";
     return temp;
   }
 

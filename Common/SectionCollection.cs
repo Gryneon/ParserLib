@@ -52,7 +52,7 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
   bool ICollection<Pos>.IsReadOnly => false;
 
   public Pos this[int index] => _sections[index].ToSection(FullText ?? SE);
-  public string this[Pos index] => $"{FullText.AsSpan().Slice(index.Start, index.Length)}";
+  public string GetText (Pos index) => $"{FullText.AsSpan().Slice(index.Start, index.Length)}";
   public Collection<bool> GetGetParsedFromSections ()
   {
     Collection<bool> result = [];
@@ -65,7 +65,7 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
     }
     return result;
   }
-  private void Compress()
+  private void Compress ()
   {
     _sections.Sort();
     List<Pos> merged = [];
@@ -79,7 +79,7 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
     _sections = merged;
   }
   public bool IsWithin (int point) => _sections.Any(item => item.IsWithin(point));
-  public bool Overlaps (Pos section) => _sections.Any(ea => ea.Start <= section.End && ea.End >= section.Start);  
+  public bool Overlaps (Pos section) => _sections.Any(ea => ea.Start <= section.End && ea.End >= section.Start);
   public void Add (Pos section)
   {
     section.ThrowIfNull();
