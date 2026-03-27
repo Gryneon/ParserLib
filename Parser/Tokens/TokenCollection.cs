@@ -41,14 +41,14 @@ public sealed class TokenCollection () : IList<IToken>, IToken
     else
       throw new InvalidOperationException("Cannot add token to list.");
   }
-  public void Print (int indent_for_children)
+  public void Print (int indent)
   {
     LogPart(MsgClass.Informational, $"({Count} Tokens)");
     foreach (IToken item in _tokens)
     {
       NewLine();
-      LogPart(MsgClass.Forced, new(' ', indent_for_children));
-      item.Print(indent_for_children + 2);
+      LogPart(MsgClass.Forced, new(' ', indent));
+      item.Print(indent + 2);
     }
   }
   public void Clear () => _tokens.Clear();
@@ -82,11 +82,11 @@ public sealed class TokenCollection () : IList<IToken>, IToken
 
   public void SortByIndex () => _tokens.Sort((item, item2) => item.CompareTo(item2));
   internal string GetContent () => Count == 0 ? SE : _tokens.Select(s => s.Content).Aggregate((first, second) => $"{first} {second}");
-  public override string ToString () => $"TokenCollection Type {ListString("")}";
-  public string ToString (string indent) => ListString(indent);
-  public string ListString (string indent)
+  public override string ToString () => $"TokenCollection Type {ListString(2)}";
+  public string ToString (int indent) => ListString(indent);
+  public string ListString (int indent)
   {
-    string indent2 = $"{indent}  ";
+    string indent2 = new(' ', indent);
     string ret = $"{(Type.IsEmpty() ? "None" : Type)} : {Count} Items";
 
     foreach (IToken item in _tokens)

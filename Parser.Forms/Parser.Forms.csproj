@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NuGetAuditLevel>low</NuGetAuditLevel>

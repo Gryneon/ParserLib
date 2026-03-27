@@ -230,7 +230,7 @@ public sealed class XParser
   }
   /// <summary>Creates a cursor to allow looping or iteration.</summary>
   /// <param name="key">The key to make the cursor on.</param>
-  public void AddCursor (string key) => Cursors.Add(new(0, key, Data));
+  public void AddCursor (string key) => Cursors.Add(new(0, key));
   /// <summary>Sets the next operation to be the one at <paramref name="index"/>.</summary>
   /// <param name="index">AIM=</param>
   public void SetNextOperationIndex (int index) => NextOpIndex = index;
@@ -266,15 +266,30 @@ public sealed class XParser
           action(userInput);
         }
       }
+      void checkLogExec (string input, string askmsg, Action<object> action)
+      {
+        if (userInput.Like(input))
+        {
+          Log(MsgClass.Debug, askmsg);
+          promptUser();
+          action(userInput);
+        }
+      }
 
-      string[] allow_continue = [SE, "next"];
+      string[] allow_continue = [SE, "next", "quit", "exit", "skip"];
 
       if (status != EndCommand) do
       {
         Log(MsgClass.Debug, $"Enter a command to analyse parser state.");
         promptUser();
 
+        if (userInput.Like("quit"))
+          throw new QuitException();
+
         checkLog("data", Data.ToString());
+        checkLogExec("print", "Enter the key to display.", obj => {
+          if (obj is TokenCollection tc) tc.Print(0);
+        });
         checkLog("show next", $"Next Operation: {NextOpIndex} : {NextOp}");
         checkLogAsk("data in", "Enter the key to display.", s => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
 

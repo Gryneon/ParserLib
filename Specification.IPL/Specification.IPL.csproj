@@ -3,7 +3,6 @@
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <TargetFramework>net11.0</TargetFramework>
   </PropertyGroup>

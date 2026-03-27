@@ -56,7 +56,11 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
         };
         break;
       case "ElementClose" or "ElementCloseWithNamespace":
-
+        initial = new XMLElementClose()
+        {
+          Tag = ct.Name?.Content ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
+          Namespace = ct.ObjType?.Content ?? SE
+        };
         break;
       default:
         _ = Op.ThrowBadResult($"Invalid Type {ct.Type}");

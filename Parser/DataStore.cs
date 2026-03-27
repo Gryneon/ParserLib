@@ -21,6 +21,7 @@ public sealed class DataStore
   /// <summary>Gets the number of elements contained in the collection.</summary>
   public int Count => _dict.Count;
   public ReadOnlyCollection<string> Keys => [.. _dict.Keys];
+  public ReadOnlyCollection<object> Values => [.. _dict.Values];
   /// <summary>Gets or sets data to a given key.</summary>
   /// <param name="key">The key to assign to or look up.
   /// Prefixing this string with a "+" when assigning will cause it to make a list instead of overrwriting.</param>

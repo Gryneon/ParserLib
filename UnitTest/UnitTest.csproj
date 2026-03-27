@@ -2,14 +2,7 @@
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <Deterministic>true</Deterministic>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <ImplicitUsings>disable</ImplicitUsings>
     <IsPackable>false</IsPackable>
-    <LangVersion>preview</LangVersion>
-    <NeutralLanguage>en-us</NeutralLanguage>
-    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net11.0-windows</TargetFramework>
     <Platforms>AnyCPU;x86;x64</Platforms>

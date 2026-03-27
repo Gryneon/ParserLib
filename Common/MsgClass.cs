@@ -22,5 +22,6 @@ public enum MsgClass
   Critical,
   /// <summary>Displays when <see cref="LogClass.DebugAll"/> or <see cref="LogClass.Verbose"/> is set at program start.</summary>
   /// <remarks>Color is white on black.</remarks>
-  Informational
+  Informational,
+  Alt
 }

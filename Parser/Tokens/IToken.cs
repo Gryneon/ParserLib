@@ -14,13 +14,6 @@ public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken
   string ContentNoNewLine => Content.
     Replace("\n", "<LF>", SCO).
     Replace("\r", "<CR>", SCO);
-
-  string ToStringSm (string indent) => this switch
-  {
-    Token t => $"{t.Content}",
-    ComplexToken ct => $"{ct.ToString(indent)}",
-    _ => $"`{ContentNoNewLine}`"
-  };
-  string ToString (string indent) => $"{Type} : {Content}";
-  void Print (int indent_for_children);
+  string ToString (int indent);
+  void Print (int indent);
 }

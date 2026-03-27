@@ -9,11 +9,9 @@
     <FileVersion>1.0.0.0</FileVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <ImplicitUsings>disable</ImplicitUsings>
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
     <Platforms>AnyCPU;x86;x64</Platforms>
-    <RepositoryType>git</RepositoryType>
     <TargetFramework>net11.0</TargetFramework>
     <Title>Console Menu Library</Title>
   </PropertyGroup>

@@ -101,39 +101,40 @@ public sealed class ComplexToken : IToken
 
   public override string ToString ()
   {
-    return ToString("");
+    return ToString(0);
   }
-  public void Print (int indent_for_children)
+  public void Print (int indent)
   {
     LogPart(MsgClass.Forced, Type);
     foreach (KeyValuePair<string, IToken?> kvp in Parts)
     {
       NewLine();
-      LogPart(MsgClass.Forced, new(' ', indent_for_children));
+      LogPart(MsgClass.Forced, new(' ', indent));
       LogPart(MsgClass.Warning, kvp.Key);
       LogPart(MsgClass.Informational, " : ");
-      kvp.Value?.Print(indent_for_children + 2);
+      kvp.Value?.Print(indent + 2);
     }
   }
-  public string ToString (string indent_for_children)
+  public string ToString (int indent)
   {
-    static string tab (int i) => new(' ', i * 2);
-    string indent2 = $"{indent}{tab(1)}";
+    static string sp (int i) => new(' ', i);
+    int spCount = indent + 2;
+    string indent2 = $"{sp(spCount)}";
 
     string temp = $"{Type}";
 
-    if (HasPieceType(TokenRef.Name)) temp += $"\n{indent2}Name = {Name?.ToString(indent2)}";
-    if (HasPieceType(TokenRef.Type)) temp += $"\n{indent2}Type = {ObjType?.ToString(indent2)}";
-    if (HasPieceType(TokenRef.Value)) temp += $"\n{indent2}Value = {Value?.ToString(indent2)}";
-    if (HasPieceType(TokenRef.Left)) temp += $"\n{indent2}Left = {Left?.ToString(indent2)}";
-    if (HasPieceType(TokenRef.Center)) temp += $"\n{indent2}Center = {Center?.ToString(indent2)}";
-    if (HasPieceType(TokenRef.Right)) temp += $"\n{indent2}Right = {Right?.ToString(indent2)}";
-    if (HasPieceType(TokenRef.AddFlagList)) temp += $"\n{indent2}AddFlagList = {AddFlags?.ListString(indent2)}";
-    if (HasPieceType(TokenRef.SubFlagList)) temp += $"\n{indent2}SubFlagList = {SubFlags?.ListString(indent2)}";
-    if (HasPieceType(TokenRef.ParameterList)) temp += $"\n{indent2}ParameterList = {Parameters?.ListString(indent2)}";
-    if (HasPieceType(TokenRef.PropertyList)) temp += $"\n{indent2}PropertyList = {Properties?.ListString(indent2)}";
-    if (HasPieceType(TokenRef.ValueList)) temp += $"\n{indent2}ValueList = {Values?.ListString(indent2)}";
-    if (HasPieceType(TokenRef.StatementList)) temp += $"\n{indent2}StatementList = {Statements?.ListString(indent2)}";
+    if (HasPieceType(TokenRef.Name)) temp += $"\n{indent2}Name = {Name?.ToString(spCount + 2)}";
+    if (HasPieceType(TokenRef.Type)) temp += $"\n{indent2}Type = {ObjType?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.Value)) temp += $"\n{indent2}Value = {Value?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.Left)) temp += $"\n{indent2}Left = {Left?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.Center)) temp += $"\n{indent2}Center = {Center?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.Right)) temp += $"\n{indent2}Right = {Right?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.AddFlagList)) temp += $"\n{indent2}AddFlagList = {AddFlags?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.SubFlagList)) temp += $"\n{indent2}SubFlagList = {SubFlags?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.ParameterList)) temp += $"\n{indent2}ParameterList = {Parameters?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.PropertyList)) temp += $"\n{indent2}PropertyList = {Properties?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.ValueList)) temp += $"\n{indent2}ValueList = {Values?.ToString(spCount)}";
+    if (HasPieceType(TokenRef.StatementList)) temp += $"\n{indent2}StatementList = {Statements?.ToString(spCount)}";
     return temp;
   }
 

@@ -16,15 +16,23 @@ public class Token : IToken
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
   public override string ToString () => $"{Type} : {Content}";
-  public string ToString (string indent) => $"{Type} : {Content}";
-  public void Print (int indent_for_children)
+  public string ToString (int indent) => $"{Type} : {Content}";
+  public void Print (int indent)
   {
-    LogPart(MsgClass.Forced, $"{Count}");
-    foreach (var item in _tokens)
+    LogPart(MsgClass.Forced, $"{Type}");
+    LogPart(MsgClass.Informational, $" : ");
+    if (Count is 0 or 1)
     {
-      NewLine();
-      LogPart(MsgClass.Forced, new(' ', indent_for_children));
-      item.Print(indent_for_children + 2);
+      LogPart(MsgClass.Alt, Content);
+    }
+    else
+    {
+      foreach (var t in Children)
+      {
+        NewLine();
+        LogPart(MsgClass.Forced, new(' ', indent));
+        t.Print(indent + 2);
+      }
     }
   }
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
