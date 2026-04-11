@@ -1,7 +1,7 @@
 namespace Parser.Tokens;
 
 /// <summary>A collection of tokens, use this to keep token operations consistent.</summary>
-public sealed class TokenCollection () : IList<IToken>, IToken
+public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
 {
   /// <summary>The internal token list.</summary>
   private List<IToken> _tokens = [];
@@ -23,9 +23,12 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   public int Count => _tokens.Count;
   bool ICollection<IToken>.IsReadOnly => false;
 
-  public string Type { get; set; } = SE;
+  public string Type
+  {
+    get => field.IsEmpty() ? "None" : field;
+    set;
+  } = SE;
   public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
-  bool IToken.Exempt { get; set; }
   public IList<IToken> Children
   {
     get => _tokens;
@@ -86,12 +89,14 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   public string ToString (int indent) => ListString(indent);
   public string ListString (int indent)
   {
-    string indent2 = new(' ', indent);
+    string i2 = new(' ', indent);
     string ret = $"{(Type.IsEmpty() ? "None" : Type)} : {Count} Items";
 
     foreach (IToken item in _tokens)
     {
-      ret += $"\n{indent2}{item}";
+      ret += i2;
+      ret += item.ToString(indent);
+      ret += Chars.LF;
     }
     return ret;
   }

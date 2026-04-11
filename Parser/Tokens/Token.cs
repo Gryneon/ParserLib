@@ -9,9 +9,8 @@ public class Token : IToken, IPrintable
   // Calculated Properties
   public int LastPosition => Index + Length - 1;
   public int Length => Content.Length;
-  public bool Exempt { get; set; }
   public int Index { get; init; }
-  public string Type { get; set; } = SE;
+  public string Type { get => field.IsEmpty() ? "None" : field; set; } = SE;
   public IList<IToken> Children { get; set; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;

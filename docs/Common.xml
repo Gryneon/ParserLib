@@ -613,7 +613,7 @@
             <summary>Designates the color and required verbosity to display the message.</summary>
         </member>
         <member name="F:Common.MsgClass.None">
-            <summary>Unused</summary>
+            <summary>Do not use.</summary>
         </member>
         <member name="F:Common.MsgClass.Debug">
             <summary>Displays when <see cref="F:Common.LogClass.Debug"/> is set at program start.</summary>
@@ -624,44 +624,67 @@
             <remarks>Color is cyan on black.</remarks>
         </member>
         <member name="F:Common.MsgClass.Error">
-            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="!:LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="F:Common.LogClass.Error"/>, <see cref="F:Common.LogClass.Warning"/>, or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
             <remarks>Color is black on dark red.</remarks>
         </member>
         <member name="F:Common.MsgClass.Warning">
-            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="!:LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Error"/>, <see cref="F:Common.LogClass.Warning"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
             <remarks>Color is yellow on black.</remarks>
         </member>
         <member name="F:Common.MsgClass.Critical">
-            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="!:LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="F:Common.LogClass.Error"/>, <see cref="F:Common.LogClass.Warning"/>, or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
             <remarks>Color is black on red.</remarks>
         </member>
-        <member name="F:Common.MsgClass.Informational">
+        <member name="F:Common.MsgClass.BlueInfo">
             <summary>Displays when <see cref="F:Common.LogClass.Debug"/> or <see cref="F:Common.LogClass.Verbose"/> is set at program start.</summary>
             <remarks>Color is white on black.</remarks>
+        </member>
+        <member name="F:Common.MsgClass.GreenInfo">
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/> or <see cref="F:Common.LogClass.Verbose"/> is set at program start.</summary>
+            <remarks>Color is green on black.</remarks>
+        </member>
+        <member name="F:Common.MsgClass.Hidden">
+            <summary>Not visible.</summary>
+            <remarks>Color is black on black.</remarks>
         </member>
         <member name="T:Common.Names">
             <summary>Shorthand for common enum names.</summary>
         </member>
-        <member name="F:Common.Names.C_Red">
-            <summary>Console colors.</summary>
-        </member>
-        <member name="F:Common.Names.C_Cyan">
-            <summary>Console colors.</summary>
-        </member>
-        <member name="F:Common.Names.C_Yellow">
+        <member name="F:Common.Names.C_Black">
             <summary>Console colors.</summary>
         </member>
         <member name="F:Common.Names.C_Blue">
             <summary>Console colors.</summary>
         </member>
-        <member name="F:Common.Names.C_White">
+        <member name="F:Common.Names.C_Cyan">
             <summary>Console colors.</summary>
         </member>
         <member name="F:Common.Names.C_DarkRed">
             <summary>Console colors.</summary>
         </member>
-        <member name="F:Common.Names.C_Black">
+        <member name="F:Common.Names.C_DarkYellow">
             <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_Green">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_Red">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_White">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.C_Yellow">
+            <summary>Console colors.</summary>
+        </member>
+        <member name="F:Common.Names.BFCI">
+            <summary>Creates an instance of the object.</summary>
+        </member>
+        <member name="F:Common.Names.BFP">
+            <summary>Specifies the indicated object is <see langword="public"/>.</summary>
+        </member>
+        <member name="F:Common.Names.BFS">
+            <summary>Specifies the indicated object is <see langword="static"/>.</summary>
         </member>
         <member name="F:Common.Names.SSON">
             <summary>No split alterations.</summary>
@@ -674,6 +697,30 @@
         </member>
         <member name="F:Common.Names.SCOIC">
             <summary>Ordinal (Case-Insensitive).</summary>
+        </member>
+        <member name="F:Common.Names.NSN">
+            <summary>Number styles.</summary>
+        </member>
+        <member name="F:Common.Names.NSALS">
+            <summary>Number styles.</summary>
+        </member>
+        <member name="F:Common.Names.NSAP">
+            <summary>Number styles.</summary>
+        </member>
+        <member name="F:Common.Names.NSAT">
+            <summary>Number styles.</summary>
+        </member>
+        <member name="F:Common.Names.NSADP">
+            <summary>Number styles.</summary>
+        </member>
+        <member name="F:Common.Names.NSABS">
+            <summary>Number styles.</summary>
+        </member>
+        <member name="F:Common.Names.NSAHS">
+            <summary>Number styles.</summary>
+        </member>
+        <member name="F:Common.Names.NSALW">
+            <summary>Number styles.</summary>
         </member>
         <member name="F:Common.Names.RON">
             <summary>No regular expression options.</summary>
@@ -699,20 +746,37 @@
         <member name="F:Common.Names.ROEC">
             <summary>Explicit capture, only stores named groups.</summary>
         </member>
+        <member name="P:Common.Names.CICC">
+            <summary>The current thread's default culture.</summary>
+        </member>
+        <member name="P:Common.Names.CIIC">
+            <summary>No culture is needed to be specified, does not matter.</summary>
+        </member>
+        <member name="P:Common.Names.CICUIC">
+            <summary>Culture of the resource manager.</summary>
+        </member>
+        <member name="P:Common.Names.CIIUC">
+            <summary>Culture of the operating System.</summary>
+        </member>
         <member name="F:Common.Names.ErrVal">
-            <summary>Readable name for the '-1' not found indicator.</summary>
+            <summary>Name for the not found indicator.</summary>
+            <value>Equal to -1.</value>
         </member>
         <member name="F:Common.Names.NotFound">
-            <summary>Readable name for the '-1' not found indicator.</summary>
+            <summary>Name for the not found indicator.</summary>
+            <value>Equal to -1.</value>
         </member>
         <member name="F:Common.Names.DNE">
-            <summary>Readable name for the '-1' not found indicator.</summary>
+            <summary>Name for the not found indicator.</summary>
+            <value>Equal to -1.</value>
         </member>
-        <member name="F:Common.Names.SE">
-            <summary>String empty reference</summary>
+        <member name="P:Common.Names.SE">
+            <summary>Reference to an empty <see langword="string"/>.</summary>
+            <value>Equal to <see cref="F:System.String.Empty"/>.</value>
         </member>
         <member name="F:Common.Names.EmptyString">
-            <summary>Const empty string for compile time availability</summary>
+            <summary>Reference to an empty <see langword="string"/>.</summary>
+            <remarks>This one is a compile-time constant.</remarks>
         </member>
         <member name="T:Common.Regex.AbsentGroupException">
             <summary>The exception thrown when a regex group is not found.</summary>

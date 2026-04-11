@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public sealed class ComplexToken : IToken
+public sealed class ComplexToken : IToken, IPrintable
 {
   private readonly Dictionary<TokenRef, IToken> _token_pieces = [];
   public TokenRef? AssignTo { get; set; }
@@ -98,6 +98,11 @@ public sealed class ComplexToken : IToken
     ["ValueList"] = Values,
     ["StatementList"] = Statements,
   };
+  private void EachPart (Action<KeyValuePair<string, IToken?>> action)
+  {
+    foreach (KeyValuePair<string, IToken?> part in Parts)
+      action(part);
+  }
 
   public override string ToString ()
   {
@@ -105,15 +110,19 @@ public sealed class ComplexToken : IToken
   }
   public void Print (int indent)
   {
+    string ind_str = new(' ', indent);
     LogPart(MsgClass.Forced, Type);
-    foreach (KeyValuePair<string, IToken?> kvp in Parts)
+    EachPart(kvp =>
     {
-      NewLine();
-      LogPart(MsgClass.Forced, new(' ', indent));
-      LogPart(MsgClass.Warning, kvp.Key);
-      LogPart(MsgClass.BlueInfo, " : ");
-      kvp.Value?.Print(indent + 2);
-    }
+      if (kvp.Value is not null)
+      {
+        NewLine();
+        LogPart(MsgClass.Forced, ind_str);
+        LogPart(MsgClass.Warning, kvp.Key);
+        LogPart(MsgClass.BlueInfo, " : ");
+        kvp.Value?.Print(indent + 2);
+      }
+    });
   }
   public string ToString (int indent)
   {
@@ -123,18 +132,24 @@ public sealed class ComplexToken : IToken
 
     string temp = $"{Type}";
 
-    if (HasPieceType(TokenRef.Name)) temp += $"\n{indent2}Name = {Name?.ToString(spCount + 2)}";
-    if (HasPieceType(TokenRef.Type)) temp += $"\n{indent2}Type = {ObjType?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.Value)) temp += $"\n{indent2}Value = {Value?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.Left)) temp += $"\n{indent2}Left = {Left?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.Center)) temp += $"\n{indent2}Center = {Center?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.Right)) temp += $"\n{indent2}Right = {Right?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.AddFlagList)) temp += $"\n{indent2}AddFlagList = {AddFlags?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.SubFlagList)) temp += $"\n{indent2}SubFlagList = {SubFlags?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.ParameterList)) temp += $"\n{indent2}ParameterList = {Parameters?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.PropertyList)) temp += $"\n{indent2}PropertyList = {Properties?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.ValueList)) temp += $"\n{indent2}ValueList = {Values?.ToString(spCount)}";
-    if (HasPieceType(TokenRef.StatementList)) temp += $"\n{indent2}StatementList = {Statements?.ToString(spCount)}";
+    bool multiple_values = Values is not null && Values.Count > 1;
+
+    foreach (KeyValuePair<string, IToken?> kvp in Parts)
+    {
+      if (kvp.Value is not null)
+      {
+        switch (kvp.Key)
+        {
+          case "Value" when multiple_values:
+            continue;
+          case "ValueList" when !multiple_values:
+            continue;
+          default:
+            temp += $"\n{indent2}{kvp.Key} = {kvp.Value.ToString(spCount + 2)}";
+            break;
+        }
+      }
+    }
     return temp;
   }
 
