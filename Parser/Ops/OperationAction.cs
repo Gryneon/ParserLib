@@ -39,7 +39,7 @@ public sealed class OperationAction : IOperation
     {
       parser_ref.ThrowIfNull();
       Parser = parser_ref;
-      Log(MsgClass.Informational, GetMessage());
+      Log(MsgClass.BlueInfo, GetMessage());
 
       switch (Type)
       {
@@ -67,7 +67,7 @@ public sealed class OperationAction : IOperation
             Log(MsgClass.Warning, keyData.ToString() ?? "No string representation.");
           else
             Log(MsgClass.Warning, "Key not found.");
-          Log(MsgClass.None, "\n\n\n");
+          Log(MsgClass.Hidden, "\n\n\n");
           goto Pass;
         case OAT.CopyKey:
           if (Parser.Data.CanLoad(SData[0]))

@@ -23,7 +23,7 @@ public sealed partial class TokenAssembler
     _rules = spec.GroupTokenRules;
     _spec = spec;
   }
-  private static void LogInfo (string message) => Log(MsgClass.Informational, message);
+  private static void LogInfo (string message) => Log(MsgClass.BlueInfo, message);
 
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
   private void Validate ()

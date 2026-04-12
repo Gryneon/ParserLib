@@ -2,41 +2,39 @@
 
 namespace Common;
 
-public static class Ext
-{
-  public static string UserDirFix (this string path)
-  {
-    path.ThrowIfNullOrEmpty();
-    return path.Replace("$user$", Environment.MachineName.Like("AIM-JTaylor-L") ? "johntay4" : "querpus", SCOIC);
-  }
-}
-
 /// <summary>Shorthand for common enum names.</summary>
 public static class Names
 {
   /// <summary>Console colors.</summary>
   public const ConsoleColor
-    C_Red = ConsoleColor.Red,
-    C_Cyan = ConsoleColor.Cyan,
-    C_Yellow = ConsoleColor.Yellow,
+    C_Black = ConsoleColor.Black,
     C_Blue = ConsoleColor.Blue,
-    C_White = ConsoleColor.White,
+    C_Cyan = ConsoleColor.Cyan,
     C_DarkRed = ConsoleColor.DarkRed,
-    C_Black = ConsoleColor.Black;
+    C_DarkYellow = ConsoleColor.DarkYellow,
+    C_Green = ConsoleColor.Green,
+    C_Red = ConsoleColor.Red,
+    C_White = ConsoleColor.White,
+    C_Yellow = ConsoleColor.Yellow;
 
-  public const BindingFlags
-    BFCI = BindingFlags.CreateInstance,
-    BFP = BindingFlags.Public,
-    BFS = BindingFlags.Static;
+  /// <summary>Creates an instance of the object.</summary>
+  public const BindingFlags BFCI = BindingFlags.CreateInstance;
+  /// <summary>Specifies the indicated object is <see langword="public"/>.</summary>
+  public const BindingFlags BFP = BindingFlags.Public;
+  /// <summary>Specifies the indicated object is <see langword="static"/>.</summary>
+  public const BindingFlags BFS = BindingFlags.Static;
+
   /// <summary>No split alterations.</summary>
   public const StringSplitOptions SSON = StringSplitOptions.None;
   /// <summary>Trim and remove empty splits.</summary>
   public const StringSplitOptions SSORT = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
+
   /// <summary>Ordinal (Case-Sensitive).</summary>
   public const StringComparison SCO = StringComparison.Ordinal;
   /// <summary>Ordinal (Case-Insensitive).</summary>
   public const StringComparison SCOIC = StringComparison.OrdinalIgnoreCase;
 
+  /// <summary>Number styles.</summary>
   public const NumberStyles
     NSN = NumberStyles.None,
     NSALS = NumberStyles.AllowLeadingSign,
@@ -64,20 +62,27 @@ public static class Names
   /// <summary>Explicit capture, only stores named groups.</summary>
   public const RegexOptions ROEC = RegexOptions.ExplicitCapture;
 
-  public static readonly CultureInfo
-    CICC = CultureInfo.CurrentCulture,
-    CIIC = CultureInfo.InvariantCulture,
-    CICUIC = CultureInfo.CurrentUICulture;
+  /// <summary>The current thread's default culture.</summary>
+  public static CultureInfo CICC => CultureInfo.CurrentCulture;
+  /// <summary>No culture is needed to be specified, does not matter.</summary>
+  public static CultureInfo CIIC => CultureInfo.InvariantCulture;
+  /// <summary>Culture of the resource manager.</summary>
+  public static CultureInfo CICUIC => CultureInfo.CurrentUICulture;
+  /// <summary>Culture of the operating System.</summary>
+  public static CultureInfo CIIUC => CultureInfo.InstalledUICulture;
 
-  /// <summary>Readable name for the '-1' not found indicator.</summary>
+  /// <summary>Name for the not found indicator.</summary>
+  /// <value>Equal to -1.</value>
   public const int
     ErrVal = -1,
     NotFound = -1,
     DNE = -1;
 
-  /// <summary>String empty reference</summary>
-  public static readonly string SE = string.Empty;
+  /// <summary>Reference to an empty <see langword="string"/>.</summary>
+  /// <value>Equal to <see cref="string.Empty"/>.</value>
+  public static string SE => string.Empty;
 
-  /// <summary>Const empty string for compile time availability</summary>
+  /// <summary>Reference to an empty <see langword="string"/>.</summary>
+  /// <remarks>This one is a compile-time constant.</remarks>
   public const string EmptyString = "";
 }

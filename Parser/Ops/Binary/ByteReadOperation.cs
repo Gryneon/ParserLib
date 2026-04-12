@@ -68,7 +68,7 @@ public sealed class ByteReadOperation : Operation, IOperation
 
     if (Size == 0)
     {
-      Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Found: Marker");
+      Log(MsgClass.BlueInfo, "ByteReadOperation", "Execute", $"Found: Marker");
       Status = Pass;
       WorkData = Array.Empty<byte>();
       return;
@@ -96,7 +96,7 @@ public sealed class ByteReadOperation : Operation, IOperation
       _ => Op.ThrowBadResult("Size was 0, cannot have a size of 0.")
     };
 
-    Log(MsgClass.Informational, "ByteReadOperation", "Execute", $"Read: {value}");
+    Log(MsgClass.BlueInfo, "ByteReadOperation", "Execute", $"Read: {value}");
 
     WorkData = value;
     Status = Pass;

@@ -1,6 +1,4 @@
-using System.Formats.Asn1;
-
-using static System.Net.Mime.MediaTypeNames;
+using static Common.Chars;
 
 namespace Common;
 
@@ -43,12 +41,12 @@ public static class Debug
   }
   private static ConsoleColor GetTextColor (MsgClass msg) => msg switch
   {
-    MsgClass.Debug => C_Blue,
+    MsgClass.Debug or MsgClass.BlueInfo => C_Blue,
     MsgClass.Forced => C_Cyan,
-    MsgClass.Error => C_Black,
+    MsgClass.Error or MsgClass.Critical or MsgClass.Hidden => C_Black,
     MsgClass.Warning => C_Yellow,
-    MsgClass.Critical => C_Black,
-    MsgClass.None or MsgClass.Informational or _ => C_White,
+    MsgClass.GreenInfo => C_Green,
+    _ => C_White
   };
   private static ConsoleColor GetBackColor (MsgClass msg) => msg switch
   {
@@ -99,7 +97,9 @@ public static class Debug
 
   public static void LogPart (MsgClass cls, string part) =>
     DoLog(part, GetBackColor(cls), GetTextColor(cls), true);
-  public static void NewLine () => DoLog("\n", C_Black, null, true);
+  /// <summary>Writes a newline to the output stream.</summary>
+  /// <param name="back">The background color.<br/>Default is black.</param>
+  public static void NewLine (ConsoleColor back = C_Black) => DoLog(LFs, back, back, true);
   public static void Log (MsgClass msgClass, string className, string methodName, string msg)
   {
     DoLogHead(MsgClass.Debug, className, methodName);

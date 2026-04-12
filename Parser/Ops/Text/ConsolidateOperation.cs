@@ -29,7 +29,7 @@ public class ConsolidateOperation<TCommon> (IEnumerable<string> input_keys, stri
           Status = Op.ThrowBadResult($"Type mismatch against {typeof(TCommon)}");
         }
       }
-      Log(MsgClass.Informational, $"Index {index} Skipped.");
+      Log(MsgClass.BlueInfo, $"Index {index} Skipped.");
       index++;
     }
 

@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public class Token : IToken
+public class Token : IToken, IPrintable
 {
   public TokenRef? AssignTo { get; set; }
   public string Content { get; set; } = SE;
@@ -20,18 +20,18 @@ public class Token : IToken
   public void Print (int indent)
   {
     LogPart(MsgClass.Forced, $"{Type}");
-    LogPart(MsgClass.Informational, $" : ");
+    LogPart(MsgClass.BlueInfo, $" : ");
     if (Count is 0 or 1)
     {
-      LogPart(MsgClass.Alt, Content);
+      LogPart(MsgClass.GreenInfo, Content);
     }
     else
     {
-      foreach (var t in Children)
+      foreach (IToken t in Children)
       {
         NewLine();
         LogPart(MsgClass.Forced, new(' ', indent));
-        t.Print(indent + 2);
+        t.Print(indent + IPrintable.TabSize);
       }
     }
   }

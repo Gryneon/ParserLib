@@ -111,7 +111,7 @@ public sealed class ComplexToken : IToken
       NewLine();
       LogPart(MsgClass.Forced, new(' ', indent));
       LogPart(MsgClass.Warning, kvp.Key);
-      LogPart(MsgClass.Informational, " : ");
+      LogPart(MsgClass.BlueInfo, " : ");
       kvp.Value?.Print(indent + 2);
     }
   }

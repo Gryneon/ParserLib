@@ -43,7 +43,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   }
   public void Print (int indent)
   {
-    LogPart(MsgClass.Informational, $"({Count} Tokens)");
+    LogPart(MsgClass.BlueInfo, $"({Count} Tokens)");
     foreach (IToken item in _tokens)
     {
       NewLine();

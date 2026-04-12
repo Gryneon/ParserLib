@@ -61,7 +61,7 @@ public sealed class TokenFactory
   private static void DebugLog (string msg)
   {
     LogHead(MC.Debug);
-    LogPart(MC.Informational, msg);
+    LogPart(MC.BlueInfo, msg);
     NewLine();
   }
   private static void WarnLog (string msg)

@@ -146,6 +146,10 @@
             <summary>Only writes the location of the log, and does not add a newline.</summary>
             <param name="cls">The color if not default.</param>
         </member>
+        <member name="M:Common.Debug.NewLine(System.ConsoleColor)">
+            <summary>Writes a newline to the output stream.</summary>
+            <param name="back">The background color.<br/>Default is black.</param>
+        </member>
         <member name="M:Common.Debug.Log(System.String,System.String,System.ConsoleColor,System.ConsoleColor,System.Boolean)">
             <summary>Logs a message to the output stream.</summary>
             <param name="src">The orignating class.</param>
@@ -532,6 +536,29 @@
         <member name="P:Common.IIndexSortable.IsValidIndex">
             <summary>Checks if the index is valid.</summary>
         </member>
+        <member name="T:Common.IPrintable">
+            <summary>Defines a contract for objects that can output their content in a printable format with a specified indentation
+            level.</summary>
+            <remarks>Implementations should use the provided indentation level to format the output appropriately. This
+            interface is typically used to support custom printing or pretty-printing of objects for debugging or display
+            purposes.</remarks>
+        </member>
+        <member name="M:Common.IPrintable.SetTabSize(System.Int32)">
+            <summary>Sets the default indent size of each level.</summary>
+            <param name="size">The number of spaces equal to one indent.</param>
+        </member>
+        <member name="P:Common.IPrintable.TabSize">
+            <summary>The default number of spaces to add to indent each level.</summary>
+        </member>
+        <member name="M:Common.IPrintable.Print(System.Int32)">
+            <summary>Prints this object to the console, preserving hierarchy.</summary>
+            <param name="indent">The indent level.</param>
+            <remarks>The argument <paramref name="indent"/> is the number of spaces.</remarks>
+        </member>
+        <member name="M:Common.IPrintable.Print">
+            <summary>Prints this object to the console at the base indent level.</summary>
+            <remarks>The indent size is zero by default.</remarks>
+        </member>
         <member name="T:Common.IProperty`1">
             <summary>Represents a key and value pair.</summary>
             <typeparam name="TValue">The type of value.</typeparam>
@@ -563,6 +590,25 @@
             <summary>Creates a lossless representation of the calling object.</summary>
             <returns>A <see langword="string"/> representation of the calling object.</returns>
         </member>
+        <member name="T:Common.LogClass">
+            <summary>Defines the programs log level.</summary>
+            <remarks>This is how the program displays meessages, not for the messages themselves.</remarks>
+        </member>
+        <member name="F:Common.LogClass.None">
+            <summary>Only show forced messages.</summary>
+        </member>
+        <member name="F:Common.LogClass.Error">
+            <summary>Only show forced messages and error messages.</summary>
+        </member>
+        <member name="F:Common.LogClass.Warning">
+            <summary>Show all errors and warnings.</summary>
+        </member>
+        <member name="F:Common.LogClass.Verbose">
+            <summary>Show all status messages.</summary>
+        </member>
+        <member name="F:Common.LogClass.Debug">
+            <summary>Show all messages, even debugging ones.</summary>
+        </member>
         <member name="T:Common.MsgClass">
             <summary>Designates the color and required verbosity to display the message.</summary>
         </member>
@@ -570,7 +616,7 @@
             <summary>Unused</summary>
         </member>
         <member name="F:Common.MsgClass.Debug">
-            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/> is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/> is set at program start.</summary>
             <remarks>Color is blue on black.</remarks>
         </member>
         <member name="F:Common.MsgClass.Forced">
@@ -578,19 +624,19 @@
             <remarks>Color is cyan on black.</remarks>
         </member>
         <member name="F:Common.MsgClass.Error">
-            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/>, <see cref="F:Common.LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="!:LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
             <remarks>Color is black on dark red.</remarks>
         </member>
         <member name="F:Common.MsgClass.Warning">
-            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/>, <see cref="F:Common.LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="!:LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
             <remarks>Color is yellow on black.</remarks>
         </member>
         <member name="F:Common.MsgClass.Critical">
-            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/>, <see cref="F:Common.LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/>, <see cref="!:LogClass.Standard"/> or <see cref="F:Common.LogClass.Verbose"/>  is set at program start.</summary>
             <remarks>Color is black on red.</remarks>
         </member>
         <member name="F:Common.MsgClass.Informational">
-            <summary>Displays when <see cref="F:Common.LogClass.DebugAll"/> or <see cref="F:Common.LogClass.Verbose"/> is set at program start.</summary>
+            <summary>Displays when <see cref="F:Common.LogClass.Debug"/> or <see cref="F:Common.LogClass.Verbose"/> is set at program start.</summary>
             <remarks>Color is white on black.</remarks>
         </member>
         <member name="T:Common.Names">
