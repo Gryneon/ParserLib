@@ -15,8 +15,8 @@ public class JSONTests
   public void JSON_FunctionalTest (string file)
   {
     string content = File.ReadAllText(file.UserDirFix());
-    XParser parser = new(Definition.Spec);
-    OpStatus result = parser.Parse(content);
+    XParser parser = new();
+    OpStatus result = parser.ParseData(Definition.Spec, content);
 
     Assert.Equal(OpStatus.Pass, result);
     Assert.True(parser.Data.Keys.Count > 3);
@@ -27,8 +27,8 @@ public class JSONTests
   public void JSON_FunctionalTest2 (string file)
   {
     string content = File.ReadAllText(file.UserDirFix());
-    XParser parser = new(Definition.Spec);
-    OpStatus result = parser.Parse(content);
+    XParser parser = new();
+    OpStatus result = parser.ParseData(Definition.Spec, content);
 
     Assert.Equal(OpStatus.Pass, result);
     Assert.True(parser.Data.Keys.Count > 3);

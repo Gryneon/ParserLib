@@ -35,7 +35,7 @@ public sealed class XParser
   }
   public Collection<CursorData> Cursors { get; } = [];
   /// <summary>The spec to use for this parser.</summary>
-  public Spec Spec { get; private set; }
+  public Spec? Spec { get; private set; }
   [NotNull] public Collection<IOperation>? Operations { get; } = [];
   public Dictionary<string, int> Labels { get; } = [];
   /// <summary>The dictionary storing all of the data from the parsed file.</summary>
@@ -50,7 +50,11 @@ public sealed class XParser
   public int OpCount => Operations.Count;
   #endregion
   #region Constructor
-  public XParser (Spec? spec = null) => InitializeParser(spec ?? LocalDefaultSpec);
+  public XParser ()
+  {
+
+  }
+  public XParser (Spec spec) => InitializeParser(spec);
   public XParser (string file)
   {
     string? name = Library.CheckFile(file);
@@ -64,6 +68,7 @@ public sealed class XParser
   private void OperationLoad ()
   {
     DebugIn("OperationLoad");
+    Spec.ThrowIfNull();
     Operations.AddRange(Spec.Operations);
     Operations.Add(Op.End);
 
@@ -82,6 +87,7 @@ public sealed class XParser
   }
   private void InitializeData<T> (T data)
   {
+    Spec.ThrowIfNull();
     if (Spec.Name.Like("unknown"))
     {
       Spec = data is string
@@ -181,29 +187,38 @@ public sealed class XParser
   #endregion
   /// <summary>Initializes the data and begins parsing.</summary>
   /// <param name="data">The data to pass to the parser.</param>
+  /// <param name="spec">The specification to use.</param>
   /// <typeparam name="TData">The type of data to pass to the parser.</typeparam>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
-  public OpStatus Parse<TData> (TData data)
+  public OpStatus ParseData<TData> (Spec spec, TData data)
   {
+    InitializeParser(spec);
     InitializeData(data);
     return ParseLoop();
   }
   /// <summary>Parses the specified file based on the spec assigned to this <see cref="XParser"/> object.</summary>
   /// <param name="path">The path to the file to parse.</param>
+  /// <param name="spec">The spec to use.</param>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
-  public OpStatus ParseAccordingToSpec (string path)
+  public OpStatus ParseFile (Spec spec, string path)
   {
+    InitializeParser(spec);
+
+    if (Spec is null)
+    {
+      return Op.ThrowNoSpec("No Specification defined.");
+    }
     SetFilePath(path);
     if (Spec.IsTextFile)
     {
       string text = File.ReadAllText(path);
-      OpStatus result = Parse(text);
+      OpStatus result = ParseData(spec, text);
       return result;
     }
     else
     {
       byte[] contents = File.ReadAllBytes(path);
-      OpStatus result = Parse(contents);
+      OpStatus result = ParseData(spec, contents);
       return result;
     }
   }

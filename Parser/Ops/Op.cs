@@ -48,5 +48,7 @@ public static class Op
   public static OpStatus ThrowUnknownOp (string msg) => throw new UnknownOperationException(msg);
   [DoesNotReturn]
   public static OpStatus ThrowBadResult (string msg) => throw new OperationBadResultException(msg);
+  [DoesNotReturn]
+  public static OpStatus ThrowNoSpec (string msg) => throw new SpecNotDefinedException(msg);
   #endregion
 }

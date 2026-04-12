@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using Parser.Condition;
 
@@ -173,14 +174,17 @@ internal static class Program
     DebugIn("ProcessArgs");
     foreach (string path in args)
     {
-      string content;
-      try { content = File.ReadAllText(path); }
-      catch (DirectoryNotFoundException) { content = "<STX><ESC>P<ESC>C<ETX>"; }
+      string? specName = Library.CheckFile(path);
+      Spec? spec = Library.Lookup(specName);
 
-      LogInfo("Loading File : " + path);
+      while (spec is null)
+      {
+        LogWarn($"Spec {specName} not found. Enter a valid Spec name");
+        specName = UserLineReturn();
+        spec = Library.Lookup(specName);
+      }
 
-      Parser = new XParser(SpecIPL.Spec);
-      Status = Parser.Parse(content);
+      Status = Parser.ParseFile(spec, path);
 
       LogDebug("OpStatus is " + Status);
 
@@ -350,8 +354,8 @@ internal static class Program
   ParseFile:
     if (userSpec.IsTextFile)
     {
-      XParser parser = new(userSpec);
-      OpStatus status = parser.Parse(fileContent);
+      XParser parser = new();
+      OpStatus status = parser.ParseData(userSpec, fileContent);
 
       if (status.IsFail())
         LogError($"Failed, status is {status}");
@@ -360,8 +364,8 @@ internal static class Program
     }
     else
     {
-      XParser parser = new(userSpec);
-      OpStatus status = parser.Parse(byteContent);
+      XParser parser = new();
+      OpStatus status = parser.ParseData(userSpec, byteContent);
 
       if (status.IsFail())
         Log(MsgClass.Error, $"Failed, status is {status}");

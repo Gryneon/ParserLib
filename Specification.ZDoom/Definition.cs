@@ -199,6 +199,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
+      new DebugPrintKeyOperation("tokens_assembled")
     ],
     IsTextFile = true,
     SC = SCOIC,

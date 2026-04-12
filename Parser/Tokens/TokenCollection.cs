@@ -1,7 +1,7 @@
 namespace Parser.Tokens;
 
 /// <summary>A collection of tokens, use this to keep token operations consistent.</summary>
-public sealed class TokenCollection () : IList<IToken>, IToken
+public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
 {
   /// <summary>The internal token list.</summary>
   private List<IToken> _tokens = [];
@@ -43,12 +43,19 @@ public sealed class TokenCollection () : IList<IToken>, IToken
   }
   public void Print (int indent)
   {
-    LogPart(MsgClass.Informational, $"({Count} Tokens)");
-    foreach (IToken item in _tokens)
+    if (Count == 1)
     {
-      NewLine();
-      LogPart(MsgClass.Forced, new(' ', indent));
-      item.Print(indent + 2);
+      _tokens[0].Print(indent);
+    }
+    else
+    {
+      LogPart(MsgClass.Informational, $"({Count} Tokens)");
+      foreach (IToken item in _tokens)
+      {
+        NewLine();
+        LogPart(MsgClass.Forced, new(' ', indent));
+        item.Print(indent + 2);
+      }
     }
   }
   public void Clear () => _tokens.Clear();

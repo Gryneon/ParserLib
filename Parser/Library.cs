@@ -29,9 +29,9 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
     DebugOut();
     return (name is null || !TryLookup(name, out Spec? spec)) ? DefaultSpec.Unknown : spec;
   }
-  public static bool TryLookup (string name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
+  public static bool TryLookup (string? name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
   {
-    if (Instance?.ContainsKey(name) ?? false)
+    if (name is not null && Instance is not null && Instance.ContainsKey(name))
     {
       spec = Instance[name];
       return true;
@@ -88,7 +88,6 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
     DebugIn("CheckFile");
     if (Instance is null)
     {
-      DebugOut();
       throw new InvalidOperationException("Library must be initialized.");
     }
     foreach (KeyValuePair<string, ReadOnlyCollection<IInferenceNode>> fi in SpecInferences)

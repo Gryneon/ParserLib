@@ -108,11 +108,14 @@ public sealed class ComplexToken : IToken
     LogPart(MsgClass.Forced, Type);
     foreach (KeyValuePair<string, IToken?> kvp in Parts)
     {
-      NewLine();
-      LogPart(MsgClass.Forced, new(' ', indent));
-      LogPart(MsgClass.Warning, kvp.Key);
-      LogPart(MsgClass.Informational, " : ");
-      kvp.Value?.Print(indent + 2);
+      if (kvp.Value is IToken tok)
+      {
+        NewLine();
+        LogPart(MsgClass.Forced, new(' ', indent));
+        LogPart(MsgClass.Warning, kvp.Key);
+        LogPart(MsgClass.Informational, " : ");
+        tok.Print(indent + 2);
+      }
     }
   }
   public string ToString (int indent)

@@ -15,7 +15,7 @@ namespace Parser.Ops.Text;
 /// <code>
 /// <see cref="OpStatus.Pass"/>: Operation completed successfully.
 /// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+/// <see cref="OpStatus.FailNoSuchVarName"/>: The data at the key was missing.
 /// </code>
 /// </remarks>
 public class ReplaceOperation : Operation

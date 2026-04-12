@@ -17,8 +17,8 @@ public class IPLTests
   [InlineData("<STX><ESC>P;<ESC>C;E3;F3;<ETX>\n<STX>H2;o200,399;c20;l2;w2;d3,string me;<ETX>")]
   public void IPL_ParseTest (string initial_string)
   {
-    XParser parser = new(Definition.Spec);
-    OpStatus status = parser.Parse(initial_string);
+    XParser parser = new();
+    OpStatus status = parser.ParseData(Definition.Spec, initial_string);
     Assert.False(status.IsFail(false));
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);
@@ -33,8 +33,8 @@ public class IPLTests
   public void IPL_ParseTestFull ()
   {
     string initial_string = File.ReadAllText(@"C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 Batch.txt");
-    XParser parser = new(Definition.Spec);
-    OpStatus status = parser.Parse(initial_string);
+    XParser parser = new();
+    OpStatus status = parser.ParseData(Definition.Spec, initial_string);
     Assert.False(status.IsFail(false));
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);
@@ -51,8 +51,8 @@ public class IPLTests
   [InlineData(null, OpStatus.Pass)]
   public void IPL_ParseFailure (string? initial_string, OpStatus result)
   {
-    XParser textParser = new(Definition.Spec);
-    OpStatus status = textParser.Parse(initial_string ?? "");
+    XParser textParser = new();
+    OpStatus status = textParser.ParseData(Definition.Spec, initial_string ?? "");
     Assert.Equal(result, status);
     Assert.Equal(result, textParser.LastStatus);
   }
@@ -69,8 +69,8 @@ public class IPLTests
       Operations = [testOp]
     };
 
-    XParser textParser = new(spec);
-    OpStatus status = textParser.Parse(initial_string);
+    XParser textParser = new();
+    OpStatus status = textParser.ParseData(spec, initial_string);
     Assert.Equal(OpStatus.FailNoSuchVarName, status);
     Assert.Equal(OpStatus.FailNoSuchVarName, textParser.LastStatus);
   }

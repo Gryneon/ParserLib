@@ -25,10 +25,21 @@ public class TranslationRule
   private Func<XParser, string, object> Task => Type switch
   {
     TT.None => (p, s) => s,
-    TT.Include when Data is string restrict => (parser, s) => new string([.. s.Where(c => restrict.Contains(c, SCO))]),
+    TT.Include when Data is string restrict => (parser, s) =>
+    {
+      parser.ThrowIfNull();
+      return new string([.. s.Where(c => restrict.Contains(c, SCO))]);
+    },
     TT.Exclude when Data is string restrict => (parser, s) => new string([.. s.Where(c => !restrict.Contains(c, SCO))]),
-    TT.Split when Data is string regex => (parser, s) => Regex.Split(s, regex, parser.Spec.RxOpt),
-    TT.Replace when Data is ReplaceNode rn => (parser, s) => rn.ReplaceRegex(s, Spec.Active.RxOpt),
+    TT.Split when Data is string regex => (parser, s) => {
+      parser.Spec.ThrowIfNull();
+      return Regex.Split(s, regex, parser.Spec.RxOpt);
+    },
+    TT.Replace when Data is ReplaceNode rn => (parser, s) =>
+    {
+      parser.Spec.ThrowIfNull();
+      return rn.ReplaceRegex(s, parser.Spec.RxOpt);
+    },
     _ => throw new NotImplementedException(),
   };
 
