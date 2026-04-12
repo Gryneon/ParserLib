@@ -1,6 +1,6 @@
 namespace Parser.Exceptions;
 
-public class SpecNotDefinedException : Exception
+public class SpecNotDefinedException : OperationException
 {
   public SpecNotDefinedException () : base("Spec not defined. Cannot load spec.") { }
   public SpecNotDefinedException (string? message) : base(message) { }

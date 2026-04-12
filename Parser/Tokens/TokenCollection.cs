@@ -116,4 +116,9 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   public static bool operator <= (TokenCollection left, TokenCollection right) => left is null || left.CompareTo(right) <= 0;
   public static bool operator > (TokenCollection left, TokenCollection right) => left is not null && left.CompareTo(right) > 0;
   public static bool operator >= (TokenCollection left, TokenCollection right) => left is null ? right is null : left.CompareTo(right) >= 0;
+
+  public TokenCollection (Index index) : this()
+  {
+    index.
+  }
 }

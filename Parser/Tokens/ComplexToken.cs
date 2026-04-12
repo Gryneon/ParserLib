@@ -58,19 +58,12 @@ public sealed class ComplexToken : IToken, IPrintable
   }
   public void AddPieceTypes (TokenRef piece_type, TokenCollection tokens)
   {
-    if (tokens is null)
+    if (tokens is null || tokens.Count == 0)
       return;
 
-    if (HasPieceType(piece_type) && _token_pieces[piece_type] is TokenCollection list)
+    foreach (IToken token in tokens)
     {
-      foreach (IToken token in tokens)
-      {
-        list.Add(token);
-      }
-    }
-    else
-    {
-      _token_pieces[piece_type] = tokens;
+      AddPieceType(piece_type, token);
     }
   }
   public void SetPieceType (TokenRef piece_type, IToken token) => _token_pieces[piece_type] = token;
@@ -110,6 +103,7 @@ public sealed class ComplexToken : IToken, IPrintable
   }
   public void Print (int indent)
   {
+    DebugIn("ComplexToken", "Print");
     string ind_str = new(' ', indent);
     LogPart(MsgClass.Forced, Type);
     EachPart(kvp =>
@@ -123,9 +117,11 @@ public sealed class ComplexToken : IToken, IPrintable
         tok.Print(indent + 2);
       }
     });
+    DebugOut();
   }
   public string ToString (int indent)
   {
+    DebugIn("ComplexToken", "ToString");
     static string sp (int i) => new(' ', i);
     int spCount = indent + 2;
     string indent2 = $"{sp(spCount)}";
@@ -150,6 +146,7 @@ public sealed class ComplexToken : IToken, IPrintable
         }
       }
     }
+    DebugOut();
     return temp;
   }
 

@@ -6,36 +6,33 @@ public class DebugToStringOperation (string input_key) : Operation(input_key, SE
 {
   public override bool NoOutput => true;
 
-  private static string GetCaller (object? type) =>
-    $"DebugToStringOperation.Execute<{type?.GetType()}>";
-  private static string GetCaller (string? type) =>
-    $"DebugToStringOperation.Execute<{type}>";
-
   /// <inheritdoc/>
   /// <remarks>This is a debugging operation and does not store data.</remarks>
   protected override void Execute ()
   {
+    DebugIn("DebugToStringOperation", "Execute");
     switch (WorkData)
     {
       case string s:
-        Log(GetCaller(s), s);
+        Log(MsgClass.Debug, s);
         break;
       case IEnumerable<string> strs:
         foreach (string str in strs)
-          Log(GetCaller("string"), str);
+          Log(MsgClass.Debug, str);
         break;
       case IEnumerable<MatchDataSet> mdds:
         foreach (MatchDataSet mdd in mdds)
-          Log(GetCaller(mdds), mdd.ToString2());
+          Log(MsgClass.Debug, mdd.ToString2());
         break;
       case IEnumerable<IToken> itokens:
         foreach (IToken it in itokens)
-          Log(GetCaller("IToken<>"), it.ToString2() ?? "<null data>");
+          Log(MsgClass.Debug, it.ToString2() ?? "<null data>");
         break;
       default:
-        Log(GetCaller(WorkData), WorkData?.ToString2() ?? "<null data>");
+        Log(MsgClass.Debug, WorkData?.ToString2() ?? "<null data>");
         break;
     }
+    DebugOut();
   }
 
   public override string ToString () => $"DebugToStringOperation Key = \"{InputKey}\"";

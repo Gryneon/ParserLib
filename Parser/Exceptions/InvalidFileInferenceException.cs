@@ -1,6 +1,6 @@
 namespace Parser.Exceptions;
 
-public class InvalidFileInferenceException : Exception
+public class InvalidFileInferenceException : OperationException
 {
   public InvalidFileInferenceException () : base("Invalid inference declaration in spec definition.") { }
   public InvalidFileInferenceException (string? message) : base(message) { }

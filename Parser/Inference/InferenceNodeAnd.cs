@@ -1,21 +1,17 @@
 namespace Parser.Inference;
 
-public class InferenceNodeAnd : IInferenceNode
+public class InferenceNodeAnd : InferenceNode
 {
-  protected Collection<IInferenceNode> Nodes { get; }
+  protected Collection<InferenceNode> Nodes { get; }
 
-  public IT Type { get; }
-
-  public InferenceNodeAnd (IEnumerable<IInferenceNode> nodes)
+  public InferenceNodeAnd (IEnumerable<InferenceNode> nodes) : base(IT.And, SE)
   {
     Nodes = [.. nodes];
-    Type = IT.And;
   }
-  protected InferenceNodeAnd (IEnumerable<IInferenceNode> nodes, IT type)
+  protected InferenceNodeAnd (IEnumerable<InferenceNode> nodes, IT type) : base(type, SE)
   {
     Nodes = [.. nodes];
-    Type = type;
   }
 
-  public virtual bool CheckFile (string filepath) => Nodes.All(item => item.CheckFile(filepath));
+  public override bool CheckFile (string filepath) => Nodes.All(item => item.CheckFile(filepath));
 }

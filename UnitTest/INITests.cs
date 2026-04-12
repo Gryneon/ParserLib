@@ -12,8 +12,8 @@ public class INITests
 {
   internal const string GitDirWork = @"C:\Users\johntay4\source\repos\Git\";
   internal const string GitDirHome = @"D:\Git\";
-  internal static string GitDir => (Directory.Exists(@"C:\Program Files (x86)\Steam\")) ? GitDirHome : GitDirWork;
-  internal 
+  public static string GitDir => (Directory.Exists(@"C:\Program Files (x86)\Steam\")) ? GitDirHome : GitDirWork;
+  internal const string Default = @"ParserLib\Parser\Samples\default.ini";
 
   [Fact]
   public void INI_Constructor ()

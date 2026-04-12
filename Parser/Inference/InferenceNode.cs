@@ -2,16 +2,13 @@ using Parser.Exceptions;
 
 namespace Parser.Inference;
 
-public class InferenceNode (IT type, string content) : IInferenceNode
+public class InferenceNode (IT type, string content)
 {
-  /// <inheritdoc/>
   public string Content { get; } = content;
+  public IT Type { get; init; } = type;
 
-  public IT Type { get; } = type;
-
-  /// <inheritdoc/>
   /// <exception cref="InvalidFileInferenceException"/>
-  public bool CheckFile (string filepath)
+  public virtual bool CheckFile (string filepath)
   {
     string getHeader ()
     {
