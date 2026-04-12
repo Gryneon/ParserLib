@@ -117,7 +117,7 @@ public sealed class ComplexToken : IToken, IPrintable
       if (kvp.Value is not null)
       {
         NewLine();
-        LogPart(MsgClass.Forced, ind_str);
+        LogPart(MsgClass.Hidden, ind_str);
         LogPart(MsgClass.Warning, kvp.Key);
         LogPart(MsgClass.BlueInfo, " : ");
         kvp.Value?.Print(indent + 2);
