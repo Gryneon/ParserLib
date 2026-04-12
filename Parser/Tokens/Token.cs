@@ -2,16 +2,15 @@
 
 namespace Parser.Tokens;
 
-public class Token : IToken
+public class Token : IToken, IPrintable
 {
   public TokenRef? AssignTo { get; set; }
   public string Content { get; set; } = SE;
   // Calculated Properties
   public int LastPosition => Index + Length - 1;
   public int Length => Content.Length;
-  public bool Exempt { get; set; }
   public int Index { get; init; }
-  public string Type { get; set; } = SE;
+  public string Type { get => field.IsEmpty() ? "None" : field; set; } = SE;
   public IList<IToken> Children { get; set; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
@@ -20,18 +19,18 @@ public class Token : IToken
   public void Print (int indent)
   {
     LogPart(MsgClass.Forced, $"{Type}");
-    LogPart(MsgClass.Informational, $" : ");
+    LogPart(MsgClass.BlueInfo, $" : ");
     if (Count is 0 or 1)
     {
-      LogPart(MsgClass.Alt, Content);
+      LogPart(MsgClass.GreenInfo, Content);
     }
     else
     {
-      foreach (var t in Children)
+      foreach (IToken t in Children)
       {
         NewLine();
         LogPart(MsgClass.Forced, new(' ', indent));
-        t.Print(indent + 2);
+        t.Print(indent + IPrintable.TabSize);
       }
     }
   }

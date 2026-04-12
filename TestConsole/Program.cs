@@ -36,7 +36,7 @@ internal static class Program
   internal static string UserLineReturn () => Console.ReadLine() ?? SE;
   internal static void LogError (string message) => Log(MsgClass.Error, message);
   internal static void LogDebug (string message) => Log(MsgClass.Debug, message);
-  internal static void LogInfo (string message) => Log(MsgClass.Informational, message);
+  internal static void LogInfo (string message) => Log(MsgClass.BlueInfo, message);
   internal static void LogWarn (string message) => Log(MsgClass.Warning, message);
   internal static string FinishPath (string path)
   {
@@ -91,7 +91,7 @@ internal static class Program
     DebugIn("Program", "Main");
     Console.Clear();
 #if DEBUG
-    Verbosity = LogClass.DebugAll;
+    Verbosity = LogClass.Debug;
 #else
     Verbosity = LogClass.Standard;
 #endif
@@ -370,7 +370,7 @@ internal static class Program
       if (status.IsFail())
         Log(MsgClass.Error, $"Failed, status is {status}");
       else
-        Log(MsgClass.Informational, $"Good, status is {status}");
+        Log(MsgClass.BlueInfo, $"Good, status is {status}");
     }
     DebugOut();
   }

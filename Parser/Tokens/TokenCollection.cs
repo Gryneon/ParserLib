@@ -23,9 +23,12 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   public int Count => _tokens.Count;
   bool ICollection<IToken>.IsReadOnly => false;
 
-  public string Type { get; set; } = SE;
+  public string Type
+  {
+    get => field.IsEmpty() ? "None" : field;
+    set;
+  } = SE;
   public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
-  bool IToken.Exempt { get; set; }
   public IList<IToken> Children
   {
     get => _tokens;

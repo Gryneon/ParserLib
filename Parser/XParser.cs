@@ -159,7 +159,7 @@ public sealed class XParser
       return LastStatus;
     }
 
-    Log(MsgClass.Informational, $"Performing Operation {CurrentOp.GetType().Name}.");
+    Log(MsgClass.BlueInfo, $"Performing Operation {CurrentOp.GetType().Name}.");
 
     void setExceptionData (OpStatus status, OperationException toLog)
     {

@@ -4,7 +4,7 @@ using Parser.Inference;
 
 namespace Parser;
 
-public sealed class Library : IReadOnlyDictionary<string, Spec>
+public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
 {
   private readonly Dictionary<string, Spec> _specs = [];
   /// <summary>The singleton instance of this object.</summary>
@@ -47,7 +47,8 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
   /// <param name="domain">The domain that we are loading the <see cref="Spec"/> objects from.</param>
   public static void InitializeLibrary (AppDomain domain)
   {
-    DebugIn("InitializeLibrary");
+    DebugIn("Library", "InitializeLibrary");
+
     domain.ThrowIfNull();
     Instance = new();
     List<Assembly> assemblies = [.. domain.GetAssemblies()];
@@ -79,13 +80,13 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
         }
       }
     }
-    Log(MsgClass.Informational, $"{Instance._specs.Count} Specs Loaded.");
+    Log(MsgClass.BlueInfo, $"{Instance._specs.Count} Specs Loaded.");
     DebugOut();
   }
   /// <summary>Provides the <see cref="Spec"/> for the provided file path.</summary>
   public static string? CheckFile (string path)
   {
-    DebugIn("CheckFile");
+    DebugIn("Library", "CheckFile");
     if (Instance is null)
     {
       throw new InvalidOperationException("Library must be initialized.");
@@ -96,7 +97,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
       {
         if (node.CheckFile(path))
         {
-          Log(MsgClass.Informational, $"File match found. Using {fi.Key} as Spec.");
+          Log(MsgClass.BlueInfo, $"File match found. Using {fi.Key} as Spec.");
           DebugOut();
           return fi.Key;
         }
@@ -113,6 +114,11 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>
   public void Add (KeyValuePair<string, Spec> item) => _specs.Add(item);
   public IEnumerator<KeyValuePair<string, Spec>> GetEnumerator () => _specs.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => _specs.GetEnumerator();
+  public void Print (int indent)
+  {
+
+  }
+
   IEnumerable<string> IReadOnlyDictionary<string, Spec>.Keys => _specs.Keys;
   IEnumerable<Spec> IReadOnlyDictionary<string, Spec>.Values => _specs.Values;
   int IReadOnlyCollection<KeyValuePair<string, Spec>>.Count => _specs.Count;
