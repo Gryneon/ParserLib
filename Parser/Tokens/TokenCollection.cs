@@ -52,7 +52,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
     }
     else
     {
-      LogPart(MsgClass.Informational, $"({Count} Tokens)");
+      LogPart(MsgClass.GreenInfo, $"({Count} Tokens)");
       foreach (IToken item in _tokens)
       {
         NewLine();

@@ -21,8 +21,8 @@ public readonly struct Pos (int start, int length) : IEquatable<Pos>, IIndexSort
       if (Length < 0) throw new ArgumentOutOfRangeException(nameof(value));
     }
   }
-  public readonly bool IsNull => Start == -1;
-  public static Pos Null { get; } = new(-1, -1);
+  public readonly bool IsNull => Start == DNE;
+  public static Pos Null { get; } = new(DNE, DNE);
   readonly int IIndexSortable.Index => Start;
 
   public readonly Section ToSection (string full_text) => Section.ByLength(Start, Length, full_text);
@@ -47,7 +47,7 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
   private List<Pos> _sections = [];
   private BitArray BitArray { get; init; } = new(full_text.Length);
   public string FullText { get; } = full_text;
-  public int TextLength => FullText?.Length ?? -1;
+  public int TextLength => FullText?.Length ?? DNE;
   public int Count => _sections.Count;
   bool ICollection<Pos>.IsReadOnly => false;
 
@@ -98,7 +98,7 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
   }
   public SectionCollection Inverse ()
   {
-    int start = -1;
+    int start = DNE;
     SectionCollection result = new(FullText)
     {
       BitArray = BitArray.Not()
@@ -108,19 +108,19 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
       List<Pos> relevant_sections = [.. _sections.Where(s => s.Start <= i && s.End >= i)];
       if (relevant_sections.Any(s => s.IsWithin(i)))
       {
-        if (start == -1)
+        if (start == DNE)
           continue;
         else
         {
           result.Add(start, i - start);
-          start = -1;
+          start = DNE;
           continue;
         }
       }
-      else if (start == -1)
+      else if (start == DNE)
         start = i;
     }
-    if (start != -1)
+    if (start != DNE)
       result.Add(start, TextLength - start);
     return result;
   }
@@ -130,7 +130,7 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
   public IEnumerator<Pos> GetEnumerator () => _sections.GetEnumerator();
   public bool Remove (Pos item)
   {
-    bool rem = item.Start != -1 && _sections.Remove(new(item.Start, item.Length));
+    bool rem = item.Start != DNE && _sections.Remove(new(item.Start, item.Length));
     if (rem)
     {
       for (int b = item.Start; b < item.Length; b++)

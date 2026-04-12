@@ -18,6 +18,7 @@ public static class Definition
     FileInferences = [
       IfN(ExtIs, "ini"),
       IfN(ExtIs, "vnc"),
+      IfN(ExtIs, "url"),
       IfN(ExtIs, "inf")],
     RxOpt = ROML | ROIPW | ROEC | ROIC,
     IsTextFile = true,

@@ -10,7 +10,10 @@ namespace UnitTest;
 
 public class INITests
 {
-  internal const string Default = @"C:\Users\$user$\source\repos\Git\ParserLib\Parser\Samples\default.ini";
+  internal const string GitDirWork = @"C:\Users\johntay4\source\repos\Git\";
+  internal const string GitDirHome = @"D:\Git\";
+  internal static string GitDir => (Directory.Exists(@"C:\Program Files (x86)\Steam\")) ? GitDirHome : GitDirWork;
+  internal 
 
   [Fact]
   public void INI_Constructor ()
@@ -26,7 +29,7 @@ public class INITests
   [InlineData(Default)]
   public void ParserInit (string file)
   {
-    string file_text = File.ReadAllText(file.UserDirFix());
+    string file_text = File.ReadAllText(GitDir + file);
     XParser parser = new();
     Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
     Assert.True(parser.Data.CanLoad("result"));
@@ -36,7 +39,7 @@ public class INITests
   [InlineData(Default)]
   public void ParserTypeInit (string file)
   {
-    string file_text = File.ReadAllText(file.UserDirFix());
+    string file_text = File.ReadAllText(GitDir + file);
     XParser parser = new();
     Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
     Assert.True(parser.Data.CanLoad<INIDocument>("result"));
@@ -46,7 +49,7 @@ public class INITests
   [InlineData(Default)]
   public void ParserTypeInit_Sections (string file)
   {
-    string file_text = File.ReadAllText(file.UserDirFix());
+    string file_text = File.ReadAllText(GitDir + file);
     XParser parser = new();
     Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
     Assert.True(parser.Data.TryLoad<INIDocument>("result", out INIDocument? doc));

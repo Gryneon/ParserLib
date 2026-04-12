@@ -126,9 +126,6 @@
   <data name="ipl_batch6458" xml:space="preserve">
     <value>ParserLib\Specification.IPL\Samples\6458 batch.txt</value>
   </data>
-  <data name="reg_iplfile" xml:space="preserve">
-    <value>ParserLib\Specification.REG\Resources\Types\ipl.reg</value>
-  </data>
   <data name="xsd_specification" xml:space="preserve">
     <value>ParserLib\Specification.XML\Schemas\specification.xsd</value>
   </data>
@@ -141,9 +138,6 @@
   <data name="json_launch" xml:space="preserve">
     <value>ParserLib\Specification.JSON\Samples\launchSettings.json</value>
   </data>
-  <data name="wad_pl2" xml:space="preserve">
-    <value>ParserLib\Specification.WAD\Samples\PL2.WAD</value>
-  </data>
   <data name="binparse_wad" xml:space="preserve">
     <value>ParserLib\Specification.WAD\WAD.txt</value>
   </data>
@@ -155,8 +149,5 @@
   </data>
   <data name="xml_errors" xml:space="preserve">
     <value>ParserLib\Specification.XML\Samples\errors.xml</value>
-  </data>
-  <data name="reg_dllfile" xml:space="preserve">
-    <value>ParserLib\Specification.REG\Resources\Types\dllfile.reg</value>
   </data>
 </root>

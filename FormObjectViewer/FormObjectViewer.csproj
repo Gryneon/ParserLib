@@ -19,6 +19,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Icons\**" />
+    <EmbeddedResource Remove="Icons\**" />
+    <None Remove="Icons\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <COMReference Include="Shell32">
       <VersionMinor>0</VersionMinor>
       <VersionMajor>1</VersionMajor>
@@ -28,10 +34,6 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Icons\ActiveServerApplication.ico" />
   </ItemGroup>
 
   <ItemGroup>

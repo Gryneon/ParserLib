@@ -121,7 +121,7 @@
     <value>ParserLib\Specification.WAD\Samples\PL2.WAD</value>
   </data>
   <data name="wad_tnt" xml:space="preserve">
-    <value>C:\Program Files (x86)\Steam\steamapps\common\Final Doom\base\TNT.WAD</value>
+    <value>Steam\steamapps\common\Final Doom\base\TNT.WAD</value>
     <comment>Requires Final Doom to be installed.</comment>
   </data>
   <data name="wad_rpg03" xml:space="preserve">

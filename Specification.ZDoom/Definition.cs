@@ -17,6 +17,10 @@ public static class Definition
   private static readonly TokenRule s_char = new(RT.Competitive, "Char", @"(?>'(?>[^'\\]|\\')*')");
   private static readonly TokenRule s_int = new(RT.TokenMatch, "Int", @"(?>-?\d+)");
   private static readonly TokenRule s_dec = new(RT.TokenMatch, "Dec", @"(?>-?(?>\d+(?>\.\d*)?|\.\d+))");
+  private static readonly TokenRule s_langref = new(RT.Competitive, "LangRef", @"(?>""\$\w+"")");
+  private static readonly TokenRule s_classname = new(RT.TokenMatch, "Classname", "Actor|Ammo|Clip|(Red|Blue|Yellow)Card|Health|Armor(Bonus)?|(Blue|Green)Armor|(Caco|Cyber)?demon|Imp|Shells|Rocket(Box)?|(Custom)?Inventory|FastProjectile|DoomPlayer|MapSpot|DoomImp|Zombieman|ShotgunGuy");
+  private static readonly TokenRule s_name = new(RT.TokenMatch, "name", @"[\w]+");
+
 
   /// <summary>https://regex101.com/r/En5C8c/7</summary>
   [DefinitionExport]
@@ -42,11 +46,30 @@ public static class Definition
     TokenRules = [
       s_cLineComment,
       s_cBlkComment,
+      s_langref,
       s_cString,
-      .. TokenRule.MakeSingleCharRules("{}();=,:+-", RT.TokenExact, new ZT[] { ZT.Bo, ZT.Bc, ZT.Po, ZT.Pc, ZT.Sc, ZT.Eq, ZT.Cm, ZT.Co, ZT.Pl, ZT.Mn })
+      new(RT.TokenMatch, "FlagName", @"(?<=\+|\-)[\w.]+"),
+      .. TokenRule.MakeSingleCharRules("{}();=,:+-", RT.TokenExact, new ZT[] { ZT.Bo, ZT.Bc, ZT.Po, ZT.Pc, ZT.Sc, ZT.Eq, ZT.Cm, ZT.Co, ZT.Pl, ZT.Mn }),
+      s_int,
+      s_dec,
+      .. TokenRule.MakeWordMatchRules(true, [
+        "projectile", "monster",
+        "native","const",
+        "int", "void", "class",
+        "if", "switch", "while",
+        "extends","mixin","replaces",
+        "let",
+        "fail","wait","goto","stop",
+        "fast","bright",
+        "states","default",
+        
+      ]),
+      s_classname,
+      s_name
     ],
     GroupTokenRules = [
-     new(RT.TokenMatch, ZT.FrameDef, "n:(name|String) v:Name v:Num fo:Bright "),
+     new(ZT.FrameDef, "n:(name|String) v:Name v:Num fo:Bright "),
+     new(ZT.AddFlag, "f:Pl n:FlagName")
       ]
   };
 
@@ -140,7 +163,7 @@ public static class Definition
     IsTextFile = true,
     TokenType = typeof(MT),
     TokenRules = [
-      new (RT.Competitive, MT.LangRef, @"""\$\w+"""),
+      s_langref,
       s_cString,
       s_cLineComment,
       s_cBlkComment,

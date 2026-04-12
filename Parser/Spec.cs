@@ -33,6 +33,8 @@ public class Spec
 
   /// <summary>Define the names of equilivent groups of tokens.</summary>
   public Dictionary<dynamic, Collection<dynamic>> TokenCompatLookup { get; init; } = [];
+  /// <summary>The default rule that is added to every rule definition.</summary>
+  /// <remarks>Useful for adding ignore case to the entire defintion.</remarks>
   public RT DefaultRuleSet { get; init; } = RT.None;
   /// <summary>Token rules for the tokenize operration..</summary>
   public TokenRuleCollection TokenRules { get; init; } = [];

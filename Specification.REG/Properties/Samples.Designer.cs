@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Specification.WAD {
+namespace Specification.REG.Properties {
     using System;
     
     
@@ -22,24 +22,24 @@ namespace Specification.WAD {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    internal class Samples {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Samples() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Specification.WAD.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Specification.REG.Properties.Samples", typeof(Samples).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Specification.WAD {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,29 +61,47 @@ namespace Specification.WAD {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ParserLib\Specification.WAD\Samples\PL2.WAD.
+        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\HKEY_Classes_Root\ClassExt.reg.
         /// </summary>
-        public static string wad_pl2 {
+        internal static string reg_classext {
             get {
-                return ResourceManager.GetString("wad_pl2", resourceCulture);
+                return ResourceManager.GetString("reg_classext", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ParserLib\Specification.WAD\Samples\rpg03.WAD.
+        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\dllfile.reg.
         /// </summary>
-        public static string wad_rpg03 {
+        internal static string reg_dllfile {
             get {
-                return ResourceManager.GetString("wad_rpg03", resourceCulture);
+                return ResourceManager.GetString("reg_dllfile", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Steam\steamapps\common\Final Doom\base\TNT.WAD.
+        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
         /// </summary>
-        public static string wad_tnt {
+        internal static string reg_ipl {
             get {
-                return ResourceManager.GetString("wad_tnt", resourceCulture);
+                return ResourceManager.GetString("reg_ipl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
+        /// </summary>
+        internal static string reg_iplfile {
+            get {
+                return ResourceManager.GetString("reg_iplfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ParserLib\Specification.REG\querpus.ipl.
+        /// </summary>
+        internal static string reg_querpus {
+            get {
+                return ResourceManager.GetString("reg_querpus", resourceCulture);
             }
         }
     }

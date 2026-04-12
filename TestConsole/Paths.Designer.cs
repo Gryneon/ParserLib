@@ -133,33 +133,6 @@ namespace TestConsole {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\dllfile.reg.
-        /// </summary>
-        public static string reg_dllfile {
-            get {
-                return ResourceManager.GetString("reg_dllfile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
-        /// </summary>
-        public static string reg_iplfile {
-            get {
-                return ResourceManager.GetString("reg_iplfile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ParserLib\Specification.WAD\Samples\PL2.WAD.
-        /// </summary>
-        public static string wad_pl2 {
-            get {
-                return ResourceManager.GetString("wad_pl2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ParserLib\Specification.XML\Samples\errors.xml.
         /// </summary>
         public static string xml_errors {

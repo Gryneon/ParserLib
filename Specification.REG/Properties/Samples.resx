@@ -117,4 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="reg_classext" xml:space="preserve">
+    <value>ParserLib\Specification.REG\Resources\HKEY_Classes_Root\ClassExt.reg</value>
+  </data>
+  <data name="reg_dllfile" xml:space="preserve">
+    <value>ParserLib\Specification.REG\Resources\Types\dllfile.reg</value>
+  </data>
+  <data name="reg_ipl" xml:space="preserve">
+    <value>ParserLib\Specification.REG\Resources\Types\ipl.reg</value>
+  </data>
+  <data name="reg_iplfile" xml:space="preserve">
+    <value>ParserLib\Specification.REG\Resources\Types\ipl.reg</value>
+  </data>
+  <data name="reg_querpus" xml:space="preserve">
+    <value>ParserLib\Specification.REG\querpus.ipl</value>
+  </data>
 </root>

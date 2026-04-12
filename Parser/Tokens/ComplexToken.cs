@@ -119,10 +119,10 @@ public sealed class ComplexToken : IToken, IPrintable
         NewLine();
         LogPart(MsgClass.Forced, new(' ', indent));
         LogPart(MsgClass.Warning, kvp.Key);
-        LogPart(MsgClass.Informational, " : ");
+        LogPart(MsgClass.BlueInfo, " : ");
         tok.Print(indent + 2);
       }
-    }
+    });
   }
   public string ToString (int indent)
   {
