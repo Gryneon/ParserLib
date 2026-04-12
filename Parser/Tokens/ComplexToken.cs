@@ -114,15 +114,15 @@ public sealed class ComplexToken : IToken, IPrintable
     LogPart(MsgClass.Forced, Type);
     EachPart(kvp =>
     {
-      if (kvp.Value is not null)
+      if (kvp.Value is IToken tok)
       {
         NewLine();
         LogPart(MsgClass.Hidden, ind_str);
         LogPart(MsgClass.Warning, kvp.Key);
-        LogPart(MsgClass.BlueInfo, " : ");
-        kvp.Value?.Print(indent + 2);
+        LogPart(MsgClass.Informational, " : ");
+        tok.Print(indent + 2);
       }
-    });
+    }
   }
   public string ToString (int indent)
   {

@@ -46,12 +46,19 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   }
   public void Print (int indent)
   {
-    LogPart(MsgClass.BlueInfo, $"({Count} Tokens)");
-    foreach (IToken item in _tokens)
+    if (Count == 1)
     {
-      NewLine();
-      LogPart(MsgClass.Forced, new(' ', indent));
-      item.Print(indent + 2);
+      _tokens[0].Print(indent);
+    }
+    else
+    {
+      LogPart(MsgClass.Informational, $"({Count} Tokens)");
+      foreach (IToken item in _tokens)
+      {
+        NewLine();
+        LogPart(MsgClass.Forced, new(' ', indent));
+        item.Print(indent + 2);
+      }
     }
   }
   public void Clear () => _tokens.Clear();
@@ -89,14 +96,12 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   public string ToString (int indent) => ListString(indent);
   public string ListString (int indent)
   {
-    string i2 = new(' ', indent);
+    string indent2 = new(' ', indent);
     string ret = $"{(Type.IsEmpty() ? "None" : Type)} : {Count} Items";
 
     foreach (IToken item in _tokens)
     {
-      ret += i2;
-      ret += item.ToString(indent);
-      ret += Chars.LF;
+      ret += $"\n{indent2}{item}";
     }
     return ret;
   }

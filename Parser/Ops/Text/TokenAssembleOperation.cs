@@ -1,5 +1,21 @@
 namespace Parser.Ops.Text;
-
+/// <summary>
+/// Takes an input as a <see cref="TokenCollection"/>,
+/// and assembles the tokens into structures defined by rules.<br/>
+/// Internally uses a <see cref="TokenAssembler"/> to do the work.
+/// </summary>
+/// <remarks><code>
+/// Inputs: <see cref="TokenCollection"/>, <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="IToken"/>&gt;<br/>
+/// Output: <see cref="TokenCollection"/></code>
+/// <br/>
+/// Statuses:
+/// <code>
+/// <see cref="OpStatus.Pass"/>: Operation completed successfully.
+/// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
+/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/>.
+/// <see cref="OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="DataStore"/>.
+/// </code>
+/// </remarks>
 public class TokenAssembleOperation : Operation
 {
   private readonly IEnumerable<TokenRule> _rules;

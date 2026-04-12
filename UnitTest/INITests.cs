@@ -27,8 +27,8 @@ public class INITests
   public void ParserInit (string file)
   {
     string file_text = File.ReadAllText(file.UserDirFix());
-    XParser parser = new(Definition.Spec);
-    Assert.Equal(OpStatus.Pass, parser.Parse(file_text));
+    XParser parser = new();
+    Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
     Assert.True(parser.Data.CanLoad("result"));
   }
 
@@ -37,8 +37,8 @@ public class INITests
   public void ParserTypeInit (string file)
   {
     string file_text = File.ReadAllText(file.UserDirFix());
-    XParser parser = new(Definition.Spec);
-    Assert.Equal(OpStatus.Pass, parser.Parse(file_text));
+    XParser parser = new();
+    Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
     Assert.True(parser.Data.CanLoad<INIDocument>("result"));
   }
 
@@ -47,8 +47,8 @@ public class INITests
   public void ParserTypeInit_Sections (string file)
   {
     string file_text = File.ReadAllText(file.UserDirFix());
-    XParser parser = new(Definition.Spec);
-    Assert.Equal(OpStatus.Pass, parser.Parse(file_text));
+    XParser parser = new();
+    Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
     Assert.True(parser.Data.TryLoad<INIDocument>("result", out INIDocument? doc));
     Assert.Equal(2, doc.Count);
   }

@@ -10,10 +10,33 @@ using static Common.Debug;
 
 namespace Specification.XML;
 
+public class EnumerateFactoryOperation<TOut> (string input_key, string output_key, SimpleFactory<TOut> factory) : Operation(input_key, output_key) where TOut : notnull
+{
+  protected SimpleFactory<TOut> Factory { get; } = factory;
+  protected override void Execute ()
+  {
+    if (WorkData is IEnumerable<IToken> tc)
+    {
+      Collection<TOut> output = [];
+      foreach(IToken tok in tc)
+      {
+        TOut item = Factory.Produce(tok);
+        output.Add(item);
+      }
+      WorkData = output;
+      Status = OpStatus.Pass;
+    }
+    else
+    {
+      Status = Op.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
+    }
+  }
+}
+
 public abstract class SimpleFactory<TOut> () : IObjectFactory<TOut> where TOut : notnull
 {
   public required XParser Parser { get; init; }
-  public Spec Spec => Parser.Spec;
+  public Spec Spec => Parser.Spec ?? Parser.LocalDefaultSpec;
 
   [SetsRequiredMembers]
   protected SimpleFactory (XParser parser) : this()
@@ -42,8 +65,8 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
       case "ElementSingleWithNamespace" or "ElementSingle":
         initial = new XMLElementSingle()
         {
-          Tag = ct.GetPieceContent(TokenRef.Name) ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
-          Namespace = ct.GetPieceContent(TokenRef.Type),
+          Tag = ct.Name?.Content ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
+          Namespace = ct.ObjType?.Content,
           Attributes = [.. from item in ct.GetPieceTokens(TokenRef.PropertyList)
                         where
                           item.Type == "Attribute" &&
@@ -59,7 +82,7 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
         initial = new XMLElementClose()
         {
           Tag = ct.Name?.Content ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
-          Namespace = ct.ObjType?.Content ?? SE
+          Namespace = ct.ObjType?.Content
         };
         break;
       default:

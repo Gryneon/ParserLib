@@ -105,7 +105,16 @@ public abstract class Operation : IOperation
   /// <summary>The reference to the <see cref="DataStore"/>.</summary>
   [AllowNull] protected DataStore Data => Parser.Data;
   /// <summary>The reference to the specification.</summary>
-  [AllowNull] protected Spec Spec => Parser.Spec;
+  [AllowNull]
+  protected Spec Spec
+  {
+    get
+    {
+      if (Parser.Spec is null)
+        _ = Op.ThrowNoSpec("Spec is null and Operation executed.");
+      return Parser.Spec;
+    }
+  }
   #endregion
   #region Constructors
   /// <summary>Multiple input keys.</summary>
