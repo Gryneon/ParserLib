@@ -36,6 +36,8 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   }
   public int Index => _tokens.Count > 0 ? _tokens[0].Index : -1;
 
+  string IToken.ContentNoNewLine => Children.Select(child => child.ToString()).TextJoin("");
+
   public void Add (IToken item)
   {
     item.ThrowIfNull();
@@ -52,7 +54,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
     }
     else
     {
-      LogPart(MsgClass.Informational, $"({Count} Tokens)");
+      LogPart(MsgClass.BlueInfo, $"({Count} Tokens)");
       foreach (IToken item in _tokens)
       {
         NewLine();
