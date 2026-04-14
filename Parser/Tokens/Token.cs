@@ -14,6 +14,9 @@ public class Token : IToken, IPrintable
   public IList<IToken> Children { get; set; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
+
+  public string ContentNoNewLine => Content.Replace(["\n", "\r"], ["<LF>", "<CR>"]);
+
   public override string ToString () => $"{Type} : {Content}";
   public string ToString (int indent) => $"{Type} : {Content}";
   public void Print (int indent)

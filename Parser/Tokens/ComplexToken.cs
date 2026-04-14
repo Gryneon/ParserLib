@@ -91,6 +91,9 @@ public sealed class ComplexToken : IToken, IPrintable
     ["ValueList"] = Values,
     ["StatementList"] = Statements,
   };
+
+  string IToken.ContentNoNewLine => Children.Select(child => child.ToString()).TextJoin().Replace(["\n", "\r"], ["<LF>", "<CR>"]);
+
   private void EachPart (Action<KeyValuePair<string, IToken?>> action)
   {
     foreach (KeyValuePair<string, IToken?> part in Parts)
@@ -111,7 +114,7 @@ public sealed class ComplexToken : IToken, IPrintable
       if (kvp.Value is IToken tok)
       {
         NewLine();
-        LogPart(MsgClass.Forced, new(' ', indent));
+        LogPart(MsgClass.Hidden, ind_str);
         LogPart(MsgClass.Warning, kvp.Key);
         LogPart(MsgClass.BlueInfo, " : ");
         tok.Print(indent + 2);
