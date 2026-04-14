@@ -63,7 +63,7 @@ public sealed class ComplexToken : IToken, IPrintable
 
     foreach (IToken token in tokens)
     {
-      AddPieceType(piece_type, token);
+      AddPieceType( piece_type, token);
     }
   }
   public void SetPieceType (TokenRef piece_type, IToken token) => _token_pieces[piece_type] = token;
