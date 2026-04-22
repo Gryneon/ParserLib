@@ -62,7 +62,7 @@ public static class Definition
         "fail","wait","goto","stop",
         "fast","bright",
         "states","default",
-        
+
       ]),
       s_classname,
       s_name
@@ -271,10 +271,10 @@ public static class Definition
 
       // Operators
       Tm(AT.IncDec, @"(\+\+|--)"),
-      Tm(AT.Unary, @"!(?!=)|~"),
+      Tm(AT.Unary, "!(?!=)|~"),
       Tm(AT.Assign, @"[-+*^/%|&]="),
       Tm(AT.Assign, @"(<<|>>| \|\| |&&)="),
-      Tm(AT.Binary, @"== | [!<>]="),
+      Tm(AT.Binary, "== | [!<>]="),
       Tm(AT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),
       .. TokenRule.MakeSingleCharRules("+/%|&^*><", RT.TokenExact , AT.Binary),
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;#-", RT.TokenExact , new AT[] { AT.Ao, AT.Ac, AT.Bo, AT.Bc, AT.Po, AT.Pc, AT.Eq, AT.Cm, AT.Co, AT.Sc, AT.Pre, AT.Minus }),

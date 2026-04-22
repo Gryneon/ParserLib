@@ -39,9 +39,13 @@ public class InferenceNode (IT type, string content)
       size = new FileInfo(filepath).Length;
 
     if (type(IT.Ext))
+    {
       value = ext;
+    }
     else if (type(IT.FName))
+    {
       value = name;
+    }
     else if (Type.HasFlag(IT.FileContent))
     {
       caseCheck = SCO;
@@ -53,7 +57,9 @@ public class InferenceNode (IT type, string content)
       value = getHeader();
     }
     else
+    {
       useSize = Type.HasFlag(IT.FileSize) ? true : throw new InvalidFileInferenceException();
+    }
 
     bool result = false;
 

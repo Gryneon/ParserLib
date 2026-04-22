@@ -16,7 +16,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   private Library () { }
   public Spec this[string key] { get => _specs[key]; set => _specs[key] = value; }
   public static ReadOnlyCollection<Spec> SpecList => Instance is null ? throw new InvalidOperationException("Library must be initialized.") : [.. Instance._specs.Values];
-  public static Spec? Lookup (string? name) => name is not null && Instance is not null && Instance.ContainsKey(name) ? Instance[name] : null;
+  public static Spec? Lookup (string? name) => name is not null && Instance?.ContainsKey(name) == true ? Instance[name] : null;
   public static Spec LookupOrDefault (string? name)
   {
     DebugIn("LookupOrDefault");
@@ -31,7 +31,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   }
   public static bool TryLookup (string? name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
   {
-    if (name is not null && Instance is not null && Instance.ContainsKey(name))
+    if (name is not null && Instance?.ContainsKey(name) == true)
     {
       spec = Instance[name];
       return true;

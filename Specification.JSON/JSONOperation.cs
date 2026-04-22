@@ -119,7 +119,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
           else if (tContent == ",")
           {
             ThrowIf(sequence != 1, $"Sequence was not correct, {sequence} needs to be 1.");
-            ThrowIf(initial, $"Only one parent object allowed.");
+            ThrowIf(initial, "Only one parent object allowed.");
             Log($"{Index} : Comma '{tContent}'");
             sequence = 0;
             Index++;

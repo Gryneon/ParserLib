@@ -105,7 +105,7 @@ public static class Definition
       new(ThrowMatch, ITT.None, $@"({Etx})[^<\u0002]*?\z"),
       new(TokenMatch, ITT.Esc, $"{Esc}"),
       new(TokenMatch, ITT.Si, $"{Si}"),
-      new(TokenMatch, ITT.Sc, $";"),
+      new(TokenMatch, ITT.Sc, ";"),
       new(TokenMatch, ITT.Lf, $"{Lf}"),
       new(TokenMatch, ITT.Etb, $"{Etb}"),
       new(TokenMatch, ITT.Rs, $"{Rs}"),

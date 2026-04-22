@@ -131,7 +131,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
 
   public bool Equals (IToken? other) => other is TokenCollection tc && _tokens.SequenceEqual(tc._tokens);
 
-  public override bool Equals (object? obj) => ReferenceEquals(this, obj) || obj is not null && obj is TokenCollection tc && Equals(tc);
+  public override bool Equals (object? obj) => ReferenceEquals(this, obj) || (obj is not null && obj is TokenCollection tc && Equals(tc));
 
   public override int GetHashCode () => _tokens.GetHashCode();
 
@@ -143,7 +143,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
 
   public static bool operator <= (TokenCollection left, TokenCollection right) => left is null || left.CompareTo(right) <= 0;
 
-  public static bool operator > (TokenCollection left, TokenCollection right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator > (TokenCollection left, TokenCollection right) => left?.CompareTo(right) > 0;
 
   public static bool operator >= (TokenCollection left, TokenCollection right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

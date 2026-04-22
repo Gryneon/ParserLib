@@ -40,7 +40,6 @@ public sealed class ChkToken () : IEquatable<IToken>
   public Collection<string> AllowedTypes { get; init; } = [];
   public string RegexValidator { get; init; } = SE;
   public bool IgnoreCase => TokenRule.HasFlag(RT.IgnoreCase);
-  private StringComparison SC => IgnoreCase || _spec?.SC == SCOIC ? SCOIC : SCO;
   /// <summary>Creates a <see cref="ChkToken"/> object from the <see langword="string"/>.</summary>
   /// <param name="definition">The definition string.</param>
   /// <param name="spec">The <see cref="Spec"/> reference.</param>
@@ -82,8 +81,10 @@ public sealed class ChkToken () : IEquatable<IToken>
     }
 
     if (m.Groups.ContainsKey("type_def"))
+    {
       foreach (Capture c in m.Groups["type_def"].Captures)
         allowed_types.Add(c.Value);
+    }
 
     if (m.Groups.ContainsKey("literal_def"))
       regex_validator = m.Groups["literal_def"].Value;
@@ -156,7 +157,7 @@ public sealed class ChkToken () : IEquatable<IToken>
     }
     return [.. all_types_allowed];
   }
-  internal bool Check_Type (IToken? token) => token is not null && token.HasType && AllowedTypes.Any(type => token.Type.Like(type)) || AllowedTypes.Count == 0;
+  internal bool Check_Type (IToken? token) => (token?.HasType == true && AllowedTypes.Any(type => token.Type.Like(type))) || AllowedTypes.Count == 0;
   /// <summary>Checks if the specified token satisfies this object's conditions.</summary>
   /// <param name="other">The token to check.</param>
   /// <returns><see langword="true"/> if the token satisfies this object's conditions, <see langword="false"/> otherwise.</returns>

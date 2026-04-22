@@ -119,6 +119,14 @@
             <param name="cls">The color and verbosity of the message.</param>
             <param name="message">The message text.</param>
         </member>
+        <member name="M:Common.Debug.DoCatch(System.String)">
+            <summary>Purges the stack until the specified key.</summary>
+            <param name="key">The key of the position to resume.</param>
+        </member>
+        <member name="M:Common.Debug.AddCatch(System.String)">
+            <summary>Adds a catch point to resume logging in the event of an execption.</summary>
+            <param name="key">The key to store the position under.</param>
+        </member>
         <member name="M:Common.Debug.DebugIn(System.String)">
             <summary>Sets the logging location for any logs.</summary>
             <remarks>This keeps the classname the same as it was since the last <c>DebugIn</c> call.</remarks>
@@ -145,6 +153,11 @@
         <member name="M:Common.Debug.LogHead(Common.MsgClass)">
             <summary>Only writes the location of the log, and does not add a newline.</summary>
             <param name="cls">The color if not default.</param>
+        </member>
+        <member name="M:Common.Debug.LogPart(Common.MsgClass,System.String)">
+            <summary>Logs a portion of a line to the output stream, and does not append a line feed.</summary>
+            <param name="cls">The message class of this part.</param>
+            <param name="part">The text content.</param>
         </member>
         <member name="M:Common.Debug.NewLine(System.ConsoleColor)">
             <summary>Writes a newline to the output stream.</summary>
@@ -778,6 +791,16 @@
             <summary>Reference to an empty <see langword="string"/>.</summary>
             <remarks>This one is a compile-time constant.</remarks>
         </member>
+        <member name="T:Common.Pos">
+            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
+            <param name="start">The start position.</param>
+            <param name="length">The length.</param>
+        </member>
+        <member name="M:Common.Pos.#ctor(System.Int32,System.Int32)">
+            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
+            <param name="start">The start position.</param>
+            <param name="length">The length.</param>
+        </member>
         <member name="T:Common.Regex.AbsentGroupException">
             <summary>The exception thrown when a regex group is not found.</summary>
         </member>
@@ -1248,16 +1271,6 @@
         </member>
         <member name="M:Common.Section.CompareTo(Common.Section)">
             <inheritdoc/>
-        </member>
-        <member name="T:Common.Pos">
-            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
-            <param name="start">The start position.</param>
-            <param name="length">The length.</param>
-        </member>
-        <member name="M:Common.Pos.#ctor(System.Int32,System.Int32)">
-            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
-            <param name="start">The start position.</param>
-            <param name="length">The length.</param>
         </member>
         <member name="T:Common.SectionCollection">
             <summary>Now uses Pos struct for speed.</summary>

@@ -135,7 +135,7 @@ public sealed class TokenFactory
   private void StoreOther ()
   {
     DebugIn("StoreOther");
-    DebugLog($"Storing remaining zones.");
+    DebugLog("Storing remaining zones.");
     foreach (Pos applicant in CannotMatch.Inverse())
     {
       DebugLog($"Section: {applicant} Found with no token.");

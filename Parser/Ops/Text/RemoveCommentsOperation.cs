@@ -16,6 +16,6 @@ public class RemoveCommentsOperation ([SS("Regex")] string comment, [SS("Regex")
     else if (WorkData is IEnumerable<string> list)
       WorkData = list.Select(Task);
     else
-      Status = Op.ThrowBadInput($"string or IEnumerable<string>", $"{WorkDataType}");
+      Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
   }
 }

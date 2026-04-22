@@ -5,7 +5,7 @@ namespace Parser.Condition;
 public class AndCondition (params Collection<ICondition> conditions) : BasicCondition(), ICanAddChildren<ICondition>
 {
   public override bool NoInputData => true;
-  public Collection<ICondition> Conditions { get; private set; } = conditions;
+  public Collection<ICondition> Conditions { get; } = conditions;
   public int Count => Conditions.Count;
 
   public void Add (ICondition child) => Conditions.Add(child);

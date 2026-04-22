@@ -2,7 +2,7 @@ namespace Parser.Condition;
 
 public class OrCondition (params Collection<ICondition> conditions) : ICondition, ICanAddChildren<ICondition>
 {
-  public Collection<ICondition> Conditions { get; private set; } = conditions;
+  public Collection<ICondition> Conditions { get; } = conditions;
   public int Count => Conditions.Count;
 
   public void Add (ICondition child) => Conditions.Add(child);

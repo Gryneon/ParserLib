@@ -68,7 +68,7 @@ public class SplitOperation : Operation
       Type.Delim when WorkData is IEnumerable<string> list => list.SelectMany(delimSplit),
       Type.Regex when WorkData is string str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str),
       Type.Regex when WorkData is IEnumerable<string> list => list.SelectMany(str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str)),
-      _ => Op.ThrowBadInput($"string or list", $"{WorkData?.GetType()}"),
+      _ => Op.ThrowBadInput("string or list", $"{WorkData?.GetType()}"),
     };
 
     Status = OpStatus.Pass;
