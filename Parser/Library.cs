@@ -9,9 +9,9 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   private readonly Dictionary<string, Spec> _specs = [];
   /// <summary>The singleton instance of this object.</summary>
   private static Library? Instance { get; set; }
-  private static Dictionary<string, ReadOnlyCollection<IInferenceNode>> SpecInferences =>
+  private static Dictionary<string, ReadOnlyCollection<InferenceNode>> SpecInferences =>
     [.. Instance?.Select(
-      item => new KeyValuePair<string, ReadOnlyCollection<IInferenceNode>>(item.Key, item.Value.FileInferences)) ?? throw new InvalidOperationException("Library must be initialized.")];
+      item => new KeyValuePair<string, ReadOnlyCollection<InferenceNode>>(item.Key, item.Value.FileInferences)) ?? throw new InvalidOperationException("Library must be initialized.")];
 
   private Library () { }
   public Spec this[string key] { get => _specs[key]; set => _specs[key] = value; }
@@ -91,9 +91,9 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
     {
       throw new InvalidOperationException("Library must be initialized.");
     }
-    foreach (KeyValuePair<string, ReadOnlyCollection<IInferenceNode>> fi in SpecInferences)
+    foreach (KeyValuePair<string, ReadOnlyCollection<InferenceNode>> fi in SpecInferences)
     {
-      foreach (IInferenceNode node in fi.Value)
+      foreach (InferenceNode node in fi.Value)
       {
         if (node.CheckFile(path))
         {

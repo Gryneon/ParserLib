@@ -14,8 +14,8 @@ public static class DefinitionStaticFunctions
   public static RxS Or ([SS("Regex")] IEnumerable<string> list) => RxS.OOr(list);
   public static RxS Or ([SS("Regex")] string content, [SS("Regex")] params Collection<string> values) => RxS.Or(content, values);
   public static InferenceNode IfN (IT it, string value) => new(it, value);
-  public static InferenceNodeOr IfNOr (params IEnumerable<IInferenceNode> nodes) => new(nodes);
-  public static InferenceNodeAnd IfNAnd (params IEnumerable<IInferenceNode> nodes) => new(nodes);
+  public static InferenceNodeOr IfNOr (params IEnumerable<InferenceNode> nodes) => new(nodes);
+  public static InferenceNodeAnd IfNAnd (params IEnumerable<InferenceNode> nodes) => new(nodes);
 
   // Word Start RxS
   public static readonly RxS St = Rx(@"\b");

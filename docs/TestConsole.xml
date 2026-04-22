@@ -60,21 +60,6 @@
               Looks up a localized string similar to ParserLib\Specification.JSON\Samples\launchSettings.json.
             </summary>
         </member>
-        <member name="P:TestConsole.Paths.reg_dllfile">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\dllfile.reg.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.reg_iplfile">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
-            </summary>
-        </member>
-        <member name="P:TestConsole.Paths.wad_pl2">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.WAD\Samples\PL2.WAD.
-            </summary>
-        </member>
         <member name="P:TestConsole.Paths.xml_errors">
             <summary>
               Looks up a localized string similar to ParserLib\Specification.XML\Samples\errors.xml.

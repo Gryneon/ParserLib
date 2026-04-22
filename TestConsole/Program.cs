@@ -1,12 +1,6 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
 using Parser.Condition;
 
-using static Common.Debug;
-
-using ResWAD = Specification.WAD.Resources;
+using ResWAD = Specification.WAD.Properties.Resources;
 using ResZDoom = Specification.ZDoom.Properties.Resources;
 using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
@@ -239,37 +233,6 @@ internal static class Program
     }
     LogWarn($"Operations have concluded with status {status}.");
     DebugOut();
-    //if (spec.IsTextFile)
-    //{
-    //  //Load Data
-    //  string input = File.ReadAllText(file.UserDirFix());
-    //  TokenFactory factory = new(spec);
-    //  TokenCollection result = [.. factory.Produce(input)];
-    //  LogWarn($"Tokens Created : {result.Count}");
-    //  TokenAssembler assembler = new(spec);
-    //  TokenCollection tokens = [.. result];
-    //  TokenCollection tokens_assembled = assembler.Execute(tokens);
-    //  LogWarn($"Tokens After Assembly : {tokens_assembled.Count}");
-    //  Console.WriteLine("\n\n");
-    //  foreach (IToken token in tokens_assembled)
-    //  {
-    //    Console.WriteLine($"{token}");
-    //  }
-    //  LogInfo($"Token Log Complete");
-    //}
-    //else
-    //{
-    //  byte[] bytes;
-    //  try
-    //  {
-    //    bytes = File.ReadAllBytes(file.UserDirFix());
-    //  }
-    //  catch (DirectoryNotFoundException de)
-    //  {
-    //    LogError($"{de.Message}");
-    //    bytes = [];
-    //  }
-    //}
   }
 
   internal static XParser TestTextParser (string path, Spec spec)

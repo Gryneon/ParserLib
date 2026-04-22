@@ -41,7 +41,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{F60AE9E8-DEC6-417D-9487-81940A3D53D3}"
 	ProjectSection(SolutionItems) = preProject
 		docs\Common.xml = docs\Common.xml
-		docs\FormObjectViewer.xml = docs\FormObjectViewer.xml
 		docs\Parser.Binary.xml = docs\Parser.Binary.xml
 		docs\Parser.Byte.xml = docs\Parser.Byte.xml
 		docs\Parser.Text.xml = docs\Parser.Text.xml
@@ -75,7 +74,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specifications", "Specifica
 		Parser\ByteOperations.md = Parser\ByteOperations.md
 		Parser\Naming Groups.md = Parser\Naming Groups.md
 		Common\Regex\Naming Groups.md = Common\Regex\Naming Groups.md
-		Parser\Tokens\TemplateFormat.txt = Parser\Tokens\TemplateFormat.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormObjectViewer", "FormObjectViewer\FormObjectViewer.csproj", "{A956E431-070B-45D6-8776-1A1D1ED793AE}"
@@ -83,8 +81,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VNCChecker", "..\Plant VNC\VNCChecker.csproj", "{244932B9-BCD9-1EA3-EB5A-78FE65116DD3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser.Forms", "Parser.Forms\Parser.Forms.csproj", "{C7E0FA02-A2D0-42A7-9302-4B3491FF9113}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelSequenceHelper", "ExcelSequenceHelper\ExcelSequenceHelper.csproj", "{96A24DCC-6DA3-8A29-C01A-1E21A955A135}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Language Specifications", "Language Specifications", "{8F3611D8-E097-C408-6FFE-4ACCCA582423}"
 	ProjectSection(SolutionItems) = preProject
@@ -317,18 +313,6 @@ Global
 		{C7E0FA02-A2D0-42A7-9302-4B3491FF9113}.Release|x64.Build.0 = Release|Any CPU
 		{C7E0FA02-A2D0-42A7-9302-4B3491FF9113}.Release|x86.ActiveCfg = Release|Any CPU
 		{C7E0FA02-A2D0-42A7-9302-4B3491FF9113}.Release|x86.Build.0 = Release|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Debug|x64.Build.0 = Debug|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Debug|x86.Build.0 = Debug|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Release|Any CPU.Build.0 = Release|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Release|x64.ActiveCfg = Release|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Release|x64.Build.0 = Release|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Release|x86.ActiveCfg = Release|Any CPU
-		{96A24DCC-6DA3-8A29-C01A-1E21A955A135}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,6 @@
 using System;
 
-namespace Specification.ZDoom.SndInfo;
+namespace Specification.ZDoom.Lang.SndInfo;
 
 /// <summary>Static class providing extensions for strings.</summary>
 public static class SndInfoCmdExt

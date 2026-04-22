@@ -1,4 +1,4 @@
-namespace Specification.ZDoom.SndInfo;
+namespace Specification.ZDoom.Lang.SndInfo;
 
 /// <summary>An abstract sndinfo command.</summary>
 /// <param name="cmd">The type of command.</param>

@@ -1,7 +1,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable CA1720 // Identifier contains type name
 
-namespace Specification.ZDoom.SndInfo;
+namespace Specification.ZDoom.Lang.SndInfo;
 
 public enum SndInfoTokenType
 {

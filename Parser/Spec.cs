@@ -16,8 +16,8 @@ public class Spec
   public required string Name { get; init; }
   /// <summary>A <see cref="Collection{IOperation}"/> of <see cref="Operation"/> objects that are executed in order to produce the result.</summary>
   public ReadOnlyCollection<IOperation> Operations { get; init; } = [];
-  /// <summary>A <see cref="Collection{IInferenceNode}"/> of <see cref="InferenceNode"/> objects that specify what files use this specification.</summary>
-  public ReadOnlyCollection<IInferenceNode> FileInferences { get; init; } = [];
+  /// <summary>A <see cref="Collection{InferenceNode}"/> of <see cref="InferenceNode"/> objects that specify what files use this specification.</summary>
+  public ReadOnlyCollection<InferenceNode> FileInferences { get; init; } = [];
   /// <summary>Determines whether to use a byte parser or a text one.</summary>
   public bool IsTextFile { get; init; }
   /// <summary>The default regex options to use.</summary>

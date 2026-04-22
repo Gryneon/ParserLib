@@ -43,6 +43,47 @@
             <summary>Gets the header string value.</summary>
             <returns>The header string value.</returns>
         </member>
+        <member name="T:Specification.REG.Properties.Samples">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Properties.Samples.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Properties.Samples.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Properties.Samples.reg_classext">
+            <summary>
+              Looks up a localized string similar to ParserLib\Specification.REG\Resources\HKEY_Classes_Root\ClassExt.reg.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Properties.Samples.reg_dllfile">
+            <summary>
+              Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\dllfile.reg.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Properties.Samples.reg_ipl">
+            <summary>
+              Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Properties.Samples.reg_iplfile">
+            <summary>
+              Looks up a localized string similar to ParserLib\Specification.REG\Resources\Types\ipl.reg.
+            </summary>
+        </member>
+        <member name="P:Specification.REG.Properties.Samples.reg_querpus">
+            <summary>
+              Looks up a localized string similar to ParserLib\Specification.REG\querpus.ipl.
+            </summary>
+        </member>
         <member name="T:Specification.REG.RegProperty">
             <summary>A registry key, type, and value, with an option to delete the entry.</summary>
         </member>
@@ -77,12 +118,6 @@
             <inheritdoc/>
             <exception cref="T:System.InvalidOperationException"/>
         </member>
-        <member name="M:Specification.REG.RegProperty.Equals(Common.IProperty{System.String})">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.REG.RegProperty.CompareTo(Common.IProperty{System.String})">
-            <inheritdoc/>
-        </member>
         <member name="M:Specification.REG.RegProperty.AssignValue(System.String)">
             <summary>Assigns the specified value to the <see cref="P:Specification.REG.RegProperty.Value"/> property.</summary>
             <param name="value">The value to assign. Cannot be null or empty.</param>
@@ -90,12 +125,6 @@
         <member name="M:Specification.REG.RegProperty.AssignValue(System.Object)">
             <summary>Assigns a value to the <see cref="P:Specification.REG.RegProperty.Value"/> property, converting it to a string.</summary>
             <param name="value">The object to assign. If <paramref name="value"/> is <see langword="null"/>, a default value is assigned instead.</param>
-        </member>
-        <member name="M:Specification.REG.RegProperty.Equals(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.REG.RegProperty.GetHashCode">
-            <inheritdoc/>
         </member>
         <member name="T:Specification.REG.RegSection">
             <summary>A registry key.</summary>

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Specification.ZDoom.ACS;
+namespace Specification.ZDoom.Lang.ACS;
 
 public struct ACSTokenData (ACSStructureType structure, AT token) : IEquatable<ACSTokenData>
 {

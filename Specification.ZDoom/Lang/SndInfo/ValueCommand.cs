@@ -1,4 +1,4 @@
-namespace Specification.ZDoom.SndInfo;
+namespace Specification.ZDoom.Lang.SndInfo;
 
 /// <summary>Stores a command and its parameters.</summary>
 /// <param name="cmd">The command.</param>

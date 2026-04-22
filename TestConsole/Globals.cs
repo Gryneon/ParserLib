@@ -3,6 +3,8 @@ global using System.Collections.ObjectModel;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Reflection;
 global using System.Resources;
+global using System.Collections.Generic;
+global using System.IO;
 
 global using Common;
 global using Common.Extensions;
@@ -13,6 +15,7 @@ global using Parser.Ops;
 //global using Terminal.Menu;
 
 global using static Common.Names;
+global using static Common.Debug;
 
 [assembly: AssemblyCompany("Testing Console App")]
 [assembly: AssemblyConfiguration("Debug")]

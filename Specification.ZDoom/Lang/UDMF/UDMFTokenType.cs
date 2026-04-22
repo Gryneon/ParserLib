@@ -1,6 +1,6 @@
 #pragma warning disable CA1720 // Identifier contains type name
 
-namespace Specification.ZDoom.UDMF;
+namespace Specification.ZDoom.Lang.UDMF;
 
 /// <summary>Token types for UDMF Spec.</summary>
 public enum UDMFTokenType

@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <ApplicationIcon>Icons\ActiveServerApplication.ico</ApplicationIcon>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>

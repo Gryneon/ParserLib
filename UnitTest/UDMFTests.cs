@@ -12,12 +12,12 @@ namespace UnitTest;
 public class UDMFTests
 {
   [Theory]
-  [InlineData("C:\\Users\\$user$\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\map00.udmf")]
-  [InlineData("C:\\Users\\$user$\\source\\repos\\Git\\ParserLib\\Parser\\Samples\\sample.udmf")]
+  [InlineData(@"ParserLib\Parser\Samples\map00.udmf")]
+  [InlineData(@"ParserLib\Parser\Samples\sample.udmf")]
   public void UDMF_TokenFactoryTest (string file)
   {
     //Load Data
-    string input = File.ReadAllText(file.UserDirFix());
+    string input = File.ReadAllText(Helper.GitDir + file);
 
     //Load Spec
     Spec spec = Definition.UDMF;

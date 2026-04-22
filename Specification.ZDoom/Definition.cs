@@ -1,7 +1,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Rule Violation
 
-using Specification.ZDoom.Decorate;
+using Specification.ZDoom.Lang.Decorate;
 
 using static Parser.DefinitionStaticFunctions;
 
@@ -242,13 +242,13 @@ public static class Definition
     },
     TokenRules = [
 
-      // Data
+      // Strings and Comments
       s_cString,
       s_char,
       s_cLineComment,
       s_cBlkComment,
 
-      // Preprocessor
+      // Numeric Data
       s_int,
       s_dec,
 
@@ -278,7 +278,11 @@ public static class Definition
       Tm(AT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),
       .. TokenRule.MakeSingleCharRules("+/%|&^*><", RT.TokenExact , AT.Binary),
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;#-", RT.TokenExact , new AT[] { AT.Ao, AT.Ac, AT.Bo, AT.Bc, AT.Po, AT.Pc, AT.Eq, AT.Cm, AT.Co, AT.Sc, AT.Pre, AT.Minus }),
+
+      // Data Types
       Tm(AT.Type, @"\b(int|str|char|bool)\b"),
+
+      // Names
       Tm(AT.FuncDefName, @"(?<=function\s*\w+\s*) (?>[a-z_]\w*)"),
       Tm(AT.FuncName, @"(?>[a-z_]\w*) (?=\s*\()"),
       Tm(AT.VarName, @"(?<= (int|str|bool|char) \s+ ( \w+\s*\,\s* )*) (?>[a-z_]\w*) (?!\s*\(|\s*,\s*(int|bool|str|char)) (?=\s*(;|\=|,))"),
@@ -400,9 +404,10 @@ public static class Definition
     ],
     Operations = [
       new TokenizeOperation(),
-      new DebugToStringOperation("tokens"),
+      new DebugPrintKeyOperation("tokens"),
       new DebugWaitForInputOperation(),
       new TokenAssembleOperation(),
+      new DebugPrintKeyOperation("tokens_assembled"),
       new DebugWaitForInputOperation(),
     ]
   };

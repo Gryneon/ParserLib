@@ -3,6 +3,7 @@
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <ProjectGuid>{B1D0522D-B271-6DFE-EE74-01968AB563FC}</ProjectGuid>
     <TargetFramework>net11.0</TargetFramework>
