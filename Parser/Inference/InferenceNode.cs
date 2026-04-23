@@ -1,5 +1,3 @@
-using Parser.Exceptions;
-
 namespace Parser.Inference;
 
 public class InferenceNode (IT type, string content)
@@ -7,7 +5,10 @@ public class InferenceNode (IT type, string content)
   public string Content { get; } = content;
   public IT Type { get; init; } = type;
 
-  /// <exception cref="InvalidFileInferenceException"/>
+  /// <summary>Checks a file and determines if it satisfies the inference node.</summary>
+  /// <param name="filepath">Path to the file.</param>
+  /// <returns><see langword="true"/> if the node is satisfied, <see langword="false"/> otherwise.</returns>
+  /// <exception cref="InvalidFileInferenceException"></exception>
   public virtual bool CheckFile (string filepath)
   {
     string getHeader ()
@@ -39,9 +40,13 @@ public class InferenceNode (IT type, string content)
       size = new FileInfo(filepath).Length;
 
     if (type(IT.Ext))
+    {
       value = ext;
+    }
     else if (type(IT.FName))
+    {
       value = name;
+    }
     else if (Type.HasFlag(IT.FileContent))
     {
       caseCheck = SCO;
@@ -53,7 +58,9 @@ public class InferenceNode (IT type, string content)
       value = getHeader();
     }
     else
+    {
       useSize = Type.HasFlag(IT.FileSize) ? true : throw new InvalidFileInferenceException();
+    }
 
     bool result = false;
 

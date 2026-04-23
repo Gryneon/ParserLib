@@ -7,8 +7,8 @@ public enum ByteReadMode
 {
   None = 0,
   Text = 1,
-  Value = 2,
-  Binary = 3,
+  Value = 1 << 1,
+  Binary = Text | Value,
 
-  ToList = 4,
+  ToList = 1 << 2,
 }

@@ -2,7 +2,7 @@
 
 namespace Common;
 
-/// <summary>Static class of common character combinations.</summary> 
+/// <summary>Static class of common character combinations.</summary>
 public static class Chars
 {
   /// <summary>Beep control code.</summary>

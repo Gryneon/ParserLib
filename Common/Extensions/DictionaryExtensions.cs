@@ -12,10 +12,7 @@ public static class DictionaryExtensions
   {
     if (dic is null)
       return;
-    if (dic.ContainsKey(item.Key))
-      dic[item.Key] = item.Value;
-    else
-      dic.Add(item.Key, item.Value);
+    dic[item.Key] = item.Value;
   }
   public static void Add<TKey, TValue> (this SortedDictionary<TKey, TValue> dic, KeyValuePair<TKey, TValue> item) where TKey : notnull =>
     dic?.Add(item.Key, item.Value);

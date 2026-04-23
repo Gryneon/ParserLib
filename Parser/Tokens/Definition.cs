@@ -29,9 +29,9 @@ internal static class Definition
   };
 
   public static TokenFactory Factory { get; } = new([
-    new(TExact, CTT.Colon, @":"),
-    new(TExact, CTT.Po, @"("),
-    new(TExact, CTT.Pc, @")"),
+    new(TExact, CTT.Colon, ":"),
+    new(TExact, CTT.Po, "("),
+    new(TExact, CTT.Pc, ")"),
     new(TMatch, CTT.Prefix, @"\b[a-y]+(?=\:)"),
     new(TMatch, CTT.Content, @"(?<=c.*?\:)\w+\b"),
     new(TMatch, CTT.TypeName, @"(?<=t.*?\:)\w+\b"),

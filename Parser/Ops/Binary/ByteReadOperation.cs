@@ -68,7 +68,7 @@ public sealed class ByteReadOperation : Operation, IOperation
 
     if (Size == 0)
     {
-      Log(MsgClass.BlueInfo, "ByteReadOperation", "Execute", $"Found: Marker");
+      Log(MsgClass.BlueInfo, "ByteReadOperation", "Execute", "Found: Marker");
       Status = Pass;
       WorkData = Array.Empty<byte>();
       return;

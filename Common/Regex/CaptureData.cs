@@ -75,6 +75,6 @@ public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<Capt
   public static bool operator != (CaptureData left, CaptureData right) => !(left == right);
   public static bool operator < (CaptureData left, CaptureData right) => left is null ? right is not null : left.CompareTo(right) < 0;
   public static bool operator <= (CaptureData left, CaptureData right) => left is null || left.CompareTo(right) <= 0;
-  public static bool operator > (CaptureData left, CaptureData right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator > (CaptureData left, CaptureData right) => left?.CompareTo(right) > 0;
   public static bool operator >= (CaptureData left, CaptureData right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

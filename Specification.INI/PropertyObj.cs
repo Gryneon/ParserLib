@@ -56,17 +56,14 @@ public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
   /// </remarks>
   public static PropertyObj Generate (MatchDataSet input)
   {
-    PropertyObj result;
-
     input.ThrowIfNull();
     input.ThrowIfEmpty("key");
 
-    result = new()
+    return new()
     {
       Key = input["key"].Content,
       Value = input.HasGroup("value") ? input["value"].Content : SE,
     };
-    return result;
   }
   public override bool Equals (IProperty<string>? other) =>
     Key.Equals(other?.Key, SCOIC) && (Value?.Equals(other.Value, SCO) ?? false);

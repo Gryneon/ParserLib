@@ -63,9 +63,9 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
 
   public bool Equals (ReplaceNode? other, StringComparison sc) =>
     LookFor.Content.Equals(other?.LookFor, sc) && (
-      ReplaceWith is not null &&
+      (ReplaceWith is not null &&
       other.ReplaceWith is not null &&
-      ReplaceWith.Equals(other.ReplaceWith, sc) || ReplaceWith is null && other.ReplaceWith is null);
+      ReplaceWith.Equals(other.ReplaceWith, sc)) || (ReplaceWith is null && other.ReplaceWith is null));
 
   /// <inheritdoc/>
   public override bool Equals (object? obj) => Equals(obj as IProperty<string>, SCO);
@@ -87,7 +87,7 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
   public string ReplaceText (string input, StringComparison sc = SCO) => input.RecursiveReplace(LookFor, ReplaceWith ?? SE, sc);
   public bool Equals (IProperty<string?>? other) =>
     LookFor.Content.Equals(other?.Key, SCO) && (
-      ReplaceWith is not null &&
+      (ReplaceWith is not null &&
       other.Value is not null &&
-      ReplaceWith.Equals(other.Value, SCO) || ReplaceWith is null && other.Value is null);
+      ReplaceWith.Equals(other.Value, SCO)) || (ReplaceWith is null && other.Value is null));
 }

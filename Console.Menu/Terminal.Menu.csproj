@@ -16,8 +16,6 @@
     <Title>Console Menu Library</Title>
   </PropertyGroup>
 
-<ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />

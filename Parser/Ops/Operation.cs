@@ -22,7 +22,7 @@ public abstract class Operation : IOperation
   protected Collection<object> MultipleInputValues { get; private set; } = [];
   /// <summary>A collection of all of the input keys. This will only contain one key if only one key is provided.</summary>
   [NotNull]
-  protected Collection<string> InputKeys { get; private set; } = [];
+  protected Collection<string> InputKeys { get; } = [];
   /// <summary>The input key provided, or the first input key if multiple are provided.</summary>
   [NotNull]
   protected string InputKey
@@ -78,7 +78,7 @@ public abstract class Operation : IOperation
     DebugIn("Operation", "CheckInputNull");
     if (InputKey == SE || NoInput)
     {
-      Log(MsgClass.Debug, $"No key checked.");
+      Log(MsgClass.Debug, "No key checked.");
       Status = OpStatus.Skipped;
       DebugOut();
       return;
@@ -94,7 +94,7 @@ public abstract class Operation : IOperation
     if (InputKeys.Count == 1)
       Log(MsgClass.Debug, $"Key {InputKey} is not null.");
     else
-      Log(MsgClass.Debug, $"All keys are not null.");
+      Log(MsgClass.Debug, "All keys are not null.");
     Status = OpStatus.Pass;
     DebugOut();
   }
@@ -141,7 +141,7 @@ public abstract class Operation : IOperation
   #endregion
   public OpStatus DoOperation (XParser parser_ref)
   {
-    DebugIn($"Operation", "DoOperation");
+    DebugIn("Operation", "DoOperation");
     if (SkipOperation)
       return OpStatus.Skipped;
 
@@ -178,7 +178,7 @@ public abstract class Operation : IOperation
   }
   protected void CheckUnpacked (XParser parser)
   {
-    if (parser is not null && parser.OpIndex == 0)
+    if (parser?.OpIndex == 0)
       Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
   }
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>

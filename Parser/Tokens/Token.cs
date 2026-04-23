@@ -22,7 +22,7 @@ public class Token : IToken, IPrintable
   public void Print (int indent)
   {
     LogPart(MsgClass.Forced, $"{Type}");
-    LogPart(MsgClass.BlueInfo, $" : ");
+    LogPart(MsgClass.BlueInfo, " : ");
     if (Count is 0 or 1)
     {
       LogPart(MsgClass.GreenInfo, Content);
@@ -45,6 +45,6 @@ public class Token : IToken, IPrintable
   public static bool operator != (Token left, IToken right) => !(left == right);
   public static bool operator < (Token left, IToken right) => left is null ? right is not null : left.CompareTo(right) < 0;
   public static bool operator <= (Token left, IToken right) => left is null || left.CompareTo(right) <= 0;
-  public static bool operator > (Token left, IToken right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator > (Token left, IToken right) => left?.CompareTo(right) > 0;
   public static bool operator >= (Token left, IToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

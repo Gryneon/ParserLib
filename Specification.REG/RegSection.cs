@@ -33,11 +33,11 @@ public class RegSection : IReadOnlyDictionary<string, string?>
   protected Dictionary<string, string?> Properties { get; } = [];
   public int Count => Properties.Count;
 
-  public IEnumerable<string> Keys => (Properties).Keys;
+  public IEnumerable<string> Keys => Properties.Keys;
 
-  public IEnumerable<string?> Values => (Properties).Values;
+  public IEnumerable<string?> Values => Properties.Values;
 
-  public string? this[string key] => (Properties)[key];
+  public string? this[string key] => Properties[key];
 
   public void Add (RegProperty child)
   {

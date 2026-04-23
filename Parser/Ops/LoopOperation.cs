@@ -26,7 +26,7 @@ public sealed class LoopOperation : Operation, IPlaceholderOperation
 
   private string GetLoopName ()
   {
-    string name = "loop_counter";
+    const string name = "loop_counter";
     int num = 0;
     string result () => $"{name}{((num > 0) ? num : "")}";
     while (Data.CanLoad(result()))

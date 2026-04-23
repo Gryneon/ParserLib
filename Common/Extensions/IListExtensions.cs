@@ -73,7 +73,7 @@ public static class IListExtensions
   {
     list.ThrowIfNull();
 
-    T item = list.Last();
+    T item = list[^1];
     list.RemoveAt(list.Count - 1);
     return item;
   }
@@ -84,7 +84,7 @@ public static class IListExtensions
       return (SE as T)!;
 
     list.ThrowIfNull();
-    return list.Last();
+    return list[^1];
   }
 
   // Queue Functions for IList<T>
@@ -115,6 +115,6 @@ public static class IListExtensions
   public static IList<T> DeNullify<T> ([NotNull] this IList<T?> list) where T : struct
   {
     list.ThrowIfNull();
-    return list.IsEmpty() ? [] : [.. from item in list let item2 = item is null ? default : item.Value select item2];
+    return list.IsEmpty() ? [] : [.. from item in list let item2 = item ?? default select item2];
   }
 }

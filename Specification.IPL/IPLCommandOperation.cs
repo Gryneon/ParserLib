@@ -64,7 +64,9 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       void setLineCmd ()
       {
         if (item.Type is ICT.Line)
+        {
           current = item;
+        }
         else if (item.Type is ICT.Prop)
         {
           if (current is null)

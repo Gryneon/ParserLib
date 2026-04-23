@@ -70,7 +70,9 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
       if (relevant_sections.Any(s => s.IsWithin(i)))
       {
         if (start == DNE)
+        {
           continue;
+        }
         else
         {
           result.Add(start, i - start);
@@ -79,7 +81,9 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICa
         }
       }
       else if (start == DNE)
+      {
         start = i;
+      }
     }
     if (start != DNE)
       result.Add(start, TextLength - start);

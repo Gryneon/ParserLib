@@ -21,7 +21,6 @@ public static class Definition
   private static readonly TokenRule s_classname = new(RT.TokenMatch, "Classname", "Actor|Ammo|Clip|(Red|Blue|Yellow)Card|Health|Armor(Bonus)?|(Blue|Green)Armor|(Caco|Cyber)?demon|Imp|Shells|Rocket(Box)?|(Custom)?Inventory|FastProjectile|DoomPlayer|MapSpot|DoomImp|Zombieman|ShotgunGuy");
   private static readonly TokenRule s_name = new(RT.TokenMatch, "name", @"[\w]+");
 
-
   /// <summary>https://regex101.com/r/En5C8c/7</summary>
   [DefinitionExport]
   public static Spec ZScript => new()
@@ -62,7 +61,7 @@ public static class Definition
         "fail","wait","goto","stop",
         "fast","bright",
         "states","default",
-        
+
       ]),
       s_classname,
       s_name
@@ -271,10 +270,10 @@ public static class Definition
 
       // Operators
       Tm(AT.IncDec, @"(\+\+|--)"),
-      Tm(AT.Unary, @"!(?!=)|~"),
-      Tm(AT.Assign, @"[-+*^/%|&]="),
+      Tm(AT.Unary, "!(?!=)|~"),
+      Tm(AT.Assign, "[-+*^/%|&]="),
       Tm(AT.Assign, @"(<<|>>| \|\| |&&)="),
-      Tm(AT.Binary, @"== | [!<>]="),
+      Tm(AT.Binary, "== | [!<>]="),
       Tm(AT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),
       .. TokenRule.MakeSingleCharRules("+/%|&^*><", RT.TokenExact , AT.Binary),
       .. TokenRule.MakeSingleCharRules("[]{}()=,:;#-", RT.TokenExact , new AT[] { AT.Ao, AT.Ac, AT.Bo, AT.Bc, AT.Po, AT.Pc, AT.Eq, AT.Cm, AT.Co, AT.Sc, AT.Pre, AT.Minus }),

@@ -15,5 +15,5 @@ public static class RegexStaticFunctions
   /// <summary>Word Boundary (\b)</summary>
   public static RxS Bk => @"\b";
   /// <summary>Line Start (^)</summary>
-  public static RxS Start => @"^";
+  public static RxS Start => "^";
 }

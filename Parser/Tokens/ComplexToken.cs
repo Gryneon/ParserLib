@@ -73,7 +73,7 @@ public sealed class ComplexToken : IToken, IPrintable
   public static bool operator != (ComplexToken left, ComplexToken right) => !(left == right);
   public static bool operator < (ComplexToken left, ComplexToken right) => left is null ? right is not null : left.CompareTo(right) < 0;
   public static bool operator <= (ComplexToken left, ComplexToken right) => left is null || left.CompareTo(right) <= 0;
-  public static bool operator > (ComplexToken left, ComplexToken right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator > (ComplexToken left, ComplexToken right) => left?.CompareTo(right) > 0;
   public static bool operator >= (ComplexToken left, ComplexToken right) => left is null ? right is null : left.CompareTo(right) >= 0;
 
   private Dictionary<string, IToken?> Parts => new()
@@ -131,7 +131,7 @@ public sealed class ComplexToken : IToken, IPrintable
 
     string temp = $"{Type}";
 
-    bool multiple_values = Values is not null && Values.Count > 1;
+    bool multiple_values = Values?.Count > 1;
 
     foreach (KeyValuePair<string, IToken?> kvp in Parts)
     {

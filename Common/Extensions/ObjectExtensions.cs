@@ -40,9 +40,10 @@ public static class ObjectExtensions
   {
     if (msg is not null && obj is null)
       throw new InvalidOperationException(msg);
-    ANEx.ThrowIfNull(obj);
+    else
+      throw new InvalidOperationException("ThrowIfNull threw the null.");
   }
-  public static T? ThrowIfFalse<T> (this object? obj, bool condition, string? msg = null)
+  public static T? ThrowIfFalse<T> (this object? _, bool condition, string? msg = null)
   {
     if (condition)
       return default;
@@ -52,20 +53,20 @@ public static class ObjectExtensions
     throw new InvalidOperationException();
   }
   [DoesNotReturn]
-  public static T NotSupported<T> ([NotNull] this object? obj, string? msg = null)
+  public static T NotSupported<T> ([NotNull] this object? _, string? msg = null)
   {
     if (msg is not null)
       throw new NotSupportedException(msg);
     throw new NotSupportedException();
   }
   [DoesNotReturn]
-  public static T NotImplemented<T> ([NotNull] this object? obj, string? msg = null)
+  public static T NotImplemented<T> ([NotNull] this object? _, string? msg = null)
   {
     if (msg is not null)
       throw new NotImplementedException(msg);
     throw new NotImplementedException();
   }
-  public static void DoNothing (this object? obj) { }
+  public static void DoNothing (this object? _) { }
 
   public static string DecodeAsEnum (this object value, Type enumType)
   {

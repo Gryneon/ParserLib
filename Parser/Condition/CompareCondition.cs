@@ -41,6 +41,7 @@ public class CompareCondition : BasicCondition
 
   private (T left, T right) Cast<T> () => ((T) Parser.Data[LeftKey], (T) Parser.Data[RightKey]);
   private Type? GetKeyType () => Parser.Data[LeftKey].GetType().IsAssignableFrom(Parser.Data[RightKey].GetType()) ? Parser.Data[LeftKey].GetType() : null;
+  /// <summary>Executes the condition.</summary>
   /// <remarks>Checks if the two strings are equal. Case-sensitive.</remarks>
   private void Execute_StringExact ()
   {
@@ -72,7 +73,7 @@ public class CompareCondition : BasicCondition
   {
     Type? found_type = GetKeyType();
 
-    if (found_type is null || !found_type.IsAssignableTo(DefinedType))
+    if (found_type?.IsAssignableTo(DefinedType) != true)
     {
       _ = Op.ThrowBadDef($"Types do not match. L:{Parser.Data[LeftKey].GetType()}, R:{Parser.Data[RightKey].GetType()}, D:{DefinedType}");
     }

@@ -39,7 +39,7 @@ public static class IEnumerableExtensions
   {
     IEnumerator? iter = list?.GetEnumerator();
     int i = 0;
-    while (iter != null && iter.MoveNext()) { i++; }
+    while (iter?.MoveNext() == true) { i++; }
     return i;
   }
   public static string TextJoin (this IEnumerable list, string separator = EmptyString)

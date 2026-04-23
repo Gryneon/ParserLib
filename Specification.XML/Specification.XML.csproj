@@ -13,7 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="CPPXMLProject.ico" />
     <Content Include="XMLFile.ico" />
   </ItemGroup>
 

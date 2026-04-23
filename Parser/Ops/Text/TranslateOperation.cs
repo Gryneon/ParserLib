@@ -24,29 +24,33 @@ public class TranslationRule
 
   private Func<XParser, string, object> Task => Type switch
   {
-    TT.None => (p, s) => s,
+    TT.None => (_, s) => s,
     TT.Include when Data is string restrict => (parser, s) =>
     {
       parser.ThrowIfNull();
       return new string([.. s.Where(c => restrict.Contains(c, SCO))]);
-    },
-    TT.Exclude when Data is string restrict => (parser, s) => new string([.. s.Where(c => !restrict.Contains(c, SCO))]),
-    TT.Split when Data is string regex => (parser, s) => {
+    }
+    ,
+    TT.Exclude when Data is string restrict => (_, s) => new string([.. s.Where(c => !restrict.Contains(c, SCO))]),
+    TT.Split when Data is string regex => (parser, s) =>
+    {
       parser.Spec.ThrowIfNull();
       return Regex.Split(s, regex, parser.Spec.RxOpt);
-    },
+    }
+    ,
     TT.Replace when Data is ReplaceNode rn => (parser, s) =>
     {
       parser.Spec.ThrowIfNull();
       return rn.ReplaceRegex(s, parser.Spec.RxOpt);
-    },
+    }
+    ,
     _ => throw new NotImplementedException(),
   };
 
   public object Execute (XParser parser, string s) => Task(parser, s);
 }
 
-public class TranslationConstruct
+public sealed class TranslationConstruct
 {
   [MaybeNull] public required string Name { get; init; }
   [MaybeNull] public required string Body { get; init; }
@@ -115,12 +119,18 @@ public class TranslateOperation (
     foreach (TranslationRule rule in exclude)
     {
       if (rule.Data is string remove)
+      {
         s = s.Replace(remove, SE, SCO);
+      }
       else if (rule.Data is ReplaceNode rn)
+      {
         s = s.Replace(rn);
+      }
       else if (rule.Data is ReplaceNodes rns)
+      {
         foreach (ReplaceNode node in rns)
           s = s.Replace(node);
+      }
     }
     return s;
   }

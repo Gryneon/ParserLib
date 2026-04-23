@@ -57,8 +57,7 @@ public static class Definition
         (@"\s+$", ""), //Remove ending ws
         (@"\s*\=\s*", "="), //Remove ws around eq sign
         (@"\\" + RX.LnEnd, "") //Remove escaped newlines
-      ], "text", "text"){
-      },
+      ], "text", "text"),
       new TokenizeOperation("text", "tokens"),
       new TokenAssembleOperation("tokens", "tokens_assembled")
       ],
@@ -69,8 +68,4 @@ public static class Definition
     RxOpt = ROIPW | ROEC | ROML,
     SC = SCOIC,
   };
-  private static object Generate<TOut> () where TOut : class, new()
-  {
-    return new();
-  }
 }

@@ -50,7 +50,7 @@ public static class StringExtensions
   {
     found_len = DNE;
 
-    if (s.IsEmpty() || checkFor is null || checkFor.IsEmpty())
+    if (s.IsEmpty() || checkFor?.IsEmpty() != false)
       return DNE;
 
     int index = DNE;
@@ -112,7 +112,7 @@ public static class StringExtensions
   public static bool? ToBool (this string s) => bool.TryParse(s, out bool value) ? value : null;
   public static bool ValidateWithRegex (this string s, [SS("regex")] string validation_expression, RegexOptions options = RegexOptions.None)
   {
-    MatchCollection matches = SysRegex.Matches(s, validation_expression);
+    MatchCollection matches = SysRegex.Matches(s, validation_expression, options);
     return matches.Count == 1 && matches[0].Length == s?.Length;
   }
   public static DateTime? ToDateTime (this string s) => DateTime.TryParse(s, out DateTime value) ? value : null;
@@ -215,7 +215,7 @@ public static class StringExtensions
     return new(array);
   }
   public static string ReplaceIfContainsGroup (this string s, Match match, string group, string replaceWith) =>
-    match is not null && match.Groups.ContainsKey(group) ? s.Replace(match, replaceWith) : s;
+    match?.Groups.ContainsKey(group) == true ? s.Replace(match, replaceWith) : s;
   public static string ReplaceAllIfContainsGroup (this string s, MatchCollection matches, string group, string replaceWith)
   {
     if (matches is null)
@@ -224,7 +224,7 @@ public static class StringExtensions
       s = s.ReplaceIfContainsGroup(m, group, replaceWith);
     return s;
   }
-  public static bool Equals (this string s, char c) => s is not null && s.Length == 1 && c == s[0];
+  public static bool Equals (this string s, char c) => s?.Length == 1 && c == s[0];
   public static bool EqualsAny (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
     list.Any(s2 => s.Equals(s2, sc));
   public static bool EqualsAll (this string s, IEnumerable<string> list, StringComparison sc = SCO) =>
@@ -261,12 +261,12 @@ public static class StringExtensions
   }
   public static int Get1DPosition (this string text, int line, int col)
   {
-    if (text is null || text.Length == 0 || line < 0 || col < 0)
+    if (string.IsNullOrEmpty(text) || line < 0 || col < 0)
       return DNE;
     string[] lines = text.Split('\n');
     string[] beforelns = lines[0..line];
     string flat = beforelns.TextJoin("\n");
-    return flat.Length + col; ;
+    return flat.Length + col;
   }
   public static int Get1DPosition (this string[] lines, int line, int col)
   {
@@ -274,7 +274,7 @@ public static class StringExtensions
       return DNE;
     string[] beforelns = lines[0..line];
     string flat = beforelns.TextJoin("\n");
-    return flat.Length + col; ;
+    return flat.Length + col;
   }
 
   public static void ThrowIfNullOrEmpty ([NotNull] this string? text)

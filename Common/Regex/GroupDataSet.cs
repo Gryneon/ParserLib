@@ -53,10 +53,10 @@ public class GroupDataSet : CaptureData, IReadOnlyCollection<CaptureData>, IEqua
   public override string ToString () =>
     Count > 1 ? $"[ {Captures.Select(static item => item.ToString()).TextJoin(", ")} ]" :
     Count == 1 ? Captures[0].ToString() :
-    $"<null data>";
+    "<null data>";
   public KeyValuePair<string, GroupDataSet> ToKVP () => new(Name, this);
   /// <inheritdoc/>
-  public bool Equals (GroupDataSet? other) => other is null || other.IsNull ? IsNull : other.Content.Equals(Content, SCO);
+  public bool Equals (GroupDataSet? other) => other?.IsNull != false ? IsNull : other.Content.Equals(Content, SCO);
 
   /// <inheritdoc/>
   public override bool Equals (object? obj) => Equals(obj as GroupDataSet);

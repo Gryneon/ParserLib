@@ -22,7 +22,7 @@ public sealed class XParser
   {
     get
     {
-      if (Data is null || !Data.HasData)
+      if (Data?.HasData != true)
       {
         return DefaultSpec.Unknown;
       }
@@ -293,9 +293,11 @@ public sealed class XParser
 
       string[] allow_continue = [SE, "next", "quit", "exit", "skip"];
 
-      if (status != EndCommand) do
+      if (status != EndCommand)
       {
-        Log(MsgClass.Debug, $"Enter a command to analyse parser state.");
+        do
+      {
+        Log(MsgClass.Debug, "Enter a command to analyse parser state.");
         promptUser();
 
         if (userInput.Like("quit"))
@@ -309,6 +311,7 @@ public sealed class XParser
         checkLogAsk("data in", "Enter the key to display.", s => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
 
       } while (!userInput.EqualsAny(allow_continue, SCOIC));
+      }
     }
     DebugOut();
     return LastStatus;

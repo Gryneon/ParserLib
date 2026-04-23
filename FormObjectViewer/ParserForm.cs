@@ -297,7 +297,9 @@ internal sealed partial class ParserForm : Form
       _workingRules[e.RowIndex].TypeToAssign = editForm.Original.TypeToAssign;
     }
     else
+    {
       this.DoNothing();
+    }
 
     editForm.Dispose();
     TokenRuleDataGrid.Refresh();

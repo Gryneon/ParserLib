@@ -26,7 +26,9 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
             result.Add(new MatchDataSet(m));
         }
         else
+        {
           result.AddRange(mdds);
+        }
       }
       if (result.Count != list.Count() && fullMatchText)
       {

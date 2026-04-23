@@ -128,7 +128,7 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGene
     MatchDataSet parseMe =
       toParse is null && Origin is null ? throw new InvalidOperationException("MDD Cannot be null") :
       toParse is null && Origin is not null ? Origin :
-      toParse is not null ? toParse : throw new InvalidOperationException();
+       toParse ?? throw new InvalidOperationException();
     CmdLetter = parseMe["letter"].Content;
     if (parseMe.HasGroup("qty"))
       CmdLetter = parseMe["qty"].Content;
