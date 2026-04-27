@@ -1,7 +1,7 @@
 namespace Parser.Ops;
 
-/// <summary>Pauses the operation sequence, and prompts the user to press the specified key.</summary>
-/// <remarks>Constructs an operation that waits for a specific key press or the enter key.</remarks>
+/// <include file="operation.xml" path="/doc/members/member[@name=&quot;T:Parser.Ops.Operation`1.DoOperation(`0)&quot;]"></include>
+/// <summary>Constructs an operation that waits for a specific key press or the enter key.</summary>
 /// <param name="key">The key to wait for.</param>
 public class DebugWaitForInputOperation (ConsoleKey? key = null) : Operation()
 {

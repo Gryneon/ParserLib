@@ -4,9 +4,11 @@ public class InferenceNode (IT type, string content)
 {
   public string Content { get; } = content;
   public IT Type { get; init; } = type;
-  /// <summary>Checks the given file to see if it satisfies this node.</summary>
-  /// <param name="filepath">The path to the file to insepect.</param>
-  /// <exception cref="InvalidFileInferenceException">Thrown when the file inference node contains an error.</exception>
+
+  /// <summary>Checks a file and determines if it satisfies the inference node.</summary>
+  /// <param name="filepath">Path to the file.</param>
+  /// <returns><see langword="true"/> if the node is satisfied, <see langword="false"/> otherwise.</returns>
+  /// <exception cref="InvalidFileInferenceException"></exception>
   public virtual bool CheckFile (string filepath)
   {
     DebugIn(nameof(InferenceNode), nameof(CheckFile));

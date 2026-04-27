@@ -18,7 +18,7 @@ public class EnumerateFactoryOperation<TOut> (string input_key, string output_ke
     if (WorkData is IEnumerable<IToken> tc)
     {
       Collection<TOut> output = [];
-      foreach(IToken tok in tc)
+      foreach (IToken tok in tc)
       {
         TOut item = Factory.Produce(tok);
         output.Add(item);

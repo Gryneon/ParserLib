@@ -29,18 +29,21 @@ public class TranslationRule
     {
       parser.ThrowIfNull();
       return new string([.. s.Where(c => restrict.Contains(c, SCO))]);
-    },
+    }
+    ,
     TT.Exclude when Data is string restrict => (_, s) => new string([.. s.Where(c => !restrict.Contains(c, SCO))]),
     TT.Split when Data is string regex => (parser, s) =>
     {
       parser.Spec.ThrowIfNull();
       return Regex.Split(s, regex, parser.Spec.RxOpt);
-    },
+    }
+    ,
     TT.Replace when Data is ReplaceNode rn => (parser, s) =>
     {
       parser.Spec.ThrowIfNull();
       return rn.ReplaceRegex(s, parser.Spec.RxOpt);
-    },
+    }
+    ,
     _ => throw new NotImplementedException(),
   };
 

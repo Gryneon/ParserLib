@@ -35,6 +35,8 @@
     </COMReference>
   </ItemGroup>
 
+
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.AnalyzerUtilities" Version="5.0.0-1.25277.114" />
     <PackageReference Include="Roslynator.Analyzers" Version="4.15.0" />

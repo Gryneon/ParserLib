@@ -37,7 +37,7 @@ public class RegSection : IReadOnlyDictionary<string, string?>
 
   public IEnumerable<string?> Values => Properties.Values;
 
-  public string? this[string key] => (Properties)[key];
+  public string? this[string key] => Properties[key];
 
   public void Add (RegProperty child)
   {
