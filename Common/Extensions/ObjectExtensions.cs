@@ -1,4 +1,5 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable RCS1263 // extension parameters
 
 using System.Diagnostics.CodeAnalysis;
 
@@ -6,73 +7,102 @@ namespace Common.Extensions;
 
 public static class ObjectExtensions
 {
-  public static bool IsCollection ([NotNullWhen(true)] this object o) => o is IEnumerable;
-  public static bool IsCollection<T> ([NotNullWhen(true)] this object o) => o is IEnumerable<T>;
-  /// <summary>Returns the object as a collection.</summary>
-  /// <param name="o">The object to convert.</param>
-  /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
-  public static Collection<object> AsCollection (this object o) => o.AsCollection<object>();
-  /// <summary>Returns the object as a collection.</summary>
-  /// <typeparam name="T">The type of collection expected.</typeparam>
-  /// <param name="o">The object to convert.</param>
-  /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
-  public static Collection<T> AsCollection<T> (this object o)
-  {
-    if (o is not IEnumerable enumerable)
-      return [];
 
-    IEnumerable<T> result = enumerable.OfType<T>();
-    return [.. result];
+  extension([NotNull] object? obj)
+  {
+    public void ThrowIfNull (string? msg = null)
+    {
+      if (msg is not null && obj is null)
+      {
+        throw new ANEx(nameof(msg), msg);
+      }
+      else if (obj is null)
+      {
+        throw new ANEx(nameof(msg), "No Message Defined");
+      }
+    }
   }
+  /// <summary>Extensions for <see cref="object"/>.</summary>
+  /// <param name="obj">The object reference.</param>
+  extension(object? obj)
+  {
+    /// <summary>Returns the object as a collection.</summary>
+    /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
+    public Collection<object> AsCollection () => obj.AsCollection<object>();
+    /// <summary>Returns the object as a collection.</summary>
+    /// <typeparam name="T">The type of collection expected.</typeparam>
+    /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
+    public Collection<T> AsCollection<T> ()
+    {
+      if (obj is not IEnumerable enumerable)
+        return [];
 
-  public static string ToString2 (this object? obj) => obj switch
-  {
-    null => "<null>",
-    string s => s,
-    char c => c.ToString(),
-    ITextSerializer t => t.Serialize(),
-    IConvertible ic => ic.ToString(CIIC),
-    IEnumerable<object> col => col.TextJoin("\n"),
-    IReadOnlyProperty<string> prp => $"IProperty \"{prp.Key}\" : \"{prp.Value}\"",
-    _ => obj.ToString(),
-  } ?? SE;
-  public static void ThrowIfNull ([NotNull] this object? obj, string? msg = null)
-  {
-    if (msg is not null && obj is null)
-      throw new InvalidOperationException(msg);
-    ANEx.ThrowIfNull(obj);
+      IEnumerable<T> result = enumerable.OfType<T>();
+      return [.. result];
+    }
+    /// <summary>Checks if the object is a type of collection or array.</summary>
+    /// <returns><see langword="true"/> if the object is an <see cref="IEnumerable"/>, <see langword="false"/> otherwise.</returns>
+    public bool IsCollection () => obj is IEnumerable;
+    public bool IsCollection<T> () => obj is IEnumerable<T>;
+    /// <summary>An alternatative string output method.</summary>
+    /// <returns>A string representation of the object.</returns>
+    public string ToString2 () => obj switch
+    {
+      null => "<null>",
+      string s => s,
+      char c => $"{c}",
+      ITextSerializer t => t.Serialize(),
+      IConvertible ic => ic.ToString(CIIC),
+      IEnumerable<object> col => col.TextJoin("\n"),
+      IReadOnlyProperty<string> prp => $"IProperty \"{prp.Key}\" : \"{prp.Value}\"",
+      _ => obj.ToString(),
+    } ?? SE;
+    public string DecodeAsEnum (Type enumType)
+    {
+      ANEx.ThrowIfNull(enumType);
+      ANEx.ThrowIfNull(obj);
+      return !enumType.IsEnum
+        ? throw new ArgumentException("Type must be an enum.", nameof(enumType))
+        : Enum.GetName(enumType, obj) ?? obj.ToString()!;
+    }
   }
-  public static T? ThrowIfFalse<T> (this object? obj, bool condition, string? msg = null)
+  extension(object)
   {
-    if (condition)
-      return default;
+    public static T? ThrowIfFalse<T> (bool condition, string? msg = null)
+    {
+      if (condition)
+        return default;
 
-    if (msg is not null)
-      throw new InvalidOperationException(msg);
-    throw new InvalidOperationException();
+      if (msg is not null)
+        throw new InvalidOperationException(msg);
+      throw new InvalidOperationException();
+    }
+    [DoesNotReturn]
+    public static T NotSupported<T> (string? msg = null)
+    {
+      if (msg is not null)
+        throw new NotSupportedException(msg);
+      throw new NotSupportedException();
+    }
+    [DoesNotReturn]
+    public static T NotImplemented<T> (string? msg = null)
+    {
+      if (msg is not null)
+        throw new NotImplementedException(msg);
+      throw new NotImplementedException();
+    }
+    /// <summary>Does Nothing.</summary>
+    public static void DoNothing () { }
   }
-  [DoesNotReturn]
-  public static T NotSupported<T> ([NotNull] this object? obj, string? msg = null)
+  extension(StreamReader? reader)
   {
-    if (msg is not null)
-      throw new NotSupportedException(msg);
-    throw new NotSupportedException();
+    /// <summary>Resets the <see cref="StreamReader"/> to the beginning of the stream.</summary>
+    public void Reset () => reader?.BaseStream.Position = 0;
   }
-  [DoesNotReturn]
-  public static T NotImplemented<T> ([NotNull] this object? obj, string? msg = null)
+  extension(NumberStyles styles)
   {
-    if (msg is not null)
-      throw new NotImplementedException(msg);
-    throw new NotImplementedException();
-  }
-  public static void DoNothing (this object? obj) { }
-
-  public static string DecodeAsEnum (this object value, Type enumType)
-  {
-    ANEx.ThrowIfNull(enumType);
-    ANEx.ThrowIfNull(value);
-    return !enumType.IsEnum
-      ? throw new ArgumentException("Type must be an enum.", nameof(enumType))
-      : Enum.GetName(enumType, value) ?? value.ToString()!;
+    /// <summary>Determines if a <see cref="NumberStyles"/> object contains the binary flag.</summary>
+    /// <returns><see langword="true"/> if <paramref name="styles"/> contains <see cref="NumberStyles.AllowBinarySpecifier"/>, otherwise <see langword="false"/>.</returns>
+    public bool IsBinary () => styles.HasFlag(NumberStyles.AllowBinarySpecifier);
   }
 }

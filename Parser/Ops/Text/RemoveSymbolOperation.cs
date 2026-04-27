@@ -11,6 +11,7 @@ public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupG
   protected override void Execute ()
   {
     foreach (ReplaceNode node in Nodes)
+    {
       if (WorkData is string s)
       {
         Regex rx = new(node.LookFor);
@@ -48,6 +49,8 @@ public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupG
         Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
         return;
       }
+    }
+
     Status = OpStatus.Pass;
   }
 }

@@ -50,7 +50,7 @@ public sealed class RxSCollection : ICollection<RxS>, IEquatable<RxSCollection>,
   bool ICollection<RxS>.Contains (RxS item) => throw new NotImplementedException();
   void ICollection<RxS>.CopyTo (RxS[] array, int arrayIndex) => throw new NotImplementedException();
   bool ICollection<RxS>.Remove (RxS item) => throw new NotImplementedException();
-  public static bool operator == (RxSCollection left, string right) => (left is not null || right is not null) && left is not null && left.Equals(right);
+  public static bool operator == (RxSCollection left, string right) => (left is not null || right is not null) && left?.Equals(right) == true;
   public static bool operator != (RxSCollection left, string right) => !(left == right);
   public static bool operator < (RxSCollection left, RxSCollection right) => left?.CompareTo(right) < 0;
   public static bool operator <= (RxSCollection left, RxSCollection right) => left?.CompareTo(right) <= 0;

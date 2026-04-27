@@ -8,10 +8,10 @@ namespace Parser.Ops.Text;
 /// </summary>
 /// <typeparam name="TIn">The type of object to supply as input.</typeparam>
 /// <typeparam name="TOut">The type of object written to the output key.</typeparam>
-/// <param name="input_key">The key to get the input from.</param>
-/// <param name="output_key">The key to write the output to.</param>
 /// <param name="operation">The function to perform to change from a <typeparamref name="TIn"/> to a <typeparamref name="TOut"/>.</param>
 /// <param name="validation">The function that determines whether or not the conversion was a success.</param>
+/// <param name="input_key">The key to get the input from.</param>
+/// <param name="output_key">The key to write the output to.</param>
 /// <remarks><code>
 /// Inputs: <typeparamref name="TIn"/><br/>
 /// Output: <typeparamref name="TOut"/>

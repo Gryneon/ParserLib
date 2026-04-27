@@ -11,7 +11,9 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
   protected override void Execute ()
   {
     if (WorkData is string s && !File.Exists(s) && ignoreMissing)
+    {
       Status = OpStatus.Skipped;
+    }
     else if (WorkData is string s2 && File.Exists(s2))
     {
       //TODO: Text or bytes?
@@ -24,7 +26,9 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
       foreach (string ea in list)
       {
         if (!File.Exists(ea) && ignoreMissing)
+        {
           continue;
+        }
         else if (!File.Exists(ea))
         {
           Status = Op.ThrowBadResult($"File was missing ({ea})");
@@ -37,6 +41,8 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
       return;
     }
     else
+    {
       Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
+    }
   }
 }

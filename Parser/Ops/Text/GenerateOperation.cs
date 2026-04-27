@@ -32,10 +32,10 @@ public class GenerateOperation<TIn, TOut> : Operation
   /// Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
   /// Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result in <paramref name="output_key"/>.
   /// </summary>
-  /// <param name="output_key">The key to store the output objects in.</param>
   /// <param name="func">The generation function.</param>
   /// <param name="predicate">The condition that the generation function requires.</param>
   /// <param name="input_key">The key to pull data from.</param>
+  /// <param name="output_key">The key to store the output objects in.</param>
   public GenerateOperation (Func<TIn, TOut> func, Predicate<TIn> predicate, string input_key, string output_key) : base(input_key, output_key)
   {
     Predicate = predicate;
@@ -43,7 +43,7 @@ public class GenerateOperation<TIn, TOut> : Operation
   }
   public GenerateOperation (Func<TIn, TOut> func, string input_key, string output_key) : base(input_key, output_key)
   {
-    Predicate = item => true;
+    Predicate = _ => true;
     Function = func;
   }
 
@@ -79,6 +79,8 @@ public class GenerateOperation<TIn, TOut> : Operation
       }
     }
     else
+    {
       Status = Op.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", $"{WorkData?.GetType()}");
+    }
   }
 }

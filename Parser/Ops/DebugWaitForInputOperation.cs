@@ -1,6 +1,6 @@
 namespace Parser.Ops;
 
-/// <summary></summary>
+/// <summary>Pauses the operation sequence, and prompts the user to press the specified key.</summary>
 /// <remarks>Constructs an operation that waits for a specific key press or the enter key.</remarks>
 /// <param name="key">The key to wait for.</param>
 public class DebugWaitForInputOperation (ConsoleKey? key = null) : Operation()

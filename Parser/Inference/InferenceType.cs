@@ -18,7 +18,6 @@ public enum InferenceType
 
   //Text Comparison
   Is = 0x1000,      // Case sensitive equals
-  Like = 0x80000,   // Case insensitive equals
   End = 0x2000,     // EndsWith (case insensitive)
   Start = 0x4000,   // StartsWith (case insensitive)
   Contains = 0x8000,// contatins (case insensitive)
@@ -29,6 +28,7 @@ public enum InferenceType
   Equal = 0x40000,  // equal to (numeric)
   LargerOrEqual = Larger | Equal,
   SmallerOrEqual = Smaller | Equal,
+  Like = 0x80000,   // Case insensitive equals
 
   // Logical
   Not = 0x100000     // Inverse can be applied to any combination.

@@ -16,7 +16,9 @@ public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] s
     }
 
     if (WorkData is string s)
+    {
       WorkData = (from item in OpRegex.Matches(s) select item.Groups["keep"].Value).ToCollection();
+    }
     else if (WorkData is IEnumerable<string> list)
     {
       /* TODO: Finish BetweenRegexOperation.DoOperation when data is IEnumerable<string> */

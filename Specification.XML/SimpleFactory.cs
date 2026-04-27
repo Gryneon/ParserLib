@@ -92,6 +92,6 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
     }
     DebugOut();
 
-    return initial is null ? throw new OperationException() : initial;
+    return (IXMLObject?) initial ?? throw new OperationException();
   }
 }

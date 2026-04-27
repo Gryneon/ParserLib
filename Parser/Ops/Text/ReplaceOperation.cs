@@ -49,6 +49,8 @@ public class ReplaceOperation : Operation
       Status = OpStatus.Pass;
     }
     else
+    {
       Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
+    }
   }
 }

@@ -65,10 +65,7 @@ public class JSONOperation (string input_key, string output_key) : Operation(inp
         }
         else if (close is "]" && assembly[depth].Last() is JSONArray arr)
         {
-          foreach (IJSONNode item in assembly[depth + 1])
-          {
-            arr.Add(item);
-          }
+          arr.AddRange(assembly[depth + 1]);
         }
         assembly.RemoveAt(depth + 1);
         Index++;

@@ -7,7 +7,7 @@ public readonly struct AttributeLinkedType<TAttribute> : IEquatable<AttributeLin
   public Type Type { get; init; }
   public TAttribute Attribute { get; init; }
 
-  public override bool Equals (object? obj) => Type == obj?.GetType() || obj is AttributeLinkedType<Attribute> link && link.Type == Type;
+  public override bool Equals (object? obj) => Type == obj?.GetType() || (obj is AttributeLinkedType<Attribute> link && link.Type == Type);
   public override int GetHashCode () => Type.GetHashCode();
   public static bool operator == (AttributeLinkedType<TAttribute> left, AttributeLinkedType<TAttribute> right) => left.Equals(right);
   public static bool operator != (AttributeLinkedType<TAttribute> left, AttributeLinkedType<TAttribute> right) => !(left == right);

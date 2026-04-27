@@ -3,7 +3,7 @@ namespace Parser.Ops;
 public class OperationJump : Operation
 {
   protected int TargetIndex { get; set; }
-  private string? TargetLabel { get; set; }
+  private string? TargetLabel { get; }
   public override bool NoInput => true;
   public override bool NoOutput => true;
   public OperationJump (int index)

@@ -58,7 +58,7 @@ public static class Definition
     Escape = Nm("escape", Esc),
     Shift = Nm("shift", Si),
     CharPart = Or(ALetter, "<[A-Z]{2,3}>"),
-    AnyLazy = Gp(@".*?"),
+    AnyLazy = Gp(".*?"),
     ALetter = Letter();//,
                        //WS = Gp(@"\s*");
 
@@ -113,8 +113,8 @@ public static class Definition
       new(TokenMatch, ITT.Can, $"{Can}"),
       new(TokenMatch, ITT.Fs, $"{FS}|<FS>"),
       new(TokenMatch, ITT.Eot, $"{Eot}"),
-      new(TokenMatch, ITT.SmplCmd, $@"(?<={Esc})[CcPT]"),
-      new(TokenMatch, ITT.Text, Rx($@"(?<=d3,).+?(?=;|{Etx}|{Etb}|{Can}|{Lf})")),
+      new(TokenMatch, ITT.SmplCmd, $"(?<={Esc})[CcPT]"),
+      new(TokenMatch, ITT.Text, Rx($"(?<=d3,).+?(?=;|{Etx}|{Etb}|{Can}|{Lf})")),
       new(TokenMatch, ITT.OriginX, Rx(@"(?<=o)\d+(?=,)")),
       new(TokenMatch, ITT.OriginY, Rx(@"(?<=o\d+,)\d+(?=;|\<)")),
       new(TokenMatch, ITT.Letter, @"\b[A-Za-z](?=[0-9])"),

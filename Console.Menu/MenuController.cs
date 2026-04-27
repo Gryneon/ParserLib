@@ -1,9 +1,6 @@
 namespace Terminal.Menu;
 
-public class MenuHandler
-{
-
-}
+public class MenuHandler;
 
 /// <summary>The menu controller. Can be static since there is only one console.</summary>
 public static class MenuController

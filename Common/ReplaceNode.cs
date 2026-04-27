@@ -7,7 +7,7 @@ using SysRegex = System.Text.RegularExpressions.Regex;
 
 namespace Common;
 /// <summary>A node that defines a string replacement operation.</summary>
-public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?>>
+public sealed class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?>>, IProperty<string?>
 {
   #region Static Members
   /// <summary>Creates a <see cref="ReplaceNode"/> from the specified parameters.</summary>
@@ -29,11 +29,14 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
   public static implicit operator KeyValuePair<string, string?> ([NotNull] ReplaceNode node) => node.ToKVP();
   #endregion
   /// <summary>The regular expression to look for.</summary>
-  public RxS LookFor { get; init; }
+  public RxS LookFor { get; private set; }
   /// <summary>The string to replace matches with. If <see langword="null"/>, matches will be removed.</summary>
-  public string? ReplaceWith { get; init; }
+  public string? ReplaceWith { get; private set; }
+  string IProperty<string?>.Key { get => LookFor; set => LookFor = value; }
+  string? IProperty<string?>.Value { get => ReplaceWith; set => ReplaceWith = value; }
+
   /// <summary>An empty node.</summary>
-  protected ReplaceNode ()
+  private ReplaceNode ()
   {
     LookFor = SE;
     ReplaceWith = null;
@@ -63,9 +66,9 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
 
   public bool Equals (ReplaceNode? other, StringComparison sc) =>
     LookFor.Content.Equals(other?.LookFor, sc) && (
-      ReplaceWith is not null &&
+      (ReplaceWith is not null &&
       other.ReplaceWith is not null &&
-      ReplaceWith.Equals(other.ReplaceWith, sc) || ReplaceWith is null && other.ReplaceWith is null);
+      ReplaceWith.Equals(other.ReplaceWith, sc)) || (ReplaceWith is null && other.ReplaceWith is null));
 
   /// <inheritdoc/>
   public override bool Equals (object? obj) => Equals(obj as IProperty<string>, SCO);
@@ -87,7 +90,15 @@ public class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<string?
   public string ReplaceText (string input, StringComparison sc = SCO) => input.RecursiveReplace(LookFor, ReplaceWith ?? SE, sc);
   public bool Equals (IProperty<string?>? other) =>
     LookFor.Content.Equals(other?.Key, SCO) && (
-      ReplaceWith is not null &&
+      (ReplaceWith is not null &&
       other.Value is not null &&
-      ReplaceWith.Equals(other.Value, SCO) || ReplaceWith is null && other.Value is null);
+      ReplaceWith.Equals(other.Value, SCO)) || (ReplaceWith is null && other.Value is null));
+  public int CompareTo (IProperty<string?>? other) => throw new NotImplementedException();
+
+  public static bool operator == (ReplaceNode left, ReplaceNode right) => left is null ? right is null : left.Equals(right, SCO);
+  public static bool operator != (ReplaceNode left, ReplaceNode right) => !(left == right);
+  public static bool operator < (ReplaceNode left, ReplaceNode right) => left is null ? right is not null : left.CompareTo(right) < 0;
+  public static bool operator <= (ReplaceNode left, ReplaceNode right) => left is null || left.CompareTo(right) <= 0;
+  public static bool operator > (ReplaceNode left, ReplaceNode right) => left?.CompareTo(right) > 0;
+  public static bool operator >= (ReplaceNode left, ReplaceNode right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

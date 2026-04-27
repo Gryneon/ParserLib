@@ -21,7 +21,7 @@ public static class CommonRegex
   public static string NWS_OrSlash { get; } = Gp(@"[^\s\/]+");
   public static string NWS_OrSemiC { get; } = Gp(@"[^\s;]+");
 
-  public static string SQuote { get; } = Gp(@"'.*?'");
+  public static string SQuote { get; } = Gp("'.*?'");
   public static string AQuote { get; } = Gp(@"(?<qt>[""']).*?\k<qt>");
   public static string DQuote { get; } = Gp(@""".*?""");
   public static string NQuote { get; } = Gp(@"\<.*?\>");
@@ -41,10 +41,10 @@ public static class CommonRegex
   public static ReplaceNode WhitespaceReducer { get; } = new(WS_Mult, " ");
   public static ReplaceNode WhitespaceReducer_NoLines { get; } = new(WS_NoLine, " ");
 
-  public static string INIStyle_CommentIgnores { get; } = Nm("valid", $@"(?:{AQuote}|{NWS_OrSemiC})+");
+  public static string INIStyle_CommentIgnores { get; } = Nm("valid", $"(?:{AQuote}|{NWS_OrSemiC})+");
   public static string INIStyle_CommentReduces { get; } = Nm("reduce", @"(?:\s+|;.*$)+");
 
   public static string CStyle_NoCommentStart { get; } = Gp(@"\/(?![\*\/])");
-  public static string CStyle_CommentIgnores { get; } = Nm("valid", $@"(?:{AQuote}|{NWS_OrSlash}|{CStyle_NoCommentStart})+");
+  public static string CStyle_CommentIgnores { get; } = Nm("valid", $"(?:{AQuote}|{NWS_OrSlash}|{CStyle_NoCommentStart})+");
   public static string CStyle_CommentReduces { get; } = Nm("reduce", @"(?:\s+|\/\/.*$|\/\*[\s\S]*?\*\/)+");
 }

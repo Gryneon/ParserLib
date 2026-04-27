@@ -23,7 +23,7 @@ public sealed class MatchDataSet : GroupDataSet,
   public override bool IsNull => Count == 0;
   /// <summary>
   /// The original <see cref="Match"/> object from which this <see cref="MatchDataSet"/> was created.</summary>
-  public Match? Origin { get; private set; }
+  public Match? Origin { get; }
   bool ICollection<GroupDataSet>.IsReadOnly { get; }
   /// <summary>
   /// Represents data extracted from a regular expression match, including its groups,  and provides additional
@@ -194,7 +194,7 @@ public sealed class MatchDataSet : GroupDataSet,
   public static MatchDataSet Generate (MatchDataSet input) => input is not null ? new(input.Origin) : throw new ANEx(nameof(input));
   public bool Equals (MatchDataSet? other)
   {
-    if (other is null || other.IsNull)
+    if (other?.IsNull != false)
     {
       return IsNull;
     }

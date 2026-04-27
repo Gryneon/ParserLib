@@ -12,6 +12,6 @@ public class PropertyBase<T> : IProperty<T>
   public static bool operator != (PropertyBase<T> left, PropertyBase<T> right) => !(left == right);
   public static bool operator < (PropertyBase<T> left, PropertyBase<T> right) => left is null ? right is not null : left.CompareTo(right) < 0;
   public static bool operator <= (PropertyBase<T> left, PropertyBase<T> right) => left is null || left.CompareTo(right) <= 0;
-  public static bool operator > (PropertyBase<T> left, PropertyBase<T> right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator > (PropertyBase<T> left, PropertyBase<T> right) => left?.CompareTo(right) > 0;
   public static bool operator >= (PropertyBase<T> left, PropertyBase<T> right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

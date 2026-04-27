@@ -30,5 +30,5 @@ public static class TokenRefExt
     _ => throw new OperationException("Passed an unknown value to IsTokenCollection."),
   };
   public static bool IsUsed (this TokenRef type, Dictionary<TokenRef, IToken> token_pieces) =>
-    token_pieces is not null && token_pieces.TryGetValue(type, out IToken? value) && (!type.IsTokenCollection() || type.IsTokenCollection() && value is TokenCollection tc && tc.Count > 0);
+    token_pieces is not null && token_pieces.TryGetValue(type, out IToken? value) && (!type.IsTokenCollection() || (type.IsTokenCollection() && value is TokenCollection tc && tc.Count > 0));
 }

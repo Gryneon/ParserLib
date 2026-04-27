@@ -1,16 +1,10 @@
 namespace Parser.Ops;
 
-public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IOperation? ifFalse = null) : IOperation, IPlaceholderOperation
+public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IOperation? ifFalse = null) : Operation, IPlaceholderOperation
 {
   public ICondition Condition { get; init; } = condition;
   public IOperation IfTrue { get; set; } = ifTrue;
   public IOperation IfElse { get; set; } = ifFalse ?? Op.End;
-  public OpStatus Status { get; set; }
-  public bool NoExecution => false;
-  bool IOperation.ContinueOnFail { get; set; }
-  bool IOperation.SkipOperation { get; set; }
-  public bool NoInput => true;
-  public bool NoOutput => true;
   private int IfTrueIndex { get; set; }
   private int IfElseIndex { get; set; }
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
@@ -25,24 +19,17 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
     operations.Add(Op.JumpTo(nextOrEnd(index)));
     return operations.Count;
   }
-  public OpStatus DoOperation (XParser parser_ref)
+  protected override void Execute ()
   {
-    if (parser_ref is null)
-      return OpStatus.FailBadOpImpossible;
-
-    bool result = Condition.Evaluate(parser_ref);
-
-    if (result)
+    if (Condition.Evaluate(Parser))
     {
       Status = OpStatus.ConditionPass;
-      parser_ref.SetNextOperationIndex(IfTrueIndex);
+      Parser.SetNextOperationIndex(IfTrueIndex);
     }
     else
     {
       Status = OpStatus.ConditionFail;
-      parser_ref.SetNextOperationIndex(IfElseIndex);
+      Parser.SetNextOperationIndex(IfElseIndex);
     }
-
-    return Status;
   }
 }

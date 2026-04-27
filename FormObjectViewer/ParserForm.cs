@@ -16,7 +16,7 @@ using XMLMaker = Specification.XML.XMLString;
 
 namespace FormObjectViewer;
 
-internal sealed partial class ParserForm : Form
+public partial class ParserForm : Form
 {
   private bool ItemsChanged { get; set; }
   private List<Spec> SpecList { get; } = [
@@ -296,9 +296,6 @@ internal sealed partial class ParserForm : Form
       _workingRules[e.RowIndex].Type = editForm.Original.Type;
       _workingRules[e.RowIndex].TypeToAssign = editForm.Original.TypeToAssign;
     }
-    else
-      this.DoNothing();
-
     editForm.Dispose();
     TokenRuleDataGrid.Refresh();
     UpdateCounts();

@@ -5,7 +5,7 @@ public sealed class EntryNameEqual () : IEqualityComparer<RegProperty>
 {
   /// <inheritdoc/>
   public bool Equals (RegProperty? x, RegProperty? y) =>
-    x is null && y is null || x is not null && y is not null && x.Key.Equals(y.Key, SCOIC);
+    (x is null && y is null) || (x is not null && y is not null && x.Key.Equals(y.Key, SCOIC));
   /// <inheritdoc/>
   public int GetHashCode (RegProperty obj) => obj?.Key.GetHashCode(SCOIC) ?? 0;
 }

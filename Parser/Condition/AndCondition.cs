@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
 namespace Parser.Condition;
 
 public class AndCondition (params Collection<ICondition> conditions) : BasicCondition(), ICanAddChildren<ICondition>

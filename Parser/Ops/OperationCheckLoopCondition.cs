@@ -2,9 +2,9 @@ namespace Parser.Ops;
 
 public sealed class OperationCheckLoopCondition (ICondition condition, string cursor_key, int break_target) : Operation
 {
-  public int BreakTarget { get; private set; } = break_target;
-  public string CursorKey { get; private set; } = cursor_key;
-  public ICondition Condition { get; private set; } = condition;
+  public int BreakTarget { get; } = break_target;
+  public string CursorKey { get; } = cursor_key;
+  public ICondition Condition { get; } = condition;
   public override bool NoInput => true;
   public override bool NoOutput => true;
 

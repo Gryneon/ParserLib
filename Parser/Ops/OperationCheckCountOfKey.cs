@@ -2,9 +2,9 @@ namespace Parser.Ops;
 
 public sealed class OperationCheckCountOfKey (string cursor_key, string selected_key, int break_target) : Operation
 {
-  public int BreakTarget { get; private set; } = break_target;
-  public string CursorKey { get; private set; } = cursor_key;
-  public string SelectedKey { get; private set; } = selected_key;
+  public int BreakTarget { get; } = break_target;
+  public string CursorKey { get; } = cursor_key;
+  public string SelectedKey { get; } = selected_key;
   public override bool NoInput => true;
   public override bool NoOutput => true;
 

@@ -87,6 +87,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Language Specifications", "
 		Parser\Tokens\TokenRule.xml = Parser\Tokens\TokenRule.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schemas", "Schemas", "{7B949E95-665C-CA68-8F06-83728F68B9AC}"
+	ProjectSection(SolutionItems) = preProject
+		..\Schemas\documentation.xsd = ..\Schemas\documentation.xsd
+		C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.CommonTypes.xsd = C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.CommonTypes.xsd
+		C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.Core.xsd = C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.Core.xsd
+		C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.xsd = C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.xsd
+		..\Schemas\specification.xsd = ..\Schemas\specification.xsd
+		..\Schemas\workspace.xsd = ..\Schemas\workspace.xsd
+		..\Schemas\XMLCodeDocumentation.xsd = ..\Schemas\XMLCodeDocumentation.xsd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -321,6 +332,7 @@ Global
 		{F60AE9E8-DEC6-417D-9487-81940A3D53D3} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 		{306ADCA7-FB08-E279-8072-1E915F7B2D17} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 		{8F3611D8-E097-C408-6FFE-4ACCCA582423} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
+		{7B949E95-665C-CA68-8F06-83728F68B9AC} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E97FF645-432C-41F1-ACD9-D9EA11D2D32D}

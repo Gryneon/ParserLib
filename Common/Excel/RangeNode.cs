@@ -112,7 +112,7 @@ public class RangeNode : IEquatable<RangeNode>, IComparable<RangeNode>, IGenerat
   public static bool operator <= (RangeNode left, RangeNode right) =>
     left is null || left.CompareTo(right) <= 0;
   public static bool operator > (RangeNode left, RangeNode right) =>
-    left is not null && left.CompareTo(right) > 0;
+    left?.CompareTo(right) > 0;
   public static bool operator >= (RangeNode left, RangeNode right) =>
     left is null ? right is null : left.CompareTo(right) >= 0;
   #endregion

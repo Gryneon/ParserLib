@@ -63,9 +63,9 @@ public static class Definition
   public static RxSCollection Regex => [
     Nm("m_element", $@"<\s*(?'m_endtag'\/)?\s*{TagName}{Gp(WS + Attribute).Any}\s*(?'m_noinsidetag'\/)?\s*>"),
     Nm("m_header", $@"<\?\s*{TagName}{Gp(WS + Attribute).Any}\s*\?>"),
-    Nm("m_ws", $@"(?<=>){WS}(?=<)"),
-    Nm("m_comment", @"<!--(-(?!-)|[^-])*?-->"),
-    Nm("m_content", @"[^<]+")
+    Nm("m_ws", $"(?<=>){WS}(?=<)"),
+    Nm("m_comment", "<!--(-(?!-)|[^-])*?-->"),
+    Nm("m_content", "[^<]+")
   ];
 
   /// <summary>The attribute regular expression.</summary>
@@ -90,7 +90,7 @@ public static class Definition
     TokenType = typeof(XTT),
     TokenRules = [
       new(Competitive, XTT.DString, @"""[^""><]*"""),
-      new(Competitive, XTT.SString, @"'[^'><]*'"),
+      new(Competitive, XTT.SString, "'[^'><]*'"),
       new(Competitive, XTT.Comment, @"\<\!\s*\-\-([^\-]|(?<!\-)\-(?!\-))*\-\-\s*\>"),
       new (TokenMatch, XTT.Content, @"(?<=\>)[^\<]+(?=\<)"),
       .. TokenRule.MakeSingleCharRules("<>/?;&:=!-", TokenExact, new Collection<XTT>() { XTT.Ao, XTT.Ac, XTT.Sl, XTT.Qm, XTT.Sc, XTT.An, XTT.Co, XTT.Eq, XTT.Em, XTT.Hy }),

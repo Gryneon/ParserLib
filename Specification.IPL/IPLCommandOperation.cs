@@ -40,7 +40,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       bool isPrintCommand () =>
         item.Type is ICT.Simple && (item.CmdLetter is "<ETB>" || item.CmdLetter.StartsWith(Chars.ETB, SCO));
       bool isResetFieldCommand () =>
-        mode is IPLPrinterMode.Print && item.CmdLetter == "<CAN>" || item.Count > 0 && item.CmdLetter[0] == Chars.CAN;
+        (mode is IPLPrinterMode.Print && item.CmdLetter == "<CAN>") || (item.Count > 0 && item.CmdLetter[0] == Chars.CAN);
       bool isSetFieldCommand () =>
         mode is IPLPrinterMode.Print && item.CmdLetter == "F" && item.IsEscaped;
       bool isNextFieldCommand () =>
@@ -64,7 +64,9 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       void setLineCmd ()
       {
         if (item.Type is ICT.Line)
+        {
           current = item;
+        }
         else if (item.Type is ICT.Prop)
         {
           if (current is null)

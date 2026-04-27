@@ -272,7 +272,7 @@ public static class Definition
       // Operators
       Tm(AT.IncDec, @"(\+\+|--)"),
       Tm(AT.Unary, "!(?!=)|~"),
-      Tm(AT.Assign, @"[-+*^/%|&]="),
+      Tm(AT.Assign, "[-+*^/%|&]="),
       Tm(AT.Assign, @"(<<|>>| \|\| |&&)="),
       Tm(AT.Binary, "== | [!<>]="),
       Tm(AT.Binary, @"(&&| \|\| |<<|>>)(?!=)"),

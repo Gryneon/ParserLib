@@ -2,7 +2,6 @@
 
 namespace Parser;
 
-[Flags]
 public enum ByteReadMode
 {
   None = 0,

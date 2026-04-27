@@ -32,9 +32,13 @@ public class ByteDivideOperation : Operation
         _dividend = dividend;
     }
     else if (WorkData is not int dividend)
+    {
       Status = Op.ThrowBadInput("int", $"{WorkDataType}");
+    }
     else
+    {
       _dividend = dividend;
+    }
 
     if (_divisor == 0)
       Status = Op.ThrowBadResult("Cannot divide by zero.");

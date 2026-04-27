@@ -42,7 +42,6 @@ public sealed class TokenFactory
   private bool HasError => _currentRule?.Type.HasFlag(RT.Error) ?? false;
   private RT Type => GetMaskedType(_currentRule?.Type ?? RT.None);
   private string RuleData => _currentRule?.RuleStringData ?? SE;
-  private string AssignType => _currentRule?.TypeToAssign ?? SE;
   private Action RuleAction => Type switch
   {
     RT when HasError => ActionInvalidLog,
@@ -89,9 +88,7 @@ public sealed class TokenFactory
 
     string casemod = rule?.Type.HasFlag(RT.IgnoreCase) ?? false ? "(?i)" : "(?-i)";
 
-    regex = index is not null ? $"{casemod}(?'_R{index}'{regex})" : $"{casemod}{regex}";
-
-    return regex;
+    return index is not null ? $"{casemod}(?'_R{index}'{regex})" : $"{casemod}{regex}";
   }
   private static RT GetMaskedType (RT type) => type.RemoveBitLong<RT>(RT.FlagBits);
   private static int GetRuleGroupIndex (Match match)
@@ -118,7 +115,7 @@ public sealed class TokenFactory
       return;
 
     bool singleChar = false;
-    if (match.Start - match.End == 0)
+    if (match.Start == match.End)
     {
       singleChar = true;
     }
@@ -211,11 +208,14 @@ public sealed class TokenFactory
       if (!CannotMatch.Overlaps(rng))
       {
         if (Type is RT.TokenExtract)
+        {
           foreach (Pos c in match.Groups["keep"].Captures.Select(c => new Pos(c.Index, c.Length)))
             MakeAddToken(c);
-
+        }
         else if (Type is RT.TokenMatch)
+        {
           MakeAddToken(rng);
+        }
 
         CannotMatch.Add(rng);
       }

@@ -59,19 +59,19 @@ public sealed class RegProperty : IProperty<string>, IGeneratable
         input["default"].Content :
         hasKey ?
           input["key"].Content :
-          throw new InvalidOperationException("The input MatchDataStore did not contain a 'key' group or a 'default' group."),
+          throw new InvalidOperationException("The input MatchDataSet did not contain a 'key' group or a 'default' group."),
       IsDeleteEntry = isRem,
       Value = isRem ?
         input["remval"].Content :
         hasValue ?
           input["value"].Content :
-          throw new InvalidOperationException("The input MatchDataStore did not contain a 'value' group or a 'remval' group."),
+          throw new InvalidOperationException("The input MatchDataSet did not contain a 'value' group or a 'remval' group."),
       Type = hasType ? input["type"].Content : SE,
       Size = hasSize ? input["hsize"].Content : SE,
     };
     return result;
   }
-  public bool Equals (IProperty<string>? other) => Value is not null && Value.Equals(other?.Value, SCO) && Key.Equals(other.Key, SCO);
+  public bool Equals (IProperty<string>? other) => other is not null && Value?.Equals(other.Value, SCO) == true && Key.Equals(other.Key, SCO);
   public int CompareTo (IProperty<string>? other) => Key.CompareTo(other?.Key, SCOIC);
   /// <summary>Assigns the specified value to the <see cref="Value"/> property.</summary>
   /// <param name="value">The value to assign. Cannot be null or empty.</param>
@@ -90,6 +90,6 @@ public sealed class RegProperty : IProperty<string>, IGeneratable
   public static bool operator != (RegProperty left, RegProperty right) => !(left == right);
   public static bool operator < (RegProperty left, RegProperty right) => left is null ? right is not null : left.CompareTo(right) < 0;
   public static bool operator <= (RegProperty left, RegProperty right) => left is null || left.CompareTo(right) <= 0;
-  public static bool operator > (RegProperty left, RegProperty right) => left is not null && left.CompareTo(right) > 0;
+  public static bool operator > (RegProperty left, RegProperty right) => left?.CompareTo(right) > 0;
   public static bool operator >= (RegProperty left, RegProperty right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }
