@@ -39,7 +39,8 @@ public class Token : IToken, IPrintable
   }
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
-  public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
+
   public virtual bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
   public static bool operator == (Token left, IToken right) => left is null ? right is null : left.Equals(right);
   public static bool operator != (Token left, IToken right) => !(left == right);

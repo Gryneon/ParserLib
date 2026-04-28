@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <Deterministic>true</Deterministic>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -7,6 +8,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <NeutralResourcesLanguage>en-us</NeutralResourcesLanguage>
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>

@@ -7,7 +7,7 @@ namespace Common;
 /// <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="Span{T}"/>, <see cref="Memory{T}"/> or <see langword="string"/>.</summary>
 /// <param name="start">The start position.</param>
 /// <param name="length">The length.</param>
-public readonly struct Pos (int start, int length) : IEquatable<Pos>, IIndexSortable, IComparable<Pos>
+public readonly struct Pos (int start, int length) : IEquatable<Pos>, IIndexSortable
 {
   public int Start { get; } = start;
   public int Length { get; init; } = length;
@@ -31,7 +31,7 @@ public readonly struct Pos (int start, int length) : IEquatable<Pos>, IIndexSort
   public readonly bool Equals (Pos other) => Start == other.Start && Length == other.Length;
   public override readonly bool Equals ([NotNullWhen(true)] object? obj) => obj is Pos p && Equals(p);
   public override readonly int GetHashCode () => HashCode.Combine(Start, Length);
-  public readonly int CompareTo (Pos other) => Start.CompareTo(other.Start);
+  public readonly int CompareTo (IIndexSortable? other) => Start.CompareTo(other?.Index);
 
   public static bool operator == (Pos left, Pos right) => left.Equals(right);
   public static bool operator != (Pos left, Pos right) => !(left == right);

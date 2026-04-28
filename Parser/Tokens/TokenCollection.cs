@@ -127,7 +127,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
     return ret;
   }
 
-  public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
 
   public bool Equals (IToken? other) => other is TokenCollection tc && _tokens.SequenceEqual(tc._tokens);
 
