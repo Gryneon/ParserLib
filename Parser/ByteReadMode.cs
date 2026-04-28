@@ -5,9 +5,10 @@ namespace Parser;
 public enum ByteReadMode
 {
   None = 0,
-  Text = 1,
-  Value = 1 << 1,
-  Binary = Text | Value,
 
-  ToList = 1 << 2,
+  Text = 1,
+  Value = 2,
+  Binary = 3,
+
+  ToList = 4,
 }
