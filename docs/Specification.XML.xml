@@ -107,6 +107,9 @@
         <member name="P:Specification.XML.XMLNode.Tag">
             <summary>The name of the element.</summary>
         </member>
+        <member name="P:Specification.XML.XMLNode.Namespace">
+            <summary>The namespace of the element.</summary>
+        </member>
         <member name="T:Specification.XML.XMLNodeAttr">
             <summary>Represents an XML attribute.</summary>
         </member>

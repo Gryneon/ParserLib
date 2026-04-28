@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace FormObjectViewer;
 
-public partial class ParserForm : Form
+internal partial class ParserForm : Form
 {
   /// <summary> Required designer variable.</summary>
   private IContainer components = null;

@@ -10,17 +10,22 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.0"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+    <PackageReference Include="coverlet.collector" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />
     <PackageReference Include="Roslynator.Analyzers" Version="4.15.0" />
-    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.15.0"/>
-    <PackageReference Include="Roslynator.CodeFixes" Version="4.15.0"/>
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.15.0" />
     <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
     <PackageReference Include="Roslynator.CSharp.Workspaces" Version="4.15.0" />
-    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0"/>
-    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0-pre.3"/>
-    <PackageReference Include="xunit.v3" Version="4.0.0-pre.33" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0-pre.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.v3" Version="4.0.0-pre.81" />
   </ItemGroup>
 
   <ItemGroup>

@@ -622,12 +622,12 @@
             <summary>An interface specifying that this object can be represented by a <see langword="string"/>.</summary>
         </member>
         <member name="M:Common.ITextSerializer.Serialize">
-            <summary>Creates a lossless representation of the calling object.</summary>
-            <returns>A <see langword="string"/> representation of the calling object.</returns>
+            <summary>Creates a lossless <see cref="T:System.String"/> representation of the calling object.</summary>
+            <returns>A lossless <see cref="T:System.String"/> representation of the calling object.</returns>
         </member>
         <member name="M:Common.ITextSerializer.ToString">
-            <summary>Creates a lossless representation of the calling object.</summary>
-            <returns>A <see langword="string"/> representation of the calling object.</returns>
+            <summary>Creates a lossless <see cref="T:System.String"/> representation of the calling object.</summary>
+            <returns>A lossless <see cref="T:System.String"/> representation of the calling object.</returns>
         </member>
         <member name="T:Common.LogClass">
             <summary>Defines the programs log level.</summary>

@@ -16,7 +16,7 @@ using XMLMaker = Specification.XML.XMLString;
 
 namespace FormObjectViewer;
 
-public partial class ParserForm : Form
+internal sealed partial class ParserForm : Form
 {
   private bool ItemsChanged { get; set; }
   private List<Spec> SpecList { get; } = [

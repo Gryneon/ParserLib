@@ -25,7 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{28
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
-		ParserLib.code-workspace = ParserLib.code-workspace
 		README.md = README.md
 	EndProjectSection
 EndProject

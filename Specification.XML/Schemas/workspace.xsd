@@ -20,7 +20,7 @@
     <xs:attribute name="name" type="xs:string" use="required" />
   </xs:complexType>
 
-  <xs:element name="NotepadPlus" minOccurs="1">
+  <xs:element name="NotepadPlus">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Project" type="npp:FolderType" maxOccurs="unbounded"/>
