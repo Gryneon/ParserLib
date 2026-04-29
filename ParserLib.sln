@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFParserVisualizer", "WPFParserVisualizer\WPFParserVisualizer.csproj", "{C3C931AB-EADC-4A0E-AB56-F072936C78EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terminal.Menu", "Console.Menu\Terminal.Menu.csproj", "{E180CC60-075F-462E-996F-39070EC39013}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terminal.Menu", "Terminal.Menu\Terminal.Menu.csproj", "{E180CC60-075F-462E-996F-39070EC39013}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E15E491A-E872-91D8-DF7A-CA59C792F064} = {E15E491A-E872-91D8-DF7A-CA59C792F064}
 	EndProjectSection
@@ -89,9 +89,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schemas", "Schemas", "{7B949E95-665C-CA68-8F06-83728F68B9AC}"
 	ProjectSection(SolutionItems) = preProject
 		..\Schemas\documentation.xsd = ..\Schemas\documentation.xsd
-		C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.CommonTypes.xsd = C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.CommonTypes.xsd
-		C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.Core.xsd = C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.Core.xsd
-		C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.xsd = C:\Users\AIMWARREN-IT\Downloads\Microsoft.Build.xsd
 		..\Schemas\specification.xsd = ..\Schemas\specification.xsd
 		..\Schemas\workspace.xsd = ..\Schemas\workspace.xsd
 		..\Schemas\XMLCodeDocumentation.xsd = ..\Schemas\XMLCodeDocumentation.xsd
