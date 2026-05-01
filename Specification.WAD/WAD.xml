@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Format
-  xmlns="Parser/Binary"
-  xmlns:xml="http://www.w3.org/XML/1998/namespace"
-  
-  targetNamespace="Parser/Binary" name="wad" type="binary">
-  <Data>
-    <Global name="file_id" type="string"/>
-    <List name="directory" type="DirectoryEntry"/>
-    <Global name="numlumps" type="int"/>
-    <Global name="diroffset" type="int"/>
-  </Data>
+<Spec xmlns="Parser/Binary" name="wad" type="binary">
+  <Tokens>
+    
+  </Tokens>
   <Instructions>
-    <Label>Start</Label>
+    <Label name="Start"/>
+    <MakeCursor name="current_pos" position="0"/>
     <GotoOpIndex target="2"/>
-    <ReadData scope="global" name="file_id" type="string" length="4"/>
-    <ReadData scope="global" name="numlumps" type="int"/>
-    <ReadData scope="global" name="diroffset" type="int"/>
-    <JumpTo position_var="diroffset"/>
+    <ReadData scope="global" name="file_id" type="string" length="4" cursor="current_pos"/>
+    <ReadData scope="global" name="numlumps" type="int" cursor="current_pos"/>
+    <ReadData scope="global" name="diroffset" type="int" cursor="current_pos"/>
+    <SetCursorPos position_var="diroffset"/>
     <MakeList scope="global" name="directory" type="DirectoryEntry"/>
     <ForCount length_var="numlumps" counter_var="index">
-      <ReadData name="lump_pos" type="int" scope ="local"/>
-      <ReadData name="lump_size" type="int"/>
-      <ReadData name="lump_name" type="string" length="8"/>
-      <SavePos scope="global" name="directory_pos"/>
-      <JumpTo position_var="lump_pos"/>
-      <ReadData name="lump_data" type="binary" length_var="lump_size"/>
-      <JumpTo position_var="directory_pos"/>
-      <AddItem name="directory" type="DirectoryEntry">lump_pos,lump_size,lump_name,lump_data</AddItem>
+      <ReadData name="lump_pos" type="int" scope="local"/>
+      <ReadData name="lump_size" type="int" scope="local"/>
+      <ReadData name="lump_name" type="string" length="8" scope="local"/>
+      <ReadData name="lump_data" type="binary" length_var="lump_size" position_var="lump_pos" scope="local"/>
+      <AddItem name="directory" type="DirectoryEntry">lump_pos lump_size lump_name lump_data</AddItem>
     </ForCount>
-    <Terminate success="true"/>
-    <Conditional>
-      <Condition>[file_id] == ["WAD2"]</Condition>
-      <IfTrue></IfTrue>
-      <IfFalse></IfFalse>
-    </Conditional>
-    <Switch>
-      <Condition>[file_id]</Condition>
-      <Case item="WAD2">
+    <If condition="[file_id] == ['WAD2']">
+      <!-- WAD2 File -->
+    </If>
+    <ElseIf condition="[file_id] == ['PACK']">
+      <!-- PAK File -->
+    </ElseIf>
+    <Else>
+      <!-- WAD File -->
+    </Else>
+    <Switch condition="[file_id]">
+      <Case value="WAD2">
         <ReadData name="lump_data" type="binary" length_var="lump_size"/>
       </Case>
+      <Default>
+        <!-- WAD File -->
+      </Default>
     </Switch>
     <SavePos scope="global" name="directory_pos"/>
     <ReadData name="lump_data" type="binary" length_var="lump_size"/>
+    <Terminate success="true"/>
   </Instructions>
-</Format>
+</Spec>
