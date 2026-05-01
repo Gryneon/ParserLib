@@ -11,6 +11,11 @@
   <ItemGroup>
     <None Remove="Validation\~%24Commands.xlsm" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.15.0" />
+    <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />

@@ -1,11 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NuGetAuditLevel>low</NuGetAuditLevel>
-    <NuGetAuditMode>all</NuGetAuditMode>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <TargetFramework>net11.0</TargetFramework>
     <UserSecretsId>37d036cf-7713-4a90-a266-751a9fd18f93</UserSecretsId>
@@ -25,7 +22,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

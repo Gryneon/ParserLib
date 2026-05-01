@@ -17,8 +17,8 @@ public static class StringExtensions
   /// <param name="text">This text.</param>
   /// <param name="other">The text to compare to.</param>
   /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
-  public static bool Is (this string? text, string? other) => text.IsEmpty() && other.IsEmpty() || (text?.Equals(other, SCO) ?? false);
-  public static bool IsAny (this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || text.Any(other, Equals);
+  public static bool Is (this string? text, string? other) => (text.IsEmpty() && other.IsEmpty()) || (text?.Equals(other, SCO) ?? false);
+  public static bool IsAny (this string? text, IEnumerable<string> other) => (text.IsEmpty() && other.IsEmpty()) || text.Any(other, Equals);
   public static bool IsAlphanumeric (this string s) => s.All(item => item.IsAlphanumeric());
   public static bool IsControl (this string s) => s.All(item => item.IsControl());
   public static bool IsWhitespace (this string s) => s.All(item => item.IsWhitespace());
@@ -42,7 +42,7 @@ public static class StringExtensions
   /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/>.<br/>
   /// If either <paramref name="other"/> or <paramref name="text"/> are <see langword="null"/>, this method will return <see langword="false"/>.</returns>
   public static bool Like ([NotNullWhen(true)] this string? text, [NotNullWhen(true)] string? other) => text?.Equals(other, SCOIC) ?? false;
-  public static bool Like ([NotNullWhen(true)] this string? text, IEnumerable<string> other) => text.IsEmpty() && other.IsEmpty() || (text?.Any(other, Like) ?? false);
+  public static bool Like ([NotNullWhen(true)] this string? text, IEnumerable<string> other) => (text.IsEmpty() && other.IsEmpty()) || (text?.Any(other, Like) ?? false);
   public static bool Any ([NotNullWhen(true)] this string? text, IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
   public static bool ContainsAny ([NotNullWhen(true)] this string text, IEnumerable<string> other, StringComparison sc = SCO) => other.Any(x => text.Contains(x, sc));
   public static bool ContainsNewLine ([NotNullWhen(true)] this string? s) => s is not null && (s.Contains('\n', SCO) || s.Contains('\r', SCO));
@@ -62,7 +62,7 @@ public static class StringExtensions
 
       int cur = s.IndexOf(item, startAt, sc);
 
-      if (index == DNE || cur < index && cur != DNE)
+      if (index == DNE || (cur < index && cur != DNE))
       {
         index = cur;
         found_len = item.Length;

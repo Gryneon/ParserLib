@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="TokenRule"
-    targetNamespace="Parser/TokenRule"
-    elementFormDefault="qualified"
-    xmlns="Parser/TokenRule"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xs:schema
+  targetNamespace="Parser/TokenRule"
+  attributeFormDefault="unqualified"
+  elementFormDefault="qualified"
+  xmlns:tr="Parser/TokenRule"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
 >
   <xs:complexType name="RuleTypeDef">
     <xs:sequence>
@@ -15,7 +16,7 @@
   <xs:complexType name="RuleDef">
     <xs:all>
       <xs:element name="TypeToAssign" minOccurs="0" maxOccurs="1" type="xs:token" default="None"/>
-      <xs:element name="Type" type="RuleTypeDef" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Type" type="tr:RuleTypeDef" minOccurs="1" maxOccurs="1"/>
       <xs:element name="Data" minOccurs="0" maxOccurs="1" default="" type="xs:string"/>
     </xs:all>
     <xs:attribute name="name" type="xs:token"/>
@@ -25,7 +26,7 @@
   <xs:element name="RuleSet">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Rule" type="RuleDef" maxOccurs="unbounded" minOccurs="0"/>
+        <xs:element name="Rule" type="tr:RuleDef" maxOccurs="unbounded" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="spec" type="xs:normalizedString"/>
     </xs:complexType>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
@@ -33,6 +33,13 @@
 
   <ItemGroup>
     <Folder Include="Resources\Types\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.AnalyzerUtilities" Version="5.0.0-1.25277.114" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.15.0" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+    <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
   </ItemGroup>
 
 </Project>

@@ -128,7 +128,7 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGene
     MatchDataSet parseMe =
       toParse is null && Origin is null ? throw new InvalidOperationException("MDD Cannot be null") :
       toParse is null && Origin is not null ? Origin :
-       toParse ?? throw new InvalidOperationException();
+      toParse ?? throw new InvalidOperationException();
     CmdLetter = parseMe["letter"].Content;
     if (parseMe.HasGroup("qty"))
       CmdLetter = parseMe["qty"].Content;
@@ -247,7 +247,7 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGene
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>
   /// <returns><see langword="true"/> if left equals right, <see langword="false"/> otherwise.</returns>
-  public static bool operator == (CommandDataSet left, CommandDataSet right) => left is null && right is null || (left?.Equals(right) ?? false);
+  public static bool operator == (CommandDataSet left, CommandDataSet right) => (left is null && right is null) || (left?.Equals(right) ?? false);
   /// <summary>Checks basic inequality with another CommonData object.</summary>
   /// <param name="left">The left object.</param>
   /// <param name="right">The right object.</param>

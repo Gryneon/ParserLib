@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public interface IToken : IIndexSortable, IComparable<IToken>, IEquatable<IToken>
+public interface IToken : IIndexSortable, IEquatable<IToken>
 {
   /// <summary>Assigned at match, cleared if match fails, kept if passes.</summary>
   TokenRef? AssignTo { get; set; }

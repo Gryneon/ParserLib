@@ -11,6 +11,7 @@ public class InferenceNode (IT type, string content)
   /// <exception cref="InvalidFileInferenceException"></exception>
   public virtual bool CheckFile (string filepath)
   {
+    DebugIn(nameof(InferenceNode), nameof(CheckFile));
     string getHeader ()
     {
       byte[] bytes;

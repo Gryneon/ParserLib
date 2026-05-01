@@ -140,7 +140,8 @@ public sealed class XParser
   private OpStatus PerformOperation ()
   {
     DebugIn("PerformOperation");
-    int recoveryDepth = LogDepth;
+    AddCatch("PerformOperation");
+
     if (CurrentOp.SkipOperation)
     {
       Log(MsgClass.Debug, "Skip Operation Encountered");
@@ -163,9 +164,9 @@ public sealed class XParser
 
     void setExceptionData (OpStatus status, OperationException toLog)
     {
+      DoCatch("PerformOperation");
       LastStatus = status;
       Log(MsgClass.Error, toLog.Message);
-      PurgeStackTo(recoveryDepth);
     }
 
     try { LastStatus = CurrentOp.DoOperation(this); }
@@ -302,8 +303,7 @@ public sealed class XParser
             throw new QuitException();
 
           checkLog("data", Data.ToString());
-          checkLogExec("print", "Enter the key to display.", obj =>
-          {
+          checkLogExec("print", "Enter the key to display.", obj => {
             if (obj is TokenCollection tc) tc.Print(0);
           });
           checkLog("show next", $"Next Operation: {NextOpIndex} : {NextOp}");

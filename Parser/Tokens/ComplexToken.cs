@@ -38,7 +38,7 @@ public sealed class ComplexToken : IToken, IPrintable
   public bool Exempt { get; set; }
   public IList<IToken> Children { get; set; } = [];
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
-  public int CompareTo (IToken? other) => Index.CompareTo(other?.Index);
+  public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
   public IToken? GetPieceToken (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value : null;
   public TokenCollection? GetPieceTokens (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value as TokenCollection : null;

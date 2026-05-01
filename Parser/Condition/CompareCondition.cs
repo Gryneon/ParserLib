@@ -41,7 +41,7 @@ public sealed class CompareCondition : BasicCondition
 
   private (T left, T right) Cast<T> () => ((T) Parser.Data[LeftKey], (T) Parser.Data[RightKey]);
   private Type? GetKeyType () => Parser.Data[LeftKey].GetType().IsAssignableFrom(Parser.Data[RightKey].GetType()) ? Parser.Data[LeftKey].GetType() : null;
-  /// <summary>Executes the condition.</summary>
+  /// <summary>Performs a case-sensitive ordinal comparison.</summary>
   /// <remarks>Checks if the two strings are equal. Case-sensitive.</remarks>
   private void Execute_StringExact ()
   {

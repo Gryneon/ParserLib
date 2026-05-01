@@ -343,14 +343,6 @@
         <member name="F:Specification.IPL.IPLCommandType.SelectFormat">
             <summary>Selects the format to be used.</summary>
         </member>
-        <member name="T:Specification.IPL.IPLExtensions">
-            <summary>Extensions for this Spec.</summary>
-        </member>
-        <member name="M:Specification.IPL.IPLExtensions.ToCommandData(Common.Regex.MatchDataSet)">
-            <summary>Converts this <see cref="T:Common.Regex.MatchDataSet"/> into a <see cref="T:Specification.IPL.CommandDataSet"/> object.</summary>
-            <param name="mdd">The match data to use.</param>
-            <returns>A <see cref="T:Specification.IPL.CommandDataSet"/> object.</returns>
-        </member>
         <member name="T:Specification.IPL.IPLPrinterMode">
             <summary>The different possible printer modes.</summary>
         </member>

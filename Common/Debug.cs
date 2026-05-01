@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 using static Common.Chars;
 
 namespace Common;
@@ -10,9 +12,12 @@ public static class Debug
   /// <param name="ClassName">The classname.</param>
   /// <param name="Method">The method name.</param>
   private sealed record class StackLoc (string ClassName, string Method);
+  private sealed record class StackRet (string KeyName, int StackPosition);
   private static Collection<StackLoc> CallStack { get; } = [];
+  private static Collection<StackRet> Recovery { get; } = [];
   private static string ThisClass => CallStack.Peek().ClassName;
   private static string ThisMethod => CallStack.Peek().Method;
+  private static int LogDepth => CallStack.Count - 1;
   private static void DoLog (string msg, ConsoleColor? back = null, ConsoleColor? text = null, bool partial = false)
   {
     try
@@ -54,14 +59,24 @@ public static class Debug
     MsgClass.Critical => C_Red,
     _ => C_Black,
   };
-  #endregion
-  public static int LogDepth => CallStack.Count - 1;
-  public static void PurgeStackTo (int depth)
+  private static void PurgeStackTo (int depth)
   {
     while (CallStack.Count > depth + 1)
       CallStack.Drop();
-    Log(MsgClass.Debug, ThisClass, ThisMethod, "Purged back to here.");
+    Log(MsgClass.Debug, "Purged back to here.");
   }
+  private static void PurgeStackTo (string key)
+  {
+    if (Recovery.Any(item => item.KeyName.Like(key)) && Recovery.Last(item => item.KeyName.Like(key)) is StackRet ret)
+    {
+      PurgeStackTo(ret.StackPosition);
+    }
+    else
+    {
+      Log(MsgClass.Debug, $"No Catch Defined under {key}.");
+    }
+  }
+  #endregion
   /// <summary>Logs a message to the output stream.</summary>
   /// <remarks>This method always assumes that <see cref="DebugIn(string, string)"/> has been called, and uses that location as the caller.</remarks>
   /// <param name="cls">The color and verbosity of the message.</param>
@@ -72,6 +87,12 @@ public static class Debug
     LogPart(cls, message);
     NewLine();
   }
+  /// <summary>Purges the stack until the specified key.</summary>
+  /// <param name="key">The key of the position to resume.</param>
+  public static void DoCatch (string key) => PurgeStackTo(key);
+  /// <summary>Adds a catch point to resume logging in the event of an execption.</summary>
+  /// <param name="key">The key to store the position under.</param>
+  public static void AddCatch (string key) => Recovery.Add(new(key, LogDepth));
   /// <summary>Sets the logging location for any logs.</summary>
   /// <remarks>This keeps the classname the same as it was since the last <c>DebugIn</c> call.</remarks>
   /// <param name="method">The method name.</param>
@@ -94,7 +115,9 @@ public static class Debug
   /// <summary>Only writes the location of the log, and does not add a newline.</summary>
   /// <param name="cls">The color if not default.</param>
   public static void LogHead (MsgClass cls = MsgClass.Debug) => DoLogHead(cls, ThisClass, ThisMethod);
-
+  /// <summary>Logs a portion of a line to the output stream, and does not append a line feed.</summary>
+  /// <param name="cls">The message class of this part.</param>
+  /// <param name="part">The text content.</param>
   public static void LogPart (MsgClass cls, string part) =>
     DoLog(part, GetBackColor(cls), GetTextColor(cls), true);
   /// <summary>Writes a newline to the output stream.</summary>

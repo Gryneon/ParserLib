@@ -119,6 +119,14 @@
             <param name="cls">The color and verbosity of the message.</param>
             <param name="message">The message text.</param>
         </member>
+        <member name="M:Common.Debug.DoCatch(System.String)">
+            <summary>Purges the stack until the specified key.</summary>
+            <param name="key">The key of the position to resume.</param>
+        </member>
+        <member name="M:Common.Debug.AddCatch(System.String)">
+            <summary>Adds a catch point to resume logging in the event of an execption.</summary>
+            <param name="key">The key to store the position under.</param>
+        </member>
         <member name="M:Common.Debug.DebugIn(System.String)">
             <summary>Sets the logging location for any logs.</summary>
             <remarks>This keeps the classname the same as it was since the last <c>DebugIn</c> call.</remarks>
@@ -145,6 +153,11 @@
         <member name="M:Common.Debug.LogHead(Common.MsgClass)">
             <summary>Only writes the location of the log, and does not add a newline.</summary>
             <param name="cls">The color if not default.</param>
+        </member>
+        <member name="M:Common.Debug.LogPart(Common.MsgClass,System.String)">
+            <summary>Logs a portion of a line to the output stream, and does not append a line feed.</summary>
+            <param name="cls">The message class of this part.</param>
+            <param name="part">The text content.</param>
         </member>
         <member name="M:Common.Debug.NewLine(System.ConsoleColor)">
             <summary>Writes a newline to the output stream.</summary>
@@ -429,31 +442,57 @@
             <param name="bit">The flag to toggle.</param>
             <returns></returns>
         </member>
-        <member name="T:Common.Extensions.NumberStylesExtensions">
-            <summary>Extensions for <see cref="T:System.Globalization.NumberStyles"/> objects.</summary>
-        </member>
-        <member name="M:Common.Extensions.NumberStylesExtensions.IsBinary(System.Globalization.NumberStyles)">
-            <summary>Determines if a <see cref="T:System.Globalization.NumberStyles"/> object contains the binary flag.</summary>
-            <param name="styles"></param>
-            <returns><see langword="true"/> if <paramref name="styles"/> contains <see cref="F:System.Globalization.NumberStyles.AllowBinarySpecifier"/>, otherwise <see langword="false"/>.</returns>
-        </member>
         <member name="M:Common.Extensions.ObjectExtensions.AsCollection(System.Object)">
-            <summary>Returns the object as a collection.</summary>
-            <param name="o">The object to convert.</param>
-            <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.AsCollection"/>
         </member>
         <member name="M:Common.Extensions.ObjectExtensions.AsCollection``1(System.Object)">
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.AsCollection``1"/>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.IsCollection(System.Object)">
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.IsCollection"/>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.ToString2(System.Object)">
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.ToString2"/>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.DoNothing">
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.DoNothing"/>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.Reset(System.IO.StreamReader)">
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$A2876EF0FD21F9FCFBA3A79E933026D7.Reset"/>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.IsBinary(System.Globalization.NumberStyles)">
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$279FA35A32F7C9B326F91C565BB58B66.IsBinary"/>
+        </member>
+        <member name="T:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.&lt;M&gt;$F1D8A890C8D06F3C4BA6B98BB88AB49A">
+            <summary>Extensions for <see cref="T:System.Object"/>.</summary>
+            <param name="obj">The object reference.</param>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.AsCollection">
             <summary>Returns the object as a collection.</summary>
-            <typeparam name="T">The type of collection expected.</typeparam>
-            <param name="o">The object to convert.</param>
             <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
         </member>
-        <member name="T:Common.Extensions.StreamReaderExtensions">
-            <summary>Extensions for <see cref="T:System.IO.StreamReader"/> objects.</summary>
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.AsCollection``1">
+            <summary>Returns the object as a collection.</summary>
+            <typeparam name="T">The type of collection expected.</typeparam>
+            <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
         </member>
-        <member name="M:Common.Extensions.StreamReaderExtensions.Reset(System.IO.StreamReader)">
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.IsCollection">
+            <summary>Checks if the object is a type of collection or array.</summary>
+            <returns><see langword="true"/> if the object is an <see cref="T:System.Collections.IEnumerable"/>, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.ToString2">
+            <summary>An alternatative string output method.</summary>
+            <returns>A string representation of the object.</returns>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.DoNothing">
+            <summary>Does Nothing.</summary>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$A2876EF0FD21F9FCFBA3A79E933026D7.Reset">
             <summary>Resets the <see cref="T:System.IO.StreamReader"/> to the beginning of the stream.</summary>
-            <param name="reader">The <see cref="T:System.IO.StreamReader"/> to return to the beginning.</param>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$279FA35A32F7C9B326F91C565BB58B66.IsBinary">
+            <summary>Determines if a <see cref="T:System.Globalization.NumberStyles"/> object contains the binary flag.</summary>
+            <returns><see langword="true"/> if <paramref name="styles"/> contains <see cref="F:System.Globalization.NumberStyles.AllowBinarySpecifier"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:Common.Extensions.StringExtensions">
             <summary>Extensions for string objects.</summary>
@@ -583,12 +622,12 @@
             <summary>An interface specifying that this object can be represented by a <see langword="string"/>.</summary>
         </member>
         <member name="M:Common.ITextSerializer.Serialize">
-            <summary>Creates a lossless representation of the calling object.</summary>
-            <returns>A <see langword="string"/> representation of the calling object.</returns>
+            <summary>Creates a lossless <see cref="T:System.String"/> representation of the calling object.</summary>
+            <returns>A lossless <see cref="T:System.String"/> representation of the calling object.</returns>
         </member>
         <member name="M:Common.ITextSerializer.ToString">
-            <summary>Creates a lossless representation of the calling object.</summary>
-            <returns>A <see langword="string"/> representation of the calling object.</returns>
+            <summary>Creates a lossless <see cref="T:System.String"/> representation of the calling object.</summary>
+            <returns>A lossless <see cref="T:System.String"/> representation of the calling object.</returns>
         </member>
         <member name="T:Common.LogClass">
             <summary>Defines the programs log level.</summary>

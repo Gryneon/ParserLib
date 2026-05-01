@@ -9,9 +9,6 @@
     <FileVersion>1.0.0.0</FileVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NuGetAuditLevel>low</NuGetAuditLevel>
-    <NuGetAuditMode>all</NuGetAuditMode>
-    <RepositoryType>git</RepositoryType>
     <TargetFramework>net11.0</TargetFramework>
     <Title>Common Library</Title>
     <Platforms>AnyCPU;x86;x64</Platforms>
@@ -29,4 +26,10 @@
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xml:lang="en-us" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="csharp/documentation">
+	<xs:attributeGroup name="seeattrgrp">
+		<xs:attribute name="cref" type="xs:string" use="optional"/>
+		<xs:attribute name="href" type="xs:string" use="optional"/>
+		<xs:attribute name="langword" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="seealsoattrgrp">
+		<xs:attribute name="cref" type="xs:string" use="optional"/>
+		<xs:attribute name="href" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="inheritattrgrp">
+		<xs:attribute name="cref" type="xs:string" use="optional"/>
+		<xs:attribute name="path" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="includeattrgrp">
+		<xs:attribute name="file" type="xs:string" use="required"/>
+		<xs:attribute name="path" type="xs:string" use="required"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="linkattrgrp">
+		<xs:attribute name="href" type="xs:string" use="required"/>
+	</xs:attributeGroup>
+	<xs:complexType name="nametag">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="seetype">
+		<xs:attributeGroup ref="seeattrgrp"/>
+	</xs:complexType>
+	<xs:complexType name="seealsotype">
+		<xs:attributeGroup ref="seealsoattrgrp"/>
+	</xs:complexType>
+	<xs:complexType name="includetype">
+		<xs:attributeGroup ref="includeattrgrp"/>
+	</xs:complexType>
+	<xs:complexType name="inherittype">
+		<xs:attributeGroup ref="inheritattrgrp"/>
+	</xs:complexType>
+	<xs:complexType name="linktype">
+		<xs:attributeGroup ref="linkattrgrp"/>
+	</xs:complexType>
+	<xs:complexType name="nameattr">
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+  <xs:simpleType name="listtype">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="bullet"/>
+      <xs:enumeration value="number"/>
+      <xs:enumeration value="table"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name ="listobj">
+		<xs:sequence>
+			<xs:element name="listheader" minOccurs="0" maxOccurs="1" type="termdesc"/>
+			<xs:element name="item" minOccurs="0" maxOccurs="unbounded" type="termdesc"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="listtype"/>
+	</xs:complexType>
+	<xs:complexType name="termdesc">
+		<xs:sequence>
+			<xs:element name="term" minOccurs="0" maxOccurs="1" type="xs:string"/>
+			<xs:element name="description" minOccurs="0" maxOccurs="1" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="innertag" mixed="true">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="para" type="xs:string" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="example" type="innertag"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="see" type="seetype"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="code" type="xs:string" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="a" type="linktype" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="b" type="innertag" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="br" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="c" type="innertag" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="i" type="innertag" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="u" type="innertag" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="paramref" type="nameattr"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="list" type="listobj"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="typeparamref" type="nameattr"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="nameextattr">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="elementtop">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="value" type="innertag"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="innertag"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="param" type="nameextattr"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="returns" type="innertag"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="seealso" type="seetype"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="exception" type="seetype"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="remarks" type="innertag" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="paramref" type="nameattr"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="typeparam" type="nameextattr"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="typeparamref" type="nameattr"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="inheritdoc" type="inherittype"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="include" type="includetype"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"  />
+	</xs:complexType>
+	<xs:element name="doc" >
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="assembly" type="nametag" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="members" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="member" type="elementtop"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -18,18 +18,13 @@ namespace Parser.Tokens;
 /// </list>
 /// <list type="table">
 /// <listheader>Examples</listheader>
-/// <item><c>tn:Name</c> - Token Type 'Name', Store as a Name.</item>
-/// <item><c>tv:Dec</c> - Token Type 'Dec', store as a Value.</item>
+/// <item><c>n:Name</c> - Token Type 'Name', Store as a Name.</item>
+/// <item><c>t:Dec</c> - Token Type 'Dec', store as a Value.</item>
 /// <item><c>cyi:Script</c> - Content 'Script', Case insensitive, store as a Type.</item>
 /// </list>
 /// </remarks>
 public sealed class ChkToken : IEquatable<IToken>
 {
-  private ChkToken () { }
-
-  [AllowNull]
-  private Spec _spec;
-
   internal static Dictionary<char, RT> LetterReference { get; } = new()
   {
     ['A'] = RT.Any,
@@ -62,7 +57,7 @@ public sealed class ChkToken : IEquatable<IToken>
     string? prop = null;
     T assnTo = T.Custom;
 
-    if (m.Groups.ContainsKey("custom_prop") && m.Groups["custom_prop"].Value.IsNotEmpty())
+    if (m.HasValidGroup("custom_prop"))
     {
       prop = m.Groups["custom_prop"].Value;
     }
@@ -73,6 +68,12 @@ public sealed class ChkToken : IEquatable<IToken>
     }
     Collection<string> allowed_types = [];
     string regex_validator = SE;
+
+    //Automatically assign ignore case if the spec declares it.
+    if (spec.SC == SCOIC)
+    {
+      rule |= RT.IgnoreCase;
+    }
 
     foreach (char c in prefix.ToUpperInvariant().RemoveAllButChars("AOMI"))
     {
@@ -101,7 +102,6 @@ public sealed class ChkToken : IEquatable<IToken>
       RegexValidator = regex_validator,
       AllowedTypes = expanded_types,
       TokenRule = rule,
-      _spec = spec,
       AssignTo = assnTo,
     };
   }
@@ -159,7 +159,7 @@ public sealed class ChkToken : IEquatable<IToken>
     }
     return [.. all_types_allowed];
   }
-  internal bool Check_Type (IToken? token) => token?.HasType == true && AllowedTypes.Any(type => token.Type.Like(type)) || AllowedTypes.Count == 0;
+  internal bool Check_Type (IToken? token) => (token?.HasType == true && AllowedTypes.Any(type => token.Type.Like(type))) || AllowedTypes.Count == 0;
   /// <summary>Checks if the specified token satisfies this object's conditions.</summary>
   /// <param name="other">The token to check.</param>
   /// <returns><see langword="true"/> if the token satisfies this object's conditions, <see langword="false"/> otherwise.</returns>

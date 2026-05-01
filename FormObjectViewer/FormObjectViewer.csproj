@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
@@ -7,8 +7,6 @@
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NuGetAuditLevel>low</NuGetAuditLevel>
-    <NuGetAuditMode>all</NuGetAuditMode>
     <OutputType>WinExe</OutputType>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <StartupObject>FormObjectViewer.Program</StartupObject>
@@ -36,6 +34,13 @@
   </ItemGroup>
 
 
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.AnalyzerUtilities" Version="5.0.0-1.25277.114" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.15.0" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+    <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />

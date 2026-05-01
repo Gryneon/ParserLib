@@ -25,7 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{28
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
-		ParserLib.code-workspace = ParserLib.code-workspace
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -64,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFParserVisualizer", "WPFParserVisualizer\WPFParserVisualizer.csproj", "{C3C931AB-EADC-4A0E-AB56-F072936C78EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terminal.Menu", "Console.Menu\Terminal.Menu.csproj", "{E180CC60-075F-462E-996F-39070EC39013}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terminal.Menu", "Terminal.Menu\Terminal.Menu.csproj", "{E180CC60-075F-462E-996F-39070EC39013}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E15E491A-E872-91D8-DF7A-CA59C792F064} = {E15E491A-E872-91D8-DF7A-CA59C792F064}
 	EndProjectSection
@@ -87,9 +86,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Language Specifications", "
 		Parser\Tokens\TokenRule.xml = Parser\Tokens\TokenRule.xml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{089100B1-113F-4E66-888A-E83F3999EAFD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schemas", "Schemas", "{7B949E95-665C-CA68-8F06-83728F68B9AC}"
 	ProjectSection(SolutionItems) = preProject
-		..\Schemas\BinaryParse.xsd = ..\Schemas\BinaryParse.xsd
+		..\Schemas\documentation.xsd = ..\Schemas\documentation.xsd
+		..\Schemas\specification.xsd = ..\Schemas\specification.xsd
+		..\Schemas\workspace.xsd = ..\Schemas\workspace.xsd
+		..\Schemas\XMLCodeDocumentation.xsd = ..\Schemas\XMLCodeDocumentation.xsd
 	EndProjectSection
 EndProject
 Global
@@ -326,6 +328,7 @@ Global
 		{F60AE9E8-DEC6-417D-9487-81940A3D53D3} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 		{306ADCA7-FB08-E279-8072-1E915F7B2D17} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 		{8F3611D8-E097-C408-6FFE-4ACCCA582423} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
+		{7B949E95-665C-CA68-8F06-83728F68B9AC} = {284B0C48-6525-F3F5-CD5D-7841BD44174A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E97FF645-432C-41F1-ACD9-D9EA11D2D32D}
