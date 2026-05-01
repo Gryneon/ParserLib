@@ -5,13 +5,15 @@ namespace Parser.Tokens;
 public class ChkSequence : IList<ChkToken>
 {
   private readonly List<ChkToken> _sequence = [];
+
   public string? DataString { get; set; }
 
   public ChkToken this[int index] { get => _sequence[index]; set => _sequence[index] = value; }
   public ChkSequence this[Range rng] => [.. _sequence[rng]];
   public int Count => _sequence.Count;
 
-  public bool AllOptional => _sequence.All(item => item.TokenRule.HasFlag(RT.Opt));
+  public bool AllOptional => _sequence.All(IsOptional);
+  public bool RemainingAreOptional (int index) => _sequence[index..].All(IsOptional);
 
   bool ICollection<ChkToken>.IsReadOnly { get; }
 
@@ -19,6 +21,7 @@ public class ChkSequence : IList<ChkToken>
   public void Clear () => _sequence.Clear();
   public IEnumerator<ChkToken> GetEnumerator () => _sequence.GetEnumerator();
   public int IndexOf (ChkToken item) => _sequence.IndexOf(item);
+  private static bool IsOptional (ChkToken item) => item.TokenRule.HasFlag(RT.Opt);
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
   void IList<ChkToken>.Insert (int index, ChkToken item) => throw new NotImplementedException();
   void IList<ChkToken>.RemoveAt (int index) => throw new NotImplementedException();

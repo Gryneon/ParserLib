@@ -1,7 +1,7 @@
 namespace Parser.Condition;
 
 /// <summary>This condition compares 2 keys.</summary>
-public class CompareCondition : BasicCondition
+public sealed class CompareCondition : BasicCondition
 {
   public required string LeftKey { get; init; }
   public required string RightKey { get; init; }

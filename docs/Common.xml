@@ -5,7 +5,7 @@
     </assembly>
     <members>
         <member name="T:Common.Chars">
-            <summary>Static class of common character combinations.</summary> 
+            <summary>Static class of common character combinations.</summary>
         </member>
         <member name="F:Common.Chars.BEEP">
             <summary>Beep control code.</summary>
@@ -778,6 +778,16 @@
             <summary>Reference to an empty <see langword="string"/>.</summary>
             <remarks>This one is a compile-time constant.</remarks>
         </member>
+        <member name="T:Common.Pos">
+            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
+            <param name="start">The start position.</param>
+            <param name="length">The length.</param>
+        </member>
+        <member name="M:Common.Pos.#ctor(System.Int32,System.Int32)">
+            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
+            <param name="start">The start position.</param>
+            <param name="length">The length.</param>
+        </member>
         <member name="T:Common.Regex.AbsentGroupException">
             <summary>The exception thrown when a regex group is not found.</summary>
         </member>
@@ -1248,16 +1258,6 @@
         </member>
         <member name="M:Common.Section.CompareTo(Common.Section)">
             <inheritdoc/>
-        </member>
-        <member name="T:Common.Pos">
-            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
-            <param name="start">The start position.</param>
-            <param name="length">The length.</param>
-        </member>
-        <member name="M:Common.Pos.#ctor(System.Int32,System.Int32)">
-            <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="T:System.Span`1"/>, <see cref="T:System.Memory`1"/> or <see langword="string"/>.</summary>
-            <param name="start">The start position.</param>
-            <param name="length">The length.</param>
         </member>
         <member name="T:Common.SectionCollection">
             <summary>Now uses Pos struct for speed.</summary>

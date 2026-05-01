@@ -186,8 +186,8 @@ public sealed class XParser
   }
   #endregion
   /// <summary>Initializes the data and begins parsing.</summary>
-  /// <param name="data">The data to pass to the parser.</param>
   /// <param name="spec">The specification to use.</param>
+  /// <param name="data">The data to pass to the parser.</param>
   /// <typeparam name="TData">The type of data to pass to the parser.</typeparam>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   public OpStatus ParseData<TData> (Spec spec, TData data)
@@ -197,8 +197,8 @@ public sealed class XParser
     return ParseLoop();
   }
   /// <summary>Parses the specified file based on the spec assigned to this <see cref="XParser"/> object.</summary>
-  /// <param name="path">The path to the file to parse.</param>
   /// <param name="spec">The spec to use.</param>
+  /// <param name="path">The path to the file to parse.</param>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   public OpStatus ParseFile (Spec spec, string path)
   {
@@ -212,14 +212,12 @@ public sealed class XParser
     if (Spec.IsTextFile)
     {
       string text = File.ReadAllText(path);
-      OpStatus result = ParseData(spec, text);
-      return result;
+      return ParseData(spec, text);
     }
     else
     {
       byte[] contents = File.ReadAllBytes(path);
-      OpStatus result = ParseData(spec, contents);
-      return result;
+      return ParseData(spec, contents);
     }
   }
   /// <summary>Gets the count of the collection stored under the <paramref name="key"/>.</summary>
@@ -296,21 +294,22 @@ public sealed class XParser
       if (status != EndCommand)
       {
         do
-      {
-        Log(MsgClass.Debug, "Enter a command to analyse parser state.");
-        promptUser();
+        {
+          Log(MsgClass.Debug, "Enter a command to analyse parser state.");
+          promptUser();
 
-        if (userInput.Like("quit"))
-          throw new QuitException();
+          if (userInput.Like("quit"))
+            throw new QuitException();
 
-        checkLog("data", Data.ToString());
-        checkLogExec("print", "Enter the key to display.", obj => {
-          if (obj is TokenCollection tc) tc.Print(0);
-        });
-        checkLog("show next", $"Next Operation: {NextOpIndex} : {NextOp}");
-        checkLogAsk("data in", "Enter the key to display.", s => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
+          checkLog("data", Data.ToString());
+          checkLogExec("print", "Enter the key to display.", obj =>
+          {
+            if (obj is TokenCollection tc) tc.Print(0);
+          });
+          checkLog("show next", $"Next Operation: {NextOpIndex} : {NextOp}");
+          checkLogAsk("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
 
-      } while (!userInput.EqualsAny(allow_continue, SCOIC));
+        } while (!userInput.EqualsAny(allow_continue, SCOIC));
       }
     }
     DebugOut();

@@ -1,16 +1,28 @@
 <Project>
-	<PropertyGroup>
-		<Deterministic>true</Deterministic>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<ErrorReport>send</ErrorReport>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<LangVersion>preview</LangVersion>
-		<NeutralLanguage>en-US</NeutralLanguage>
-		<NuGetAuditLevel>low</NuGetAuditLevel>
-		<NuGetAuditMode>all</NuGetAuditMode>
-		<Nullable>enable</Nullable>
-		<RepositoryType>git</RepositoryType>
-		<WarningLevel>9999</WarningLevel>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Deterministic>true</Deterministic>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <ErrorReport>send</ErrorReport>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <LangVersion>preview</LangVersion>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <NuGetAuditLevel>low</NuGetAuditLevel>
+        <NuGetAuditMode>all</NuGetAuditMode>
+        <Nullable>enable</Nullable>
+        <RepositoryType>git</RepositoryType>
+        <WarningLevel>9999</WarningLevel>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.15.0"/>
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.15.0"/>
+    <PackageReference Include="Roslynator.CodeFixes" Version="4.15.0"/>
+    <PackageReference Include="Roslynator.Core" Version="4.15.0" />
+    <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
+    <PackageReference Include="Roslynator.CSharp.Workspaces" Version="4.15.0" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0"/>
+    <PackageReference Include="Roslynator.Refactorings" Version="4.15.0"/>
+    <PackageReference Include="Roslynator.Workspaces.Core" Version="4.15.0" />
+  </ItemGroup>
 </Project>

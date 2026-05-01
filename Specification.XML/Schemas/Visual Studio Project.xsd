@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Project">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="PropertyGroup">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="AnalysisLevel" type="xs:string" />
+              <xs:element name="CheckForOverflowUnderflow" type="xs:string" />
+              <xs:element name="DocumentationFile" type="xs:string" />
+              <xs:element name="GenerateAssemblyInfo" type="xs:boolean" />
+              <xs:element name="GenerateDocumentationFile" type="xs:boolean" />
+              <xs:element name="Platforms" type="xs:string" />
+              <xs:element name="TargetFramework" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element maxOccurs="unbounded" name="ItemGroup">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="EmbeddedResource">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Generator" type="xs:string" />
+                    <xs:element name="LastGenOutput" type="xs:string" />
+                  </xs:sequence>
+                  <xs:attribute name="Update" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" name="Compile">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="DesignTime" type="xs:string" />
+                    <xs:element name="AutoGen" type="xs:string" />
+                    <xs:element name="DependentUpon" type="xs:string" />
+                  </xs:sequence>
+                  <xs:attribute name="Update" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="ProjectReference">
+                <xs:complexType>
+                  <xs:attribute name="Include" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="PackageReference">
+                <xs:complexType>
+                  <xs:sequence minOccurs="0">
+                    <xs:element name="PrivateAssets" type="xs:string" />
+                    <xs:element name="IncludeAssets" type="xs:string" />
+                  </xs:sequence>
+                  <xs:attribute name="Include" type="xs:string" use="required" />
+                  <xs:attribute name="Version" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="Sdk" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
