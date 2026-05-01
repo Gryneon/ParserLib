@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Spec xmlns="Parser/Binary" name="wad" type="binary">
+  <Tokens>
+    
+  </Tokens>
+  <Instructions>
+    <Label name="Start"/>
+    <MakeCursor name="current_pos" position="0"/>
+    <GotoOpIndex target="2"/>
+    <ReadData scope="global" name="file_id" type="string" length="4" cursor="current_pos"/>
+    <ReadData scope="global" name="numlumps" type="int" cursor="current_pos"/>
+    <ReadData scope="global" name="diroffset" type="int" cursor="current_pos"/>
+    <SetCursorPos position_var="diroffset"/>
+    <MakeList scope="global" name="directory" type="DirectoryEntry"/>
+    <ForCount length_var="numlumps" counter_var="index">
+      <ReadData name="lump_pos" type="int" scope="local"/>
+      <ReadData name="lump_size" type="int" scope="local"/>
+      <ReadData name="lump_name" type="string" length="8" scope="local"/>
+      <ReadData name="lump_data" type="binary" length_var="lump_size" position_var="lump_pos" scope="local"/>
+      <AddItem name="directory" type="DirectoryEntry">lump_pos lump_size lump_name lump_data</AddItem>
+    </ForCount>
+    <If condition="[file_id] == ['WAD2']">
+      <!-- WAD2 File -->
+    </If>
+    <ElseIf condition="[file_id] == ['PACK']">
+      <!-- PAK File -->
+    </ElseIf>
+    <Else>
+      <!-- WAD File -->
+    </Else>
+    <Switch condition="[file_id]">
+      <Case value="WAD2">
+        <ReadData name="lump_data" type="binary" length_var="lump_size"/>
+      </Case>
+      <Default>
+        <!-- WAD File -->
+      </Default>
+    </Switch>
+    <SavePos scope="global" name="directory_pos"/>
+    <ReadData name="lump_data" type="binary" length_var="lump_size"/>
+    <Terminate success="true"/>
+  </Instructions>
+</Spec>

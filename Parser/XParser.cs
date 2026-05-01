@@ -210,14 +210,12 @@ public sealed class XParser
     if (Spec.IsTextFile)
     {
       string text = File.ReadAllText(path);
-      OpStatus result = ParseData(spec, text);
-      return result;
+      return ParseData(spec, text);
     }
     else
     {
       byte[] contents = File.ReadAllBytes(path);
-      OpStatus result = ParseData(spec, contents);
-      return result;
+      return ParseData(spec, contents);
     }
   }
   /// <summary>Gets the count of the collection stored under the <paramref name="key"/>.</summary>

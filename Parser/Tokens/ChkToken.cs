@@ -23,7 +23,7 @@ namespace Parser.Tokens;
 /// <item><c>cyi:Script</c> - Content 'Script', Case insensitive, store as a Type.</item>
 /// </list>
 /// </remarks>
-public sealed class ChkToken () : IEquatable<IToken>
+public sealed class ChkToken : IEquatable<IToken>
 {
   internal static Dictionary<char, RT> LetterReference { get; } = new()
   {
@@ -133,7 +133,7 @@ public sealed class ChkToken () : IEquatable<IToken>
       };
   }
   private bool IsFullRegexMatch (IToken? token) =>
-    token is not null && (RegexValidator.IsEmpty() || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) ? ROIC : RON)).Value.Length == token.Content.Length);
+    token is not null && (RegexValidator.IsEmpty() || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) || _spec.SC == SCOIC ? ROIC : RON)).Value.Length == token.Content.Length);
   internal static Collection<string> AllAllowedTypes (IEnumerable<string> types, Spec spec)
   {
     HashSet<string> all_types_allowed = [.. types];
