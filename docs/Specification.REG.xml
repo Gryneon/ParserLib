@@ -112,11 +112,11 @@
             <summary>The parent key.</summary>
         </member>
         <member name="P:Specification.REG.RegProperty.IsDefault">
-            <summary><see langword="true"/> if this key is null or default initial value;</summary>
+            <summary><see langword="true"/> if this key is <see langword="null"/> or an empty <see langword="string"/>, <see langword="false"/> otherwise.</summary>
         </member>
         <member name="M:Specification.REG.RegProperty.Generate(Common.Regex.MatchDataSet)">
-            <inheritdoc/>
-            <exception cref="T:System.InvalidOperationException"/>
+            <summary>Generates a <see cref="T:Specification.REG.RegProperty"/> from a <see cref="T:Common.Regex.MatchDataSet"/>.</summary>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:Common.Regex.MatchDataSet"/> was missing a required group.</exception>
         </member>
         <member name="M:Specification.REG.RegProperty.AssignValue(System.String)">
             <summary>Assigns the specified value to the <see cref="P:Specification.REG.RegProperty.Value"/> property.</summary>

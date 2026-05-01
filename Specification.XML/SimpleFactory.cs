@@ -52,7 +52,7 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
 {
   public override IXMLObject Produce (IToken input)
   {
-    DebugIn("XMLFactory", "Produce");
+    DebugIn(nameof(XMLFactory), nameof(Produce));
 
     if (input is not ComplexToken ct)
     {
@@ -78,6 +78,22 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
                         select new XMLAttr() { Key = name, Value = value }]
         };
         break;
+      case "ElementStartWithNamespace" or "ElementStart":
+        initial = new XMLElementOpen()
+        {
+          Tag = ct.Name?.Content ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
+          Namespace = ct.ObjType?.Content,
+          Attributes = [.. from item in ct.GetPieceTokens(TokenRef.PropertyList)
+                        where
+                          item.Type == "Attribute" &&
+                          item is ComplexToken attr &&
+                          attr.Name is not null &&
+                          attr.Value is not null
+                          let name = (item as ComplexToken)!.Name!.Content
+                          let value = (item as ComplexToken)!.Value!.Content
+                        select new XMLAttr() { Key = name, Value = value }],
+        };
+        break;
       case "ElementClose" or "ElementCloseWithNamespace":
         initial = new XMLElementClose()
         {
@@ -90,8 +106,13 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
         throw null;
 
     }
+    if (initial is null)
+    {
+      _ = Op.ThrowBadDef("Constructed xml object was null.");
+    }
+
     DebugOut();
 
-    return (IXMLObject?) initial ?? throw new OperationException();
+    return initial;
   }
 }

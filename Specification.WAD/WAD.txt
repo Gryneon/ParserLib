@@ -7,7 +7,7 @@
 // [key]  GetKeyValue Operator
 // (num)  UseLiteral Operator
 
-// Commands: 
+// Commands:
 //   Read (Text|Int|Long|Short|Byte|Binary) <value> : <keyname> - Reads data and advances the cursor, stores it in <keyname>
 //   Jump <value> - Sets the cursor to the position <value>
 //   Save (Position|Length|Remaining|CountOf) [<value>] : <keyname> - Saves the specified property to a key

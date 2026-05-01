@@ -91,7 +91,7 @@ public sealed class ComplexToken : IToken, IPrintable
     ["ValueList"] = Values,
     ["StatementList"] = Statements,
   };
-
+  int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
   string IToken.ContentNoNewLine => Children.Select(child => child.ToString()).TextJoin().Replace(["\n", "\r"], ["<LF>", "<CR>"]);
 
   private void EachPart (Action<KeyValuePair<string, IToken?>> action)

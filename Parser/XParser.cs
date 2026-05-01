@@ -40,13 +40,10 @@ public sealed class XParser
   public Dictionary<string, int> Labels { get; } = [];
   /// <summary>The dictionary storing all of the data from the parsed file.</summary>
   [NotNull] public DataStore? Data { get; private set; }
+  /// <summary>Gets the result of a successful parse operation set.</summary>
+  /// <remarks>This property returns <see langword="null"/> if the operation sequence has failed, or has not ran.</remarks>
   public object? Result => Data.CanLoad("result") ? Data["result"] : null;
-  /// <summary>Gets a value indicating whether a valid result is available.</summary>
-  /// <remarks>This property returns <see langword="true"/> if the <see cref="Result"/> property is not <see
-  /// langword="null"/>, indicating that the operation has produced a result that can be accessed. Use this property to
-  /// check the state of the operation before attempting to access <see cref="Result"/>.</remarks>
-  [MemberNotNullWhen(true, nameof(Result))]
-  public bool HasResult => Result is not null;
+  /// <summary>The number of operations in the currently loaded specification, after parsing the operation sequence.</summary>
   public int OpCount => Operations.Count;
   #endregion
   #region Constructor

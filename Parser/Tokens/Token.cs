@@ -16,7 +16,7 @@ public class Token : IToken, IPrintable
   public bool HasType => Type is not null;
 
   public string ContentNoNewLine => Content.Replace(["\n", "\r"], ["<LF>", "<CR>"]);
-
+  int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
   public override string ToString () => $"{Type} : {Content}";
   public string ToString (int indent) => $"{Type} : {Content}";
   public void Print (int indent)

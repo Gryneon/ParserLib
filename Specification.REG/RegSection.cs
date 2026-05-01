@@ -56,6 +56,6 @@ public class RegSection : IReadOnlyDictionary<string, string?>
 
   public IEnumerator<KeyValuePair<string, string?>> GetEnumerator () => Properties.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  public bool ContainsKey (string key) => ((IReadOnlyDictionary<string, string>) Properties).ContainsKey(key);
-  public bool TryGetValue (string key, [MaybeNullWhen(false)] out string value) => ((IReadOnlyDictionary<string, string>) Properties).TryGetValue(key, out value);
+  public bool ContainsKey (string key) => Properties.ContainsKey(key);
+  public bool TryGetValue (string key, [MaybeNullWhen(false)] out string value) => Properties.TryGetValue(key, out value);
 }

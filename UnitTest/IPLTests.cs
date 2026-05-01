@@ -1,12 +1,3 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-
-using Common.Regex;
-
-using Parser;
-using Parser.Ops;
-
 using Specification.IPL;
 
 namespace UnitTest;
@@ -29,12 +20,12 @@ public class IPLTests
     Assert.Equal("E", objs[2].Groups["letter"].Content);
   }
 
-  [Fact]
-  public void IPL_ParseTestFull ()
+  [Theory]
+  [InlineData(@"ParserLib\Specification.IPL\Samples\6458 Batch.txt")]
+  public void IPL_ParseTestFull (string label_file)
   {
-    string initial_string = File.ReadAllText(@"C:\Users\johntay4\source\repos\Git\ParserLib\Specification.IPL\Samples\6458 Batch.txt");
     XParser parser = new();
-    OpStatus status = parser.ParseData(Definition.Spec, initial_string);
+    OpStatus status = parser.ParseFile(Definition.Spec, Helper.GitDir + label_file);
     Assert.False(status.IsFail(false));
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);

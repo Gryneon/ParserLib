@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
   targetNamespace="Parser/TokenRule"
-  attributeFormDefault="unqualified"
+  attributeFormDefault="qualified"
   elementFormDefault="qualified"
   xmlns:tr="Parser/TokenRule"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"

@@ -80,11 +80,13 @@ public static class Definition
   {
     FileInferences = [
       IfN(ExtIs, "xml"),
+      IfN(ExtIs, "xsd"),
+      IfN(ExtIs, "cd"),
       IfN(ExtIs, "csproj"),
       IfN(HeadSt, "<?xm")
     ],
     Name = "xml",
-    RxOpt = ROML | ROEC | ROIPW | ROIC,
+    RxOpt = ROML | ROEC | ROIPW,
     IsTextFile = true,
     SC = SCO,
     TokenType = typeof(XTT),
@@ -100,7 +102,6 @@ public static class Definition
       new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
       new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)\b(?<!xml)"),
     ],
-    DefaultRuleSet = IgnoreCase,
     GroupTokenRules = [
       new (XTT.Attribute, "n:AttrKey x:Eq v:String"),
       new (XTT.Header, "x:Ao x:Qm n:ElementName{xml} pa:Attribute x:Qm x:Ac"),

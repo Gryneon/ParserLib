@@ -16,3 +16,15 @@ global using Parser.Ops.Text;
 global using static Common.Names;
 
 global using ITT = Specification.INI.INITokenType;
+
+using System.Reflection;
+using System.Resources;
+
+[assembly: AssemblyCompany("Specification.INI")]
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0.0-Prerelease")]
+[assembly: AssemblyProduct("Specification.INI")]
+[assembly: AssemblyTitle("Specification.INI")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguage("en-US")]

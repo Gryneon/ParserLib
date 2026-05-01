@@ -17,3 +17,14 @@ global using static Parser.DefinitionStaticFunctions;
 global using Debug = Common.Debug;
 global using JTT = Specification.JSON.JSONTokenType;
 
+using System.Reflection;
+using System.Resources;
+
+[assembly: AssemblyCompany("Specification.JSON")]
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0.0-Prerelease")]
+[assembly: AssemblyProduct("Specification.JSON")]
+[assembly: AssemblyTitle("Specification.JSON")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguage("en-US")]

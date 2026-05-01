@@ -21,6 +21,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
     get => _tokens[index];
     set => _tokens[index] = value;
   }
+  int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
 
   public int Count => _tokens.Count;
   bool ICollection<IToken>.IsReadOnly => false;

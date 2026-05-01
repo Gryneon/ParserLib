@@ -36,13 +36,13 @@ public sealed class RegProperty : IProperty<string>, IGeneratable
   }
 
   // Readable Properties
-  /// <summary><see langword="true"/> if this key is null or default initial value;</summary>
+  /// <summary><see langword="true"/> if this key is <see langword="null"/> or an empty <see langword="string"/>, <see langword="false"/> otherwise.</summary>
   public bool IsDefault => Key == SE;
 
   private RegProperty () { }
 
-  /// <inheritdoc/>
-  /// <exception cref="InvalidOperationException"/>
+  /// <summary>Generates a <see cref="RegProperty"/> from a <see cref="MatchDataSet"/>.</summary>
+  /// <exception cref="InvalidOperationException">The <see cref="MatchDataSet"/> was missing a required group.</exception>
   public static RegProperty Generate (MatchDataSet input)
   {
     input.ThrowIfNull();
@@ -53,7 +53,7 @@ public sealed class RegProperty : IProperty<string>, IGeneratable
     bool isRem = input.HasGroup("remval");
     bool isDef = input.HasGroup("default");
 
-    RegProperty result = new()
+    return new()
     {
       Key = isDef ?
         input["default"].Content :
@@ -69,7 +69,6 @@ public sealed class RegProperty : IProperty<string>, IGeneratable
       Type = hasType ? input["type"].Content : SE,
       Size = hasSize ? input["hsize"].Content : SE,
     };
-    return result;
   }
   public bool Equals (IProperty<string>? other) => other is not null && Value?.Equals(other.Value, SCO) == true && Key.Equals(other.Key, SCO);
   public int CompareTo (IProperty<string>? other) => Key.CompareTo(other?.Key, SCOIC);

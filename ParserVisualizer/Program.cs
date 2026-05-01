@@ -1,7 +1,21 @@
 using System;
 using System.Windows.Forms;
 
+using System.Reflection;
+using System.Resources;
+
+[assembly: AssemblyCompany("ParserVisualizer")]
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0.0-Prerelease")]
+[assembly: AssemblyProduct("ParserVisualizer")]
+[assembly: AssemblyTitle("ParserVisualizer")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguage("en-US")]
+
 namespace ParserVisualizer;
+
+
 
 internal static class Program
 {

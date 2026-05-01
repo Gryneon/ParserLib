@@ -5,19 +5,14 @@ namespace Parser.Ops.Text;
 /// <summary>
 /// Takes an input as a <see langword="string"/> or a collection of strings,
 /// and splits the contents into a single <see cref="Collection{T}"/> of strings.
-/// This will correctly handle a <see cref="Collection{T}"/> of strings.
+/// This will correctly handle a <see cref="Collection{T}"/> of strings, further spliting them
+/// and flattening the resulting list to a standard <see cref="Collection{T}"/>.
 /// </summary>
-/// <remarks><code>
-/// Inputs: <see langword="string"/>, <see cref="IEnumerable{T}"/>(<see langword="string"/>)<br/>
-/// Output: <see cref="Collection{T}"/>(<see langword="string"/>)
-/// </code><br/>
-/// Statuses:
-/// <code>
-/// <see cref="OpStatus.Pass"/>: Operation completed successfully.
-/// <see cref="OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-/// <see cref="OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/>.
-/// <see cref="OpStatus.FailNoSuchVarName"/>: The key was missing.
-/// </code>
+/// <remarks><br/>
+/// <h4>Allowed Input Types</h4>
+/// <see langword="string"/>, <see cref="IEnumerable{T}"/>(<see langword="string"/>)<br/>
+/// <h4>Produced Output Types</h4>
+/// <see cref="Collection{T}"/>(<see langword="string"/>)<br/>
 /// </remarks>
 public class SplitOperation : Operation
 {
@@ -56,7 +51,7 @@ public class SplitOperation : Operation
     _options = regex_options;
   }
   public SplitOperation (string input_key = "text", string output_key = "textparts") : base(input_key, output_key) => _type = Type.None;
-  #endregion
+  #endregion Constructors
   protected override void Execute ()
   {
     IEnumerable<string> delimSplit (string input) => input.Split([.. _items ?? []], SSORT);

@@ -32,7 +32,7 @@ public readonly struct Pos (int start, int length) : IEquatable<Pos>, IIndexSort
   public override readonly bool Equals ([NotNullWhen(true)] object? obj) => obj is Pos p && Equals(p);
   public override readonly int GetHashCode () => HashCode.Combine(Start, Length);
   public readonly int CompareTo (IIndexSortable? other) => Start.CompareTo(other?.Index);
-
+  readonly int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
   public static bool operator == (Pos left, Pos right) => left.Equals(right);
   public static bool operator != (Pos left, Pos right) => !(left == right);
   public static bool operator < (Pos left, Pos right) => left.CompareTo(right) < 0;

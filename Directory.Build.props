@@ -1,18 +1,21 @@
-<Project>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="Debug"/>
   <PropertyGroup>
+    <Authors>John Taylor</Authors>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <Deterministic>true</Deterministic>
+    <!-- <Deterministic>true</Deterministic> -->
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <NeutralResourcesLanguage>en-us</NeutralResourcesLanguage>
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>
     <RepositoryType>git</RepositoryType>
     <WarningLevel>9999</WarningLevel>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 </Project>

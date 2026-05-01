@@ -16,3 +16,14 @@ global using ICT = Specification.IPL.IPLCommandType;
 global using ITT = Specification.IPL.IPLTokenType;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 
+using System.Reflection;
+using System.Resources;
+
+[assembly: AssemblyCompany("Specification.IPL")]
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0.0-Prerelease")]
+[assembly: AssemblyProduct("Specification.IPL")]
+[assembly: AssemblyTitle("Specification.IPL")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguage("en-US")]

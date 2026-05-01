@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="Parser/Spec"
+  attributeFormDefault="qualified"
+  elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:tr="Parser/TokenRule"
+  xmlns:sp="Parser/Spec"
+  xmlns:op="Parser/Operation"
+  xml:lang="en-us">
+  
+  <xs:complexType name="SpecType">
+    <xs:sequence>
+
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="Specs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Spec" minOccurs="0" maxOccurs="unbounded" type="sp:SpecType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Operations">
+    <xs:complexType>
+      <xs:group ref="op:AnyOperationGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

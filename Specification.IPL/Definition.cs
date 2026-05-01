@@ -82,20 +82,26 @@ public static class Definition
   ];
   public static Regex OpRegex => new(Regex, Spec.RxOpt);
   #endregion
+
+  private const RegexOptions RxOpts = ROML | ROIPW | ROEC | ROSL;
+
   [DefinitionExport]
   public static Spec Spec => new()
   {
     Name = "ipl",
     Operations = [
-      new TokenizeOperation(),
-      new DebugToStringOperation("tokens"),
-      new DebugWaitForInputOperation(),
-      new TokenAssembleOperation()],
+      new SplitOperation(Rx(@"(<ETX>).*?(<STX>)|\A.*?(<STX>)|;"), RxOpts, "text", "textparts"),
+
+
+      //new TokenizeOperation(),
+      //new DebugToStringOperation("tokens"),
+      //new DebugWaitForInputOperation(),
+    ],
     FileInferences = [
       IfN(ExtIs, "ipl"),
       IfN(ExtIs, "pr1"),
       IfN(InferenceType.FileContent|InferenceType.Contains, "<STX>")],
-    RxOpt = ROML | ROIPW | ROEC | ROSL,
+    RxOpt = RxOpts,
     IsTextFile = true,
     TokenType = typeof(ITT),
     TokenRules = [

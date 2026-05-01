@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="Parser/Operation"
+  attributeFormDefault="qualified"
+  elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:tr="Parser/TokenRule"
+  xmlns:sp="Parser/Spec"
+  xmlns:op="Parser/Operation"
+  xml:lang="en-us">
+
+  <xs:complexType name="ExternalOperationType">
+    <xs:attribute name="class" type="xs:token"/>
+    <xs:attribute name="input_key" type="xs:token"/>
+    <xs:attribute name="output_key" type="xs:token"/>
+  </xs:complexType>
+
+  <xs:group name="AnyOperationGroup">
+    <xs:choice>
+      <xs:element name="ExternalOperation" type="op:ExternalOperationType"/>
+    </xs:choice>
+  </xs:group>
+
+</xs:schema>

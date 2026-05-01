@@ -3,8 +3,8 @@
 Text, Binary, XML, & JSON Modular Parser.
 Uses these objects primarily:
 
-* `XParser` - The parser object. Create one of these to parse a file, or use the static `ParseDataAs(Spec spec, object input, out object parsed_data)` method.
-* `Spec` - The specification object. You
+* `XParser` - The parser object. You call `Parse(object input)` to run it.
+* `Spec`
 * `Operation`
 * `DataStore`
 

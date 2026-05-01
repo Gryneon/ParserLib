@@ -31,10 +31,10 @@ public static class Definition
       Op.End],
 
     TokenRules = [
-      new(TokenComment, ITT.None, ";.*?$"),
+      new(TokenComment, ITT.None, ";.*"),
       new(Competitive, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
       new(Competitive, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
-      .. MakeSingleCharRules("=", TokenExact, new ITT[] { ITT.Eq } ),
+      new(TokenExact, ITT.Eq, "="),
       new(TokenExtract, ITT.Section, @"\[(?'keep'.*?)\]")],
 
     GroupTokenRules = [
