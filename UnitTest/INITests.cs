@@ -1,7 +1,3 @@
-using System.IO;
-
-using Parser;
-
 using Specification.INI;
 
 namespace UnitTest;

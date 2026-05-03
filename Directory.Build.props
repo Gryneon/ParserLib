@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Authors>John Taylor</Authors>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <!-- <Deterministic>true</Deterministic> -->
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
@@ -15,7 +14,7 @@
     <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>
     <RepositoryType>git</RepositoryType>
-    <WarningLevel>9999</WarningLevel>
+    <WarningLevel>5</WarningLevel>
     <Platforms>x64</Platforms>
   </PropertyGroup>
 </Project>

@@ -33,7 +33,7 @@ public static class Definition
         new ByteSavePosOperation("bytes", "savepos"),
         new ByteJumpVarOperation("filepos"),
         ReadBinary("size", "data"),
-        new ByteRecallOperation("savepos"),
+        new ByteRecallOperation("savepos", "bytes"),
       ])
     ]
   };
@@ -58,7 +58,7 @@ public static class Definition
         new ByteSavePosOperation("savepos"),
         new ByteJumpVarOperation("offset"),
         ReadBinary("size", "data"),
-        new ByteRecallOperation("savepos"),
+        new ByteRecallOperation("savepos", "bytes"),
       ]),
       Op.End
     ]
@@ -87,7 +87,7 @@ public static class Definition
         new ByteSavePosOperation("savepos"),
         new ByteJumpVarOperation("filepos"),
         ReadBinary("dsize", "data"),
-        new ByteRecallOperation("savepos"),
+        new ByteRecallOperation("savepos", "bytes"),
       ]),
     ]
   };

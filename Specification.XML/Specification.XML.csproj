@@ -6,8 +6,7 @@
     <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Platforms>x64</Platforms>
-    <TargetFramework>net11.0</TargetFramework>
+        <TargetFramework>net11.0</TargetFramework>
     <Title>XML Format Specification</Title>
     <PackageIcon>XMLFile.ico</PackageIcon>
   </PropertyGroup>

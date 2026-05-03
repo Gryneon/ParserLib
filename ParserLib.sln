@@ -80,15 +80,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Language Specifications", "
 		Parser\Tokens\TokenRule.xml = Parser\Tokens\TokenRule.xml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schema Reference", "Schema Reference", "{6F066962-FF3C-5047-E290-F032C27F0095}"
-	ProjectSection(SolutionItems) = preProject
-		..\Schemas\MSBuild\Microsoft.Build.CommonTypes.xsd = ..\Schemas\MSBuild\Microsoft.Build.CommonTypes.xsd
-		..\Schemas\MSBuild\Microsoft.Build.Core.xsd = ..\Schemas\MSBuild\Microsoft.Build.Core.xsd
-		..\Schemas\Microsoft.Build.xsd = ..\Schemas\Microsoft.Build.xsd
-		..\Schemas\NotepadPlusWorkspace.xsd = ..\Schemas\NotepadPlusWorkspace.xsd
-		..\Schemas\XMLCodeDocumentation.xsd = ..\Schemas\XMLCodeDocumentation.xsd
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

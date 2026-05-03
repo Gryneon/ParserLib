@@ -1,7 +1,5 @@
 //#pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Common;
 
 /// <summary>A lightweight variant of section that holds a start position and a length for operating on a <see cref="Span{T}"/>, <see cref="Memory{T}"/> or <see langword="string"/>.</summary>
@@ -25,7 +23,7 @@ public readonly struct Pos (int start, int length) : IEquatable<Pos>, IIndexSort
   public static Pos Null { get; } = new(DNE, DNE);
   readonly int IIndexSortable.Index => Start;
 
-  public readonly Section ToSection (string full_text) => Section.ByLength(Start, Length, full_text);
+  public readonly Section ToSection (string full_text) => new(Start, Length, full_text);
   public readonly bool IsWithin (int point) => point >= Start && point <= End;
   public readonly bool Overlaps (Pos other) => other.Start <= End && other.End >= Start;
   public readonly bool Equals (Pos other) => Start == other.Start && Length == other.Length;

@@ -23,7 +23,7 @@ namespace Parser.Tokens;
 /// <item><c>cyi:Script</c> - Content 'Script', Case insensitive, store as a Type.</item>
 /// </list>
 /// </remarks>
-public sealed class ChkToken : IEquatable<IToken>
+public sealed class ChkToken
 {
   internal static Dictionary<char, RT> LetterReference { get; } = new()
   {
@@ -132,8 +132,7 @@ public sealed class ChkToken : IEquatable<IToken>
         _ => T.Error,
       };
   }
-  private bool IsFullRegexMatch (IToken? token) =>
-    token is not null && (RegexValidator.IsEmpty() || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) || _spec.SC == SCOIC ? ROIC : RON)).Value.Length == token.Content.Length);
+
   internal static Collection<string> AllAllowedTypes (IEnumerable<string> types, Spec spec)
   {
     HashSet<string> all_types_allowed = [.. types];
@@ -160,10 +159,10 @@ public sealed class ChkToken : IEquatable<IToken>
     return [.. all_types_allowed];
   }
   internal bool Check_Type (IToken? token) => (token?.HasType == true && AllowedTypes.Any(type => token.Type.Like(type))) || AllowedTypes.Count == 0;
-  /// <summary>Checks if the specified token satisfies this object's conditions.</summary>
-  /// <param name="other">The token to check.</param>
-  /// <returns><see langword="true"/> if the token satisfies this object's conditions, <see langword="false"/> otherwise.</returns>
-  public bool Equals (IToken? other) =>
-    IsFullRegexMatch(other) && Check_Type(other);
+
   public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (RegexValidator.Length > 0 ? $"{{{RegexValidator}}}" : "");
+  internal bool IsStatisfiedBy (IToken token, Spec spec) =>
+    token is not null &&
+    (RegexValidator.IsEmpty() || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) || spec.SC == SCOIC ? ROIC : RON)).Value.Length == token.Content.Length) &&
+    Check_Type(token);
 }

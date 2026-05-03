@@ -62,7 +62,7 @@ public sealed class OperationAction : IOperation
           Parser.Data[SData[0]] = value;
           goto Pass;
         case OAT.DebugKey:
-          Log(Area, "Dumping Key.\n\n\n");
+          Log(MsgClass.Debug, "Dumping Key.\n\n\n");
           if (Parser.Data.TryLoad(SData[0], out object? keyData))
             Log(MsgClass.Warning, keyData.ToString() ?? "No string representation.");
           else

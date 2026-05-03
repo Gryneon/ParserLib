@@ -179,7 +179,7 @@ public sealed class TokenFactory
 
     while (next >= 0 && cursor <= Input.Length)
     {
-      Section match = Section.ByLength(next, length, Input);
+      Section match = new(next, length, Input);
       if (!CannotMatch.Overlaps(match))
       {
         if (Type is RT.TokenExact)

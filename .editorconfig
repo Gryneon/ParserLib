@@ -300,3 +300,6 @@ csharp_style_var_elsewhere = false:silent
 csharp_style_var_for_built_in_types = false:silent
 csharp_style_var_when_type_is_apparent = false:silent
 csharp_using_directive_placement = outside_namespace:warning
+
+# RCS0045: Use linefeed as new line
+dotnet_diagnostic.RCS0045.severity = suggestion

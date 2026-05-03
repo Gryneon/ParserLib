@@ -4,21 +4,24 @@
   attributeFormDefault="qualified"
   elementFormDefault="qualified"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:tr="Parser/TokenRule"
-  xmlns:sp="Parser/Spec"
   xmlns:op="Parser/Operation"
   xml:lang="en-us">
 
-  <xs:complexType name="ExternalOperationType">
-    <xs:attribute name="class" type="xs:token"/>
-    <xs:attribute name="input_key" type="xs:token"/>
-    <xs:attribute name="output_key" type="xs:token"/>
+  <xs:include schemaLocation="Operation.Instructions.xsd"/>
+  
+  
+  <xs:complexType name ="InstructionSet">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:group ref="op:AnyOperation" maxOccurs="unbounded"/>
+    </xs:sequence>
   </xs:complexType>
-
-  <xs:group name="AnyOperationGroup">
+  
+  <xs:group name="AnyOperation">
     <xs:choice>
-      <xs:element name="ExternalOperation" type="op:ExternalOperationType"/>
+      
     </xs:choice>
   </xs:group>
+
+  <xs:element name="Instructions" type="op:InstructionSet"/>
 
 </xs:schema>

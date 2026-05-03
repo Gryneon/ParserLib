@@ -1,47 +1,21 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Common;
 
-public class Section () : IEquatable<Section>, IComparable<Section>
+public class Section : IEquatable<Section>, IComparable<Section>
 {
-  private int _length;
-  private int _end;
-
   public int Start { get; init; }
-  public int Length
+  public int Length { get; init; }
+  public int End => Start + Length - 1;
+  public string Content { get; init; }
+
+  public Section (int start, int length, string input)
   {
-    get => _length;
-    set
-    {
-      _length = value;
-      _end = Start + value - 1;
-    }
+    Start = start;
+    Length = length;
+    Content = input[start..End];
   }
-  public int End
-  {
-    get => _end;
-    set
-    {
-      _end = value;
-      _length = value - Start + 1;
-    }
-  }
-  public required string Content { get; set; }
-  public static Section ByEnd (int start, int end, string input) => new()
-  {
-    Start = start,
-    End = end,
-    Content = input[start..end],
-  };
-  public static Section ByLength (int start, int length, string input) => new()
-  {
-    Start = start,
-    Length = length,
-    Content = input[start..(length + start - 1)],
-  };
-  public Section (Capture c) : this()
+  public Section (Capture c)
   {
     c.ThrowIfNull();
     Start = c.Index;
@@ -60,5 +34,5 @@ public class Section () : IEquatable<Section>, IComparable<Section>
   public static bool operator <= (Section left, Section right) => left?.CompareTo(right) <= 0;
   public static bool operator > (Section left, Section right) => left?.CompareTo(right) > 0;
   public static bool operator >= (Section left, Section right) => left?.CompareTo(right) >= 0;
-  public static implicit operator Pos (Section section) => section is null ? Pos.Null : new(section.Start, section.Length);
+  public static implicit operator Pos (Section? section) => section is null ? Pos.Null : new(section.Start, section.Length);
 }

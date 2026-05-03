@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using Parser;
-using Parser.Exceptions;
 using Parser.Ops;
 using Parser.Tokens;
 
@@ -66,7 +65,7 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
         initial = new XMLElementSingle()
         {
           Tag = ct.Name?.Content ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
-          Namespace = ct.ObjType?.Content,
+          XMLNamespace = ct.ObjType?.Content,
           Attributes = [.. from item in ct.GetPieceTokens(TokenRef.PropertyList)
                         where
                           item.Type == "Attribute" &&
@@ -82,7 +81,7 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
         initial = new XMLElementOpen()
         {
           Tag = ct.Name?.Content ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
-          Namespace = ct.ObjType?.Content,
+          XMLNamespace = ct.ObjType?.Content,
           Attributes = [.. from item in ct.GetPieceTokens(TokenRef.PropertyList)
                         where
                           item.Type == "Attribute" &&
@@ -98,7 +97,7 @@ public sealed class XMLFactory : SimpleFactory<IXMLObject>
         initial = new XMLElementClose()
         {
           Tag = ct.Name?.Content ?? Op.ThrowBadResult("No element tag defined. Malformed XML.").ToString(),
-          Namespace = ct.ObjType?.Content
+          XMLNamespace = ct.ObjType?.Content
         };
         break;
       default:

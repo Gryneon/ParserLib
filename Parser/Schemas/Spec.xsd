@@ -8,24 +8,38 @@
   xmlns:sp="Parser/Spec"
   xmlns:op="Parser/Operation"
   xml:lang="en-us">
-  
+
+  <xs:import namespace="Parser/TokenRule" schemaLocation="TokenRule.xsd"/>
+  <xs:import namespace="Parser/Operation" schemaLocation="Operation.xsd"/>
+
+  <xs:simpleType name="NonEmptyTokenType">
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="SpecType">
     <xs:sequence>
-
+      <xs:element name="Name" minOccurs="1" maxOccurs="1" type="sp:NonEmptyTokenType"/>
+      <xs:group ref="sp:SpecPropertyGroup"/>
     </xs:sequence>
   </xs:complexType>
+
+  <xs:group name="SpecPropertyGroup">
+    <xs:sequence>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="tr:GroupTokenRules" maxOccurs="1" minOccurs="0"/>
+        <xs:element ref="tr:TokenRules" maxOccurs="1" minOccurs="0"/>
+        <xs:element ref="op:Instructions" maxOccurs="1" minOccurs="0"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:group>
 
   <xs:element name="Specs">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Spec" minOccurs="0" maxOccurs="unbounded" type="sp:SpecType" />
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="Operations">
-    <xs:complexType>
-      <xs:group ref="op:AnyOperationGroup"/>
     </xs:complexType>
   </xs:element>
 

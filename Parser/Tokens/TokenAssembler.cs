@@ -229,7 +229,7 @@ public sealed partial class TokenAssembler
         reset_match();
         break;
       }
-      if (node.Equals(token))
+      if (node.IsStatisfiedBy(token, _spec))
       {
         if (first_token_index == -1)
           first_token_index = token_index;

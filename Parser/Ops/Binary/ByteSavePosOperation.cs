@@ -6,12 +6,12 @@ namespace Parser.Ops.Binary;
 
 public class ByteSavePosOperation (string cursor_key = "bytes", string output_key = "recall_pos") : Operation(SE, output_key)
 {
-  private readonly string _cursor_key = cursor_key;
+  public override bool NoInput => true;
 
   protected override void Execute ()
   {
-    WorkData = Parser.GetCursorByKey(_cursor_key).Index;
-    Log("ByteSavePosOperation", $"Position saved, {WorkData} in '{OutputKey}'.");
+    WorkData = Parser.GetCursorByKey(cursor_key).Index;
+    Log(MsgClass.BlueInfo, $"Position saved, {WorkData} in '{OutputKey}'.");
     Status = Pass;
   }
 }

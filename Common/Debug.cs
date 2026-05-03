@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 using static Common.Chars;
 
 namespace Common;
@@ -77,16 +75,6 @@ public static class Debug
     }
   }
   #endregion
-  /// <summary>Logs a message to the output stream.</summary>
-  /// <remarks>This method always assumes that <see cref="DebugIn(string, string)"/> has been called, and uses that location as the caller.</remarks>
-  /// <param name="cls">The color and verbosity of the message.</param>
-  /// <param name="message">The message text.</param>
-  public static void Log (MsgClass cls, string message)
-  {
-    LogHead();
-    LogPart(cls, message);
-    NewLine();
-  }
   /// <summary>Purges the stack until the specified key.</summary>
   /// <param name="key">The key of the position to resume.</param>
   public static void DoCatch (string key) => PurgeStackTo(key);
@@ -97,13 +85,12 @@ public static class Debug
   /// <remarks>This keeps the classname the same as it was since the last <c>DebugIn</c> call.</remarks>
   /// <param name="method">The method name.</param>
   public static void DebugIn (string method) => CallStack.Add(new(ThisClass, method));
-  /// <summary>Clears the last location set by DebugIn and restores the one before it.</summary>
-  public static void DebugOut () => CallStack.Drop();
   /// <summary>Sets the logging location for any logs.</summary>
   /// <param name="classname">The class name.</param>
   /// <param name="method">The method name.</param>
   public static void DebugIn (string classname, string method) => CallStack.Add(new(classname, method));
-
+  /// <summary>Clears the last location set by DebugIn and restores the one before it.</summary>
+  public static void DebugOut () => CallStack.Drop();
   /// <summary>Set to define what level of debugging information to display.</summary>
   public static LogClass Verbosity { get; set; }
 
@@ -123,21 +110,22 @@ public static class Debug
   /// <summary>Writes a newline to the output stream.</summary>
   /// <param name="back">The background color.<br/>Default is black.</param>
   public static void NewLine (ConsoleColor back = C_Black) => DoLog(LFs, back, back, true);
-  public static void Log (MsgClass msgClass, string className, string methodName, string msg)
+  public static void Log (MsgClass msgClass, string className, string methodName, string message)
   {
     DoLogHead(MsgClass.Debug, className, methodName);
-    LogPart(msgClass, msg);
+    LogPart(msgClass, message);
     NewLine();
   }
-
   /// <summary>Logs a message to the output stream.</summary>
-  /// <param name="src">The orignating class.</param>
-  /// <param name="msg">The message to log.</param>
-  /// <param name="back">The background color.</param>
-  /// <param name="text">The foreground color.</param>
-  /// <param name="partial"> If <see langword="true"/>, no newline will be appended.</param>
-  public static void Log (string src, string msg, ConsoleColor back = C_Black, ConsoleColor text = C_White, bool partial = false) =>
-    DoLog($"{src} : {msg}", back, text, partial);
+  /// <remarks>This method always assumes that <see cref="DebugIn(string, string)"/> has been called, and uses that location as the caller.</remarks>
+  /// <param name="msgClass">The color and verbosity of the message.</param>
+  /// <param name="message">The message text.</param>
+  public static void Log (MsgClass msgClass, string message)
+  {
+    LogHead();
+    LogPart(msgClass, message);
+    NewLine();
+  }
   /// <summary>Logs an exception that was handled internally.</summary>
   /// <param name="e">The exception to log.</param>
   public static void LogException (Exception e) =>

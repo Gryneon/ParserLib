@@ -196,7 +196,7 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IGene
     }
     catch (InvalidCastException ice)
     {
-      Debug.LogException(ice);
+      LogException(ice);
       return ErrVal;
     }
   }
