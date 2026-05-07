@@ -18,7 +18,11 @@ global using static Common.Names;
 global using static Common.Debug;
 
 [assembly: AssemblyCompany("Testing Console App")]
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
+#elif RELEASE
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyFlags(AssemblyNameFlags.None)]
 [assembly: AssemblyProduct("Testing Console App")]
 [assembly: AssemblyTitle("Testing Console App")]

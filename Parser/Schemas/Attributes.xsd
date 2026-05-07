@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="Parser/Spec"
+  attributeFormDefault="unqualified"
+  elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="Parser/Spec"
+  xml:lang="en-us">
+  
+  <xs:attributeGroup name="LengthAttrGroup">
+    <xs:attribute name="length" type="xs:positiveInteger">
+      <xs:annotation>
+        <xs:documentation>
+          Length of data or text, must be 1 or higher.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="length_var" type="DataKeyType">
+      <xs:annotation>
+        <xs:documentation>
+          Stored data entry to read the length from as an integer.
+          Referenced data should be an integer greater than 0.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="PositionAttrGroup">
+    <xs:attribute name="position" type="xs:nonNegativeInteger">
+      <xs:annotation>
+        <xs:documentation>
+          Position value, zero-based index.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="position_var" type="DataKeyType">
+      <xs:annotation>
+        <xs:documentation>
+          Stored data entry to read the position from as an integer.
+          Referenced data should be an integer equal to or greater than 0.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="TargetAttrGroup">
+    <xs:attribute name="target" type="xs:nonNegativeInteger">
+      <xs:annotation>
+        <xs:documentation>
+          Target value, zero-based index.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="target_var" type="DataKeyType">
+      <xs:annotation>
+        <xs:documentation>
+          Stored data entry to read the target from as an integer.
+          Referenced data should be an integer equal to or greater than 0.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="DataTypeAttrGroup">
+    <xs:attribute name="type" use="required">
+      <xs:annotation>
+        <xs:documentation>
+          The type of data.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="NonEmptyTokenType">
+          <xs:enumeration value="binary">
+            <xs:annotation>
+              <xs:documentation>
+                Reads a sequence of bytes, stored internally as a Memory&lt;byte&gt; object.
+                If the length attribute is not defined, it reads until the cursor reaches the end.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="string">
+            <xs:annotation>
+              <xs:documentation>
+                Reads a sequence of charcters, stored internally as a string.
+                If the length attribute is not defined, it reads until the cursor reaches the end.
+                If the encoding attribute is not defined, it uses ASCII by default.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="text">
+            <xs:annotation>
+              <xs:documentation>
+                Reads a sequence of charcters, stored internally as a string.
+                If the length attribute is not defined, it reads until the cursor reaches the end.
+                If the encoding attribute is not defined, it uses ASCII by default.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="int">
+            <xs:annotation>
+              <xs:documentation>
+                Reads a sequence of 4 bytes, stored internally as an int.
+                If the endian attribute is not defined, this uses little-endian order.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="short">
+            <xs:annotation>
+              <xs:documentation>
+                Reads 2 bytes, stored internally as a short integer.
+                If the endian attribute is not defined, this uses little-endian order.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="byte">
+            <xs:annotation>
+              <xs:documentation>
+                Reads 1 byte, stored internally as an unsigned byte.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="ScopeAttrGroup">
+    <xs:attribute name="scope" default="global" use="optional" type="ScopeAttributeType">
+      <xs:annotation>
+        <xs:documentation>
+          Whether to store the value local to this section, or to store it globally
+          and have it persist beyond it. If the value already exists, it will be overwritten.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="ConditionAttrGroupReq">
+    <xs:attribute name="condition" use="required" type="IfConditionType"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="ConditionAttrGroupOpt">
+    <xs:attribute name="condition" use="optional" type="IfConditionType"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="ConditionAttrGroupSwitch">
+    <xs:attribute name="condition" use="required" type="SwitchConditionType"/>
+  </xs:attributeGroup>
+  
+</xs:schema>

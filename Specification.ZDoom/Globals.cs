@@ -27,7 +27,11 @@ using System.Runtime.Versioning;
 
 [assembly: TargetFramework(".NETCoreApp,Version=v11.0", FrameworkDisplayName = ".NET 11.0")]
 [assembly: AssemblyCompany("Specification.ZDoom")]
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
+#elif RELEASE
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyFileVersion("1.0.0.1")]
 [assembly: AssemblyInformationalVersion("1.0.0+1aa57e2002ccf2381fb8c2f5a9ab83dfd0412369")]
 [assembly: AssemblyProduct("Specification.ZDoom")]

@@ -32,8 +32,8 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
     set;
   } = SE;
 
-  public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
-
+  public bool HasType => !Type.Like("None");
+  public IToken? Parent { get; set; }
   public IList<IToken> Children
   {
     get => _tokens;
@@ -55,6 +55,11 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
 
   public void Print (int indent)
   {
+    DebugIn("TokenCollection", nameof(Print));
+    if (Count == 0)
+    {
+      LogPart(MsgClass.Error, "Empty Token List Printed. Check Why.");
+    }
     if (Count == 1)
     {
       _tokens[0].Print(indent);
@@ -69,6 +74,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
         item.Print(indent + 2);
       }
     }
+    DebugOut();
   }
 
   public void Clear () => _tokens.Clear();
@@ -91,7 +97,6 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   }
 
   public bool Remove (IToken item) => _tokens.Remove(item);
-
   public void RemoveAt (int index) => _tokens.RemoveAt(index);
 
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
@@ -129,22 +134,13 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   }
 
   public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
-
   public bool Equals (IToken? other) => other is TokenCollection tc && _tokens.SequenceEqual(tc._tokens);
-
   public override bool Equals (object? obj) => ReferenceEquals(this, obj) || (obj is not null && obj is TokenCollection tc && Equals(tc));
-
   public override int GetHashCode () => _tokens.GetHashCode();
-
   public static bool operator == (TokenCollection left, TokenCollection right) => left is null ? right is null : left.Equals(right);
-
   public static bool operator != (TokenCollection left, TokenCollection right) => !(left == right);
-
   public static bool operator < (TokenCollection left, TokenCollection right) => left is null ? right is not null : left.CompareTo(right) < 0;
-
   public static bool operator <= (TokenCollection left, TokenCollection right) => left is null || left.CompareTo(right) <= 0;
-
   public static bool operator > (TokenCollection left, TokenCollection right) => left?.CompareTo(right) > 0;
-
   public static bool operator >= (TokenCollection left, TokenCollection right) => left is null ? right is null : left.CompareTo(right) >= 0;
 }

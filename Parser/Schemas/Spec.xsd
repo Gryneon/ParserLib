@@ -1,45 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
   targetNamespace="Parser/Spec"
-  attributeFormDefault="qualified"
+  attributeFormDefault="unqualified"
   elementFormDefault="qualified"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:tr="Parser/TokenRule"
-  xmlns:sp="Parser/Spec"
-  xmlns:op="Parser/Operation"
+  xmlns="Parser/Spec"
   xml:lang="en-us">
 
-  <xs:import namespace="Parser/TokenRule" schemaLocation="TokenRule.xsd"/>
-  <xs:import namespace="Parser/Operation" schemaLocation="Operation.xsd"/>
+  <xs:include schemaLocation="Types.xsd"/>
+  <xs:include schemaLocation="Attributes.xsd"/>
 
-  <xs:simpleType name="NonEmptyTokenType">
-    <xs:restriction base="xs:token">
-      <xs:minLength value="1"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:complexType name="SpecType">
-    <xs:sequence>
-      <xs:element name="Name" minOccurs="1" maxOccurs="1" type="sp:NonEmptyTokenType"/>
-      <xs:group ref="sp:SpecPropertyGroup"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:group name="SpecPropertyGroup">
-    <xs:sequence>
-      <xs:choice maxOccurs="unbounded" minOccurs="0">
-        <xs:element ref="tr:GroupTokenRules" maxOccurs="1" minOccurs="0"/>
-        <xs:element ref="tr:TokenRules" maxOccurs="1" minOccurs="0"/>
-        <xs:element ref="op:Instructions" maxOccurs="1" minOccurs="0"/>
+  <!-- Here because it describes elements -->
+  <xs:complexType name ="FileInferencesType">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:choice>
+        <xs:element name="And" type="FileInferencesType"/>
+        <xs:element name="Or" type="FileInferencesType"/>
+        <xs:element name="Header">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute fixed="4" name="length" use="optional" type="xs:int"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Extension" type="NonEmptyTokenType" />
       </xs:choice>
     </xs:sequence>
-  </xs:group>
+    <xs:attribute name="initial" type="AndOrType" default="or"/>
+  </xs:complexType>
 
   <xs:element name="Specs">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Spec" minOccurs="0" maxOccurs="unbounded" type="sp:SpecType" />
+        <xs:element name="Spec" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" type="NonEmptyTokenType"/>
+              <xs:element name="TokenRules" type="RuleList" minOccurs="0"/>
+              <xs:element name="GroupTokenRules" type="RuleList" minOccurs="0"/>
+              <xs:element name="TokenLookups" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="TokenLookup" type="TokenLookupType" minOccurs="0" maxOccurs="unbounded"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Instructions" minOccurs="0" type="InstructionSet">
+                
+                <xs:key name="OpLabel">
+                  <xs:selector xpath=".//Label"/>
+                  <xs:field xpath="@name"/>
+                </xs:key>
+
+                <xs:keyref refer="OpLabel" name="GotoLabelConstraint">
+                  <xs:selector xpath=".//GotoLabel"/>
+                  <xs:field xpath="@name"/>
+                </xs:keyref>
+
+              </xs:element>
+              <xs:element name="FileInferences" minOccurs="0" type="FileInferencesType"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GotoOpIndex" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attributeGroup ref ="TargetAttrGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GotoLabel" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="name" type="NonEmptyTokenType" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Label" id="OpLabel" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="MakeCursor" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+      <xs:attributeGroup ref="PositionAttrGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SetCursorPos" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+      <xs:attributeGroup ref="PositionAttrGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- <SavePos scope="global" name="directory_pos"/> -->
+  <xs:element name="SavePos" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+      <xs:attributeGroup ref="ScopeAttrGroup"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExtOperation" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Parameter" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute name="type" type="xs:token"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+      <xs:attribute name="input_var" use="optional" type="DataKeyType"/>
+      <xs:attribute name="output_var" use="optional" type="DataKeyType"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Terminate" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="success" use="optional" default="true" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- <Initialize scope="global" name="directory" type="Collection" item="DirectoryEntry"/> -->
+  <xs:element name="Initialize" substitutionGroup="Command">
+    <xs:annotation>
+      <xs:documentation>
+        Initializes a collection type.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="initial_var" use="required" type="DataKeyType"/>
+      <xs:attribute name="type" use="required" type="InitializeType">
+        <xs:annotation>
+          <xs:documentation>
+            The type of collection to make.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="value_type" use="required" type="NonEmptyTokenType">
+        <xs:annotation>
+          <xs:documentation>
+            The type of item in the collection.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="key_type" use="optional" type="NonEmptyTokenType">
+        <xs:annotation>
+          <xs:documentation>
+            The type of key in the collection.
+            This is ignored unless needed.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attributeGroup ref="PositionAttrGroup"/>
+      <xs:attributeGroup ref="ScopeAttrGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- <Tokenize content_var="text" output_var="tokens" /> -->
+  <xs:element name="Tokenize" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+      <xs:attribute name="content_var" use="required" type="DataKeyType"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="TokenAssemble" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+      <xs:attribute name="tokens_var" use="required" type="DataKeyType"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!--<ReadData scope="global" name="file_id" type="text" length="4" cursor="current_pos"/> -->
+  <xs:element name="ReadData" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="content_var" use="required" type="DataKeyType"/>
+      <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+      <xs:attribute name="cursor_var" use="optional" type="DataKeyType"/>
+      <xs:attribute name="endian" use="optional" type="xs:token"/>
+      <xs:attribute name="encoding" use="optional" type="xs:token"/>
+      <xs:attributeGroup ref="ScopeAttrGroup"/>
+      <xs:attributeGroup ref="DataTypeAttrGroup"/>
+      <xs:attributeGroup ref="LengthAttrGroup"/>
+      <xs:attributeGroup ref="PositionAttrGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ForCount" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Command"/>
+      </xs:sequence>
+      <xs:attribute name="counter_var" use="required" type="DataKeyType"/>
+      <xs:attributeGroup ref="LengthAttrGroup"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ForEach" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Command"/>
+      </xs:sequence>
+      <xs:attribute name="list_var" use="required" type="DataKeyType"/>
+      <xs:attribute name="item_var" use="required" type="DataKeyType"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="AddItem" substitutionGroup="Command" type="AddItemType"/>
+
+  <xs:element name="IfBlock" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded" minOccurs="1">
+        <xs:element name="If" type="ConditionType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="ElseIf" minOccurs="0" maxOccurs="unbounded" type="ConditionType"/>
+        <xs:element name="Else" minOccurs="0" maxOccurs="unbounded" type="InstructionSet"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="While" substitutionGroup="Command" type="ConditionType"/>
+  <xs:element name="Until" substitutionGroup="Command" type="ConditionType"/>
+  <xs:element name="If" substitutionGroup="Command" type="ConditionType"/>
+
+  <xs:element name="Switch" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
+        <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InstructionSet"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
     </xs:complexType>
   </xs:element>
 

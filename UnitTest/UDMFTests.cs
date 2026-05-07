@@ -1,10 +1,3 @@
-using System.IO;
-
-using Common;
-
-using Parser;
-using Parser.Tokens;
-
 using Specification.ZDoom;
 
 namespace UnitTest;
@@ -27,9 +20,9 @@ public class UDMFTests
     TokenCollection result = [.. factory.Produce(input)];
     TokenAssembler assembler = new([.. spec.GroupTokenRules], spec);
     int count = result.Count;
-    TokenCollection tc = assembler.Execute(result);
-    int count2 = tc.Count;
-    Assert.NotEmpty(tc);
+    TokenAssemblyResult tar = assembler.Execute(result);
+    int count2 = tar.Parents.Count;
+    Assert.NotEmpty(tar.Parents);
     Assert.NotEqual(count, count2);
   }
 }

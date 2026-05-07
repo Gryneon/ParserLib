@@ -388,15 +388,28 @@
             <returns><see langword="true"/> if the enum contains any of the bits provided, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:Common.Extensions.IListExtensions.IsEmpty``1(System.Collections.Generic.IList{``0})">
-            <summary>Checks if an <see cref="T:System.Collections.Generic.IList`1"/> is <see langword="null"/> or empty.</summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <returns></returns>
+            <inheritdoc cref="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty"/>
+        </member>
+        <member name="M:Common.Extensions.IListExtensions.AddRange``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEnumerable{``0})">
+            <inheritdoc cref="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.AddRange(System.Collections.Generic.IEnumerable{`0})"/>
         </member>
         <member name="M:Common.Extensions.IListExtensions.Drop``1(System.Collections.Generic.IList{``0})">
             <summary>Performs a 'pop' action, but discards the popped item.</summary>
             <typeparam name="T">The type of item.</typeparam>
             <param name="list">The list to perform the action on.</param>
+        </member>
+        <member name="T:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.&lt;M&gt;$B56C0C9A2D34322FFC8FAAFA1DC86B5D">
+            <summary>List extensions with <typeparamref name="T"/> as the item type.</summary>
+            <typeparam name="T">The type of items in the <see cref="T:System.Collections.Generic.IList`1"/>.</typeparam>
+            <param name="list">The list that the methods are executing from.</param>
+        </member>
+        <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty">
+            <summary>Checks if an <see cref="T:System.Collections.Generic.IList`1"/> is <see langword="null"/> or empty.</summary>
+            <returns><see langword="true"/> if the list is empty or null, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Adds a range of items to an <see cref="T:System.Collections.Generic.IList`1"/>.</summary>
+            <param name="additions">The items to add to the <see cref="T:System.Collections.Generic.IList`1"/>.</param>
         </member>
         <member name="T:Common.Extensions.IntExtensions">
             <summary>Integer extensions for bitwise operations.</summary>

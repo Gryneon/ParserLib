@@ -24,11 +24,10 @@ public class TokenAssembleOperation : Operation
   public TokenAssembleOperation (string input_key = "tokens", string output_key = "tokens_assembled") : base(input_key, output_key) => _rules = [];
   protected override void Execute ()
   {
-    TokenAssembler assembler = _rules.IsEmpty() ?  new(Spec) :  new([.. _rules], Spec);
+    TokenAssembler assembler = _rules.IsEmpty() ? new(Spec) : new([.. _rules], Spec);
     if (WorkData is TokenCollection tc)
     {
-      TokenCollection assembled = [.. assembler.Execute(tc)];
-      WorkData = assembled;
+      WorkData = assembler.Execute(tc);
       Status = OpStatus.Pass;
     }
     else

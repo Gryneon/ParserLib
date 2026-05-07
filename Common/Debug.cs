@@ -9,12 +9,12 @@ public static class Debug
   /// <summary>A pair of strings, that store the classname and the method name.</summary>
   /// <param name="ClassName">The classname.</param>
   /// <param name="Method">The method name.</param>
-  private sealed record class StackLoc (string ClassName, string Method);
-  private sealed record class StackRet (string KeyName, int StackPosition);
-  private static Collection<StackLoc> CallStack { get; } = [];
-  private static Collection<StackRet> Recovery { get; } = [];
-  private static string ThisClass => CallStack.Peek().ClassName;
-  private static string ThisMethod => CallStack.Peek().Method;
+  public sealed record class StackLoc (string ClassName, string Method);
+  public sealed record class StackRet (string KeyName, int StackPosition);
+  public static Collection<StackLoc> CallStack { get; } = [];
+  public static Collection<StackRet> Recovery { get; } = [];
+  public static string ThisClass => CallStack?.Peek()?.ClassName ?? "ThisClass<CallStack is null>";
+  public static string ThisMethod => CallStack?.Peek()?.Method ?? "ThisMethod<CallStack is null>";
   private static int LogDepth => CallStack.Count - 1;
   private static void DoLog (string msg, ConsoleColor? back = null, ConsoleColor? text = null, bool partial = false)
   {

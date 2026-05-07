@@ -12,7 +12,11 @@ using System.Reflection;
 using System.Resources;
 
 [assembly: AssemblyCompany("Console.Menu")]
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
+#elif RELEASE
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyFlags(AssemblyNameFlags.None)]
 [assembly: AssemblyProduct("Parser")]
 [assembly: AssemblyTitle("Parser")]

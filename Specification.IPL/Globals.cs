@@ -20,7 +20,11 @@ using System.Reflection;
 using System.Resources;
 
 [assembly: AssemblyCompany("Specification.IPL")]
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
+#elif RELEASE
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0.0-Prerelease")]
 [assembly: AssemblyProduct("Specification.IPL")]

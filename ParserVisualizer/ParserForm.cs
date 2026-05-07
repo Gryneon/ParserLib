@@ -10,5 +10,6 @@ public partial class ParserForm : Form
   {
     OperationBuilder opBuild = new();
     opBuild.Show(this);
+    opBuild.Dispose();
   }
 }

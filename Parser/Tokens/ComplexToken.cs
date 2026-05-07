@@ -18,42 +18,79 @@ public sealed class ComplexToken : IToken, IPrintable
     set => _token_pieces[piece_type] = value;
   }
 
-  public IToken? Name => GetPieceToken(TokenRef.Name);
-  public IToken? ObjType => GetPieceToken(TokenRef.Type);
-  public IToken? Value => GetPieceToken(TokenRef.Value);
-  public IToken? Left => GetPieceToken(TokenRef.Left);
-  public IToken? Right => GetPieceToken(TokenRef.Right);
-  public IToken? Center => GetPieceToken(TokenRef.Center);
-  public TokenCollection? AddFlags => GetPieceTokens(TokenRef.AddFlagList);
-  public TokenCollection? SubFlags => GetPieceTokens(TokenRef.SubFlagList);
-  public TokenCollection? Properties => GetPieceTokens(TokenRef.PropertyList);
-  public TokenCollection? Parameters => GetPieceTokens(TokenRef.ParameterList);
-  public TokenCollection? Statements => GetPieceTokens(TokenRef.StatementList);
-  public TokenCollection? Values => GetPieceTokens(TokenRef.ValueList);
+  public IToken? Name => GetPiece(TokenRef.Name);
+  public IToken? ObjType => GetPiece(TokenRef.Type);
+  /// <summary>Value is simply the first item in the ValueList.</summary>
+  public IToken? Value => (GetPiece(TokenRef.ValueList) as TokenCollection)?[0];
+  public IToken? Left => GetPiece(TokenRef.Left);
+  public IToken? Right => GetPiece(TokenRef.Right);
+  public IToken? Center => GetPiece(TokenRef.Center);
+  public TokenCollection? AddFlags => (TokenCollection?) GetPiece(TokenRef.AddFlagList);
+  public TokenCollection? SubFlags => (TokenCollection?) GetPiece(TokenRef.SubFlagList);
+  public TokenCollection? Properties => (TokenCollection?) GetPiece(TokenRef.PropertyList);
+  public TokenCollection? Parameters => (TokenCollection?) GetPiece(TokenRef.ParameterList);
+  public TokenCollection? Statements => (TokenCollection?) GetPiece(TokenRef.StatementList);
+  public TokenCollection? Values => (TokenCollection?) GetPiece(TokenRef.ValueList);
 
   public string Content => Children.Select(i => i.Content).TextJoin(" ");
   public IReadOnlyCollection<TokenRef> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
   public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
   public bool Exempt { get; set; }
+  public IToken? Parent { get; set; }
   public IList<IToken> Children { get; set; } = [];
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
   public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
-  public IToken? GetPieceToken (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value : null;
-  public TokenCollection? GetPieceTokens (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value as TokenCollection : null;
-  public string? GetPieceContent (TokenRef piece_type) => _token_pieces.TryGetValue(piece_type, out IToken? value) ? value.Content : null;
-  public bool HasPieceType (TokenRef piece_type) => _token_pieces.ContainsKey(piece_type) && piece_type.IsUsed(_token_pieces);
-
+  public IToken? GetPiece (TokenRef piece_type) => _token_pieces.TryGetValue(GetListID(piece_type), out IToken? value) ? value : null;
+  public string? GetPieceContent (TokenRef piece_type) => _token_pieces.TryGetValue(GetListID(piece_type), out IToken? value) ? value.Content : null;
+  public bool HasPieceType (TokenRef piece_type) => piece_type.IsUsed(_token_pieces);
+  private static TokenRef GetListID (TokenRef itemID) => itemID switch
+  {
+    TokenRef.Value => TokenRef.ValueList,
+    TokenRef.Property => TokenRef.PropertyList,
+    TokenRef.Statement => TokenRef.StatementList,
+    TokenRef.Parameter => TokenRef.ParameterList,
+    TokenRef.AddFlag => TokenRef.AddFlagList,
+    TokenRef.SubFlag => TokenRef.SubFlagList,
+    _ => itemID
+  };
+  private static bool HasListID (TokenRef itemID) => itemID != GetListID(itemID);
   public void AddPieceType (TokenRef piece_type, IToken token)
   {
-    if (HasPieceType(piece_type) && _token_pieces[piece_type] is TokenCollection list)
+    if (!HasListID(piece_type))
     {
-      list.Add(token);
+      SetPieceType(piece_type, token);
+      return;
+    }
+    if (!HasPieceType(piece_type))
+    {
+      TokenCollection new_list = [token];
+      SetPieceType(GetListID(piece_type), new_list);
+      SetPieceType(piece_type, new_list);
+      return;
+    }
+
+    IToken piece = GetPiece(piece_type)!;
+
+    if (piece is TokenCollection tc)
+    {
+      if (tc.Count == 0)
+      {
+        TokenCollection new_list = [token];
+        SetPieceType(GetListID(piece_type), new_list);
+        SetPieceType(piece_type, new_list);
+      }
+      else
+      {
+        tc.Add(token);
+      }
     }
     else
     {
-      _token_pieces[piece_type] = new TokenCollection() { token };
+      TokenCollection new_list = [piece, token];
+      SetPieceType(GetListID(piece_type), new_list);
+      SetPieceType(piece_type, new_list);
     }
   }
   public void AddPieceTypes (TokenRef piece_type, TokenCollection tokens)
@@ -63,7 +100,7 @@ public sealed class ComplexToken : IToken, IPrintable
 
     foreach (IToken token in tokens)
     {
-      AddPieceType( piece_type, token);
+      AddPieceType(piece_type, token);
     }
   }
   public void SetPieceType (TokenRef piece_type, IToken token) => _token_pieces[piece_type] = token;
@@ -133,22 +170,18 @@ public sealed class ComplexToken : IToken, IPrintable
 
     bool multiple_values = Values?.Count > 1;
 
-    foreach (KeyValuePair<string, IToken?> kvp in Parts)
+    EachPart(kvp =>
     {
-      if (kvp.Value is not null)
+      if (kvp.Value is null ||
+      (kvp.Value is TokenCollection tc && tc.IsEmpty()) ||
+      (kvp.Key is "Value" && multiple_values) ||
+      (kvp.Key is "ValueList" && !multiple_values))
       {
-        switch (kvp.Key)
-        {
-          case "Value" when multiple_values:
-            continue;
-          case "ValueList" when !multiple_values:
-            continue;
-          default:
-            temp += $"\n{indent2}{kvp.Key} = {kvp.Value.ToString(spCount + 2)}";
-            break;
-        }
+        return;
       }
-    }
+
+      temp += $"\n{indent2}{kvp.Key} = {kvp.Value.ToString(spCount + 2)}";
+    });
     DebugOut();
     return temp;
   }
@@ -159,7 +192,6 @@ public sealed class ComplexToken : IToken, IPrintable
     {
       TokenPieces = [.. _token_pieces],
       Children = [.. Children],
-      Exempt = Exempt,
       Type = Type,
     };
     return clone;

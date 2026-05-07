@@ -55,24 +55,24 @@ public enum XMLTokenType
 [DefinitionExport]
 public static class Definition
 {
-  /// <summary>
-  /// <para>XML Regex for tokens</para>
-  /// Old: <see href="https://regex101.com/r/PTKqnJ/3"/><br/>
-  /// New: <see href="https://regex101.com/r/jcPotD/4"/>
-  /// </summary>
-  public static RxSCollection Regex => [
-    Nm("m_element", $@"<\s*(?'m_endtag'\/)?\s*{TagName}{Gp(WS + Attribute).Any}\s*(?'m_noinsidetag'\/)?\s*>"),
-    Nm("m_header", $@"<\?\s*{TagName}{Gp(WS + Attribute).Any}\s*\?>"),
-    Nm("m_ws", $"(?<=>){WS}(?=<)"),
-    Nm("m_comment", "<!--(-(?!-)|[^-])*?-->"),
-    Nm("m_content", "[^<]+")
-  ];
+  //// <summary>
+  //// <para>XML Regex for tokens</para>
+  //// Old: <see href="https://regex101.com/r/PTKqnJ/3"/><br/>
+  //// New: <see href="https://regex101.com/r/jcPotD/4"/>
+  //// </summary>
+  //public static RxSCollection Regex => [
+  //  Nm("m_element", $@"<\s*(?'m_endtag'\/)?\s*{TagName}{Gp(WS + Attribute).Any}\s*(?'m_noinsidetag'\/)?\s*>"),
+  //  Nm("m_header", $@"<\?\s*{TagName}{Gp(WS + Attribute).Any}\s*\?>"),
+  //  Nm("m_ws", $"(?<=>){WS}(?=<)"),
+  //  Nm("m_comment", "<!--(-(?!-)|[^-])*?-->"),
+  //  Nm("m_content", "[^<]+")
+  //];
 
-  /// <summary>The attribute regular expression.</summary>
-  private static readonly RxS
-    Attribute = Rx(@"(?'m_prop_key_1'\w+)\s*=\s*""(?'m_prop_value_1'.*?)"""),
-    TagName = Nm("m_prop_tagname", "[A-Za-z][a-zA-Z0-9]+"),
-    WS = RX.WS;
+  //// <summary>The attribute regular expression.</summary>
+  //private static readonly RxS
+  //  Attribute = Rx(@"(?'m_prop_key_1'\w+)\s*=\s*""(?'m_prop_value_1'.*?)"""),
+  //  TagName = Nm("m_prop_tagname", "[A-Za-z][a-zA-Z0-9]+"),
+  //  WS = RX.WS;
 
   /// <summary>The XML specification.</summary>
   [DefinitionExport]
@@ -100,7 +100,8 @@ public static class Definition
       new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*\=)"),
       new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=\:)"),
       new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
-      new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)\b(?<!xml)"),
+      new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)\b(?<!xml)"),           // No non-xml headers
+      new (ErrorMatch, "None", @"\<\w+(?<error_pos>\s+)\w+\b\/?\>"),          // No spaces in element names
     ],
     GroupTokenRules = [
       new (XTT.Attribute, "n:AttrKey x:Eq v:String"),
@@ -114,7 +115,7 @@ public static class Definition
       new (XTT.ElementSingle, "x:Ao n:ElementName pa:Attribute x:Sl x:Ac"),
       new (XTT.ElementStartWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Ac"),
       new (XTT.ElementStart, "x:Ao n:ElementName pa:Attribute x:Ac"),
-      new (Recursive, XTT.ElementPair, "d:ElementStart v:ValidContent x:ElementEnd"),
+      new (Recursive, XTT.ElementPair, "d:ElementStart va:ValidContent x:ElementEnd"),
       new (Recursive, XTT.ElementPair, "d:ElementStartWithNamespace va:ValidContent x:ElementEndWithNamespace"),
 
     ],
@@ -125,7 +126,9 @@ public static class Definition
     },
     Operations = [
       new TokenizeOperation(),
+      new DebugPrintKeyOperation("tokens"),
       new TokenAssembleOperation(),
+      new DebugPrintKeyOperation("tokens_assembled"),
       Op.End,
     ],
   };

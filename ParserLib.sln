@@ -38,21 +38,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{F60AE9E8-DEC6-417D-9487-81940A3D53D3}"
 	ProjectSection(SolutionItems) = preProject
 		docs\Common.xml = docs\Common.xml
-		docs\Parser.Binary.xml = docs\Parser.Binary.xml
-		docs\Parser.Byte.xml = docs\Parser.Byte.xml
-		docs\Parser.Text.xml = docs\Parser.Text.xml
 		docs\Parser.xml = docs\Parser.xml
-		docs\Specification.Decorate.xml = docs\Specification.Decorate.xml
 		docs\Specification.INI.xml = docs\Specification.INI.xml
 		docs\Specification.IPL.xml = docs\Specification.IPL.xml
 		docs\Specification.JSON.xml = docs\Specification.JSON.xml
 		docs\Specification.REG.xml = docs\Specification.REG.xml
-		docs\Specification.SndInfo.xml = docs\Specification.SndInfo.xml
-		docs\Specification.UDMF.xml = docs\Specification.UDMF.xml
 		docs\Specification.WAD.xml = docs\Specification.WAD.xml
 		docs\Specification.XML.xml = docs\Specification.XML.xml
-		docs\Specification.ZScript.xml = docs\Specification.ZScript.xml
-		docs\Specificiation.UDMF.xml = docs\Specificiation.UDMF.xml
+		docs\Specification.ZDoom.xml = docs\Specification.ZDoom.xml
 		docs\Terminal.Menu.xml = docs\Terminal.Menu.xml
 		docs\TestConsole.xml = docs\TestConsole.xml
 	EndProjectSection
@@ -135,6 +128,7 @@ Global
 		{C42B27E1-419B-440F-BF39-F16BCBAC54C7}.Release|x64.ActiveCfg = Release|x64
 		{C42B27E1-419B-440F-BF39-F16BCBAC54C7}.Release|x64.Build.0 = Release|x64
 		{C3C931AB-EADC-4A0E-AB56-F072936C78EC}.Debug|x64.ActiveCfg = Debug|x64
+		{C3C931AB-EADC-4A0E-AB56-F072936C78EC}.Debug|x64.Build.0 = Debug|x64
 		{C3C931AB-EADC-4A0E-AB56-F072936C78EC}.Release|x64.ActiveCfg = Release|x64
 		{C3C931AB-EADC-4A0E-AB56-F072936C78EC}.Release|x64.Build.0 = Release|x64
 		{E180CC60-075F-462E-996F-39070EC39013}.Debug|x64.ActiveCfg = Debug|x64
@@ -144,6 +138,7 @@ Global
 		{A956E431-070B-45D6-8776-1A1D1ED793AE}.Debug|x64.ActiveCfg = Debug|x64
 		{A956E431-070B-45D6-8776-1A1D1ED793AE}.Debug|x64.Build.0 = Debug|x64
 		{A956E431-070B-45D6-8776-1A1D1ED793AE}.Release|x64.ActiveCfg = Release|x64
+		{A956E431-070B-45D6-8776-1A1D1ED793AE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

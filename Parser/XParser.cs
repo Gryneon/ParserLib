@@ -249,6 +249,7 @@ public sealed class XParser
   /// <summary>Incrementally steps through all the operations, requesting user confirmation to continue.</summary>
   /// <param name="input">The file data as a <see langword="string"/>.</param>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
+  /// <exception cref="QuitException">Quits the program.</exception>
   public OpStatus StepThrough<TData> (TData input)
   {
     DebugIn("StepThrough");
@@ -277,7 +278,7 @@ public sealed class XParser
           action(userInput);
         }
       }
-      void checkLogExec (string input, string askmsg, Action<object> action)
+      void checkLogExec (string input, string askmsg, Action<string> action)
       {
         if (userInput.Like(input))
         {
@@ -300,8 +301,9 @@ public sealed class XParser
             throw new QuitException();
 
           checkLog("data", Data.ToString());
-          checkLogExec("print", "Enter the key to display.", obj => {
-            if (obj is TokenCollection tc) tc.Print(0);
+          checkLogExec("print", "Enter the key to display.", obj =>
+          {
+            if (Data.TryLoad(obj, out object? data) && data is IPrintable ip) ip.Print();
           });
           checkLog("show next", $"Next Operation: {NextOpIndex} : {NextOp}");
           checkLogAsk("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));

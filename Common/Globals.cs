@@ -21,7 +21,11 @@ global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 global using StringTuple = (string Key, string Value);
 
 [assembly: AssemblyCompany("Magna AIM Systems")]
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
+#elif RELEASE
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0")]
 [assembly: AssemblyProduct("CommonLibrary")]

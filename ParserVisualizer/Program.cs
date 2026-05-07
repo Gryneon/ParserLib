@@ -1,8 +1,7 @@
 using System;
-using System.Windows.Forms;
-
 using System.Reflection;
 using System.Resources;
+using System.Windows.Forms;
 
 [assembly: AssemblyCompany("ParserVisualizer")]
 [assembly: AssemblyConfiguration("Debug")]
@@ -15,8 +14,6 @@ using System.Resources;
 
 namespace ParserVisualizer;
 
-
-
 internal static class Program
 {
   /// <summary>
@@ -28,6 +25,8 @@ internal static class Program
     // To customize application configuration such as set high DPI settings or default font,
     // see https://aka.ms/applicationconfiguration.
     ApplicationConfiguration.Initialize();
-    Application.Run(new ParserForm());
+    ParserForm form = new();
+    Application.Run(form);
+    form.Dispose();
   }
 }

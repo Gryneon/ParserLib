@@ -2,8 +2,25 @@
 
 namespace Parser.Tokens;
 
-public sealed partial class TokenAssembler
+public record class TokenAssemblyResult (TokenCollection Tokens, TokenCollection Parents, TokenCollection Hierarchy) : IPrintable
 {
+  public override string ToString () => Tokens + "\n\n\n" + Parents + "\n\n\n" + Hierarchy;
+  public void Print (int indent)
+  {
+    Tokens.Print(indent);
+    NewLine();
+    NewLine();
+    NewLine();
+    Parents.Print(indent);
+    NewLine();
+    NewLine();
+    NewLine();
+    Hierarchy.Print(indent);
+  }
+}
+public sealed class TokenAssembler
+{
+  private const string Area = nameof(TokenAssembler);
   private readonly TokenRuleCollection _rules;
 
   // Temp fields
@@ -11,6 +28,8 @@ public sealed partial class TokenAssembler
   private TokenRule? _rule;
   private int _constructed_items;
   private readonly Spec _spec;
+  private TokenCollection _pass_list = [];
+  private readonly TokenCollection _parent_list = [];
 
   public TokenAssembler (TokenRuleCollection rules, Spec spec)
   {
@@ -33,7 +52,7 @@ public sealed partial class TokenAssembler
   }
   public void Parse ()
   {
-    DebugIn("Parse");
+    DebugIn(Area, "Parse");
 
     Validate();
     if (_rule.GroupSequence.IsEmpty())
@@ -65,117 +84,99 @@ public sealed partial class TokenAssembler
 
     if (tokens_to_assemble.IsEmpty()) return;
 
-    bool tryGetTokens (TokenRef type, [NotNull] out IList<IToken> tokens)
-    {
-      Validate();
-      tokens = [];
-      for (int i = 0; i < tokens_to_assemble.Count; i++)
-      {
-        TokenRef? assnTo = tokens_to_assemble[i].AssignTo;
-        assnTo.ThrowIfNull();
+    //bool tryGetToken (TokenRef type, [NotNullWhen(true)] out IToken? token)
+    //{
+    //  Validate();
+    //  token = null;
+    //  for (int i = 0; i < tokens_to_assemble.Count; i++)
+    //  {
+    //    TokenRef? assnTo = tokens_to_assemble[i].AssignTo;
+    //    assnTo.ThrowIfNull();
 
-        if (assnTo.Value == type)
-          tokens.Add(tokens_to_assemble[i]);
-      }
+    //    if (assnTo.Value == type)
+    //    {
+    //      token = tokens_to_assemble[i];
+    //      return true;
+    //    }
+    //  }
+    //  return false;
+    //}
+    //ComplexToken buildObject ()
+    //{
+    //  ComplexToken new_token;
 
-      return tokens.Count > 0;
-    }
-    bool tryGetToken (TokenRef type, [NotNullWhen(true)] out IToken? token)
-    {
-      Validate();
-      token = null;
-      for (int i = 0; i < tokens_to_assemble.Count; i++)
-      {
-        TokenRef? assnTo = tokens_to_assemble[i].AssignTo;
-        assnTo.ThrowIfNull();
+    //  if (tryGetToken(TokenRef.Inherit, out IToken? baseToken) && baseToken is ComplexToken ct)
+    //  {
+    //    new_token = (ComplexToken) ct.Clone();
+    //    new_token.Type = _rule.TypeToAssign;
+    //    new_token.Children = [.. tokens_to_assemble];
+    //  }
+    //  else
+    //  {
+    //    new_token = new()
+    //    {
+    //      Type = _rule.TypeToAssign,
+    //      Children = [.. tokens_to_assemble],
+    //    };
+    //  }
 
-        if (assnTo.Value == type)
-        {
-          token = tokens_to_assemble[i];
-          return true;
-        }
-      }
-      return false;
-    }
-    ComplexToken buildObject ()
-    {
-      ComplexToken new_token;
+    //  void trySet (TokenRef piece_type, out IToken? name)
+    //  {
+    //    if (tryGetToken(piece_type, out name))
+    //      new_token[piece_type] = name;
+    //  }
+    //  void trySetList (TokenRef piece_type, TokenRef list_type)
+    //  {
+    //    if (tryGetToken(piece_type, out IToken? maybe_list))
+    //    {
+    //      TokenCollection? tc = (TokenCollection?) maybe_list;
+    //      if (tc?.Count > 1)
+    //        new_token.SetPieceType(list_type, tc);
+    //      else if (tc?.Count == 1)
+    //        new_token.SetPieceType(piece_type, tc[0]);
+    //    }
+    //  }
 
-      if (tryGetToken(TokenRef.Inherit, out IToken? baseToken) && baseToken is ComplexToken ct)
-      {
-        new_token = (ComplexToken) ct.Clone();
-        //new_token.Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin);
-        new_token.Type = _rule.TypeToAssign;
-        new_token.Children = [.. tokens_to_assemble];
-      }
-      else
-      {
-        new_token = new()
-        {
-          Type = _rule.TypeToAssign,
-          Children = [.. tokens_to_assemble],
-          //Exempt = _rule.Type.HasFlag(RT.ExemptAllWithin)
-        };
-      }
-      if (tryGetToken(TokenRef.Name, out IToken? name)) new_token[TokenRef.Name] = name;
-      if (tryGetToken(TokenRef.Type, out IToken? type)) new_token[TokenRef.Type] = type;
-      if (tryGetTokens(TokenRef.Value, out IList<IToken> temp))
-      {
-        if (temp.Count > 1)
-          new_token.AddPieceType(TokenRef.ValueList, new TokenCollection(temp));
-        else if (temp.Count == 1)
-          new_token[TokenRef.Value] = temp[0];
-      }
-      if (tryGetToken(TokenRef.Left, out IToken? left)) new_token[TokenRef.Left] = left;
-      if (tryGetToken(TokenRef.Right, out IToken? right)) new_token[TokenRef.Right] = right;
-      if (tryGetToken(TokenRef.Center, out IToken? center)) new_token[TokenRef.Center] = center;
-      if (tryGetTokens(TokenRef.Property, out temp))
-      {
-        if (temp.Count > 1)
-          new_token.AddPieceType(TokenRef.PropertyList, new TokenCollection(temp));
-        else if (temp.Count == 1)
-          new_token[TokenRef.Property] = temp[0];
-      }
-      if (tryGetTokens(TokenRef.AddFlag, out temp))
-      {
-        if (temp.Count > 1)
-          new_token.AddPieceType(TokenRef.AddFlagList, new TokenCollection(temp));
-        else if (temp.Count == 1)
-          new_token[TokenRef.AddFlag] = temp[0];
-      }
-      if (tryGetTokens(TokenRef.SubFlag, out temp))
-      {
-        if (temp.Count > 1)
-          new_token.AddPieceType(TokenRef.SubFlagList, new TokenCollection(temp));
-        else if (temp.Count == 1)
-          new_token[TokenRef.SubFlag] = temp[0];
-      }
-      if (tryGetTokens(TokenRef.Parameter, out temp))
-      {
-        if (temp.Count > 1)
-          new_token.AddPieceType(TokenRef.ParameterList, new TokenCollection(temp));
-        else if (temp.Count == 1)
-          new_token[TokenRef.Parameter] = temp[0];
-      }
-      if (tryGetTokens(TokenRef.Statement, out temp))
-      {
-        if (temp.Count > 1)
-          new_token.AddPieceType(TokenRef.StatementList, new TokenCollection(temp));
-        else if (temp.Count == 1)
-          new_token[TokenRef.Statement] = temp[0];
-      }
+    //  trySet(TokenRef.Name, out IToken? name);
+    //  trySet(TokenRef.Type, out IToken? type);
+    //  trySet(TokenRef.Left, out IToken? left);
+    //  trySet(TokenRef.Right, out IToken? right);
+    //  trySet(TokenRef.Center, out IToken? center);
+    //  trySetList(TokenRef.Value, TokenRef.ValueList);
+    //  trySetList(TokenRef.Property, TokenRef.PropertyList);
+    //  trySetList(TokenRef.AddFlag, TokenRef.AddFlagList);
+    //  trySetList(TokenRef.SubFlag, TokenRef.SubFlagList);
+    //  trySetList(TokenRef.Parameter, TokenRef.ParameterList);
+    //  trySetList(TokenRef.Statement, TokenRef.StatementList);
 
-      return new_token;
-    }
+    //  return new_token;
+    //}
     _constructed_items++;
 
-    ComplexToken complex_token = buildObject();
+    ComplexToken complex_token = new()
+    {
+      Type = _rule.TypeToAssign,
+      Children = [.. tokens_to_assemble],
+
+    };
+
+    foreach (IToken token in tokens_to_assemble)
+    {
+      token.Parent = complex_token;
+      if (token.AssignTo is TokenRef tr)
+      {
+        complex_token.AddPieceType(tr, token);
+      }
+
+    }
+
+    _parent_list.Add(complex_token);
     _tokens.Remove(first_token_index, tokens_to_assemble.Count);
     _tokens.Insert(first_token_index, complex_token);
   }
   private int ExecRule ()
   {
-    DebugIn("ExecRule");
+    DebugIn(Area, "ExecRule");
     Validate();
     TokenCollection assembly = [];
     int first_token_index = -1;
@@ -281,10 +282,11 @@ public sealed partial class TokenAssembler
     DebugOut();
     return _constructed_items;
   }
-  public TokenCollection Execute (TokenCollection tokens)
+  public TokenAssemblyResult Execute (TokenCollection tokens)
   {
-    DebugIn("TokenAssembler", "Execute");
+    DebugIn(Area, "Execute");
     _tokens = [.. tokens];
+    _pass_list = [.. tokens];
 
     int recurseCounter = 0;
     int jumpRule = -1;
@@ -341,7 +343,7 @@ public sealed partial class TokenAssembler
 
     LogInfo("Token Assembly Complete");
     DebugOut();
-    return _tokens;
+    return new(_pass_list, _parent_list, _tokens);
   }
 
   public override string ToString () => $"TokenAssembler ({_spec.Name})";

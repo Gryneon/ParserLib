@@ -8,6 +8,7 @@ public interface IToken : IIndexSortable, IEquatable<IToken>
   TokenRef? AssignTo { get; set; }
   string Type { get; set; }
   bool HasType { get; }
+  IToken? Parent { get; set; }
   IList<IToken> Children { get; set; }
   string Content => Children.Select(static t => t.Content).TextJoin(" ");
   string ContentNoNewLine { get; }

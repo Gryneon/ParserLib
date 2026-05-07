@@ -30,7 +30,11 @@ global using RT = Parser.Tokens.TokenRuleType;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 
 [assembly: AssemblyCompany("Parser")]
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
+#elif RELEASE
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyFlags(AssemblyNameFlags.None)]
 [assembly: AssemblyProduct("Parser")]
 [assembly: AssemblyTitle("Parser")]

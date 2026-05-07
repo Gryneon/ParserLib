@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="Parser/Spec"
+  attributeFormDefault="unqualified"
+  elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="Parser/Spec"
+  xml:lang="en-us">
+  
+  <!-- Simple Types -->
+
+  <xs:simpleType name="NonEmptyTokenType">
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="InitializeType">
+    <xs:restriction base="NonEmptyTokenType">
+      <xs:enumeration value="Collection">
+        <xs:annotation>
+          <xs:documentation>
+Creates a basic collection accessible via iteration.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Dictionary"/>
+      <xs:enumeration value="LinkedList"/>
+      <xs:enumeration value="Set"/>
+      <xs:enumeration value="Lookup"/>
+      <xs:enumeration value="BitArray"/>
+      <xs:pattern value="\@?[a-zA-Z_]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="VariableListType">
+    <xs:list itemType="DataKeyType"/>
+  </xs:simpleType>
+  <xs:simpleType name="TokenTypeListType">
+    <xs:list itemType="NonEmptyTokenType"/>
+  </xs:simpleType>
+  <xs:simpleType name="SwitchConditionType">
+    <xs:restriction base="xs:string">
+      <xs:whiteSpace value="collapse"/>
+      <xs:pattern value="\[.*\]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="IfConditionType">
+    <xs:restriction base="xs:string">
+      <xs:whiteSpace value="collapse"/>
+      <xs:pattern value="\[.*\]\s*(==|&gt;=?|&lt;=?|is|!=|contains|like)\s*\[.*\]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AndOrType">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="and"/>
+      <xs:enumeration value="And"/>
+      <xs:enumeration value="or"/>
+      <xs:enumeration value="Or"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EndianessType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Little"/>
+      <xs:enumeration value="Big"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EncodingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ASCII"/>
+      <xs:enumeration value="UTF-8"/>
+      <xs:enumeration value="UTF-16"/>
+      <xs:enumeration value="UTF-8wBOM"/>
+      <xs:enumeration value="UTF-32"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name ="DataKeyType">
+    <xs:union memberTypes="NonEmptyTokenType">
+      <xs:simpleType>
+        <xs:restriction base="NonEmptyTokenType">
+          <xs:enumeration value="file_size"/>
+          <xs:enumeration value="initial"/>
+          <xs:enumeration value="bytes"/>
+          <xs:enumeration value="text"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="ScopeAttributeType">
+    <xs:restriction base="NonEmptyTokenType">
+      <xs:enumeration value="global">
+        <xs:annotation>
+          <xs:documentation>
+            This value is stored globally and persists outside of the section it was created in.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="local">
+        <xs:annotation>
+          <xs:documentation>
+            This value is stored locally (temporarily) and only exists until the
+            block that it resides in completes, or the next iteration of the loop
+            commences.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RuleTypeToken">
+    <xs:restriction base="xs:token">
+
+      <xs:enumeration value="None"/>
+
+      <!-- Token Rule Types -->
+      <xs:enumeration value="Competitive"/>
+      <xs:enumeration value="TokenMatch"/>
+      <xs:enumeration value="TokenExact"/>
+      <xs:enumeration value="TokenExtract"/>
+      <xs:enumeration value="ErrorMatch"/>
+      <xs:enumeration value="SplitMatch"/>
+      <xs:enumeration value="SplitExact"/>
+      <xs:enumeration value="StoreExtra"/>
+      <xs:enumeration value="StoreOther"/>
+
+      <!-- Combos -->
+      <xs:enumeration value="ThrowMatch"/> <!-- IgnoredToken & TokenMatch -->
+      <xs:enumeration value="TokenComment"/> <!-- IgnoredToken & Competitive -->
+    
+      <!-- Flags -->
+      <xs:enumeration value="IgnoreCase"/>
+      <xs:enumeration value="IgnoredToken"/>
+      <xs:enumeration value="Opt"/>
+      <xs:enumeration value="Mult"/>
+      <xs:enumeration value="Recursive"/>
+      <xs:enumeration value="Any"/> <!-- Opt & Mult -->
+    
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RuleTypeList">
+    <xs:list itemType="RuleTypeToken"/>
+  </xs:simpleType>
+  
+  <!-- Any operation or command must be one of these -->
+  <xs:element name="Command" abstract="true"/>
+
+  <xs:complexType name="AddItemType">
+  <xs:simpleContent>
+    <xs:extension base="VariableListType">
+      <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+      <xs:attribute name="type" use="required" type="NonEmptyTokenType"/>
+    </xs:extension>
+  </xs:simpleContent>
+</xs:complexType>
+  <xs:complexType name="ConditionType">
+    <xs:complexContent>
+      <xs:extension base="InstructionSet">
+        <xs:attribute name="condition" use="required" type="IfConditionType"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name ="InstructionSet">
+    <xs:sequence>
+      <xs:element ref="Command" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name ="CaseInstructionSet">
+    <xs:complexContent>
+      <xs:extension base="InstructionSet">
+        <xs:attribute name="value" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="RuleDef">
+    <xs:all>
+      <xs:element name="TypeToAssign" minOccurs="0" maxOccurs="1" type="xs:token" default="None"/>
+      <xs:element name="Type" type="RuleTypeList" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Data" minOccurs="0" maxOccurs="1" default="" type="xs:string"/>
+    </xs:all>
+    <xs:attribute name="name" type="xs:token"/>
+  </xs:complexType>
+  <xs:complexType name ="RuleList">
+    <xs:sequence>
+      <xs:element name="Rule" type="RuleDef" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TokenLookupType">
+    <xs:simpleContent>
+      <xs:extension base="TokenTypeListType">
+        <xs:attribute name="alias" type="xs:token" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>

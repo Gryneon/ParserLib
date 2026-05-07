@@ -1,4 +1,4 @@
-namespace Parser;
+namespace Parser.Exceptions;
 
 /// <summary>This is for quickly jumping back to the parser to quit the parse cycle.</summary>
 public class QuitException : OperationException

@@ -220,7 +220,6 @@ internal sealed partial class ParserForm : Form
     maker.AddLineFeed();
     foreach (TokenRule rule in _workingRules)
     {
-
       maker.AddElementOpen("Rule", [("index", $"{counter++}")]);
       maker.AddLineFeed();
       maker.AddElementOpen("Type");

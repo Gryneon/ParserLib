@@ -31,7 +31,7 @@ public class ACSTests
 
     TokenCollection tokens = tokenFactory.Produce(to_parse);
     Assert.NotEmpty(tokens);
-    TokenCollection tc = tokenAssembler.Execute(tokens);
-    _ = Assert.Single(tc);
+    TokenAssemblyResult tc = tokenAssembler.Execute(tokens);
+    _ = Assert.Single(tc.Hierarchy);
   }
 }

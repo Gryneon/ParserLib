@@ -10,8 +10,8 @@ Uses these objects primarily:
 
 ## Basic Operation Actions
 
-* `Operation.Copykey (FromKey, ToKey)` - Copies the value to another key.
-* `Operation.CreateCursor`
+<!--* `Operation.Copykey (FromKey, ToKey)` - Copies the value to another key.-->
+<!--* `Operation.CreateCursor`-->
 
 ## Text Operations
 

@@ -7,6 +7,9 @@ tab_width = 2
 trim_trailing_whitespace = true
 charset = utf-8
 
+# Roslynator: enable all diagnostics
+roslynator_analyzers_enabled = true
+
 dotnet_code_quality_unused_parameters = non_public:suggestion
 dotnet_diagnostic.CA2252.severity = warning
 dotnet_diagnostic.CA1034.severity = silent

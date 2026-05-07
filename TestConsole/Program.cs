@@ -87,7 +87,7 @@ internal static class Program
 #if DEBUG
     Verbosity = LogClass.Debug;
 #else
-    Verbosity = LogClass.Standard;
+    Verbosity = LogClass.Verbose;
 #endif
     //MenuController.StartMenu(InitialMenu);
     Library.InitializeLibrary(AppDomain.CurrentDomain);
@@ -112,10 +112,9 @@ internal static class Program
         InitialTest(SpecZDoom.ACS, ResZDoom.acs_sample);
         break;
       case "xml":
-        InitialTest(SpecXML.Spec, Paths.xsd_specification);
         InitialTest(SpecXML.Spec, Paths.xml_operation);
         InitialTest(SpecXML.Spec, Paths.xml_errors);
-        InitialTest(SpecZDoom.UDMF, ResZDoom.xml_acs);
+        InitialTest(SpecXML.Spec, ResZDoom.xml_acs);
         break;
       case "sndinfo":
         InitialTest(SpecZDoom.SndInfo, ResZDoom.sndinfo_test);
