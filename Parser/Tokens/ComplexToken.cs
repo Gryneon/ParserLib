@@ -131,6 +131,8 @@ public sealed class ComplexToken : IToken, IPrintable
   int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
   string IToken.ContentNoNewLine => Children.Select(child => child.ToString()).TextJoin().Replace(["\n", "\r"], ["<LF>", "<CR>"]);
 
+  public required Spec Spec { get; init; }
+
   private void EachPart (Action<KeyValuePair<string, IToken?>> action)
   {
     foreach (KeyValuePair<string, IToken?> part in Parts)
@@ -190,6 +192,7 @@ public sealed class ComplexToken : IToken, IPrintable
   {
     ComplexToken clone = new()
     {
+      Spec = Spec,
       TokenPieces = [.. _token_pieces],
       Children = [.. Children],
       Type = Type,

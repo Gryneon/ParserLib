@@ -4,6 +4,7 @@ namespace Parser.Tokens;
 
 public interface IToken : IIndexSortable, IEquatable<IToken>
 {
+  Spec Spec { get; init; }
   /// <summary>Assigned at match, cleared if match fails, kept if passes.</summary>
   TokenRef? AssignTo { get; set; }
   string Type { get; set; }
