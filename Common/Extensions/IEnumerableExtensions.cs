@@ -2,7 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using Common.Regex;
+using Common.Regexp;
 
 namespace Common.Extensions;
 

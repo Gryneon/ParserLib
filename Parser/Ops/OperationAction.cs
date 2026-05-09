@@ -2,7 +2,7 @@ namespace Parser.Ops;
 
 public sealed class OperationAction : IOperation
 {
-  private const string Area = "OperationAction";
+  private const string Area = nameof(OperationAction);
 
   internal OperationAction (OAT type, params Collection<object> args)
   {
@@ -34,7 +34,7 @@ public sealed class OperationAction : IOperation
 
   public OpStatus DoOperation (XParser parser_ref)
   {
-    DebugIn("OperationAction", "DoOperation");
+    DebugIn(Area, nameof(DoOperation));
     try
     {
       parser_ref.ThrowIfNull();
@@ -75,7 +75,7 @@ public sealed class OperationAction : IOperation
             Parser.Data[SData[1]] = Parser.Data[SData[0]];
             goto Pass;
           }
-          return OpStatus.FailNoSuchVarName;
+          return Op.ThrowNoVar(SData[0]);
 
         // Cursor actions
         case OAT.CreateCursor:
@@ -121,10 +121,8 @@ public sealed class OperationAction : IOperation
     OAT.DebugKey => "Dumping Key.",
     OAT.SetCursor => $"Setting Cursor {SData[0]} to {IData[0]}",
     OAT.ClearCursor => $"Cursor on {SData[0]} cleared",
-    OAT.IncrementCursorKey => throw new NotImplementedException(),
     OAT.CreateCursor => $"Creating cursor on {SData[0]}",
     OAT.CopyKey => $"Copying key from {SData[0]} to {SData[1]}",
-    OAT.JumpIf => throw new NotImplementedException(),
-    _ => "Error: Invalid Action"
+    _ => "No Message Defined"
   };
 }

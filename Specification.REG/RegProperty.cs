@@ -1,11 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 
 using Common.Extensions;
+using Common.Regexp;
 
 namespace Specification.REG;
 
 /// <summary>A registry key, type, and value, with an option to delete the entry.</summary>
-public sealed class RegProperty : IProperty<string>, IGeneratable
+public sealed class RegProperty : IProperty<string>
 {
   /// <summary>A blank property.</summary>
   public static RegProperty Blank { get; } = new() { };

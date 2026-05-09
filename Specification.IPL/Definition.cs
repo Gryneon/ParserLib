@@ -1,5 +1,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+using Common.Regexp;
+
 using Parser.Inference;
 using Parser.Ops;
 using Parser.Ops.Text;

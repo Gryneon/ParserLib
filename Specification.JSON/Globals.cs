@@ -4,7 +4,7 @@ global using System.Collections.ObjectModel;
 
 global using Common;
 global using Common.Extensions;
-global using Common.Regex;
+global using Common.Regexp;
 
 global using Parser;
 global using Parser.Ops;

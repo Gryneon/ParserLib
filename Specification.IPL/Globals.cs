@@ -5,7 +5,7 @@ global using System.Linq;
 global using System.Text.RegularExpressions;
 
 global using Common;
-global using Common.Regex;
+global using Common.Regexp;
 
 global using Parser;
 

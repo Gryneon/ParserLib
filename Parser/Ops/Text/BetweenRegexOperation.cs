@@ -1,5 +1,7 @@
 //using Parser.Text.Tokens;
 
+using Common.Regexp;
+
 namespace Parser.Ops.Text;
 
 public class BetweenRegexOperation ([SS("Regex")] string prefix, [SS("Regex")] string suffix, string input_key, string output_key) : Operation(input_key, output_key)

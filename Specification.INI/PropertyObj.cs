@@ -1,7 +1,9 @@
+using Common.Regexp;
+
 namespace Specification.INI;
 
 /// <summary>A key and value pair in an INI file.</summary>
-public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
+public class PropertyObj : PropertyBase<string>, ITextSerializer
 {
   /// <summary>The key name.</summary>
   public override required string Key { get; set; } = SE;
@@ -75,7 +77,7 @@ public class PropertyObj : PropertyBase<string>, IGeneratable, ITextSerializer
   /// <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
   /// <returns>The <see langword="string"/> representation of the object.</returns>
   public string Serialize () => $"  {Key}={Value}";
-  public bool Equals (PropertyObj? other) => throw new NotImplementedException();
+  public bool Equals (PropertyObj? other) => Key.Like(other?.Key) && Value.Is(other?.Value);
   public static implicit operator KeyValuePair<string, string> (PropertyObj from)
   {
     from.ThrowIfNull();

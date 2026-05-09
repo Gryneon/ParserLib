@@ -1,5 +1,5 @@
 #if HAS_OFFICE
-using Common.Regex;
+using Common.Regexp;
 
 using static Common.Regex.RegexStaticFunctions;
 

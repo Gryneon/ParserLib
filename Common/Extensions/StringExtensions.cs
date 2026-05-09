@@ -1,10 +1,6 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System.Diagnostics.CodeAnalysis;
-
-using Common.Regex;
-
-using static Common.Names;
+using Common.Regexp;
 
 using SysRegex = System.Text.RegularExpressions.Regex;
 

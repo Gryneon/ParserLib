@@ -1,7 +1,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using Common.Regex;
+using Common.Regexp;
 
 using SysRegex = System.Text.RegularExpressions.Regex;
 
@@ -93,7 +93,11 @@ public sealed class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<
       (ReplaceWith is not null &&
       other.Value is not null &&
       ReplaceWith.Equals(other.Value, SCO)) || (ReplaceWith is null && other.Value is null));
-  public int CompareTo (IProperty<string?>? other) => throw new NotImplementedException();
+  public int CompareTo (IProperty<string?>? other)
+  {
+    int keys = LookFor.CompareTo(other?.Key);
+    return keys == 0 ? ReplaceWith?.CompareTo(other?.Value, SCO) ?? 1 : keys;
+  }
 
   public static bool operator == (ReplaceNode left, ReplaceNode right) => left is null ? right is null : left.Equals(right, SCO);
   public static bool operator != (ReplaceNode left, ReplaceNode right) => !(left == right);

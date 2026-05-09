@@ -4,7 +4,7 @@ namespace Parser.Tokens;
 
 public interface IToken : IIndexSortable, IEquatable<IToken>
 {
-  Spec Spec { get; init; }
+  Spec Spec { get; }
   /// <summary>Assigned at match, cleared if match fails, kept if passes.</summary>
   TokenRef? AssignTo { get; set; }
   string Type { get; set; }
@@ -12,7 +12,7 @@ public interface IToken : IIndexSortable, IEquatable<IToken>
   IToken? Parent { get; set; }
   IList<IToken> Children { get; set; }
   string Content => Children.Select(static t => t.Content).TextJoin(" ");
-  string ContentNoNewLine { get; }
+  string ContentNoNewLine => Content.Replace(["\n", "\r"], ["<LF>", "<CR>"]);
   string ToString (int indent);
   void Print (int indent);
 }

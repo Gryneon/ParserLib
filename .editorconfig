@@ -7,6 +7,7 @@ tab_width = 2
 trim_trailing_whitespace = true
 charset = utf-8
 
+
 # Roslynator: enable all diagnostics
 roslynator_analyzers_enabled = true
 
@@ -189,10 +190,10 @@ dotnet_style_namespace_match_folder = true:suggestion
 dotnet_style_null_propagation = true:suggestion
 dotnet_style_object_initializer = true:suggestion
 dotnet_style_operator_placement_when_wrapping = end_of_line
-dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:silent
-dotnet_style_parentheses_in_other_binary_operators = never_if_unnecessary:silent
-dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
-dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:silent
+dotnet_style_parentheses_in_arithmetic_binary_operators = omit_for_simple_expressions:silent
+dotnet_style_parentheses_in_other_binary_operators = omit_for_simple_expressions:silent
+dotnet_style_parentheses_in_other_operators = omit_for_simple_expressions:silent
+dotnet_style_parentheses_in_relational_binary_operators = omit_for_simple_expressions:silent
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 dotnet_style_predefined_type_for_member_access = true:suggestion
 dotnet_style_predefined_type_for_object_creation = true:silent
@@ -284,7 +285,7 @@ csharp_style_prefer_index_operator = true:suggestion
 csharp_style_prefer_local_over_anonymous_function = true:suggestion
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_prefer_not_pattern = true:suggestion
-csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:silent
 csharp_style_prefer_pattern_matching = true:suggestion
 csharp_style_prefer_primary_constructors = true:silent
 csharp_style_prefer_range_operator = true:suggestion
@@ -306,3 +307,48 @@ csharp_using_directive_placement = outside_namespace:warning
 
 # RCS0045: Use linefeed as new line
 dotnet_diagnostic.RCS0045.severity = suggestion
+
+# RCS0056: A line is too long
+dotnet_diagnostic.RCS0056.severity = silent
+
+# RCS0041: Remove new line between 'if' keyword and 'else' keyword
+dotnet_diagnostic.RCS0041.severity = suggestion
+
+# RCS0031: Put enum member on its own line
+dotnet_diagnostic.RCS0031.severity = suggestion
+
+# RCS0011: Add/remove blank line between single-line accessors
+dotnet_diagnostic.RCS0011.severity = suggestion
+
+# RCS0003: Add blank line after using directive list
+dotnet_diagnostic.RCS0003.severity = suggestion
+
+# RCS0046: Use spaces instead of tab
+dotnet_diagnostic.RCS0046.severity = suggestion
+
+# RCS0057: Normalize whitespace at the beginning of a file
+dotnet_diagnostic.RCS0057.severity = suggestion
+
+# RCS0042: Put auto-accessors on a single line
+dotnet_diagnostic.RCS0042.severity = suggestion
+
+# RCS1255: Simplify argument null check
+dotnet_diagnostic.RCS1255.severity = suggestion
+
+# RCS1018: Add/remove accessibility modifiers
+dotnet_diagnostic.RCS1018.severity = suggestion
+
+# RCS1056: Avoid usage of using alias directive
+dotnet_diagnostic.RCS1056.severity = silent
+
+# RCS1079: Throwing of new NotImplementedException
+dotnet_diagnostic.RCS1079.severity = warning
+
+# CA1005: Avoid excessive parameters on generic types
+dotnet_diagnostic.CA1005.severity = suggestion
+
+# CA1014: Mark assemblies with CLSCompliant
+dotnet_diagnostic.CA1014.severity = suggestion
+
+# CA1045: Do not pass types by reference
+dotnet_diagnostic.CA1045.severity = suggestion

@@ -23,11 +23,11 @@ public class ChkSequence : IList<ChkToken>
   public int IndexOf (ChkToken item) => _sequence.IndexOf(item);
   private static bool IsOptional (ChkToken item) => item.TokenRule.HasFlag(RT.Opt);
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  void IList<ChkToken>.Insert (int index, ChkToken item) => throw new NotImplementedException();
-  void IList<ChkToken>.RemoveAt (int index) => throw new NotImplementedException();
-  bool ICollection<ChkToken>.Contains (ChkToken item) => throw new NotImplementedException();
-  void ICollection<ChkToken>.CopyTo (ChkToken[] array, int arrayIndex) => throw new NotImplementedException();
-  bool ICollection<ChkToken>.Remove (ChkToken item) => throw new NotImplementedException();
+  void IList<ChkToken>.Insert (int index, ChkToken item) => throw new NotSupportedException();
+  void IList<ChkToken>.RemoveAt (int index) => throw new NotSupportedException();
+  bool ICollection<ChkToken>.Contains (ChkToken item) => throw new NotSupportedException();
+  void ICollection<ChkToken>.CopyTo (ChkToken[] array, int arrayIndex) => throw new NotSupportedException();
+  bool ICollection<ChkToken>.Remove (ChkToken item) => throw new NotSupportedException();
 
   public ChkSequence (IEnumerable<ChkToken> tokens) => _sequence = [.. tokens];
   public ChkSequence () { }

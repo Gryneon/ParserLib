@@ -1,8 +1,8 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace Common.Regex;
+namespace Common.Regexp;
 
-/// <summary>A static class contianing extension methods for <see cref="RegexObj"/> related types.</summary>
+/// <summary>A static class contianing extension methods for <see cref="Regex"/> related types.</summary>
 public static class RegexExtensions
 {
   #region MatchCollection Extensions

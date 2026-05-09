@@ -132,11 +132,21 @@ public sealed class ComplexToken : IToken, IPrintable
   string IToken.ContentNoNewLine => Children.Select(child => child.ToString()).TextJoin().Replace(["\n", "\r"], ["<LF>", "<CR>"]);
 
   public required Spec Spec { get; init; }
-
+  /// <summary>Calls the action on every piece in this token.</summary>
+  /// <param name="action">The action to call.</param>
+  /// <remarks>This will not call both Value and ValueList. It chooses based on the quantity of the list.</remarks>
   private void EachPart (Action<KeyValuePair<string, IToken?>> action)
   {
     foreach (KeyValuePair<string, IToken?> part in Parts)
+    {
+      // Skip if multiple values
+      if (part.Key.Like("Value") && part.Value is TokenCollection tc && tc.Count > 1)
+        continue;
+      if (part.Key.Like("ValueList") && ((part.Value is TokenCollection tc2 && tc2.Count == 1) || part.Value is not TokenCollection))
+        continue;
+
       action(part);
+    }
   }
 
   public override string ToString ()

@@ -1,11 +1,13 @@
 //using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
+using Common.Regexp;
+
 using Parser.Tokens;
 
 namespace Specification.INI;
 
 /// <summary>Represents a INISection heading in an INI formatted file.</summary>
-public sealed class INISection : IGeneratable, IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
+public sealed class INISection : IEnumerable<IProperty<string>>, ITextSerializer, ICloneable
 {
   /// <summary>Creates an empty INISection.</summary>
   private INISection () { }

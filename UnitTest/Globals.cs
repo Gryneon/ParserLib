@@ -4,7 +4,7 @@ global using System.IO;
 global using System.Reflection;
 global using System.Resources;
 
-global using Common.Regex;
+global using Common.Regexp;
 
 global using Parser;
 global using Parser.Ops;

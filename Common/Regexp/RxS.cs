@@ -1,6 +1,6 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace Common.Regex;
+namespace Common.Regexp;
 
 /// <summary>A box that contains a string representing a regular expression. Basically just an extension of <see cref="string"/>.</summary>
 /// <seealso cref="string" />

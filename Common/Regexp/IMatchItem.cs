@@ -1,4 +1,4 @@
-namespace Common.Regex;
+namespace Common.Regexp;
 
 /// <summary>An item that matches a regex pattern.</summary>
 public interface IMatchItem

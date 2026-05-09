@@ -124,7 +124,8 @@ public sealed class TokenFactory
     {
       Index = match.Start,
       Content = singleChar ? $"{Input[match.Start]}" : Input[match.Start..(match.End + 1)],
-      Type = rule.TypeToAssign
+      Type = rule.TypeToAssign,
+      Spec = _spec
     };
 
     _result.Add(token);
@@ -152,8 +153,7 @@ public sealed class TokenFactory
       string text = CannotMatch.GetText(applicant);
       if (Regex.IsMatch(text, RuleData))
       {
-        MatchCollection mc = Regex.Matches(text, RuleData);
-        foreach (Match m in mc)
+        foreach (Match m in Regex.Matches(text, RuleData))
         {
           Pos tsec = new(applicant.Start + m.Index, m.Length);
           CannotMatch.Add(tsec);
@@ -257,8 +257,7 @@ public sealed class TokenFactory
     string regexPatterns = contestants.Select(r => GetRuleRegex(r.Rule, r.Index)).TextJoin("|");
     Regex regex = new(regexPatterns, _spec.RxOpt.RemoveBit<RegexOptions>(ROIC));
 
-    MatchCollection mc = regex.Matches(Input);
-    foreach (Match match in mc)
+    foreach (Match match in regex.Matches(Input))
     {
       int index = GetRuleGroupIndex(match);
       Pos rng = new(match.Index, match.Length);

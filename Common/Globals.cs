@@ -16,16 +16,15 @@ global using Common.Extensions;
 global using static Common.Names;
 
 global using ANEx = System.ArgumentNullException;
-global using RegexObj = System.Text.RegularExpressions.Regex;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
-global using StringTuple = (string Key, string Value);
 
-[assembly: AssemblyCompany("Magna AIM Systems")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
-#elif RELEASE
+#else
 [assembly: AssemblyConfiguration("Release")]
 #endif
+
+[assembly: AssemblyCompany("Magna AIM Systems")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0")]
 [assembly: AssemblyProduct("CommonLibrary")]

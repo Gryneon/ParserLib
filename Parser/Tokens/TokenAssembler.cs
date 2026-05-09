@@ -157,7 +157,7 @@ public sealed class TokenAssembler
     {
       Type = _rule.TypeToAssign,
       Children = [.. tokens_to_assemble],
-
+      Spec = _spec,
     };
 
     foreach (IToken token in tokens_to_assemble)
@@ -167,7 +167,6 @@ public sealed class TokenAssembler
       {
         complex_token.AddPieceType(tr, token);
       }
-
     }
 
     _parent_list.Add(complex_token);

@@ -5,6 +5,7 @@ namespace Parser.Tokens;
 public class Token : IToken, IPrintable
 {
   public TokenRef? AssignTo { get; set; }
+  public required Spec Spec { get; init; }
   public string Content { get; set; } = SE;
   // Calculated Properties
   public int LastPosition => Index + Length - 1;
@@ -15,8 +16,6 @@ public class Token : IToken, IPrintable
   public IList<IToken> Children { get; set; } = [];
   public virtual int Count => Children.Count;
   public bool HasType => Type is not null;
-
-  public string ContentNoNewLine => Content.Replace(["\n", "\r"], ["<LF>", "<CR>"]);
   int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
   public override string ToString () => $"{Type} : {Content}";
   public string ToString (int indent) => $"{Type} : {Content}";
@@ -26,7 +25,7 @@ public class Token : IToken, IPrintable
     LogPart(MsgClass.BlueInfo, " : ");
     if (Count is 0 or 1)
     {
-      LogPart(MsgClass.GreenInfo, ContentNoNewLine);
+      LogPart(MsgClass.GreenInfo, ((IToken) this).ContentNoNewLine);
     }
     else
     {
@@ -43,6 +42,7 @@ public class Token : IToken, IPrintable
   public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
 
   public virtual bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
+
   public static bool operator == (Token left, IToken right) => left is null ? right is null : left.Equals(right);
   public static bool operator != (Token left, IToken right) => !(left == right);
   public static bool operator < (Token left, IToken right) => left is null ? right is not null : left.CompareTo(right) < 0;

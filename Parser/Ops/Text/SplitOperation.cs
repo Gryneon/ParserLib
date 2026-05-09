@@ -1,5 +1,7 @@
 #pragma warning disable IDE0018 // Inline variable declaration
 
+using Common.Regexp;
+
 namespace Parser.Ops.Text;
 
 /// <summary>

@@ -13,15 +13,15 @@ global using System.Text.RegularExpressions;
 
 global using Common;
 global using Common.Extensions;
-global using Common.Regex;
+global using Common.Regexp;
 
 global using Parser.Condition;
 global using Parser.Exceptions;
 global using Parser.Ops;
 global using Parser.Tokens;
 
-global using static Common.Names;
 global using static Common.Debug;
+global using static Common.Names;
 
 global using DM = Common.DictionaryMode;
 global using IT = Parser.Inference.InferenceType;

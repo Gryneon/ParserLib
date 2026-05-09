@@ -5,7 +5,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
-    <UserSecretsId>37d036cf-7713-4a90-a266-751a9fd18f93</UserSecretsId>
     <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>

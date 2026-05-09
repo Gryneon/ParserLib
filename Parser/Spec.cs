@@ -36,9 +36,9 @@ public class Spec
   /// <summary>The default rule that is added to every rule definition.</summary>
   /// <remarks>Useful for adding ignore case to the entire defintion.</remarks>
   public RT DefaultRuleSet { get; init; } = RT.None;
-  /// <summary>Token rules for the tokenize operration..</summary>
+  /// <summary>Token rules for the tokenize operation.</summary>
   public TokenRuleCollection TokenRules { get; init; } = [];
-  /// <summary>Group token rules for the tokenize operration..</summary>
+  /// <summary>Group token rules for the token assembly operation.</summary>
   public TokenRuleCollection GroupTokenRules { get; init; } = [];
   /// <summary>Marks this instance as the active specification.</summary>
   /// <remarks>Subsequent operations that depend on the active object will reference this instance after calling
@@ -58,7 +58,7 @@ public class Spec
   /// <summary>Gets the name of the token type.</summary>
   /// <param name="tokenType">The value of the token type.</param>
   /// <returns>The name of the token type.</returns>
-  /// <exception cref="InvalidCastException"/>
+  /// <exception cref="InvalidCastException"></exception>
   /// <exception cref="SpecNotDefinedException"/>
   public string GetTokenTypeString (dynamic tokenType) => TokenType == typeof(string)
       ? (string) tokenType

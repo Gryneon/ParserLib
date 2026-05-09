@@ -84,13 +84,6 @@ public static class ObjectExtensions
         throw new NotSupportedException(msg);
       throw new NotSupportedException();
     }
-    [DoesNotReturn]
-    public static T NotImplemented<T> (string? msg = null)
-    {
-      if (msg is not null)
-        throw new NotImplementedException(msg);
-      throw new NotImplementedException();
-    }
     /// <summary>Does Nothing.</summary>
     public static void DoNothing () { }
   }

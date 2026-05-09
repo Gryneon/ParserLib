@@ -1,5 +1,7 @@
 #pragma warning disable CA1822 // Mark members as static
 
+using Common.Regexp;
+
 using BTT = Parser.BinaryTokenType;
 
 namespace Parser;

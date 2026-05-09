@@ -1,3 +1,5 @@
+using Common.Regexp;
+
 namespace Parser.Ops;
 /// <summary>An operation that logs the contents of the provided key.</summary>
 /// <remarks>Constructs an operation that logs the contents of the provided key.</remarks>

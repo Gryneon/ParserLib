@@ -1,4 +1,4 @@
-namespace Common.Regex;
+namespace Common.Regexp;
 
 /// <summary>The exception thrown when a regex group is not found.</summary>
 public class AbsentGroupException : KeyNotFoundException

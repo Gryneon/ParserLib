@@ -127,7 +127,9 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new DebugPrintKeyOperation("tokens"),
-      new TokenAssembleOperation(),
+      new FilterTokenOperation("tokens", "tokens_filtered", false),
+      new DebugPrintKeyOperation("tokens_filtered"),
+      new TokenAssembleOperation("tokens_filtered"),
       new DebugPrintKeyOperation("tokens_assembled"),
       Op.End,
     ],

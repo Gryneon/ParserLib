@@ -1,4 +1,6 @@
-using static Common.Regex.RegexStaticFunctions;
+using Common.Regexp;
+
+using static Common.Regexp.RegexStaticFunctions;
 
 namespace Parser;
 

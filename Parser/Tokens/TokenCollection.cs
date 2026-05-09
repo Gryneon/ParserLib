@@ -12,7 +12,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   /// <summary>Creates the collection from a collection of tokens.</summary>
   /// <param name="tokens">The tokens to add to the list.</param>
   public TokenCollection (IEnumerable<IToken> tokens) : this() => _tokens = tokens.Any() ? [.. tokens] : [];
-
+  public Spec Spec => _tokens[0].Spec;
   /// <summary>Gets or sets the token at a given index.</summary>
   /// <param name="index">The index to modify or retrieve.</param>
   /// <returns>A token at the specified index.</returns>
@@ -135,7 +135,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
 
   public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is TokenCollection tc && _tokens.SequenceEqual(tc._tokens);
-  public override bool Equals (object? obj) => ReferenceEquals(this, obj) || (obj is not null && obj is TokenCollection tc && Equals(tc));
+  public override bool Equals (object? obj) => obj is not null && obj is TokenCollection tc && Equals(tc);
   public override int GetHashCode () => _tokens.GetHashCode();
   public static bool operator == (TokenCollection left, TokenCollection right) => left is null ? right is null : left.Equals(right);
   public static bool operator != (TokenCollection left, TokenCollection right) => !(left == right);

@@ -7,26 +7,37 @@ using RTT = Specification.REG.RegTokenType;
 
 namespace Specification.REG;
 
-[Flags]
 public enum RegTokenType
 {
   None,
 
   Head,
   KeyPart,
-  AddVal, SubVal,
-  AddDefVal, SubDefVal,
-  DWordHex, QWordHex,
-  HexPair, HexOne,
+  AddVal,
+  SubVal,
+  AddDefVal,
+  SubDefVal,
+  DWordHex,
+  QWordHex,
+  HexPair,
+  HexOne,
   AInt,
-  Co, Eq,
-  Sl, Cm,
-  Bo, Bc,
-  Po, Pc,
-  At, Mn,
-  TypeName, Key,
-  AddKey, RemKey,
-  AddProp, RemProp,
+  Co,
+  Eq,
+  Sl,
+  Cm,
+  Bo,
+  Bc,
+  Po,
+  Pc,
+  At,
+  Mn,
+  TypeName,
+  Key,
+  AddKey,
+  RemKey,
+  AddProp,
+  RemProp,
 };
 
 /// <summary>Defines the registry spec.</summary>

@@ -1,9 +1,8 @@
-namespace Common.Regex;
+namespace Common.Regexp;
 /// <summary>
 /// A collection of groups and their captures from a regex match. This object includes additional functions and properties to make working with regex matches easier.</summary>
 public sealed class MatchDataSet : GroupDataSet,
   ICollection<GroupDataSet>,
-  IGeneratable,
   IEquatable<MatchDataSet>,
   IEquatable<string>
 {
@@ -215,66 +214,4 @@ public sealed class MatchDataSet : GroupDataSet,
   public override bool Equals (object? obj) => Equals(obj as MatchDataSet);
   public override int GetHashCode () => Content.GetHashCode(SCO);
   public bool Equals (string? other) => Content.Equals(other, SCO);
-}
-
-public class LangSpec
-{
-  // actor n:class : n:parent replaces n:replace i:doomednum { r:inside_actor }
-  // actor n:class : n:parent replaces n:replace { r:inside_actor }
-  // actor n:class : n:parent i:doomednum { r:inside_actor }
-  // actor n:class : n:parent { r:inside_actor }
-  // actor n:class replaces n:replace i:doomednum { r:inside_actor }
-  // actor n:class replaces n:replace { r:inside_actor }
-  // actor n:class i:doomednum { r:inside_actor }
-  // actor n:class { r:inside_actor }
-
-  // inside_actor
-  // 
-  // property => n:prop a:value
-  // addflag => + n:flagname
-  // remflag => - n:flagname
-  // dropitem => n:prop n:item, i:chance
-  // states => states { r:inside states }
-  // combo => monster
-  // combo => projectile
-
-  // inside_states
-  //
-  // label => n:label :
-  // goto => goto n:state + i:offset
-  // goto => goto n:state
-  // wait => wait
-  // fail => fail
-  // loop => loop
-  // stop => stop
-  // frame => n:frame n:letter i:tics n:command ( r:inside_params )
-  // frame => n:frame n:letter i:tics n:command
-  // frame => n:frame n:letter i:tics
-  // frame => " n:frame " n:letter i:tics n:command ( r:inside_params )
-  // frame => " n:frame " n:letter i:tics n:command
-  // frame => " n:frame " n:letter i:tics
-
-  // inside_params
-  //
-  // expr => 
-  public Collection<object> Rules { get; } = [
-    new StringDef(@""".*?"""),
-    new CommentDef(@"\/\/.*?$"),
-    new CommentDef(@"\/\*.*?\*\/"),
-    new TokenDef(@"(?i:\bactor\b)", "keyword"),
-    new TokenDef(@"(?i:\+[a-z._0-9]+)", "addflag"),
-    new TokenDef(@"(?i:\-[a-z._0-9]+)", "remflag"),
-    new InsideTokenDef(@"\{", "actor_def"),
-  ];
-}
-public record InsideTokenDef ([SS("regex")] string Regex, string ObjectType);
-public record TokenDef ([SS("regex")] string Regex, string Type);
-public record StringDef ([SS("regex")] string Regex);
-public record CommentDef ([SS("regex")] string Regex);
-
-public class MatchInfo
-{
-  public Dictionary<string, string> Properties { get; } = [];
-  public required string Content { get; init; }
-  public int Position { get; init; }
 }
