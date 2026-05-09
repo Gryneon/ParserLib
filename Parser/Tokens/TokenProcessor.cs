@@ -1,6 +1,6 @@
 #pragma warning disable RCS1079 // Throwing of new NotImplementedException
 
-namespace Common.Regexp;
+namespace Parser.Tokens;
 
 public class TokenProcessor<TIn, TOut>
 {

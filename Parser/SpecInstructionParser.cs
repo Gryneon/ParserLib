@@ -4,12 +4,12 @@ using System.Xml;
 
 namespace Parser;
 
-public class SpecInstructionParser (string uri)
+public class SpecInstructionParser (Uri uri)
 {
   public Collection<Operation> GetOps ()
   {
     uri.ThrowIfNull();
-    XmlReader xml = XmlReader.Create(uri);
+    XmlReader xml = XmlReader.Create(uri.LocalPath);
 
     while (xml.Read())
     {

@@ -1,6 +1,3 @@
-
-using System.Diagnostics.CodeAnalysis;
-
 using Common.Regexp;
 
 using SysRegex = System.Text.RegularExpressions.Regex;

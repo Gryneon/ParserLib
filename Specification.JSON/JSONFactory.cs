@@ -1,6 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
 using System.Linq;
+
 namespace Specification.JSON;
 
 public sealed class JSONFactory ()

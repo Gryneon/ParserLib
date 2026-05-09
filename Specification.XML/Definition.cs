@@ -16,11 +16,16 @@ public enum XMLTokenType
   Unknown,
   Comment,    // <!-- comment -->
 
-  Ao, Ac,     // < >
-  Qm, Sc,     // ? ;
-  An, Co,     // & :
-  Sl, Eq,     // / =
-  Em, Hy,     // ! -
+  Ao,
+  Ac,     // < >
+  Qm,
+  Sc,     // ? ;
+  An,
+  Co,     // & :
+  Sl,
+  Eq,     // / =
+  Em,
+  Hy,     // ! -
 
   AttrKey,
   AttrValue,

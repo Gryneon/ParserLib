@@ -25,10 +25,14 @@ public enum DecorateTokenType
   Decimal,
   Int,
   String,
-  Bo, Bc, // { }
-  Po, Pc, // ( )
-  Co, Cm, // : ,
-  Pl, Mn, // + -
+  Bo,
+  Bc, // { }
+  Po,
+  Pc, // ( )
+  Co,
+  Cm, // : ,
+  Pl,
+  Mn, // + -
   StateName,
   FlagName,
 }

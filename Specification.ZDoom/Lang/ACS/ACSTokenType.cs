@@ -43,10 +43,23 @@ public enum ACSStructureType
   PreProcFull,
 
   //Top Level Structures
-  Script, Function,
-  VarDecl, ArrDecl, VarAssn, ArrAssn, MultiVarDecl, MapVarDecl,
-  FuncCall, FuncCallStmt, Stmt,
-  ExprBlock, Label, Switch, ForBlock, ElseBlock, DoBlock
+  Script,
+  Function,
+  VarDecl,
+  ArrDecl,
+  VarAssn,
+  ArrAssn,
+  MultiVarDecl,
+  MapVarDecl,
+  FuncCall,
+  FuncCallStmt,
+  Stmt,
+  ExprBlock,
+  Label,
+  Switch,
+  ForBlock,
+  ElseBlock,
+  DoBlock
 
 }
 
@@ -90,8 +103,10 @@ public enum ACSTokenType
   ScriptType,
   /// <summary>Placeholder representing any value, expression, or function call.</summary>
   Value,
-  Bo, Bc,
-  Po, Pc,
+  Bo,
+  Bc,
+  Po,
+  Pc,
   /// <summary>Represents an assembly of an operator and one or more values.</summary>
   Expression,
   /// <summary>Semicolon</summary>
