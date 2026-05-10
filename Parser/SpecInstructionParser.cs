@@ -1,31 +1,35 @@
 #pragma warning disable CA1822 // Mark members as static
 
-using System.Xml;
+using System.Xml.Linq;
 
 namespace Parser;
 
-public class SpecInstructionParser (Uri uri)
+public static class SpecInstructionParser
 {
-  public Collection<Operation> GetOps ()
+  private static readonly XNamespace NS = "Parser/Spec";
+
+  public static Spec LoadSpec (string path)
   {
-    uri.ThrowIfNull();
-    XmlReader xml = XmlReader.Create(uri.LocalPath);
+    XDocument doc = XDocument.Load(path);
 
-    while (xml.Read())
+    XElement specElement = doc.Root?.Element(NS + "Spec") ?? throw new SpecNotDefinedException("Invalid XML - No Spec in file.");
+
+    string name = (string?) specElement.Element(NS + "Name") ?? throw new SpecNotDefinedException("Invalid XML - No Name in Spec.");
+
+    // Parse instructions
+    IEnumerable<XElement>? instructionElements = specElement.Element(NS + "Instructions")?.Elements();
+    List<IOperation> ops = ParseOperations(instructionElements);
+
+    // Parse file inferences
+    XElement? fileInf = specElement.Element(NS + "FileInferences");
+    var inferenceNodes = ParseFileInferences(fileInf);
+
+    return new Spec
     {
-      if (xml.Name == "xml")
-        continue;
-
-      if (xml.Name == "Specs")
-        continue;
-
-      if (xml.Name == "Spec")
-      {
-        // Parser from here!
-      }
-    }
-
-    _ = Op.ThrowNoSpec("The Spec XML was malformed.");
-    throw null;
+      Name = name,
+      Operations = ops.AsReadOnly(),
+      FileInferences = inferenceNodes.AsReadOnly(),
+      IsTextFile = true
+    };
   }
 }

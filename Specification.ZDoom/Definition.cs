@@ -15,7 +15,7 @@ public static class Definition
   private static readonly TokenRule s_cBlkComment = new(RT.TokenComment, "None", @"(?>\/\*(?>[^*]|\*[^\/])*\*\/)");
   private static readonly TokenRule s_cString = new(RT.Competitive, "String", @"(?>""(?>[^""\\]|\\"")*"")");
   private static readonly TokenRule s_char = new(RT.Competitive, "Char", @"(?>'(?>[^'\\]|\\')*')");
-  private static readonly TokenRule s_int = new(RT.TokenMatch, "Int", @"(?>-?\d+)");
+  private static readonly TokenRule s_int = new(RT.TokenMatch, "Int", @"(?>-?\d+)|0x(?>[0-9a-f]{1,8})");
   private static readonly TokenRule s_dec = new(RT.TokenMatch, "Dec", @"(?>-?(?>\d+(?>\.\d*)?|\.\d+))");
   private static readonly TokenRule s_langref = new(RT.Competitive, "LangRef", @"(?>""\$\w+"")");
   private static readonly TokenRule s_classname = new(RT.TokenMatch, "Classname", "Actor|Ammo|Clip|(Red|Blue|Yellow)Card|Health|Armor(Bonus)?|(Blue|Green)Armor|(Caco|Cyber)?demon|Imp|Shells|Rocket(Box)?|(Custom)?Inventory|FastProjectile|DoomPlayer|MapSpot|DoomImp|Zombieman|ShotgunGuy");
@@ -155,7 +155,7 @@ public static class Definition
       IfN(FName | Is, "mapinfo"),
       IfN(FName | Is, "zmapinfo")],
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new DebugToStringOperation ("tokens")
     ],
     RxOpt = ROIC | ROEC | ROML,

@@ -157,8 +157,8 @@
       <xs:attribute name="key_type" use="optional" type="NonEmptyTokenType">
         <xs:annotation>
           <xs:documentation>
-            The type of key in the collection.
-            This is ignored unless needed.
+The type of key in the collection.
+This is ignored unless needed.
           </xs:documentation>
         </xs:annotation>
       </xs:attribute>

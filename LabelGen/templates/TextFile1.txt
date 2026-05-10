@@ -1,0 +1,3 @@
+<STX><<template>><ETX>
+<STX>B2;o100,122,d3,<<data-barcode>>;c20;<ETX>
+<STX><ETB><ETX>

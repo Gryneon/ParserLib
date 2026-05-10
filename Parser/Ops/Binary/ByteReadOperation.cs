@@ -4,7 +4,7 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops.Binary;
 
-public sealed class ByteReadOperation : Operation, IOperation
+public sealed class ByteReadOperation : Operation
 {
   public string CursorKey { get; }
   public int Size { get; set; }
@@ -74,25 +74,17 @@ public sealed class ByteReadOperation : Operation, IOperation
       return;
     }
 
-    ByteReadMode adjusted_mode = Mode;
-
-    if ((int) adjusted_mode > 3)
-    {
-      adjusted_mode = Mode - 3;
-      MakeListOnSave = true;
-    }
-
     int remaining = (int) Data["file_size"] - Parser.GetCursorByKey(CursorKey).Index;
     object? value = Size switch
     {
-      1 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span[0],
-      2 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt16(),
-      4 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).ToInt32(),
-      8 when adjusted_mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt64(),
-      > 0 when adjusted_mode is ByteReadMode.Text => ReadChars(CursorKey, Size),
-      > 0 when adjusted_mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size),
-      -1 when adjusted_mode is ByteReadMode.Text => ReadChars(CursorKey, remaining),
-      -1 when adjusted_mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining),
+      1 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span[0],
+      2 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt16(),
+      4 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).ToInt32(),
+      8 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt64(),
+      > 0 when Mode is ByteReadMode.Text => ReadChars(CursorKey, Size),
+      > 0 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size),
+      -1 when Mode is ByteReadMode.Text => ReadChars(CursorKey, remaining),
+      -1 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining),
       _ => Op.ThrowBadResult("Size was 0, cannot have a size of 0.")
     };
 

@@ -1,6 +1,17 @@
-using Parser.Exceptions;
-
 namespace Parser.Ops;
+
+public class SampleOperation : Operation
+{
+  public SampleOperation (string input_key, string input_key2, string output_key, string output_key2)
+  {
+    InputDataReferences.Add("cursor_ref", input_key);
+    InputDataReferences.Add("cursor_index", input_key2);
+  }
+  protected override void Execute ()
+  {
+
+  }
+}
 
 /// <summary>
 /// The abstract base class for operations. All operations should inherit from <see cref="Operation"/>.<br/>
@@ -8,6 +19,7 @@ namespace Parser.Ops;
 /// </summary>
 public abstract class Operation : IOperation
 {
+  private const string Area = nameof(Operation);
   #region Throwing Functions
   /// <summary>Throws an <see cref="OperationException"/> if condition is <see langword="true"/>.</summary>
   /// <param name="condition">The condition to check.</param>
@@ -17,7 +29,12 @@ public abstract class Operation : IOperation
   {
     if (condition) throw new OperationException(msg);
   }
+  #endregion
   #region Stored Keys & Data
+
+  /// <summary>The input data to load.</summary>
+  protected Dictionary<string, string> InputDataReferences { get; } = [];
+
   /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
   protected Collection<object> MultipleInputValues { get; private set; } = [];
   /// <summary>A collection of all of the input keys. This will only contain one key if only one key is provided.</summary>
@@ -68,6 +85,18 @@ public abstract class Operation : IOperation
   public virtual bool NoInput => InputKey.IsEmpty();
   #endregion
   #region Input Checks
+
+  protected T GetData<T> (string input_data_key)
+  {
+    if (Data.TryLoad(InputDataReferences[input_data_key], out T? data))
+    {
+      return data;
+    }
+
+    _ = Op.ThrowNoVar(InputDataReferences[input_data_key]);
+    throw null;
+  }
+
   /// <summary>
   /// Checks the parsers current working data, and throws an <see cref="OperationNoSuchVarException"/> if it is missing.
   /// This method works for one or many input keys. It will check each one.
@@ -75,7 +104,7 @@ public abstract class Operation : IOperation
   /// <exception cref="OperationNoSuchVarException"/>
   private void CheckInputNull ()
   {
-    DebugIn("Operation", "CheckInputNull");
+    DebugIn(Area, "CheckInputNull");
     if (InputKey == SE || NoInput)
     {
       Log(MsgClass.Debug, "No key checked.");
@@ -85,7 +114,7 @@ public abstract class Operation : IOperation
     }
     foreach (string key in InputKeys)
     {
-      if (!Parser.Data.CanLoad(key))
+      if (!Data.CanLoad(key))
       {
         Log(MsgClass.Error, $"Key {key} does not exist.");
         Status = Op.ThrowNoVar(key);
@@ -141,7 +170,7 @@ public abstract class Operation : IOperation
   #endregion
   public OpStatus DoOperation (XParser parser_ref)
   {
-    DebugIn("Operation", "DoOperation");
+    DebugIn(Area, "DoOperation");
     if (SkipOperation)
       return OpStatus.Skipped;
 
@@ -227,4 +256,3 @@ public abstract class Operation : IOperation
     Parser.Data.Save(OutputKey, WorkData, DM.AddToCollection | DM.MakeCollection);
   }
 }
-  #endregion
