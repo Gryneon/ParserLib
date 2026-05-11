@@ -2,6 +2,8 @@
 
 using System.Xml.Linq;
 
+using Parser.Inference;
+
 namespace Parser;
 
 public static class SpecInstructionParser
@@ -18,17 +20,17 @@ public static class SpecInstructionParser
 
     // Parse instructions
     IEnumerable<XElement>? instructionElements = specElement.Element(NS + "Instructions")?.Elements();
-    List<IOperation> ops = ParseOperations(instructionElements);
+    List<IOperation> ops = [];// = ParseOperations(instructionElements);
 
     // Parse file inferences
     XElement? fileInf = specElement.Element(NS + "FileInferences");
-    var inferenceNodes = ParseFileInferences(fileInf);
+    List<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
 
     return new Spec
     {
       Name = name,
-      Operations = ops.AsReadOnly(),
-      FileInferences = inferenceNodes.AsReadOnly(),
+      Operations = [.. ops],
+      FileInferences = [.. inferenceNodes],
       IsTextFile = true
     };
   }
