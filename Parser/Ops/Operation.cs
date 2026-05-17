@@ -33,7 +33,7 @@ public abstract class Operation : IOperation
   #region Stored Keys & Data
 
   /// <summary>The input data to load.</summary>
-  protected Dictionary<string, string> InputDataReferences { get; } = [];
+  protected virtual Dictionary<string, string> InputDataReferences { get; } = [];
 
   /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
   protected Collection<object> MultipleInputValues { get; private set; } = [];
@@ -86,14 +86,20 @@ public abstract class Operation : IOperation
   #endregion
   #region Input Checks
 
-  protected T GetData<T> (string input_data_key)
+  protected T Load<T> (string input_data_key)
   {
-    if (Data.TryLoad(InputDataReferences[input_data_key], out T? data))
+    string key = InputDataReferences[input_data_key];
+
+    if (Data.TryLoad(key, out T? data))
     {
       return data;
     }
+    else if (Data.CanLoad(key))
+    {
+      _ = Op.ThrowBadInput($"{typeof(T)}", $"{Data[key].GetType()}");
+    }
 
-    _ = Op.ThrowNoVar(InputDataReferences[input_data_key]);
+    _ = Op.ThrowNoVar(key);
     throw null;
   }
 

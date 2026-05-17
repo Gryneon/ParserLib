@@ -94,7 +94,6 @@ public static class Definition
     Operations = [
       new SplitOperation(Rx(@"(<ETX>).*?(<STX>)|\A.*?(<STX>)|;"), RxOpts, "text", "textparts"),
 
-
       //new TokenizeOperation(),
       //new DebugToStringOperation("tokens"),
       //new DebugWaitForInputOperation(),
@@ -142,8 +141,8 @@ public static class Definition
       new(ITT.Prop, "n:Letter{w} q:Value xo:Sc"),
       new(ITT.FieldNum, "x:Esc n:Letter{F} v:Value xo:Sc"),
       new(ITT.Fmt, "n:Letter{E|F} q:Value xo:Sc"),
-      new(ITT.Line, "n:Letter{[ABHILMQD]} v:Value qa:Prop xo:Sc"),
-      new(ITT.Prop, "n:Letter{[clhw]} q:Value xo:Sc"),
+      new(ITT.Line, "n:Letter{[ABDHILMQ]} v:Value qa:Prop xo:Sc"),
+      new(ITT.Prop, "n:Letter{[chlw]} q:Value xo:Sc"),
       new(ITT.Qty, "n:(Rs|Us) q:Value xo:Sc")
     ]
   };
