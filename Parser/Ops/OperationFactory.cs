@@ -1,6 +1,5 @@
 using System.Xml.Linq;
 
-using Parser.Ops.Binary;
 using Parser.Ops.Text;
 
 namespace Parser.Ops;
@@ -31,9 +30,7 @@ public class InitializeOperation : Operation
   {
     Type key = Type switch { "string" => typeof(string), _ => typeof(int) };
     Type value = System.Type.GetType(ValueType ?? SE) ?? typeof(object);
-    Type container_type;
-
-    container_type = Type switch
+    Type container_type = Type switch
     {
       "Set" => typeof(HashSet<object>).MakeGenericType(value),
       "List" => typeof(List<object>).MakeGenericType(value),
@@ -42,7 +39,7 @@ public class InitializeOperation : Operation
       _ => throw new OperationBadDefinitionException($"Invalid Type ({Type}) on Initalize Operation.")
     };
 
-    object? container = container_type.InvokeMember(SE, BindingFlags.CreateInstance, null, null, null);
+    object? container = container_type.InvokeMember(SE, BindingFlags.CreateInstance, null, null, null, CIIC);
 
     if (container is not null)
     {
@@ -50,8 +47,15 @@ public class InitializeOperation : Operation
     }
     else
     {
-      Op.ThrowBadDef($"Something went wrong when trying to create a {container_type}.");
+      Status = Op.ThrowBadDef($"Something went wrong when trying to create a {container_type}.");
     }
+  }
+
+  public class AddItemOperation : Operation
+  {
+    public required string ListKey { get; init; }
+    public Collection<string> ParameterKeys { get; init; } = [];
+    public required string Type { get; init; }
   }
 
   public class OperationSwitch : Operation
@@ -107,6 +111,7 @@ public class InitializeOperation : Operation
       Condition = e.Attribute(_ns + "condition")?.Value,
       Operations = GetOps(e)
     };
+    private Collection<string> GetValueList (XElement? parent = null) => [.. (parent ?? _current).Value.Split(' ', '\t') ?? []];
     private IEnumerable<XElement> GetElems (XElement? parent = null) => (parent ?? _current).Elements();
     private IEnumerable<XElement> GetElems (string name, XElement? parent = null) => (parent ?? _current).Elements(_ns + name);
     public IOperation Produce (XElement element)
@@ -126,8 +131,10 @@ public class InitializeOperation : Operation
         string position_var = GetS("position_var");
         string length_var = GetS("length_var");
         string list_var = GetS("list_var");
+        string user_var = GetS("user_var");
 
         string condition = GetS("condition");
+        string message = GetS("message");
         string value = GetS("value");
         string name = GetS("name");
         string type = GetS("type");
@@ -188,6 +195,18 @@ public class InitializeOperation : Operation
             LengthKey = length_var,
             Operations = child_ops,
           },
+          "While" => new WhileOperation()
+          {
+            Condition = condition,
+            CursorKey = cursor_var,
+            Operations = child_ops,
+          },
+          "Prompt" => new PromptOperation()
+          {
+            Message = message,
+            UserKey = user_var,
+            Validation = null, //TODO: Add validation support! regex?
+          },
           "ForEach" => new ForEachOperation()
           {
             CursorKey = cursor_var,
@@ -205,6 +224,12 @@ public class InitializeOperation : Operation
             KeyType = key_type,
             ValueType = value_type,
           },
+          "AddItem" => new AddItemOperation()
+          {
+            ListKey = list_var,
+            Type = type,
+            ParameterKeys = GetValueList()
+          },
           _ => Op.End,
         };
       }
@@ -214,3 +239,4 @@ public class InitializeOperation : Operation
       }
     }
   }
+}

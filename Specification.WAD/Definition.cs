@@ -1,9 +1,7 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using Parser.Ops;
-
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Ops.Binary.ByteReadOperation;
+using static Parser.Ops.ByteReadOperation;
 using static Parser.Ops.Op;
 
 namespace Specification.WAD;
@@ -25,16 +23,16 @@ public static class Definition
       ReadString("identification", 4),
       ReadInt("numlumps"),
       ReadInt("diroffset"),
-      new ByteJumpVarOperation("diroffset"),
-      ForCount("dataloop", "numlumps", [
+      //new ByteJumpVarOperation("diroffset"),
+      //ForCount("dataloop", "numlumps", [
         ReadInt("filepos"),
         ReadInt("size"),
         ReadString("name", 8),
-        new ByteSavePosOperation("bytes", "savepos"),
-        new ByteJumpVarOperation("filepos"),
+        //new ByteSavePosOperation("bytes", "savepos"),
+        //new ByteJumpVarOperation("filepos"),
         ReadBinary("size", "data"),
-        new ByteRecallOperation("savepos", "bytes"),
-      ])
+        //new ByteRecallOperation("savepos", "bytes"),
+      //]//)
     ]
   };
   [DefinitionExport]
@@ -49,17 +47,17 @@ public static class Definition
       ReadString("identification", 4),
       ReadInt("diroffset"),
       ReadInt("dirsize"),
-      new ByteDivideOperation(64, "dirsize", "entrycount"),
-      new ByteJumpVarOperation("diroffset"),
-      ForCount("dataloop", "entrycount", [
+      new DivideOperation(64, "dirsize", "entrycount"),
+      //new ByteJumpVarOperation("diroffset"),
+      //ForCount("dataloop", "entrycount", [
         ReadString("name", 50),
         ReadInt("offset"),
         ReadInt("size"),
-        new ByteSavePosOperation("savepos"),
-        new ByteJumpVarOperation("offset"),
+        //new ByteSavePosOperation("savepos"),
+        //new ByteJumpVarOperation("offset"),
         ReadBinary("size", "data"),
-        new ByteRecallOperation("savepos", "bytes"),
-      ]),
+        //new ByteRecallOperation("savepos", "bytes"),
+      //]),
       Op.End
     ]
   };
@@ -75,20 +73,19 @@ public static class Definition
       ReadString("identification", 4),
       ReadInt("numlumps"),
       ReadInt("diroffset"),
-      new ByteJumpVarOperation("diroffset"),
-      ForCount("dataloop", "numlumps", [
-        ReadInt("filepos"),
-        ReadInt("dsize"),
-        ReadInt("size"),
-        ReadByte("type"),
-        ReadByte("cmprs"),
-        ReadShort("dummy"),
-        ReadString("name", 16),
-        new ByteSavePosOperation("savepos"),
-        new ByteJumpVarOperation("filepos"),
-        ReadBinary("dsize", "data"),
-        new ByteRecallOperation("savepos", "bytes"),
-      ]),
-    ]
+      //new ByteJumpVarOperation("diroffset"),
+      //ForCount("dataloop", "numlumps", [
+      ReadInt("filepos"),
+      ReadInt("dsize"),
+      ReadInt("size"),
+      ReadByte("type"),
+      ReadByte("cmprs"),
+      ReadShort("dummy"),
+      ReadString("name", 16),
+      //new ByteSavePosOperation("savepos"),
+      //new ByteJumpVarOperation("filepos"),
+      ReadBinary("dsize", "data"),
+      //new ByteRecallOperation("savepos", "bytes"),
+     ],
   };
 }

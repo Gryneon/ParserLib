@@ -2,7 +2,7 @@
 
 using static Parser.OpStatus;
 
-namespace Parser.Ops.Binary;
+namespace Parser.Ops;
 
 public sealed class ByteReadOperation : Operation
 {

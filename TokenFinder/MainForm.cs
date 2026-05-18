@@ -30,10 +30,10 @@ public partial class MainForm : Form
 
   private void Init ()
   {
-    cmbSpec.Items.Add("ZScript");
-    cmbSpec.Items.Add("ACS");
-    cmbSpec.Items.Add("UDMF");
-    cmbSpec.SelectedIndex = 0;
+    _ = cmbSpec.Items.Add("ZScript");
+    _ = cmbSpec.Items.Add("ACS");
+    _ = cmbSpec.Items.Add("UDMF");
+    _ = cmbSpec.SelectedIndex = 0;
 
     btnRun.Click += (_, __) => RunEngine();
     treeHierarchy.AfterSelect += TreeHierarchy_AfterSelect;
@@ -41,15 +41,13 @@ public partial class MainForm : Form
 
   // ---------------- SPEC ----------------
 
-  private Spec GetSpec ()
+  private Spec GetSpec () => cmbSpec.SelectedItem?.ToString() switch
   {
-    return cmbSpec.SelectedItem.ToString() switch
-    {
-      "ACS" => Definition.ACS,
-      "UDMF" => Definition.UDMF,
-      _ => Definition.ZScript
-    };
-  }
+    "ACS" => Definition.ACS,
+    "UDMF" => Definition.UDMF,
+    "ZScript" => Definition.ZScript,
+    _ => DefaultSpec.Unknown,
+  };
 
   // ---------------- ENGINE ----------------
 
@@ -128,7 +126,7 @@ public partial class MainForm : Form
 
     foreach (IToken token in result.Hierarchy)
     {
-      treeHierarchy.Nodes.Add(BuildNode(token));
+      _ = treeHierarchy.Nodes.Add(BuildNode(token));
     }
   }
 
@@ -136,12 +134,14 @@ public partial class MainForm : Form
   {
     string role = token.AssignTo?.ToString() ?? "-";
 
-    TreeNode node = new($"{token.Type} ({role}) : {token.Content}");
-    node.Tag = token;
-
-    foreach (var child in token.Children)
+    TreeNode node = new($"{token.Type} ({role}) : {token.Content}")
     {
-      node.Nodes.Add(BuildNode(child));
+      Tag = token
+    };
+
+    foreach (IToken child in token.Children)
+    {
+      _ = node.Nodes.Add(BuildNode(child));
     }
 
     return node;
@@ -169,7 +169,7 @@ public partial class MainForm : Form
     rtbMain.SelectionBackColor = selectedBackColor;
     rtbMain.SelectionColor = selectedForeColor;
 
-    foreach (var child in token.Children)
+    foreach (IToken child in token.Children)
     {
       HighlightRecursive(child);
     }
@@ -189,9 +189,9 @@ public partial class MainForm : Form
   {
     StringBuilder sb = new();
 
-    foreach (var p in result.Parents)
+    foreach (IToken p in result.Parents)
     {
-      sb.AppendLine(p.Type);
+      _ = sb.AppendLine(p.Type);
     }
 
     rtbParents.Text = sb.ToString();

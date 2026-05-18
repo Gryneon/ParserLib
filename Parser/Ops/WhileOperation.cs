@@ -1,17 +1,26 @@
 namespace Parser.Ops;
 
-public sealed class WhileOperation (string cursor_key, ICondition condition, IEnumerable<IOperation> operations) : Operation, IPlaceholderOperation
+public sealed class WhileOperation : Operation, IPlaceholderOperation
 {
   public override bool NoOutput => true;
   public override bool NoInput => true;
   /// <summary>The name of this loop.</summary>
-  public string CursorKey { get; } = cursor_key;
+  public required string CursorKey { get; init; }
   /// <summary>Operations to perform.</summary>
-  public IEnumerable<IOperation> Operations { get; } = operations;
+  public IEnumerable<IOperation> Operations { get; init; } = [];
   /// <summary>While Condition</summary>
-  public ICondition Condition { get; } = condition;
+  public required string Condition { get; init; }
   /// <summary>Start of loop section.</summary>
   public int OpIndex { get; private set; }
+
+  public WhileOperation (string cursor_key, string condition, IEnumerable<IOperation> operations)
+  {
+    CursorKey = cursor_key;
+    Operations = operations;
+    Condition = condition;
+  }
+  public WhileOperation () { }
+
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     Collection<IOperation> additions = [];

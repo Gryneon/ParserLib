@@ -1,5 +1,5 @@
 global using Parser;
-global using Parser.Ops.Binary;
+global using Parser.Ops;
 
 using System.Reflection;
 using System.Resources;

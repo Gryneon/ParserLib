@@ -2,10 +2,10 @@
 
 using static Parser.OpStatus;
 
-namespace Parser.Ops.Binary;
+namespace Parser.Ops;
 
 /// <summary>Divides 2 integers to find the quotient.</summary>
-public class ByteDivideOperation : Operation
+public class DivideOperation : Operation
 {
   [MemberNotNullWhen(true, nameof(DivisorKey))]
   private bool UseVar => DivisorKey is not null;
@@ -16,14 +16,14 @@ public class ByteDivideOperation : Operation
   private int Divisor { get; set; }
   private int Dividend { get; set; }
 
-  public ByteDivideOperation (int divisor, string dividend_key, string output_key)
+  public DivideOperation (int divisor, string dividend_key, string output_key)
   {
     Divisor = divisor;
     DividendKey = dividend_key;
     OutputKey = output_key;
   }
 
-  public ByteDivideOperation (string divisor_key, string dividend_key, string output_key)
+  public DivideOperation (string divisor_key, string dividend_key, string output_key)
   {
     DivisorKey = divisor_key;
     DividendKey = dividend_key;
