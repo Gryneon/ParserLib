@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-using Common.Regexp;
+using Common.RegExp;
 
 using Parser.Ops;
 

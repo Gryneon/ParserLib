@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 using Common.Extensions;
-using Common.Regexp;
+using Common.RegExp;
 
 namespace Specification.REG;
 

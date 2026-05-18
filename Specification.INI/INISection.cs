@@ -1,6 +1,6 @@
 //using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-using Common.Regexp;
+using Common.RegExp;
 
 using Parser.Tokens;
 

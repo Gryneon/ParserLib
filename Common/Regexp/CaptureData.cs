@@ -1,8 +1,8 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using Common.Regexp;
+using Common.RegExp;
 
-namespace Common.Regexp;
+namespace Common.RegExp;
 
 /// <summary>Data for one capture.</summary>
 public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<CaptureData>

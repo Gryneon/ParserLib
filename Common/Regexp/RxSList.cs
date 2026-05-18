@@ -1,6 +1,6 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace Common.Regexp;
+namespace Common.RegExp;
 
 /// <summary>A collection of </summary>
 public sealed class RxSCollection : ICollection<RxS>, IEquatable<RxSCollection>, IComparable<RxSCollection>

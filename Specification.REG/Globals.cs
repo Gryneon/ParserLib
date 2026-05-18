@@ -2,7 +2,7 @@ global using System;
 global using System.Collections.Generic;
 
 global using Common;
-global using Common.Regexp;
+global using Common.RegExp;
 
 global using static Common.Names;
 

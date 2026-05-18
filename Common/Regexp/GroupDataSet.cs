@@ -1,6 +1,6 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace Common.Regexp;
+namespace Common.RegExp;
 
 /// <summary>Represents a group in a match.</summary>
 public class GroupDataSet : CaptureData, IReadOnlyCollection<CaptureData>, IEquatable<GroupDataSet>

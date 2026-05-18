@@ -6,7 +6,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
-    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

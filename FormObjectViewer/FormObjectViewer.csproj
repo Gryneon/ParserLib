@@ -3,14 +3,12 @@
   
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>WinExe</OutputType>
     <StartupObject>FormObjectViewer.Program</StartupObject>
     <TargetFramework>net11.0-windows</TargetFramework>
-    <Title>Form Based Object Browser</Title>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 

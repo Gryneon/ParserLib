@@ -32,9 +32,9 @@ using System.Runtime.Versioning;
 #elif RELEASE
 [assembly: AssemblyConfiguration("Release")]
 #endif
-[assembly: AssemblyFileVersion("1.0.0.1")]
-[assembly: AssemblyInformationalVersion("1.0.0+1aa57e2002ccf2381fb8c2f5a9ab83dfd0412369")]
+[assembly: AssemblyFileVersion("1.0.0.2")]
+[assembly: AssemblyInformationalVersion("1.0.0.2-Prerelease")]
 [assembly: AssemblyProduct("Specification.ZDoom")]
 [assembly: AssemblyTitle("Specification.ZDoom")]
-[assembly: AssemblyVersion("1.0.0.1")]
+[assembly: AssemblyVersion("1.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]

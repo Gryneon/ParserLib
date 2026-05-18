@@ -1,6 +1,6 @@
 //using Parser.Text.Tokens;
 
-using Common.Regexp;
+using Common.RegExp;
 
 namespace Parser.Ops.Text;
 

@@ -1,4 +1,4 @@
-using Common.Regexp;
+using Common.RegExp;
 
 namespace Specification.REG;
 

@@ -13,7 +13,7 @@ global using System.Text.RegularExpressions;
 
 global using Common;
 global using Common.Extensions;
-global using Common.Regexp;
+global using Common.RegExp;
 
 global using Parser.Condition;
 global using Parser.Exceptions;

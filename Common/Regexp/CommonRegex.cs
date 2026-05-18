@@ -1,9 +1,9 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable CA1056
 
-using static Common.Regexp.RegexStaticFunctions;
+using static Common.RegExp.RegexStaticFunctions;
 
-namespace Common.Regexp;
+namespace Common.RegExp;
 
 /// <summary>Common Regex Parts.</summary>
 public static class CommonRegex

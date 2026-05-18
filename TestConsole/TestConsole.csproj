@@ -3,14 +3,11 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>Exe</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>net11.0</TargetFramework>
     <StartupObject>TestConsole.Program</StartupObject>
-    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

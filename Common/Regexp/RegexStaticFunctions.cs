@@ -1,7 +1,7 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-using static Common.Regexp.RxS;
+using static Common.RegExp.RxS;
 
-namespace Common.Regexp;
+namespace Common.RegExp;
 /// <summary>Static functions to shorthand frequent definitions.</summary>
 public static class RegexStaticFunctions
 {

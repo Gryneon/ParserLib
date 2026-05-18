@@ -1,4 +1,4 @@
-namespace Common.Regexp;
+namespace Common.RegExp;
 
 /// <summary>A collection of <see cref="MatchDataSet"/> objects.</summary>
 public sealed class MatchDataCollection : Collection<MatchDataSet>
