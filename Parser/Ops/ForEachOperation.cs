@@ -6,19 +6,21 @@ public sealed class ForEachOperation : Operation, IPlaceholderOperation
   public override bool NoInput => true;
   public override bool NoOutput => true;
   /// <summary>The name of this loop.</summary>
-  public string CursorKey { get; }
-  public string ListKey { get; }
+  public required string CursorKey { get; init; }
+  public required string ListKey { get; init; }
   /// <summary>Operations to perform.</summary>
-  public IEnumerable<IOperation> Operations { get; }
+  public required IEnumerable<IOperation> Operations { get; init; }
   /// <summary>Start of loop section.</summary>
   public int OpIndex { get; private set; }
 
+  [SetsRequiredMembers]
   public ForEachOperation (string cursor_key, string list_key, IEnumerable<IOperation> operations) : base(SE, SE)
   {
     CursorKey = cursor_key;
     Operations = operations;
     ListKey = list_key;
   }
+  public ForEachOperation () { }
 
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {

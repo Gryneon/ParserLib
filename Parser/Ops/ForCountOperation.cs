@@ -5,11 +5,11 @@ public sealed class ForCountOperation : Operation, IPlaceholderOperation
   public override bool NoInput => true;
   public override bool NoOutput => true;
   /// <summary>The name of this loop.</summary>
-  public string CursorKey { get; }
-  public string? LengthKey { get; }
+  public required string CursorKey { get; init; }
+  public string? LengthKey { get; init; }
   public int Length { get; set; } = -1;
   /// <summary>Operations to perform.</summary>
-  public IEnumerable<IOperation> Operations { get; }
+  public IEnumerable<IOperation> Operations { get; init; }
   /// <summary>Start of loop section.</summary>
   public int OpIndex { get; private set; }
 
@@ -24,6 +24,10 @@ public sealed class ForCountOperation : Operation, IPlaceholderOperation
     CursorKey = cursor_key;
     LengthKey = length_key;
     Operations = operations;
+  }
+
+  public ForCountOperation ()
+  {
   }
 
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
