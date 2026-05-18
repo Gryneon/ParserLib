@@ -10,8 +10,6 @@ public static class Op
   public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
   public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
   public static IOperation While (string cursor_key, ICondition condition, IEnumerable<IOperation> operations) => new WhileOperation(cursor_key, condition, operations);
-  public static IOperation ForCount (string cursor_key, string input_key, IEnumerable<IOperation> operations) => new ForCountOperation(cursor_key, input_key, operations);
-  public static IOperation ForCount (string count_key, int count, IEnumerable<IOperation> operations) => new ForCountOperation(count_key, count, operations);
   #endregion
   #region Throwing methods
   /// <summary>Throws a buffer overflow exception.</summary>
