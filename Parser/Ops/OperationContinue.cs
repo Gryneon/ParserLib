@@ -29,7 +29,7 @@ public sealed class OperationContinue : Operation
     }
 
     Parser.SetNextOperationIndex(ContTarget);
-    Parser.IncCursorByKey(CursorKey, Increment);
+    Data.IncCursorIndex(CursorKey, Increment);
   }
 
   public void SetupContinue (int target, int increment, string cursor_key)

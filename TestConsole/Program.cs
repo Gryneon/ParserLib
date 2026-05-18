@@ -1,5 +1,3 @@
-using Parser.Condition;
-
 using ResWAD = Specification.WAD.Properties.Resources;
 using ResZDoom = Specification.ZDoom.Properties.Resources;
 using SpecINI = Specification.INI.Definition;
@@ -21,7 +19,7 @@ internal static class Program
   #endregion
   #region Fields
   internal static string? UserInput;
-  internal static XParser Parser = new();
+  internal static XParser Parser { get; set; } = new();
   internal static OpStatus Status = OpStatus.AtStart;
   #endregion
   #region Basic Methods
@@ -37,34 +35,6 @@ internal static class Program
     return Directory.Exists(CheckPath) ? $@"{LaptopPath}\{path}" : $@"{DesktopPath}\{path}";
   }
   #endregion
-
-  internal static readonly Spec TestSpec = new()
-  {
-    Name = "testSpec",
-    Operations = [
-      Op.StoreKey("test_key", "string_value"),
-      Op.While("while_loop", CompareCondition.AsString("test_key", "string_value", true),
-      [
-        Op.CopyKey("test_key", "copied_key"),
-        Op.StoreKey("test_key", "different_value"),
-      ]),
-      Op.DebugKey("copied_key"),
-      Op.DebugKey("test_key"),
-    ],
-  };
-  internal static readonly Spec TestSpec2 = new()
-  {
-    Name = "testSpec",
-    Operations = [
-      Op.StoreKey("test_key", "string_value"),
-      Op.ForCount( "for_count_loop", 3, [
-        Op.CopyKey("test_key", "copied_key"),
-        Op.StoreKey("test_key", "different_value")
-      ]),
-      Op.DebugKey("copied_key"),
-      Op.DebugKey("test_key"),
-    ],
-  };
   #region Menu Definition
   internal static Action<IList<object>> DoTest => item => _ = item[0] is string s && item[1] is Spec sp ? TestTextParser(s, sp) : throw new InvalidOperationException("Invalid data passed to TestTextParser");
   // MenuItem 2 "Quit"
@@ -135,9 +105,6 @@ internal static class Program
       case null:
       case "exit" or "quit":
         goto Exit;
-      case "ops":
-        InitialTest(TestSpec, Paths.ini_vncdefault);
-        break;
       case "json":
         InitialTest(SpecJSON.Spec, Paths.json_error);
         break;
@@ -269,7 +236,7 @@ internal static class Program
   }
   internal static void Load ()
   {
-    DebugIn("Load");
+    DebugIn("Program", "Load");
     Spec userSpec;
     string userPath;
     string? specName;
@@ -283,8 +250,7 @@ internal static class Program
 
     if (userPath.IsAny(["back", "quit", "exit"]))
     {
-      DebugOut();
-      return;
+      //throw new QuitException();
     }
     if (!File.Exists(userPath))
       goto GetFile;

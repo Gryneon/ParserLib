@@ -5,6 +5,8 @@ namespace Parser;
 /// <summary>A parser the takes a file's content and turns it into tokens or objects.</summary>
 public sealed class XParser
 {
+  private const string Area = nameof(XParser);
+
   #region Public Properties
   /// <summary>The current operation index.</summary>
   public int OpIndex { get; private set; }
@@ -18,21 +20,11 @@ public sealed class XParser
   public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>Gets the file data as a list of bytes.</summary>
   public IList<byte> FileData => [.. Data["bytes"] as IEnumerable<byte> ?? []];
-  public Spec LocalDefaultSpec
-  {
-    get
-    {
-      if (Data?.HasData != true)
-      {
-        return DefaultSpec.Unknown;
-      }
-      if (Data["initial"] is string)
-        Spec = DefaultSpec.TextByLines;
-      else if (Data["initial"] is IEnumerable<byte>)
-        Spec = DefaultSpec.Binary;
-      return DefaultSpec.Unknown;
-    }
-  }
+  public Spec LocalDefaultSpec =>
+    Data?.HasData != true ? DefaultSpec.Unknown :
+    Data.CanLoad<string>("initial") ? DefaultSpec.TextByLines :
+    Data.CanLoad<Memory<byte>>("initial") ? DefaultSpec.Binary :
+    DefaultSpec.Unknown;
   public Collection<CursorData> Cursors { get; } = [];
   /// <summary>The spec to use for this parser.</summary>
   public Spec? Spec { get; private set; }
@@ -40,6 +32,8 @@ public sealed class XParser
   public Dictionary<string, int> Labels { get; } = [];
   /// <summary>The dictionary storing all of the data from the parsed file.</summary>
   [NotNull] public DataStore? Data { get; private set; }
+  /// <summary>The dictionary storing all of the temporary data from the parsed file.</summary>
+  [NotNull] public DataStore? LocalData { get; }
   /// <summary>Gets the result of a successful parse operation set.</summary>
   /// <remarks>This property returns <see langword="null"/> if the operation sequence has failed, or has not ran.</remarks>
   public object? Result => Data.CanLoad("result") ? Data["result"] : null;
@@ -64,7 +58,7 @@ public sealed class XParser
   /// <summary>Loads the operations into a flat pattern.</summary>
   private void OperationLoad ()
   {
-    DebugIn("OperationLoad");
+    DebugIn(Area, "OperationLoad");
     Spec.ThrowIfNull();
     Operations.AddRange(Spec.Operations);
     Operations.Add(Op.End);
@@ -121,7 +115,7 @@ public sealed class XParser
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   private OpStatus ParseLoop ()
   {
-    DebugIn("ParseLoop");
+    DebugIn(Area, "ParseLoop");
     Log(MsgClass.Debug, "Initialized");
 
     while (NextOpIndex >= 0 && !LastStatus.IsFail(CurrentOp.ContinueOnFail))
@@ -136,22 +130,13 @@ public sealed class XParser
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
   private OpStatus PerformOperation ()
   {
-    DebugIn("PerformOperation");
+    DebugIn(Area, "PerformOperation");
     AddCatch("PerformOperation");
 
     if (CurrentOp.SkipOperation)
     {
       Log(MsgClass.Debug, "Skip Operation Encountered");
       LastStatus = Skipped;
-      AdvanceOperation();
-      DebugOut();
-      return LastStatus;
-    }
-    if (CurrentOp is IfElseOperation ifop)
-    {
-      Log(MsgClass.Debug, "If Operation Encountered");
-      LastStatus = ifop.DoOperation(this);
-      Log(MsgClass.Warning, $"If Operation Evaluated to {LastStatus}");
       AdvanceOperation();
       DebugOut();
       return LastStatus;
@@ -221,27 +206,6 @@ public sealed class XParser
   /// <summary>Gets the count of the collection stored under the <paramref name="key"/>.</summary>
   /// <exception cref="InvalidOperationException"/>
   public int CountOfKey (string key) => Data is not null ? Data.GetCountOfKey(key) : throw new InvalidOperationException();
-  /// <summary>Gets the cursor that was created on the given key.</summary>
-  /// <param name="key">The key of the cursor to retrieve.</param>
-  /// <exception cref="InvalidOperationException"/>
-  /// <exception cref="ArgumentNullException"/>
-  public CursorData GetCursorByKey (string key) => Cursors.First(item => item.Key.Like(key));
-  public void SetCursorByKey (string key, int index) => Cursors.First(item => item.Key.Like(key)).Index = index;
-  public void IncCursorByKey (string key, int inc) => Cursors.First(item => item.Key.Like(key)).Index += inc;
-  /// <summary>Checks if a cursor exists on a given key.</summary>
-  /// <param name="key">The key to check.</param>
-  /// <returns><see langword="true"/> if the cursor exists on <paramref name="key"/>, <see langword="false"/> otherwise.</returns>
-  public bool HasCursorByKey (string key) => Cursors.Any(item => item.Key.Like(key));
-  /// <summary>Removes the cursor that was created on <paramref name="key"/>.</summary>
-  /// <param name="key">The key of the cursor to remove.</param>
-  public void RemCursorByKey (string key)
-  {
-    int index = Cursors.Index().First(c => c.Item.Key.Like(key)).Index;
-    Cursors.RemoveAt(index);
-  }
-  /// <summary>Creates a cursor to allow looping or iteration.</summary>
-  /// <param name="key">The key to make the cursor on.</param>
-  public void AddCursor (string key) => Cursors.Add(new(0, key));
   /// <summary>Sets the next operation to be the one at <paramref name="index"/>.</summary>
   /// <param name="index">AIM=</param>
   public void SetNextOperationIndex (int index) => NextOpIndex = index;
@@ -252,7 +216,7 @@ public sealed class XParser
   /// <exception cref="QuitException">Quits the program.</exception>
   public OpStatus StepThrough<TData> (TData input)
   {
-    DebugIn("StepThrough");
+    DebugIn(Area, "StepThrough");
     InitializeData(input);
     Log(MsgClass.Debug, "Initialized");
 
@@ -262,29 +226,20 @@ public sealed class XParser
       string userInput;
 
       void promptUser () => userInput = Console.ReadLine() ?? SE;
-      void checkLog (string input, string? message)
+      void checkAction (string input, dynamic data, Action<dynamic> actionOnData)
       {
         if (userInput.Like(input))
         {
-          Log(MsgClass.Debug, message ?? SE);
+          actionOnData(data);
         }
       }
-      void checkLogAsk (string input, string askmsg, Action<string> action)
+      void checkPrompt (string input, string askmsg, Action<string> actionOnInput)
       {
         if (userInput.Like(input))
         {
-          Log(MsgClass.Debug, askmsg);
+          Log(MsgClass.Prompt, askmsg);
           promptUser();
-          action(userInput);
-        }
-      }
-      void checkLogExec (string input, string askmsg, Action<string> action)
-      {
-        if (userInput.Like(input))
-        {
-          Log(MsgClass.Debug, askmsg);
-          promptUser();
-          action(userInput);
+          actionOnInput(userInput);
         }
       }
 
@@ -299,14 +254,14 @@ public sealed class XParser
 
           if (userInput.Like("quit"))
             throw new QuitException();
-
-          checkLog("data", Data.ToString());
-          checkLogExec("print", "Enter the key to display.", obj =>
+          checkPrompt("quit", "are you sure? (y/n)", user => _ = user.Like("y") ? throw new QuitException() : "no quit");
+          checkAction("data", Data.ToString(), data => Log(MsgClass.Debug, data));
+          checkPrompt("print", "Enter the key to display.", obj =>
           {
             if (Data.TryLoad(obj, out object? data) && data is IPrintable ip) ip.Print();
           });
-          checkLog("show next", $"Next Operation: {NextOpIndex} : {NextOp}");
-          checkLogAsk("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
+          checkAction("show next", $"Next Operation: {NextOpIndex} : {NextOp}", data => Log(MsgClass.Debug, data));
+          checkPrompt("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
 
         } while (!userInput.EqualsAny(allow_continue, SCOIC));
       }

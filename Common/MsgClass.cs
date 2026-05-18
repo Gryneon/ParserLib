@@ -29,5 +29,8 @@ public enum MsgClass
   GreenInfo,
   /// <summary>Not visible.</summary>
   /// <remarks>Color is black on black.</remarks>
-  Hidden
+  Hidden,
+  /// <summary>Always displays, for user input requests.</summary>
+  /// <remarks>Color is purple on black.</remarks>
+  Prompt
 }

@@ -7,25 +7,24 @@ public sealed class ForEachOperation : Operation, IPlaceholderOperation
   public override bool NoOutput => true;
   /// <summary>The name of this loop.</summary>
   public string CursorKey { get; }
-  /// <summary>The key storing the current item of the iteration.</summary>
-  public string SelectedKey { get; }
+  public string ListKey { get; }
   /// <summary>Operations to perform.</summary>
   public IEnumerable<IOperation> Operations { get; }
   /// <summary>Start of loop section.</summary>
   public int OpIndex { get; private set; }
 
-  public ForEachOperation (string cursor_key, string selected_key, IEnumerable<IOperation> operations) : base(SE, SE)
+  public ForEachOperation (string cursor_key, string list_key, IEnumerable<IOperation> operations) : base(SE, SE)
   {
     CursorKey = cursor_key;
-    SelectedKey = selected_key;
     Operations = operations;
+    ListKey = list_key;
   }
 
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     Collection<IOperation> additions = [];
     OpIndex = operations.Count;
-    IOperation start = new OperationCheckCountOfKey(CursorKey, SelectedKey, index);
+    IOperation start = new OperationCheckCount(CursorKey, index);
     additions.Add(start);
     additions.AddRange(Operations);
     additions.Add(new OperationContinue());
@@ -44,8 +43,7 @@ public sealed class ForEachOperation : Operation, IPlaceholderOperation
   protected override void Execute ()
   {
     CheckUnpacked(Parser);
-
-    Parser.AddCursor(CursorKey);
+    Data[CursorKey] = new CursorData(Parser, 0, ListKey);
     Parser.SetNextOperationIndex(OpIndex);
   }
 }

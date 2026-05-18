@@ -1,13 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <FileVersion>1.0.0.0</FileVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
-    <Title>Common Library</Title>
   </PropertyGroup>
 
   <ItemGroup>

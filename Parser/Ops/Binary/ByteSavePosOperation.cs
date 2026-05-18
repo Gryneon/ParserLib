@@ -10,7 +10,7 @@ public class ByteSavePosOperation (string cursor_key = "bytes", string output_ke
 
   protected override void Execute ()
   {
-    WorkData = Parser.GetCursorByKey(cursor_key).Index;
+    WorkData = Data.GetCursorByKey(cursor_key).Index;
     Log(MsgClass.BlueInfo, $"Position saved, {WorkData} in '{OutputKey}'.");
     Status = Pass;
   }

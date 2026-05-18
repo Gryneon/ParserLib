@@ -77,22 +77,6 @@ public sealed class OperationAction : IOperation
           }
           return Op.ThrowNoVar(SData[0]);
 
-        // Cursor actions
-        case OAT.CreateCursor:
-          if (Parser.HasCursorByKey(SData[0]))
-            Log(MsgClass.Warning, Area, "DoOperation", $"Cursor of type {SData[0]} already exists in the parser.");
-          Parser.AddCursor(SData[0]);
-          goto Pass;
-        case OAT.SetCursor:
-          Parser.SetCursorByKey(SData[0], IData[0]);
-          goto Pass;
-        case OAT.ClearCursor:
-          Parser.RemCursorByKey(SData[0]);
-          goto Pass;
-        case OAT.IncrementCursorKey:
-          Parser.IncCursorByKey(SData[0], IData[0]);
-          goto Pass;
-
         Pass:
           DebugOut();
           return OpStatus.Pass;

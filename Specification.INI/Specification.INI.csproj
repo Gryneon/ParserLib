@@ -4,7 +4,6 @@
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectGuid>{B1D0522D-B271-6DFE-EE74-01968AB563FC}</ProjectGuid>
-    <Platforms>x64</Platforms>
     <TargetFramework>net11.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

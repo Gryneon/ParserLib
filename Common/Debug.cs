@@ -49,6 +49,7 @@ public static class Debug
     MsgClass.Error or MsgClass.Critical or MsgClass.Hidden => C_Black,
     MsgClass.Warning => C_Yellow,
     MsgClass.GreenInfo => C_Green,
+    MsgClass.Prompt => ConsoleColor.DarkMagenta,
     _ => C_White
   };
   private static ConsoleColor GetBackColor (MsgClass msg) => msg switch

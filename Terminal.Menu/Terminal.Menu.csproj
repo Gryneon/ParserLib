@@ -2,14 +2,10 @@
   
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <FileVersion>1.0.0.0</FileVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
-    <Title>Console Menu Library</Title>
-    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

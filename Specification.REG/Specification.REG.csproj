@@ -6,8 +6,6 @@
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
-    <NoWarn>ENC0097;0097;</NoWarn>
-    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

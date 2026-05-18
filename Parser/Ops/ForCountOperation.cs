@@ -2,11 +2,12 @@ namespace Parser.Ops;
 
 public sealed class ForCountOperation : Operation, IPlaceholderOperation
 {
-  public override bool NoInput { get; }
+  public override bool NoInput => true;
   public override bool NoOutput => true;
   /// <summary>The name of this loop.</summary>
   public string CursorKey { get; }
-  public int TargetCount { get; private set; }
+  public string? LengthKey { get; }
+  public int Length { get; set; } = -1;
   /// <summary>Operations to perform.</summary>
   public IEnumerable<IOperation> Operations { get; }
   /// <summary>Start of loop section.</summary>
@@ -16,22 +17,20 @@ public sealed class ForCountOperation : Operation, IPlaceholderOperation
   {
     CursorKey = cursor_key;
     Operations = operations;
-    TargetCount = target_count;
-    NoInput = true;
+    Length = target_count;
   }
-  public ForCountOperation (string cursor_key, string input_key, IEnumerable<IOperation> operations) : base(input_key, SE)
+  public ForCountOperation (string cursor_key, string length_key, IEnumerable<IOperation> operations)
   {
     CursorKey = cursor_key;
+    LengthKey = length_key;
     Operations = operations;
-    TargetCount = -1;
-    NoInput = false;
   }
 
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     Collection<IOperation> additions = [];
     OpIndex = operations.Count;
-    IOperation start = new OperationCheckCount(TargetCount, CursorKey, index);
+    IOperation start = new OperationCheckCount(CursorKey, index);
     additions.Add(start);
     additions.AddRange(Operations);
     additions.Add(new OperationContinue());
@@ -52,17 +51,14 @@ public sealed class ForCountOperation : Operation, IPlaceholderOperation
     if (OpIndex == 0)
       Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
 
-    if (TargetCount == -1)
+    if (Length == -1)
     {
-      if (InputKey.IsEmpty())
-        Status = Op.ThrowNoVar("Key name is invalid.");
       if (WorkData is not int)
         Status = Op.ThrowBadInput("int", $"{WorkDataType}");
-      TargetCount = (int) Data[InputKey];
+      Length = (int) Data[InputKey];
     }
 
-    Parser.Data.Save<bool>(CursorKey, true);
-    Parser.AddCursor(CursorKey);
+    Data[CursorKey] = new CursorData(Parser, 0, Length != -1 ? Length : (int) Data[LengthKey]);
     Parser.SetNextOperationIndex(OpIndex);
   }
 }

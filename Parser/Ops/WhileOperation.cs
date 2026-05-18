@@ -41,7 +41,7 @@ public sealed class WhileOperation (string cursor_key, ICondition condition, IEn
       Status = Op.ThrowBadDef("Condition is null on a while loop");
 
     Parser.Data.Save<bool>(CursorKey, true);
-    Parser.AddCursor(CursorKey);
+    Data[CursorKey] = new CursorData(Parser);
     Parser.SetNextOperationIndex(OpIndex);
   }
 }

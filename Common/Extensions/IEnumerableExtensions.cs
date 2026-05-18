@@ -1,14 +1,16 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using System.Diagnostics.CodeAnalysis;
-
 using Common.Regexp;
 
 namespace Common.Extensions;
 
 public static class IEnumerableExtensions
 {
-  // IEnumerable<T>
+  /// <summary>Allows indexing for ienumerable types.</summary>
+  /// <typeparam name="T">The object type</typeparam>
+  /// <param name="list">The list.</param>
+  /// <param name="index">The index to retrieve.</param>
+  /// <returns>The object at position <paramref name="index"/>.</returns>
   public static T At<T> (this IEnumerable<T> list, int index) => list.ToArray()[index];
   public static Collection<T> ToCollection<T> (this IEnumerable<T> list) => [.. list];
   public static string TextJoin<T> (this IEnumerable<T> list, string separator = EmptyString)

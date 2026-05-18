@@ -3,11 +3,9 @@
   <PropertyGroup>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
-    <Platforms>x64</Platforms>
     <Title>XML Format Specification</Title>
     <PackageIcon>XMLFile.ico</PackageIcon>
   </PropertyGroup>

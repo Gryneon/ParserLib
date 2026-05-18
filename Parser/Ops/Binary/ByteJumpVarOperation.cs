@@ -24,7 +24,7 @@ public class ByteJumpVarOperation (string input_key, string cursor_key = "bytes"
       throw null;
     }
 
-    Parser.SetCursorByKey(_cursor_key, pos);
+    Data.SetCursorIndex(_cursor_key, pos);
     Log(MsgClass.Debug, $"Position set to {pos} from '{InputKey}'.");
     Status = Pass;
     DebugOut();
