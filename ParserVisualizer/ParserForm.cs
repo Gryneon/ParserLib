@@ -2,7 +2,7 @@ using System.Windows.Forms;
 
 namespace ParserVisualizer;
 
-public partial class ParserForm : Form
+internal partial class ParserForm : Form
 {
   public ParserForm () => InitializeComponent();
 

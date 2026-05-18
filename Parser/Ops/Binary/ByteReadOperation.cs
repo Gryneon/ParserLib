@@ -6,16 +6,24 @@ namespace Parser.Ops.Binary;
 
 public sealed class ByteReadOperation : Operation
 {
-  public string CursorKey { get; }
-  public int Size { get; set; }
-  public ByteReadMode Mode { get; }
+  public string? CursorKey { get; init; }
+  public int Size { get; set; } = -1;
+  public required ByteReadMode Mode { get; init; }
+  public int Position { get; set; } = -1;
+  public string? PositionKey { get; init; }
+  public string? ContentKey { get; init; }
 
+  public ByteReadOperation (string output_key) : base(SE, output_key) { }
+  public ByteReadOperation (string input_key, string output_key) : base(input_key, output_key) { }
+
+  [SetsRequiredMembers]
   private ByteReadOperation (string output_key, int size, ByteReadMode mode, string cursor_key) : base(SE, output_key)
   {
     Size = size;
     Mode = mode;
     CursorKey = cursor_key;
   }
+  [SetsRequiredMembers]
   private ByteReadOperation (string input_key, string output_key, ByteReadMode mode, string cursor_key) : base(input_key, output_key)
   {
     Mode = mode;
@@ -33,59 +41,54 @@ public sealed class ByteReadOperation : Operation
   public static ByteReadOperation ReadRemainingBin (string output_key, string cursor_key = "bytes") => new(output_key, -1, ByteReadMode.Binary, cursor_key);
   public static ByteReadOperation ReadRemainingStr (string output_key, string cursor_key = "bytes") => new(output_key, -1, ByteReadMode.Text, cursor_key);
 
-  private Memory<byte> ReadBytes (string cursorName, int count)
+  private Memory<byte> ReadBytes (int count)
   {
-    Memory<byte> mem = (Memory<byte>) Data[CursorKey];
-    int index = Parser.GetCursorByKey(cursorName).Index;
-    Memory<byte> slice = mem.Slice(index, count);
-    Parser.IncCursorByKey(CursorKey, count);
-    return slice;
+    if (PositionKey.IsNotEmpty())
+    {
+      Position = (int) Data[PositionKey];
+    }
+
+    if (CursorKey.IsNotEmpty())
+    {
+      CursorData cursor = Data.GetCursorByKey(CursorKey);
+      Memory<byte> mem = (Memory<byte>) Data[cursor.ListKey];
+      Memory<byte> slice = mem.Slice(cursor.Index, count);
+      cursor.Index += count;
+      return slice;
+    }
+
+    Memory<byte> mem2 = (Memory<byte>) Data[ContentKey];
+    return mem2.Slice(Position, count);
+
   }
-  private string ReadChars (string cursorName, int count) => ReadBytes(cursorName, count).Span.ByteArrToString();
+  private string ReadChars (int count) => ReadBytes(count).Span.ByteArrToString();
   protected override void Execute ()
   {
     if (WorkData is int size)
     {
       Size = size;
     }
-    else if (!NoInput)
-    {
-      Status = FailBadInputType;
-      return;
-    }
 
-    if (((Memory<byte>) Data[CursorKey]).Length == 0)
-    {
-      Status = FailNoInput;
-      return;
-    }
-
-    if (((Memory<byte>) Data[CursorKey]).Length < Size)
-    {
-      Status = FailBufferOverflow;
-      return;
-    }
-
-    if (Size == 0)
+    if (Size == 0 && Mode is ByteReadMode.Binary)
     {
       Log(MsgClass.BlueInfo, "ByteReadOperation", "Execute", "Found: Marker");
-      Status = Pass;
-      WorkData = Array.Empty<byte>();
-      return;
     }
 
-    int remaining = (int) Data["file_size"] - Parser.GetCursorByKey(CursorKey).Index;
+    if (Size == -1 && CursorKey is not null && Mode is not ByteReadMode.Value)
+    {
+      Size = (int) Data["file_size"] - Data.GetCursorByKey(CursorKey).Index;
+    }
+
     object? value = Size switch
     {
-      1 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span[0],
-      2 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt16(),
-      4 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).ToInt32(),
-      8 when Mode is ByteReadMode.Value => ReadBytes(CursorKey, Size).Span.ToInt64(),
-      > 0 when Mode is ByteReadMode.Text => ReadChars(CursorKey, Size),
-      > 0 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, Size),
-      -1 when Mode is ByteReadMode.Text => ReadChars(CursorKey, remaining),
-      -1 when Mode is ByteReadMode.Binary => ReadBytes(CursorKey, remaining),
-      _ => Op.ThrowBadResult("Size was 0, cannot have a size of 0.")
+      0 when Mode is ByteReadMode.Binary => Memory<byte>.Empty,
+      1 when Mode is ByteReadMode.Value => ReadBytes(Size).Span[0],
+      2 when Mode is ByteReadMode.Value => ReadBytes(Size).Span.ToInt16(),
+      4 when Mode is ByteReadMode.Value => ReadBytes(Size).ToInt32(),
+      8 when Mode is ByteReadMode.Value => ReadBytes(Size).Span.ToInt64(),
+      > 0 when Mode is ByteReadMode.Text => ReadChars(Size),
+      > 0 when Mode is ByteReadMode.Binary => ReadBytes(Size),
+      _ => Op.ThrowBadResult("Size was not valid")
     };
 
     Log(MsgClass.BlueInfo, "ByteReadOperation", "Execute", $"Read: {value}");

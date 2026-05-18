@@ -23,9 +23,7 @@ global using ZT = Specification.ZDoom.Lang.ZScript.ZScriptTokenType;
 
 using System.Reflection;
 using System.Resources;
-using System.Runtime.Versioning;
 
-[assembly: TargetFramework(".NETCoreApp,Version=v11.0", FrameworkDisplayName = ".NET 11.0")]
 [assembly: AssemblyCompany("Specification.ZDoom")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

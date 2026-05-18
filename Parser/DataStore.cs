@@ -21,17 +21,14 @@ public sealed class DataStore
   /// <summary>Gets the number of elements contained in the collection.</summary>
   public int Count => _dict.Count;
   public ReadOnlyCollection<string> Keys => [.. _dict.Keys];
-  public ReadOnlyCollection<object> Values => [.. _dict.Values];
   /// <summary>Gets or sets data to a given key.</summary>
   /// <param name="key">The key to assign to or look up.
   /// Prefixing this string with a "+" when assigning will cause it to make a list instead of overrwriting.</param>
-  /// <returns>The data assigned to the given key, or <see langword="null"/> if the key is not present.</returns>
+  /// <returns>The data assigned to the given key, or throws an exception if it is not found.</returns>
   /// <exception cref="ArgumentException"/>
-  [NotNull]
-  [MaybeNull]
-  public object this[string key]
+  public object this[string? key]
   {
-    get => TryLoad(key, out object? value) ? value : null;
+    get => key is null ? null! : LoadOrFail(key);
     set
     {
       DebugIn("DataStore", $"[{key}]");
@@ -51,6 +48,35 @@ public sealed class DataStore
         _ = DoSave<object>(key, value, DM.Overwrite);
       }
     }
+  }
+
+  /// <summary>Loads the key, or throws an exception.</summary>
+  /// <param name="key">The key to load.</param>
+  /// <returns>The value of the key.</returns>
+  /// <exception cref="OperationNoSuchVarException">The key is not present in the <see cref="DataStore"/>.</exception>
+  public object LoadOrFail (string key)
+  {
+
+    return TryLoad(key, out object? value) ? value : Op.ThrowNoVar(key);
+  }
+  public T LoadOrFail<T> (string key)
+  {
+
+    if (TryLoad(key, out T? value))
+      return value;
+    else
+      _ = Op.ThrowNoVar(key);
+    throw null;
+  }
+  public object? LoadIfAble (string key)
+  {
+
+    return TryLoad(key, out object? value) ? value : null;
+  }
+  public T? LoadIfAble<T> (string key)
+  {
+
+    return TryLoad(key, out T? value) ? value : default;
   }
 
   public override string ToString ()
@@ -78,14 +104,12 @@ public sealed class DataStore
 
     if (mode.HasFlag(DM.MergeCollection) && TryLoadArray(key, out IEnumerable<T>? existing_to_merge) && data is IEnumerable<T> new_list)
     {
-      Collection<T> big_list = [.. existing_to_merge, .. new_list];
-      _dict[key] = big_list;
+      _dict[key] = (Collection<T>) [.. existing_to_merge, .. new_list];
       return true;
     }
     else if (mode.HasFlag(DM.AddToCollection) && TryLoadArray(key, out IEnumerable<T>? existing_to_add) && data is T new_item)
     {
-      Collection<T> big_list = [.. existing_to_add, new_item];
-      _dict[key] = big_list;
+      _dict[key] = (Collection<T>) [.. existing_to_add, new_item];
       return true;
     }
     else if (mode.HasFlag(DM.MakeCollection) && TryLoad(key, out T? lonely_item) && data is T friend_item)
@@ -170,6 +194,24 @@ public sealed class DataStore
     !CanLoad(key) ? 0 :
     _dict[key] is IEnumerable<object> list ? list.Count() :
     1;
+  public bool TryGetCursorByKey (string key, out CursorData? cd) =>
+    !CanLoad(key) ? throw new OperationNoSuchVarException(key) :
+    !TryLoad<CursorData>(key, out cd) ? throw new OperationBadInputTypeException("", $"{_dict[key].GetType()}") : true;
+  /// <summary>Gets the cursor that was created on the given key.</summary>
+  /// <param name="key">The key of the cursor to retrieve.</param>
+  /// <exception cref="OperationNoSuchVarException"/>
+  /// <exception cref="OperationBadInputTypeException"/>
+  public CursorData GetCursorByKey (string key) =>
+    !CanLoad(key) ? throw new OperationNoSuchVarException(key) :
+    _dict[key] is CursorData cursor ? cursor :
+    throw new OperationBadInputTypeException("", $"{_dict[key].GetType()}");
+
+  public void SetCursorIndex (string key, int index) => GetCursorByKey(key).Index = index;
+  public void IncCursorIndex (string key, int inc) => GetCursorByKey(key).Index += inc;
+  /// <summary>Checks if a cursor exists on a given key.</summary>
+  /// <param name="key">The key to check.</param>
+  /// <returns><see langword="true"/> if the cursor exists on <paramref name="key"/>, <see langword="false"/> otherwise.</returns>
+  public bool HasCursorByKey (string key) => CanLoad<CursorData>(key);
   /// <summary>Removes the indicated key from storage.</summary>
   /// <param name="key">The key to clear.</param>
   /// <returns><see langword="true"/> if the key existed to be cleared, <see langword="false"/> otherwise.</returns>

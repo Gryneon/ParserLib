@@ -2,14 +2,22 @@ namespace Parser.Ops;
 
 public class SampleOperation : Operation
 {
+  public override bool NoInput => true;
+  protected string NewInputKey { get; init; }
+  protected string ModInputKey { get; init; }
+  protected string NewOutputKey { get; init; }
+  protected string ModOutputKey { get; init; }
   public SampleOperation (string input_key, string input_key2, string output_key, string output_key2)
   {
-    InputDataReferences.Add("cursor_ref", input_key);
-    InputDataReferences.Add("cursor_index", input_key2);
+    NewInputKey = input_key;
+    ModInputKey = input_key2;
+    NewOutputKey = output_key;
+    ModOutputKey = output_key2;
   }
   protected override void Execute ()
   {
-
+    Data[NewOutputKey] = NewInputKey;
+    Data[ModOutputKey] = ModInputKey;
   }
 }
 
@@ -31,41 +39,17 @@ public abstract class Operation : IOperation
   }
   #endregion
   #region Stored Keys & Data
-
-  /// <summary>The input data to load.</summary>
-  protected virtual Dictionary<string, string> InputDataReferences { get; } = [];
-
-  /// <summary>The loaded data from the input keys if there are multiple keys provided.</summary>
-  protected Collection<object> MultipleInputValues { get; private set; } = [];
-  /// <summary>A collection of all of the input keys. This will only contain one key if only one key is provided.</summary>
+  /// <summary>The input key provided.</summary>
   [NotNull]
-  protected Collection<string> InputKeys { get; } = [];
-  /// <summary>The input key provided, or the first input key if multiple are provided.</summary>
-  [NotNull]
-  protected string InputKey
-  {
-    get => InputKeys.IsEmpty() ? SE : InputKeys[0];
-    set
-    {
-      value ??= SE;
-      if (InputKeys.IsEmpty())
-      {
-        InputKeys.Add(value);
-      }
-      else
-      {
-        InputKeys[0] = value;
-      }
-    }
-  }
+  protected string InputKey { get; set; }
   /// <summary>The output key provided.</summary>
   protected string OutputKey { get; init; }
   /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
+  [AllowNull]
   [MemberNotNull(nameof(WorkDataType))]
-  protected object? WorkData { get; set; }
+  protected object WorkData { get; set; }
   /// <summary>The status of the operation.</summary>
   protected OpStatus Status { get; set; } = OpStatus.Pass;
-  protected bool MakeListOnSave { get; set; }
   protected Type? WorkDataType => WorkData?.GetType();
   #endregion
   #region Calculated Properties
@@ -81,58 +65,8 @@ public abstract class Operation : IOperation
   /// <summary>Whether or not this operation loads a key from a <see cref="DataStore"/>.</summary>
   /// <remarks>Set this to false on any operation that does not use or load data.</remarks>
 
-  [MemberNotNullWhen(false, nameof(InputKey), nameof(InputKeys), nameof(WorkData))]
+  [MemberNotNullWhen(false, nameof(InputKey), nameof(WorkData))]
   public virtual bool NoInput => InputKey.IsEmpty();
-  #endregion
-  #region Input Checks
-
-  protected T Load<T> (string input_data_key)
-  {
-    string key = InputDataReferences[input_data_key];
-
-    if (Data.TryLoad(key, out T? data))
-    {
-      return data;
-    }
-    else if (Data.CanLoad(key))
-    {
-      _ = Op.ThrowBadInput($"{typeof(T)}", $"{Data[key].GetType()}");
-    }
-
-    _ = Op.ThrowNoVar(key);
-    throw null;
-  }
-
-  /// <summary>
-  /// Checks the parsers current working data, and throws an <see cref="OperationNoSuchVarException"/> if it is missing.
-  /// This method works for one or many input keys. It will check each one.
-  /// </summary>
-  /// <exception cref="OperationNoSuchVarException"/>
-  private void CheckInputNull ()
-  {
-    DebugIn(Area, "CheckInputNull");
-    if (InputKey == SE || NoInput)
-    {
-      Log(MsgClass.Debug, "No key checked.");
-      Status = OpStatus.Skipped;
-      DebugOut();
-      return;
-    }
-    foreach (string key in InputKeys)
-    {
-      if (!Data.CanLoad(key))
-      {
-        Log(MsgClass.Error, $"Key {key} does not exist.");
-        Status = Op.ThrowNoVar(key);
-      }
-    }
-    if (InputKeys.Count == 1)
-      Log(MsgClass.Debug, $"Key {InputKey} is not null.");
-    else
-      Log(MsgClass.Debug, "All keys are not null.");
-    Status = OpStatus.Pass;
-    DebugOut();
-  }
   #endregion
   #region Reference Properties
   /// <summary>The reference to the parser.</summary>
@@ -152,24 +86,15 @@ public abstract class Operation : IOperation
   }
   #endregion
   #region Constructors
-  /// <summary>Multiple input keys.</summary>
-  protected Operation (IEnumerable<string> input_keys, string output_key)
-  {
-    InputKeys = [.. input_keys];
-    InputKey = !input_keys.Any() ? SE : InputKeys[0];
-    OutputKey = output_key;
-  }
   /// <summary>Constructor for the static <see cref="Op.End"/> object, and for operations that do not touch data.</summary>
   protected Operation ()
   {
     InputKey = SE;
     OutputKey = SE;
-    InputKeys = [];
   }
   /// <summary>Single input key.</summary>
   protected Operation (string input_key, string output_key)
   {
-    InputKeys = NoInput ? [] : [input_key];
     InputKey = input_key;
     OutputKey = output_key;
   }
@@ -182,9 +107,6 @@ public abstract class Operation : IOperation
 
     Initialize(parser_ref);
 
-    if (!NoInput)
-      CheckInputNull();
-
     if (!NoExecution)
     {
       DebugIn($"{GetType()}", "Execute");
@@ -192,7 +114,7 @@ public abstract class Operation : IOperation
       DebugOut();
     }
     if (!NoOutput)
-      AssignResult();
+      Data[OutputKey] = WorkData;
 
     DebugOut();
     return AdjustedStatus;
@@ -200,8 +122,6 @@ public abstract class Operation : IOperation
   /// <summary>
   /// Performs the operation and stores the value in <c><see cref="WorkData"/></c>,
   /// and the <c><see cref="OpStatus"/></c> in <c><see cref="Status"/></c>.<br/>
-  /// Use <c><see cref="WorkData"/></c> for a single passed input, and
-  /// <c><see cref="MultipleInputValues"/></c> for multiple values.<br/>
   /// If you output multiple values, set <c><see cref="NoOutput"/></c> to
   /// <c><see langword="true"/></c> and handle the data saving here.
   /// </summary>
@@ -220,45 +140,14 @@ public abstract class Operation : IOperation
   /// <param name="parser">The parser reference to pass to the operation.</param>
   private void Initialize (XParser parser)
   {
-    DebugIn("Initialize");
+    DebugIn(Area, "Initialize");
     parser.ThrowIfNull();
     Parser = parser;
     WorkData = null;
 
-    if (NoInput)
-      return;
+    if (!NoInput)
+      WorkData = Data[InputKey];
 
-    object loadkey (string key)
-    {
-      if (Parser.Data.TryLoad(key, out object? value))
-      {
-        return value;
-      }
-      else
-      {
-        Log(MsgClass.Error, $"Key {key} does not exist or is null.");
-        return Op.ThrowNoVar(key);
-      }
-    }
-    if (InputKeys.Count == 1)
-    {
-      WorkData = loadkey(InputKey);
-    }
-    else if (InputKeys.Count > 1)
-    {
-      MultipleInputValues = [.. InputKeys.Select(loadkey)];
-    }
     DebugOut();
-  }
-  private void AssignResult ()
-  {
-    if (WorkData is null) return;
-
-    if (!MakeListOnSave)
-    {
-      Parser.Data.Save(OutputKey, WorkData);
-      return;
-    }
-    Parser.Data.Save(OutputKey, WorkData, DM.AddToCollection | DM.MakeCollection);
   }
 }

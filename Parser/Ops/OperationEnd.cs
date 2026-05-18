@@ -1,11 +1,14 @@
 namespace Parser.Ops;
 
 /// <summary>This operation ends the operation sequence with a success.</summary>
-public sealed class OperationEnd() : Operation
+public sealed class OperationEnd (bool fail = false) : Operation
 {
+  public override bool NoInput => true;
+  public override bool NoOutput => true;
   protected override void Execute ()
   {
     Parser.SetNextOperationIndex(-1);
-    Status = OpStatus.EndCommand;
+    Status = fail ? OpStatus.DefinedFail : OpStatus.EndCommand;
+    if (fail) throw new QuitException();
   }
 }

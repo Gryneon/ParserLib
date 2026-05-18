@@ -13,7 +13,7 @@ public sealed class OperationCheckLoopCondition (ICondition condition, string cu
     if (!Condition.Evaluate(Parser))
     {
       Parser.SetNextOperationIndex(BreakTarget);
-      Parser.RemCursorByKey(CursorKey);
+      _ = Data.Remove(CursorKey);
       Status = OpStatus.ConditionFail;
     }
     else
