@@ -31,9 +31,7 @@ public class InitializeOperation : Operation
   {
     Type key = Type switch { "string" => typeof(string), _ => typeof(int) };
     Type value = System.Type.GetType(ValueType ?? SE) ?? typeof(object);
-    Type container_type;
-
-    container_type = Type switch
+    Type container_type = Type switch
     {
       "Set" => typeof(HashSet<object>).MakeGenericType(value),
       "List" => typeof(List<object>).MakeGenericType(value),
