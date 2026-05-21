@@ -353,6 +353,15 @@ An expression that must resolve to true or false. Formatted like
       <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="Divide" substitutionGroup="Command">
+    <xs:complexType>
+      <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+      <xs:attribute name="dividend_var" use="optional" type="DataKeyType"/>
+      <xs:attribute name="divisor_var" use="optional" type="DataKeyType"/>
+      <xs:attribute name="dividend" use="optional" type="xs:int"/>
+      <xs:attribute name="divisor" use="optional" type="xs:int"/>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="MakeCursor" substitutionGroup="Command">
     <xs:complexType>
       <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>

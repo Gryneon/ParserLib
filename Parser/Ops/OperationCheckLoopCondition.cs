@@ -1,16 +1,16 @@
 namespace Parser.Ops;
 
-public sealed class OperationCheckLoopCondition (ICondition condition, string cursor_key, int break_target) : Operation
+public sealed class OperationCheckLoopCondition (string condition, string cursor_key, int break_target) : Operation
 {
-  public int BreakTarget { get; } = break_target;
-  public string CursorKey { get; } = cursor_key;
-  public ICondition Condition { get; } = condition;
+  public int BreakTarget { get; init; } = break_target;
+  public string CursorKey { get; init; } = cursor_key;
+  public string Condition { get; init; } = condition;
   public override bool NoInput => true;
   public override bool NoOutput => true;
 
   protected override void Execute ()
   {
-    if (!Condition.Evaluate(Parser))
+    if (!Condition.IsEmpty()) //TODO: Fix ICondition Remenents.
     {
       Parser.SetNextOperationIndex(BreakTarget);
       _ = Data.Remove(CursorKey);

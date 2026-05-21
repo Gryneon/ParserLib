@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Specs xmlns="Parser/Spec" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="Parser\Spec ..\Parser\Schemas\Spec.xsd">
+  <Spec>
+    <Name>wad_test</Name>
+    <TextFile>false</TextFile>
+    <Instructions>
+      <Tokenize content_var="text" output_var="tokens"/>
+      <Label name="Start"/>
+      <MakeCursor cursor_var="current_pos" position="0"/>
+      <GotoOpIndex target="2"/>
+      <GotoLabel name="Start"/>
+      <ReadData content_var="bytes" output_var="file_id" type="text" length="4" cursor_var="current_pos"/>
+      <ReadData content_var="bytes" output_var="numlumps" type="int" cursor_var="current_pos"/>
+      <ReadData content_var="bytes" output_var="diroffset" type="int" cursor_var="current_pos"/>  
+      <SetCursorPos cursor_var="current_pos" position_var="diroffset"/>
+      <Initialize initial_var="directory" type="Collection" value_type="DirectoryEntry"/>
+      <ForCount length_var="numlumps" cursor_var="index">
+       <ReadData output_var="lump_pos" content_var="bytes" type="int" cursor_var="current_pos"/>
+       <ReadData output_var="lump_size" content_var="bytes" type="int" cursor_var="current_pos"/>
+       <ReadData output_var="lump_name" content_var="bytes" type="text" length="8" cursor_var="current_pos"/>
+        <ReadData output_var="lump_data" content_var="bytes" type="binary" length_var="lump_size" position_var="lump_pos"/>
+        <AddItem name="directory" type="DirectoryEntry">lump_pos lump_size lump_name lump_data</AddItem>
+      </ForCount>
+      <ForEach cursor_var="cursor">
+        <ReadData output_var="lump_pos" content_var="bytes" type="text" cursor_var="current_pos" length_var="current_item"/>
+      </ForEach>
+      <IfBlock>
+        <If condition="[file_id] == {WAD2}">
+          <!-- WAD2 File -->
+          <!-- <Initialize initial_var="s" type="Collection" value_type="d"/> -->
+        </If>
+        <ElseIf condition="[file_id] == {PACK}">
+          <!-- PAK File -->
+          <Initialize initial_var="s" type="Set" value_type="d"/>
+        </ElseIf>
+        <Else><!-- WAD File --></Else>
+      </IfBlock>
+      <Switch condition="[file_id]">
+        <Case value="WAD2"/>
+        <Default><!-- WAD File --></Default>
+      </Switch>
+      <Terminate success="true"/>
+    </Instructions>
+    <FileInferences initial="and">
+      <Extension>wad</Extension>
+      <Or>
+        <Header>IWAD</Header>
+        <Header>PWAD</Header>
+      </Or>
+    </FileInferences>
+  </Spec>
+  
+  <Spec>
+    <Name>wad</Name>
+    <TextFile>false</TextFile>
+    <Instructions>
+      <Label name="Start"/>
+      <MakeCursor cursor_var="current_pos" cursor_ref="bytes" position="0"/>
+      <ReadData scope="global" output_var="file_id" type="text" length="4" cursor_var="current_pos"/>
+      <ReadData scope="global" output_var="numlumps" type="int" cursor_var="current_pos"/>
+      <ReadData scope="global" output_var="diroffset" type="int" cursor_var="current_pos"/>
+      <SetCursorPos cursor_var="current_pos" position_var="diroffset"/>
+      
+    </Instructions>
+    <FileInferences initial="and">
+      <Extension>wad</Extension>
+      <Or>
+        <Header>IWAD</Header>
+        <Header>PWAD</Header>
+      </Or>
+    </FileInferences>
+  </Spec>
+</Specs>

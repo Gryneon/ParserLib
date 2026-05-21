@@ -1,42 +1,37 @@
 namespace Parser.Ops;
 
-/// <summary>Prompts for input, and stores the input in <paramref name="output_key"/>.
+/// <summary>Prompts for input, and stores the input.
 /// Optionally validates the input as well.</summary>
-/// <param name="message">The message to prompt.</param>
-/// <param name="output_key">The key to store the input in.</param>
-/// <param name="validation">An optional validator.</param>
-public sealed class PromptOperation (string message, string output_key, Predicate<string>? validation = null) : Operation(SE, output_key)
+public sealed class PromptOperation : Operation
 {
-  public string Message { get; } = message;
+  public required string Message { get; init; }
+  public string? UserKey { get; init; }
   public override bool NoInput => true;
-  public Predicate<string>? Validation { get; } = validation;
+  public Predicate<string>? Validation { get; init; }
 
+  /// <summary>Constructor for <see cref="PromptOperation"/>.</summary>
+  /// <param name="message">The message to prompt.</param>
+  /// <param name="user_key">The key to store the input in.</param>
+  /// <param name="validation">An optional validator.</param>
+  public PromptOperation (string message, string? user_key = null, Predicate<string>? validation = null)
+  {
+    Message = message;
+    Validation = validation;
+    UserKey = user_key;
+  }
+  public PromptOperation () { }
   protected override void Execute ()
   {
-    Console.Write(Message);
-    string? userInput = Console.ReadLine();
+    Log(MsgClass.Prompt, Message);
+    string userInput = Console.ReadLine()!;
 
-    if (userInput is null && Validation is not null)
-      goto OpFailInput;
-    else if (userInput is null)
-      goto OpFailDef;
-    else if (Validation is null || Validation(userInput))
-      goto OpPass;
-    else
-      goto OpFail;
+    if (Validation?.Invoke(userInput) is null or true)
+    {
+      Status = OpStatus.Pass;
+      Data[UserKey] = userInput;
+      return;
+    }
 
-  OpFail:
     Status = Op.ThrowBadResult("Validation Operation Failed.");
-    return;
-  OpPass:
-    Status = OpStatus.Pass;
-    WorkData = userInput;
-    return;
-  OpFailInput:
-    Status = Op.ThrowBadInput("string", "null");
-    return;
-  OpFailDef:
-    Status = Op.ThrowBadDef("Validation is null and input was also null. Undefined.");
-    return;
   }
 }
