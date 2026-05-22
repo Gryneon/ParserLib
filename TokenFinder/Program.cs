@@ -1,14 +1,17 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 
 using ParserDebuggerApp;
 
+[assembly: AssemblyVersion("1.0.0")]
+
 namespace TokenFinder;
 
-static class Program
+internal static class Program
 {
   [STAThread]
-  static void Main ()
+  internal static void Main ()
   {
     Application.EnableVisualStyles();
     Application.SetCompatibleTextRenderingDefault(false);

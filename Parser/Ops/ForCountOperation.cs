@@ -9,16 +9,17 @@ public sealed class ForCountOperation : Operation, IPlaceholderOperation
   public string? LengthKey { get; init; }
   public int Length { get; set; } = -1;
   /// <summary>Operations to perform.</summary>
-  public IEnumerable<IOperation> Operations { get; init; }
+  public required IEnumerable<IOperation> Operations { get; init; }
   /// <summary>Start of loop section.</summary>
   public int OpIndex { get; private set; }
-
+  [SetsRequiredMembers]
   public ForCountOperation (string cursor_key, int target_count, IEnumerable<IOperation> operations)
   {
     CursorKey = cursor_key;
     Operations = operations;
     Length = target_count;
   }
+  [SetsRequiredMembers]
   public ForCountOperation (string cursor_key, string length_key, IEnumerable<IOperation> operations)
   {
     CursorKey = cursor_key;
