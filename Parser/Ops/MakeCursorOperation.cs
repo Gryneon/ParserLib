@@ -7,10 +7,11 @@ public class MakeCursorOperation : Operation
   public int Position { get; init; }
   protected override void Execute ()
   {
-    CursorData cursor = new()
+    Data[CursorKey] = new CursorData()
     {
       Parser = Parser,
-      Index = Position
+      Index = Position,
+      ListKey = ListKey
     };
   }
 }

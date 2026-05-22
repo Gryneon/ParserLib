@@ -58,19 +58,16 @@ internal static class Program
 #else
     Verbosity = LogClass.Verbose;
 #endif
-    //MenuController.StartMenu(InitialMenu);
     Library.InitializeLibrary(AppDomain.CurrentDomain);
-    Library.
-    LogInfo("Program Start");
   Start:
-    LogInfo("");
+    Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)");
     string? choice = Console.ReadLine();
     switch (choice?.ToLowerInvariant())
     {
       case "wad":
-        InitialTest(SpecWAD.WAD, ResWAD.wad_rpg03);
-        InitialTest(SpecWAD.WAD, ResWAD.wad_pl2);
-        InitialTest(SpecWAD.WAD, ResWAD.wad_tnt);
+        InitialTest(Library.Get["wad"], ResWAD.wad_rpg03);
+        InitialTest(Library.Get["wad"], ResWAD.wad_pl2);
+        InitialTest(Library.Get["wad"], ResWAD.wad_tnt);
         break;
       case "mapinfo":
         InitialTest(SpecZDoom.MapInfo, ResZDoom.mapinfo_common);
@@ -124,7 +121,7 @@ internal static class Program
       ProcessArgs(args);
     }
 
-    LogWarn("Press enter to exit.");
+    Log(MsgClass.Prompt, "Press enter to exit.");
     _ = Console.ReadLine();
     return 0;
   }

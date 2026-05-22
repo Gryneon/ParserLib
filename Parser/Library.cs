@@ -40,6 +40,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   private readonly Dictionary<string, Spec> _specs = [];
   /// <summary>The singleton instance of this object.</summary>
   private static Library? Instance { get; set; }
+  public static Library Get => Instance ?? throw new InvalidOperationException("Library must be initialized.");
   private static Dictionary<string, ReadOnlyCollection<InferenceNode>> SpecInferences =>
     [.. Instance?.Select(
       item => new KeyValuePair<string, ReadOnlyCollection<InferenceNode>>(item.Key, item.Value.FileInferences)) ?? throw new InvalidOperationException("Library must be initialized.")];

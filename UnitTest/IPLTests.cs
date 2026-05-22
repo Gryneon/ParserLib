@@ -54,12 +54,11 @@ public class IPLTests
   [InlineData("blah")]
   public void IPL_ParseNoVarName (string initial_string)
   {
-    IOperation testOp = Err.CopyKey("not_a_key", "unused");
     Spec spec = new()
     {
       FileInferences = [],
       Name = "test",
-      Operations = [testOp]
+      Operations = []
     };
 
     XParser textParser = new();

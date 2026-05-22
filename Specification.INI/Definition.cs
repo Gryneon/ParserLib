@@ -26,9 +26,9 @@ public static class Definition
     TokenType = typeof(ITT),
 
     Operations = [
-      new TokenizeOperation(),
-      new TokenAssembleOperation(),
-      Err.End],
+      new TokenizeOperation("text", "tokens"),
+      new TokenAssembleOperation()
+    ],
 
     TokenRules = [
       new(TokenComment, ITT.None, ";.*"),

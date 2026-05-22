@@ -130,13 +130,12 @@ public static class Definition
       [XTT.ValidContent] = [XTT.Content, XTT.ElementSingleWithNamespace, XTT.ElementSingle, XTT.ElementPair]
     },
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new DebugPrintKeyOperation("tokens"),
       new FilterTokenOperation("tokens", "tokens_filtered", false),
       new DebugPrintKeyOperation("tokens_filtered"),
       new TokenAssembleOperation("tokens_filtered"),
       new DebugPrintKeyOperation("tokens_assembled"),
-      Err.End,
     ],
   };
 }
