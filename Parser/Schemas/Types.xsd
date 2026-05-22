@@ -351,8 +351,11 @@ commences.
           <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
         </xs:complexType>
       </xs:element>
+        
       </xs:choice>
+      
     </xs:sequence>
+    
   </xs:complexType>
   <xs:complexType name="CaseInstructionSet">
     <xs:complexContent>
