@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -13,14 +14,15 @@ namespace ParserDebuggerApp;
 
 public partial class MainForm : Form
 {
-  private Spec currentSpec;
+  [AllowNull]
+  private Spec _currentSpec;
 
-  private readonly Dictionary<string, Color> colorCache = new();
+  private readonly Dictionary<string, Color> _colorCache = [];
 
-  private IToken selectedToken;
+  internal IToken? SelectedToken;
 
-  private readonly Color selectedBackColor = Color.Black;
-  private readonly Color selectedForeColor = Color.White;
+  internal readonly Color SelectedBackColor = Color.Black;
+  internal readonly Color SelectedForeColor = Color.White;
 
   public MainForm ()
   {
@@ -50,31 +52,32 @@ public partial class MainForm : Form
   };
 
   // ---------------- ENGINE ----------------
-
-  private TokenCollection lastTokens;
-  private TokenAssemblyResult lastResult;
+  [AllowNull]
+  private TokenCollection _lastTokens;
+  [AllowNull]
+  private TokenAssemblyResult _lastResult;
 
   private void RunEngine ()
   {
     try
     {
-      currentSpec = GetSpec();
+      _currentSpec = GetSpec();
 
       string text = rtbMain.Text;
 
-      TokenFactory factory = new(currentSpec);
-      lastTokens = factory.Produce(text);
+      TokenFactory factory = new(_currentSpec);
+      _lastTokens = factory.Produce(text);
 
-      TokenAssembler assembler = new(currentSpec);
-      lastResult = assembler.Execute(lastTokens);
+      TokenAssembler assembler = new(_currentSpec);
+      _lastResult = assembler.Execute(_lastTokens);
 
-      DisplayTokens(lastTokens);
-      DisplayHierarchy(lastResult);
-      DisplayParents(lastResult);
+      DisplayTokens(_lastTokens);
+      DisplayHierarchy(_lastResult);
+      DisplayParents(_lastResult);
     }
     catch (Exception ex)
     {
-      MessageBox.Show(ex.ToString());
+      _ = MessageBox.Show(ex.ToString());
     }
   }
 
@@ -104,7 +107,7 @@ public partial class MainForm : Form
 
   private Color GetColor (string type)
   {
-    if (!colorCache.TryGetValue(type, out Color value))
+    if (!_colorCache.TryGetValue(type, out Color value))
     {
       Random rnd = new(type.GetHashCode());
       value = Color.FromArgb(
@@ -112,7 +115,7 @@ public partial class MainForm : Form
           50 + rnd.Next(180),
           50 + rnd.Next(180),
           50 + rnd.Next(180));
-      colorCache[type] = value;
+      _colorCache[type] = value;
     }
 
     return value;
@@ -130,7 +133,7 @@ public partial class MainForm : Form
     }
   }
 
-  private TreeNode BuildNode (IToken token)
+  private static TreeNode BuildNode (IToken token)
   {
     string role = token.AssignTo?.ToString() ?? "-";
 
@@ -147,12 +150,12 @@ public partial class MainForm : Form
     return node;
   }
 
-  private void TreeHierarchy_AfterSelect (object sender, TreeViewEventArgs e)
+  private void TreeHierarchy_AfterSelect (object? sender, TreeViewEventArgs e)
   {
-    if (e.Node.Tag is not IToken token)
+    if (e.Node?.Tag is not IToken token)
       return;
 
-    selectedToken = token;
+    SelectedToken = token;
 
     RefreshHighlighting();
     HighlightRecursive(token);
@@ -166,8 +169,8 @@ public partial class MainForm : Form
   private void HighlightRecursive (IToken token)
   {
     rtbMain.Select(token.Index, token.Content.Length);
-    rtbMain.SelectionBackColor = selectedBackColor;
-    rtbMain.SelectionColor = selectedForeColor;
+    rtbMain.SelectionBackColor = SelectedBackColor;
+    rtbMain.SelectionColor = SelectedForeColor;
 
     foreach (IToken child in token.Children)
     {
@@ -177,10 +180,10 @@ public partial class MainForm : Form
 
   private void RefreshHighlighting ()
   {
-    if (lastTokens is null)
+    if (_lastTokens is null)
       return;
 
-    DisplayTokens(lastTokens);
+    DisplayTokens(_lastTokens);
   }
 
   // ---------------- PARENTS ----------------

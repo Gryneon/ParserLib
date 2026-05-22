@@ -37,7 +37,16 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element ref="Instructions" minOccurs="0"/>
+              <xs:element name="Instructions" minOccurs="0" type="InstructionSet">
+                <xs:key name="OpLabel">
+                  <xs:selector xpath="Label"/>
+                  <xs:field xpath="@name"/>
+                </xs:key>
+                <xs:keyref refer="OpLabel" name="GotoLabelConstraint">
+                  <xs:selector xpath="GotoLabel"/>
+                  <xs:field xpath="@name"/>
+                </xs:keyref>
+              </xs:element>
               <xs:element name="FileInferences" minOccurs="0" type="FileInferencesType"/>
             </xs:sequence>
           </xs:complexType>

@@ -1,7 +1,10 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 
 using ParserDebuggerApp;
+
+[assembly: AssemblyVersion("1.0.0")]
 
 namespace TokenFinder;
 
