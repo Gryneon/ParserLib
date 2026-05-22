@@ -163,7 +163,7 @@ public class OperationFactory
         "Label" => new OperationLabel(name),
         "ReadData" when length_var.IsEmpty() => new ReadDataOperation(output_var)
         {
-          Mode = type switch { "string" or "text" => ByteReadMode.Text, "binary" => ByteReadMode.Binary, _ => ByteReadMode.Value },
+          Mode = type,
           Size = length == -1 ? type switch { "byte" => 1, "short" => 2, "int" => 4, "long" => 8, _ => -1 } : length,
           ContentKey = content_var,
           CursorKey = cursor_var,

@@ -1,7 +1,6 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Ops.Op;
 using static Parser.Ops.ReadDataOperation;
 
 namespace Specification.WAD;
@@ -19,7 +18,7 @@ public static class Definition
       IfNAnd([IfN(HeadSt, "PWAD"), IfN(ExtIs, "wad") ]),
     ],
     Operations = [
-      CreateCursor("bytes", 0),
+
       ReadString("identification", 4),
       ReadInt("numlumps"),
       ReadInt("diroffset"),
