@@ -86,7 +86,7 @@ public abstract class Operation : IOperation
   }
   #endregion
   #region Constructors
-  /// <summary>Constructor for the static <see cref="Err.End"/> object, and for operations that do not touch data.</summary>
+  /// <summary>Constructor for a explicit operation object.</summary>
   protected Operation ()
   {
     InputKey = SE;

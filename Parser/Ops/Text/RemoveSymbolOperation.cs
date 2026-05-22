@@ -2,11 +2,20 @@
 
 namespace Parser.Ops.Text;
 
-public class RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupGroup, IEnumerable<ReplaceNode> nodes, string input_key, string output_key) : Operation(input_key, output_key)
+public class RemoveSymbolOperation : Operation
 {
-  public string Pattern { get; init; } = pattern;
-  public string LookupGroup { get; init; } = lookupGroup;
-  public IEnumerable<ReplaceNode> Nodes { get; init; } = nodes;
+  public string Pattern { get; init; }
+  public string LookupGroup { get; init; }
+  public IEnumerable<ReplaceNode> Nodes { get; init; }
+
+  public RemoveSymbolOperation ([SS("Regex")] string pattern, string lookupGroup, IEnumerable<ReplaceNode> nodes, string input_key, string output_key)
+  {
+    Pattern = pattern;
+    LookupGroup = lookupGroup;
+    Nodes = nodes;
+    InputKey = input_key;
+    OutputKey = output_key;
+  }
 
   protected override void Execute ()
   {

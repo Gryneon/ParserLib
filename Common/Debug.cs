@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 using static Common.Chars;
 
 namespace Common;
@@ -121,9 +123,13 @@ public static class Debug
   /// <remarks>This method always assumes that <see cref="DebugIn(string, string)"/> has been called, and uses that location as the caller.</remarks>
   /// <param name="msgClass">The color and verbosity of the message.</param>
   /// <param name="message">The message text.</param>
-  public static void Log (MsgClass msgClass, string message)
+  /// <param name="caller">The caller of this method.</param>
+  public static void Log (MsgClass msgClass, string message, [CallerMemberName] string caller = "")
   {
-    LogHead();
+    if (caller.IsEmpty())
+      LogHead();
+    else
+      DoLogHead(MsgClass.Debug, caller, "");
     LogPart(msgClass, message);
     NewLine();
   }

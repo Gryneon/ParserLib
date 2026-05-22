@@ -20,6 +20,6 @@
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <WarningLevel>5</WarningLevel>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 </Project>

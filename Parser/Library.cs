@@ -1,8 +1,39 @@
 #pragma warning disable CA1710 // Rename Parser.Library to end in either 'Dictionary' or 'Collection'
 
+using System.Xml.Linq;
+
 using Parser.Inference;
 
 namespace Parser;
+
+public static class SpecInstructionParser
+{
+  private static readonly XNamespace NS = "Parser/Spec";
+
+  public static Spec LoadSpec (string path)
+  {
+    XDocument doc = XDocument.Load(path);
+    XElement? root = doc.Root ?? throw Err.ThrowNoSpec("Spec XML is not good.");
+    string name = (root.Element(NS + "Name") ?? throw Err.ThrowNoSpec("Invalid XML - No Name in Spec.")).Value;
+    bool? textfile = bool.TryParse(root.Element(NS + "TextFile")?.Value, out bool result) ? result : null;
+    OperationFactory factory = new(NS);
+    // Parse instructions
+    IEnumerable<XElement>? instructionElements = root.Element(NS + "Instructions")?.Elements();
+    List<IOperation> ops = [.. instructionElements?.Select(factory.Produce) ?? []];
+
+    // Parse file inferences
+    XElement? fileInf = root.Element(NS + "FileInferences");
+    List<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
+
+    return new Spec
+    {
+      Name = name,
+      Operations = [.. ops],
+      FileInferences = [.. inferenceNodes],
+      IsTextFile = textfile ?? true,
+    };
+  }
+}
 
 public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
 {
@@ -49,20 +80,25 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   {
     DebugIn("Library", "InitializeLibrary");
 
-    domain.ThrowIfNull();
     Instance = new();
+
+    foreach (string path in Directory.EnumerateFiles("Specs"))
+    {
+      Spec loaded = SpecInstructionParser.LoadSpec(path);
+
+      Instance._specs.Add(loaded.Name, loaded);
+    }
+
+    domain.ThrowIfNull();
+
     List<Assembly> assemblies = [.. domain.GetAssemblies()];
 
-    IOrderedEnumerable<Assembly> sorted = assemblies.OrderBy(static i => i.GetName().Name);
-
-    foreach (Assembly assembly in sorted)
+    foreach (Assembly assembly in assemblies.OrderBy(static i => i.GetName().Name))
     {
       if (assembly.GetName().Name?.StartsWithAny(SCO, "System", "Microsoft", "Common") ?? false)
         continue;
 
-      Type[] types = assembly.GetTypes();
-
-      foreach (Type type in types)
+      foreach (Type type in assembly.GetTypes())
       {
         if (type.GetCustomAttribute<DefinitionExportAttribute>() is null)
           continue;

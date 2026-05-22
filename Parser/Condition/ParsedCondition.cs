@@ -49,7 +49,7 @@ public class ParsedCondition : ICondition
   {
     object? previous = null;
     KeyOption? op = null;
-    object? current = null;
+    object? current;
     bool? result = null;
     foreach (ConditionValue cv in Sequence)
     {

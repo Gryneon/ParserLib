@@ -16,13 +16,13 @@ public static class Err
   /// <returns>Does not return.</returns>
   /// <exception cref="OperationBadInputTypeException"/>
   [DoesNotReturn]
-  public static OpStatus ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);
+  public static dynamic ThrowBadInput (string expected, string got) => throw new OperationBadInputTypeException(expected, got);
   [DoesNotReturn]
-  public static OpStatus ThrowNoVar (string key) => throw new OperationNoSuchVarException(key);
+  public static dynamic ThrowNoVar (string key) => throw new OperationNoSuchVarException(key);
   [DoesNotReturn]
-  public static OpStatus ThrowBadDef (string msg) => throw new OperationBadDefinitionException(msg);
+  public static dynamic ThrowBadDef (string msg) => throw new OperationBadDefinitionException(msg);
   [DoesNotReturn]
-  public static OpStatus ThrowBadResult (string msg) => throw new OperationBadResultException(msg);
+  public static dynamic ThrowBadResult (string msg) => throw new OperationBadResultException(msg);
   [DoesNotReturn]
-  public static OpStatus ThrowNoSpec (string msg) => throw new SpecNotDefinedException(msg);
+  public static dynamic ThrowNoSpec (string msg) => throw new SpecNotDefinedException(msg);
 }

@@ -9,12 +9,7 @@ public static class DefaultSpec
 {
   /// <summary>The default spec.</summary>
   [DefinitionExport]
-  public static Spec Unknown { get; } = new()
-  {
-    Name = "unknown",
-    FileInferences = [],
-    Operations = [],
-  };
+  public static Spec Unknown => Library.LookupOrDefault("unknown");
   /// <summary>The spec assigned if the parser gets a binary file.</summary>
   [DefinitionExport]
   public static Spec Binary { get; } = new()
@@ -30,8 +25,7 @@ public static class DefaultSpec
     FileInferences = [],
     Name = "textbylines",
     Operations = [
-      new SplitOperation("text", "result"),
-      Err.End
+      new SplitOperation("text", "result")
     ]
   };
 }

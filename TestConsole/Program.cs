@@ -3,7 +3,6 @@ using ResZDoom = Specification.ZDoom.Properties.Resources;
 using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecJSON = Specification.JSON.Definition;
-using SpecWAD = Specification.WAD.Definition;
 using SpecXML = Specification.XML.Definition;
 using SpecZDoom = Specification.ZDoom.Definition;
 
@@ -61,6 +60,7 @@ internal static class Program
 #endif
     //MenuController.StartMenu(InitialMenu);
     Library.InitializeLibrary(AppDomain.CurrentDomain);
+    Library.
     LogInfo("Program Start");
   Start:
     LogInfo("");

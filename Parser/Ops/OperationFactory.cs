@@ -4,93 +4,6 @@ using Parser.Ops.Text;
 
 namespace Parser.Ops;
 
-public class SwitchCaseItem
-{
-  public string? Value { get; init; }
-  public Collection<IOperation> Operations { get; init; } = [];
-
-}
-
-public class IfBlockConditional
-{
-  /// <summary>The if condition string. This is <see langword="null"/> for the <see langword="else"/> block.</summary>
-  public string? Condition { get; init; }
-  public Collection<IOperation> Operations { get; init; } = [];
-
-}
-
-public class InitializeOperation : Operation
-{
-  public required string InitialKey { get; init; }
-  public string? KeyType { get; init; }
-  public string? ValueType { get; init; }
-  public required string Type { get; init; }
-  public override bool NoInput => true;
-  protected override void Execute ()
-  {
-    Type key = Type switch { "string" => typeof(string), _ => typeof(int) };
-    Type value = System.Type.GetType(ValueType ?? SE) ?? typeof(object);
-    Type container_type = Type switch
-    {
-      "Set" => typeof(HashSet<object>).MakeGenericType(value),
-      "List" => typeof(List<object>).MakeGenericType(value),
-      "Collection" => typeof(Collection<object>).MakeGenericType(value),
-      "Dictionary" => typeof(Dictionary<int, object>).MakeGenericType(key, value),
-      _ => throw new OperationBadDefinitionException($"Invalid Type ({Type}) on Initalize Operation.")
-    };
-
-    object? container = container_type.InvokeMember(SE, BindingFlags.CreateInstance, null, null, null, CIIC);
-
-    if (container is not null)
-    {
-      Data[InitialKey] = container;
-    }
-    else
-    {
-      Status = Err.ThrowBadDef($"Something went wrong when trying to create a {container_type}.");
-    }
-  }
-}
-
-public class MakeCursorOperation : Operation
-{
-  public required string CursorKey { get; init; }
-  public required string ListKey { get; init; }
-  public int Position { get; init; }
-  protected override void Execute ()
-  {
-
-  }
-}
-public class AddItemOperation : Operation
-{
-  public required string ListKey { get; init; }
-  public Collection<string> ParameterKeys { get; init; } = [];
-  public required string Type { get; init; }
-
-  protected override void Execute ()
-  {
-    Type? t = System.Type.GetType(Type);
-
-    if (t is null)
-    {
-      _ = Err.ThrowBadDef("Object " + Type + "not found.");
-    }
-
-  }
-}
-public class OperationSwitch : Operation
-{
-  public required string Condition { get; init; }
-  public Collection<SwitchCaseItem> Cases { get; init; } = [];
-  public SwitchCaseItem? Default { get; init; }
-}
-
-public class OperationIfBlock : Operation
-{
-  public Collection<IfBlockConditional> Options { get; init; } = [];
-}
-
 public class OperationFactory
 {
   private readonly XNamespace _ns;
@@ -252,12 +165,12 @@ public class OperationFactory
           Type = type,
           ParameterKeys = GetValueList()
         },
-        _ => Err.End,
+        _ => Err.ThrowBadDef($"Unknown Command {element.Name.LocalName}.")
       };
     }
     catch (Exception)
     {
-      throw new OperationBadDefinitionException("Error during Spec Parsing.");
+      throw Err.ThrowBadDef("Error during Spec Parsing.");
     }
   }
 }

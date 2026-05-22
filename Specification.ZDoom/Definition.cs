@@ -29,8 +29,7 @@ public static class Definition
     RxOpt = ROML | ROIPW | ROIC | ROEC,
     Name = "zdoom.zscript",
     Operations = [
-      new TokenizeOperation(),
-      Err.End
+      new TokenizeOperation("text", "tokens")
     ],
     IsTextFile = true,
     SC = SCOIC,
@@ -79,9 +78,8 @@ public static class Definition
     FileInferences = [IfN(InferenceType.Ext | InferenceType.Like, "udmf")],
     RxOpt = ROML | ROIPW | ROIC | ROEC | ROSL,
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new TokenAssembleOperation(),
-      Err.End,
     ],
     DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
@@ -137,9 +135,8 @@ public static class Definition
     ],
     GroupTokenRules = [],
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new TokenAssembleOperation(),
-      Err.End
     ],
   };
 
@@ -194,9 +191,8 @@ public static class Definition
     TokenType = typeof(DecorateTokenType),
     Name = "zdoom.decorate",
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new TokenAssembleOperation(),
-      Err.End
     ],
     TokenRules = [
       s_cString,
@@ -402,7 +398,7 @@ public static class Definition
       .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
     ],
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new DebugPrintKeyOperation("tokens"),
       new DebugWaitForInputOperation(),
       new TokenAssembleOperation(),

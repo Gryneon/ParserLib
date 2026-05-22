@@ -61,7 +61,8 @@ public sealed class XParser
     DebugIn(Area, "OperationLoad");
     Spec.ThrowIfNull();
     Operations.AddRange(Spec.Operations);
-    Operations.Add(Err.End);
+    if (Operations[^1] is not OperationEnd)
+      Operations.Add(new OperationEnd());
 
     // Unpack all operations in main list
     for (int i = 0; i < Operations.Count; i++)
