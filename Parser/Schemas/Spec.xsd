@@ -20,10 +20,8 @@
     </xs:sequence>
     <xs:attribute name="initial" type="AndOrType" default="or"/>
   </xs:complexType>
-  <xs:element name="Specs">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="Spec" minOccurs="0" maxOccurs="unbounded">
+
+        <xs:element name="Spec">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Name" type="NonEmptyTokenType"/>
@@ -39,11 +37,11 @@
               </xs:element>
               <xs:element name="Instructions" minOccurs="0" type="InstructionSet">
                 <xs:key name="OpLabel">
-                  <xs:selector xpath="Label"/>
+                  <xs:selector xpath="Instructions/Label"/>
                   <xs:field xpath="@name"/>
                 </xs:key>
                 <xs:keyref refer="OpLabel" name="GotoLabelConstraint">
-                  <xs:selector xpath="GotoLabel"/>
+                  <xs:selector xpath="Instructions/GotoLabel"/>
                   <xs:field xpath="@name"/>
                 </xs:keyref>
               </xs:element>
@@ -51,7 +49,4 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
 </xs:schema>

@@ -172,12 +172,7 @@ public class OperationFactory
         },
         "ReadData" when length_var.IsNotEmpty() => new ReadDataOperation(length_var, output_var)
         {
-          Mode = type switch
-          {
-            "string" or "text" => ByteReadMode.Text,
-            "binary" => ByteReadMode.Binary,
-            _ => ByteReadMode.Value
-          },
+          Mode = type,
           ContentKey = content_var,
           CursorKey = cursor_var,
           Position = position,
