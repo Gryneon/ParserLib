@@ -30,7 +30,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
         items = enm;
         break;
       default:
-        _ = Op.ThrowBadInput("IDictionary or IEnumerable of CommandDataSet", $"{WorkDataType}");
+        _ = Err.ThrowBadInput("IDictionary or IEnumerable of CommandDataSet", $"{WorkDataType}");
         throw null;
     }
 

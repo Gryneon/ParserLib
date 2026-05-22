@@ -1,13 +1,8 @@
 namespace Parser.Ops;
 
 /// <summary>A static class to assist with creating operation sequences in <see cref="Spec"/> objects.</summary>
-public static class Op
+public static class Err
 {
-  #region Operation creation methods
-  public static IOperation JumpTo (int index) => new OperationJump(index);
-  public static IOperation End => new OperationEnd();
-  #endregion
-  #region Throwing methods
   /// <summary>Throws a buffer overflow exception.</summary>
   /// <param name="position">The desired position.</param>
   /// <param name="end_of_file">The largest possible position.</param>
@@ -30,5 +25,4 @@ public static class Op
   public static OpStatus ThrowBadResult (string msg) => throw new OperationBadResultException(msg);
   [DoesNotReturn]
   public static OpStatus ThrowNoSpec (string msg) => throw new SpecNotDefinedException(msg);
-  #endregion
 }

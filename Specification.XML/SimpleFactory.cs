@@ -25,7 +25,7 @@ public class EnumerateFactoryOperation<TOut> (string input_key, string output_ke
     }
     else
     {
-      Status = Op.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
+      Status = Err.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
     }
   }
 }

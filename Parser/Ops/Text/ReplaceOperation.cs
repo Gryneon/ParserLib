@@ -50,7 +50,7 @@ public class ReplaceOperation : Operation
     }
     else
     {
-      Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
     }
   }
 }

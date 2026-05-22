@@ -79,7 +79,7 @@ public sealed class CompareCondition : ParsedCondition
 
     if (found_type?.IsAssignableTo(DefinedType) != true)
     {
-      _ = Op.ThrowBadDef($"Types do not match. L:{Data[LeftKey].GetType()}, R:{Data[RightKey].GetType()}, D:{DefinedType}");
+      _ = Err.ThrowBadDef($"Types do not match. L:{Data[LeftKey].GetType()}, R:{Data[RightKey].GetType()}, D:{DefinedType}");
     }
 
     Action exec = DefinedType.Name.ToUpperInvariant() switch

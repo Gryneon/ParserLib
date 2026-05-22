@@ -23,7 +23,7 @@ public class CombineOperation (string input_key = "textparts", string output_key
     }
     else
     {
-      Status = WorkData is string ? OpStatus.Skipped : Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
+      Status = WorkData is string ? OpStatus.Skipped : Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
     }
   }
 }

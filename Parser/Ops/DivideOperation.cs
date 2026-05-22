@@ -37,17 +37,17 @@ public class DivideOperation : Operation
     if (UseVar)
     {
       if (Data[DivisorKey] is not int)
-        Status = Op.ThrowBadInput("int", $"{Data[DivisorKey].GetType()}");
+        Status = Err.ThrowBadInput("int", $"{Data[DivisorKey].GetType()}");
       else Divisor = (int) Data[DivisorKey];
     }
 
     if (Data[DividendKey] is not int)
-      Status = Op.ThrowBadInput("int", $"{Data[DividendKey].GetType()}");
+      Status = Err.ThrowBadInput("int", $"{Data[DividendKey].GetType()}");
     else
       Dividend = (int) Data[DividendKey];
 
     if (Divisor == 0)
-      Status = Op.ThrowBadResult("Cannot divide by zero.");
+      Status = Err.ThrowBadResult("Cannot divide by zero.");
 
     int quotient = Dividend / Divisor;
     Data[OutputKey] = quotient;

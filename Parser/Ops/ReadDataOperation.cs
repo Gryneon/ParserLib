@@ -95,7 +95,7 @@ public sealed class ReadDataOperation : Operation
       8 when Mode.Like("long") => ReadBytes(Size).Span.ToInt64(),
       > 0 when Mode.Like("text") => ReadChars(Size),
       > 0 when Mode.Like("binary") => ReadBytes(Size),
-      _ => Op.ThrowBadResult("Size was not valid")
+      _ => Err.ThrowBadResult("Size was not valid")
     };
 
     Log(MsgClass.BlueInfo, $"Read: {value}");

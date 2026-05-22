@@ -42,7 +42,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
     }
     else
     {
-      Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
+      Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
     }
     DebugOut();
   }

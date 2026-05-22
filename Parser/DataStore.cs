@@ -57,7 +57,7 @@ public sealed class DataStore
   public object LoadOrFail (string key)
   {
 
-    return TryLoad(key, out object? value) ? value : Op.ThrowNoVar(key);
+    return TryLoad(key, out object? value) ? value : Err.ThrowNoVar(key);
   }
   public T LoadOrFail<T> (string key)
   {
@@ -65,7 +65,7 @@ public sealed class DataStore
     if (TryLoad(key, out T? value))
       return value;
     else
-      _ = Op.ThrowNoVar(key);
+      _ = Err.ThrowNoVar(key);
     throw null;
   }
   public object? LoadIfAble (string key)

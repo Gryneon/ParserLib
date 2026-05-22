@@ -44,10 +44,10 @@ public sealed class WhileOperation : Operation, IPlaceholderOperation
   protected override void Execute ()
   {
     if (OpIndex == 0)
-      Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
+      Status = Err.ThrowBadDef("Loop Pre-processing not complete.");
 
     if (Condition is null)
-      Status = Op.ThrowBadDef("Condition is null on a while loop");
+      Status = Err.ThrowBadDef("Condition is null on a while loop");
 
     Parser.Data.Save<bool>(CursorKey, true);
     Data[CursorKey] = new CursorData(Parser);

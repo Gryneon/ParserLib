@@ -47,7 +47,7 @@ public class InitializeOperation : Operation
     }
     else
     {
-      Status = Op.ThrowBadDef($"Something went wrong when trying to create a {container_type}.");
+      Status = Err.ThrowBadDef($"Something went wrong when trying to create a {container_type}.");
     }
   }
 }
@@ -62,14 +62,23 @@ public class MakeCursorOperation : Operation
 
   }
 }
-
 public class AddItemOperation : Operation
 {
   public required string ListKey { get; init; }
   public Collection<string> ParameterKeys { get; init; } = [];
   public required string Type { get; init; }
-}
 
+  protected override void Execute ()
+  {
+    Type? t = System.Type.GetType(Type);
+
+    if (t is null)
+    {
+      _ = Err.ThrowBadDef("Object " + Type + "not found.");
+    }
+
+  }
+}
 public class OperationSwitch : Operation
 {
   public required string Condition { get; init; }
@@ -144,6 +153,7 @@ public class OperationFactory
       string length_var = GetS("length_var");
       string list_var = GetS("list_var");
       string user_var = GetS("user_var");
+      string check_var = GetS("check_var");
 
       string condition = GetS("condition");
       string message = GetS("message");
@@ -242,7 +252,7 @@ public class OperationFactory
           Type = type,
           ParameterKeys = GetValueList()
         },
-        _ => Op.End,
+        _ => Err.End,
       };
     }
     catch (Exception)

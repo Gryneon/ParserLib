@@ -34,7 +34,7 @@ public class FilterTokenOperation : Operation
     {
       static TokenCollection err ()
       {
-        _ = Op.ThrowBadDef("Invalid Filter Parameters.");
+        _ = Err.ThrowBadDef("Invalid Filter Parameters.");
         return [];
       }
       WorkData = _type switch
@@ -50,7 +50,7 @@ public class FilterTokenOperation : Operation
     }
     else
     {
-      Status = Op.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
+      Status = Err.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
     }
     DebugOut();
   }

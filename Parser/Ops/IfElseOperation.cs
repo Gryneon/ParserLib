@@ -4,7 +4,7 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
 {
   public ICondition Condition { get; init; } = condition;
   public IOperation IfTrue { get; set; } = ifTrue;
-  public IOperation IfElse { get; set; } = ifFalse ?? Op.End;
+  public IOperation IfElse { get; set; } = ifFalse ?? new OperationEnd();
   private int IfTrueIndex { get; set; }
   private int IfElseIndex { get; set; }
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
@@ -13,10 +13,10 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
 
     IfTrueIndex = operations.Count;
     operations.Add(IfTrue);
-    operations.Add(Op.JumpTo(nextOrEnd(index)));
+    operations.Add(JumpTo(nextOrEnd(index)));
     operations.Add(IfElse);
     IfElseIndex = operations.Count;
-    operations.Add(Op.JumpTo(nextOrEnd(index)));
+    operations.Add(JumpTo(nextOrEnd(index)));
     return operations.Count;
   }
   protected override void Execute ()

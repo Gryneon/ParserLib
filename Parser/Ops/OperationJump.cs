@@ -12,7 +12,7 @@ public class OperationJump : Operation
     TargetIndex = index;
 
     if (TargetIndex < 0)
-      _ = Op.ThrowBadDef("Cannot jump to a negative index.");
+      _ = Err.ThrowBadDef("Cannot jump to a negative index.");
   }
   public OperationJump (string label_or_var, bool use_var = false)
   {
@@ -34,7 +34,7 @@ public class OperationJump : Operation
 
     if (TargetIndex >= Parser.OpCount)
     {
-      index = (int) Op.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
+      index = (int) Err.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
     }
     else
     {

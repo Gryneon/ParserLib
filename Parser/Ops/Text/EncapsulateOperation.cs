@@ -10,7 +10,7 @@ public class EncapsulateOperation<TParent, TChild> (string input_key, string out
     else if (WorkData is IDictionary<int, TChild> dict)
       list = dict.Select(item => item.Value);
     else
-      Status = Op.ThrowBadInput($"{typeof(IEnumerable<TChild>)}", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput($"{typeof(IEnumerable<TChild>)}", $"{WorkData?.GetType()}");
     TParent parent = new();
 
     foreach (TChild item in list)

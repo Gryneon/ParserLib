@@ -31,7 +31,7 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
         }
         else if (!File.Exists(ea))
         {
-          Status = Op.ThrowBadResult($"File was missing ({ea})");
+          Status = Err.ThrowBadResult($"File was missing ({ea})");
         }
 
         result.Add(File.ReadAllText(ea));
@@ -42,7 +42,7 @@ public class LoadOperation (string input_key, string output_key, bool ignoreMiss
     }
     else
     {
-      Status = Op.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
+      Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
     }
   }
 }

@@ -28,7 +28,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      Op.End],
+      Err.End],
 
     TokenRules = [
       new(TokenComment, ITT.None, ";.*"),

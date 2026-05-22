@@ -172,7 +172,7 @@ public sealed class TokenFactory
     if (RuleData.Length > 0)
       length = RuleData.Length;
     else
-      _ = Op.ThrowBadDef("RuleData has a length of 0 on an exact token.");
+      _ = Err.ThrowBadDef("RuleData has a length of 0 on an exact token.");
 
     int cursor = 0;
     int next = Input.IndexOf(RuleData, cursor, IC);
@@ -246,7 +246,7 @@ public sealed class TokenFactory
       err.WriteError();
     }
     if (failUponEnding)
-      _ = Op.ThrowBadResult("You must correct the above listed errors to parse this file.");
+      _ = Err.ThrowBadResult("You must correct the above listed errors to parse this file.");
     DebugOut();
   }
   private void RunCompete ()

@@ -82,7 +82,7 @@ public class GenerateOperation<TIn, TOut> : Operation
     }
     else
     {
-      Status = Op.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", $"{WorkData?.GetType()}");
     }
   }
 }

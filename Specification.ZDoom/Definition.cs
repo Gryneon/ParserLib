@@ -30,7 +30,7 @@ public static class Definition
     Name = "zdoom.zscript",
     Operations = [
       new TokenizeOperation(),
-      Op.End
+      Err.End
     ],
     IsTextFile = true,
     SC = SCOIC,
@@ -81,7 +81,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      Op.End,
+      Err.End,
     ],
     DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
@@ -139,7 +139,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      Op.End
+      Err.End
     ],
   };
 
@@ -196,7 +196,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation(),
       new TokenAssembleOperation(),
-      Op.End
+      Err.End
     ],
     TokenRules = [
       s_cString,

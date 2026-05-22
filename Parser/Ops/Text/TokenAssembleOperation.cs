@@ -32,7 +32,7 @@ public class TokenAssembleOperation : Operation
     }
     else
     {
-      Status = Op.ThrowBadInput("TokenCollection", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput("TokenCollection", $"{WorkData?.GetType()}");
     }
   }
 }

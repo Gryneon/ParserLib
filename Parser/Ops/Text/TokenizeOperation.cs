@@ -5,19 +5,21 @@ public class TokenizeOperation : Operation
 {
   protected TokenRuleCollection Rules { get; }
 
-  public TokenizeOperation (IEnumerable<TokenRule> rules, string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
+  public TokenizeOperation (IEnumerable<TokenRule> rules, string input_key, string output_key)
   {
+    InputKey = input_key;
+    OutputKey = output_key;
     Rules = [.. rules];
   }
-  public TokenizeOperation (string input_key = "text", string output_key = "tokens") : base(input_key, output_key)
+  public TokenizeOperation (string input_key, string output_key)
   {
+    InputKey = input_key;
+    OutputKey = output_key;
     Rules = [];
   }
 
   protected override void Execute ()
   {
-    DebugIn ("TokenizeOperation", "Execute");
-    // Load Tokens if loading from Spec
     if (!Rules.Any())
     {
       Rules.AddRange(Spec.TokenRules);
@@ -26,13 +28,12 @@ public class TokenizeOperation : Operation
     if (WorkData is string input)
     {
       TokenFactory factory = new(Rules, Spec);
-      TokenCollection return_tokens = [.. factory.Produce(input)];
-      WorkData = return_tokens;
+      WorkData = (TokenCollection) ([.. factory.Produce(input)]);
       Status = OpStatus.Pass;
     }
     else
     {
-      Status = Op.ThrowBadInput("string", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput("string", $"{WorkData?.GetType()}");
     }
   }
 }

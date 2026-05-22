@@ -13,8 +13,8 @@ public sealed class OperationCollection : Operation, IReadOnlyCollection<IOperat
   {
     int nextOrEnd = index + 1 >= operations.Count ? -1 : index + 1;
     int first = operations.Count;
-    operations.AddRange([.. Operations, Op.JumpTo(nextOrEnd)]);
-    operations.Replace(index, [Op.JumpTo(first)]);
+    operations.AddRange([.. Operations, JumpTo(nextOrEnd)]);
+    operations.Replace(index, [JumpTo(first)]);
     return operations.Count;
   }
 

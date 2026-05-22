@@ -54,12 +54,12 @@ public sealed class ForCountOperation : Operation, IPlaceholderOperation
   protected override void Execute ()
   {
     if (OpIndex == 0)
-      Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
+      Status = Err.ThrowBadDef("Loop Pre-processing not complete.");
 
     if (Length == -1)
     {
       if (WorkData is not int)
-        Status = Op.ThrowBadInput("int", $"{WorkDataType}");
+        Status = Err.ThrowBadInput("int", $"{WorkDataType}");
       Length = (int) Data[InputKey];
     }
 

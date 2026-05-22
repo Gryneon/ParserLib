@@ -33,7 +33,7 @@ public sealed class XMLFactory
 
       if (xml is null)
       {
-        _ = Op.ThrowBadDef("Constructed xml object was null.");
+        _ = Err.ThrowBadDef("Constructed xml object was null.");
       }
       result.Add(xml);
 

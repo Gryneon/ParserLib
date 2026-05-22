@@ -80,13 +80,13 @@ public abstract class Operation : IOperation
     get
     {
       if (Parser.Spec is null)
-        _ = Op.ThrowNoSpec("Spec is null and Operation executed.");
+        _ = Err.ThrowNoSpec("Spec is null and Operation executed.");
       return Parser.Spec;
     }
   }
   #endregion
   #region Constructors
-  /// <summary>Constructor for the static <see cref="Op.End"/> object, and for operations that do not touch data.</summary>
+  /// <summary>Constructor for the static <see cref="Err.End"/> object, and for operations that do not touch data.</summary>
   protected Operation ()
   {
     InputKey = SE;
@@ -129,13 +129,14 @@ public abstract class Operation : IOperation
   /// <exception cref="OperationBadDefinitionException"/>
   protected virtual void Execute ()
   {
-    Status = Op.ThrowBadDef("Method not overridden, or NoExecute not set.");
+    Status = Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
   }
   protected void CheckUnpacked (XParser parser)
   {
     if (parser?.OpIndex == 0)
-      Status = Op.ThrowBadDef("Loop Pre-processing not complete.");
+      Status = Err.ThrowBadDef("Loop Pre-processing not complete.");
   }
+  protected static IOperation JumpTo (int pos) => new OperationJump(pos);
   /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
   /// <param name="parser">The parser reference to pass to the operation.</param>
   private void Initialize (XParser parser)

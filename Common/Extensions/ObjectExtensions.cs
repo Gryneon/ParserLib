@@ -1,8 +1,6 @@
 //#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable RCS1263 // extension parameters
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Common.Extensions;
 
 public static class ObjectExtensions
@@ -26,6 +24,7 @@ public static class ObjectExtensions
   /// <param name="obj">The object reference.</param>
   extension(object? obj)
   {
+    public string GetTypeName () => obj?.GetType().Name ?? "null";
     /// <summary>Returns the object as a collection.</summary>
     /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
     public Collection<object> AsCollection () => obj.AsCollection<object>();

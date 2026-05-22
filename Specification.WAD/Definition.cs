@@ -19,7 +19,7 @@ public static class Definition
     ],
     Operations = [
 
-      ReadString("identification", 4),
+      ReadString("identification", 4, ),
       ReadInt("numlumps"),
       ReadInt("diroffset"),
       //new ByteJumpVarOperation("diroffset"),
@@ -57,7 +57,7 @@ public static class Definition
         ReadBinary("size", "data"),
         //new ByteRecallOperation("savepos", "bytes"),
       //]),
-      Op.End
+      Err.End
     ]
   };
   [DefinitionExport]

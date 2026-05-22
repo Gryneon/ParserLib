@@ -13,6 +13,6 @@ public class TrimOperation (string input_key, string output_key) : Operation(inp
     };
 
     if (WorkData is not string and not IEnumerable<string>)
-      Status = Op.ThrowBadInput("string or list", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput("string or list", $"{WorkData?.GetType()}");
   }
 }

@@ -136,7 +136,7 @@ public static class Definition
       new DebugPrintKeyOperation("tokens_filtered"),
       new TokenAssembleOperation("tokens_filtered"),
       new DebugPrintKeyOperation("tokens_assembled"),
-      Op.End,
+      Err.End,
     ],
   };
 }

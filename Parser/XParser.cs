@@ -15,7 +15,7 @@ public sealed class XParser
   /// <summary>The current operation.</summary>
   public IOperation CurrentOp => Operations[OpIndex];
   /// <summary>The next operation.</summary>
-  public IOperation NextOp => (NextOpIndex == -1 || NextOpIndex >= OpCount) ? Op.End : Operations[NextOpIndex];
+  public IOperation NextOp => (NextOpIndex == -1 || NextOpIndex >= OpCount) ? Err.End : Operations[NextOpIndex];
   /// <summary>The status of the last operation performed.</summary>
   public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>Gets the file data as a list of bytes.</summary>
@@ -61,7 +61,7 @@ public sealed class XParser
     DebugIn(Area, "OperationLoad");
     Spec.ThrowIfNull();
     Operations.AddRange(Spec.Operations);
-    Operations.Add(Op.End);
+    Operations.Add(Err.End);
 
     // Unpack all operations in main list
     for (int i = 0; i < Operations.Count; i++)
@@ -189,7 +189,7 @@ public sealed class XParser
 
     if (Spec is null)
     {
-      return Op.ThrowNoSpec("No Specification defined.");
+      return Err.ThrowNoSpec("No Specification defined.");
     }
     SetFilePath(path);
     if (Spec.IsTextFile)

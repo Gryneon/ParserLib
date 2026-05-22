@@ -30,12 +30,12 @@ public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut,
     if (WorkData is TIn casted)
     {
       TOut result = _operation(casted);
-      Status = _validation(result) ? OpStatus.Pass : Op.ThrowBadResult("Validation Failed");
+      Status = _validation(result) ? OpStatus.Pass : Err.ThrowBadResult("Validation Failed");
       WorkData = result;
     }
     else
     {
-      Status = Op.ThrowBadInput($"{typeof(TIn)}", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput($"{typeof(TIn)}", $"{WorkData?.GetType()}");
     }
   }
 }

@@ -177,14 +177,14 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IComp
     DebugIn("CommandDataSet", "GetIntData");
     if (!Data.TryGetValue(index, out object? data_obj))
     {
-      _ = Op.ThrowBadDef($"No data at index {index}.");
+      _ = Err.ThrowBadDef($"No data at index {index}.");
       throw null;
     }
     if (data_obj is int data_int)
     {
       return data_int;
     }
-    _ = Op.ThrowBadInput("int", $"{data_obj.GetType()}");
+    _ = Err.ThrowBadInput("int", $"{data_obj.GetType()}");
     throw null;
   }
   /// <summary>Gets the data field at the given index as a <see langword="decimal"/>.</summary>

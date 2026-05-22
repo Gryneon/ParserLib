@@ -52,7 +52,7 @@ public sealed class ChkToken
     Regex regexobj = new(regex, ROEC, new TimeSpan(0, 0, 1));
     Match m = regexobj.Match(definition);
     if (!m.Success)
-      _ = Op.ThrowBadDef($"Bad Token Sequence String. {definition}");
+      _ = Err.ThrowBadDef($"Bad Token Sequence String. {definition}");
 
     RT rule = RT.None;
     string prefix = SE;
@@ -84,7 +84,7 @@ public sealed class ChkToken
 
     if (assnTo == T.Error)
     {
-      _ = Op.ThrowBadDef($"Bad Prefix Char. ({prefix})");
+      _ = Err.ThrowBadDef($"Bad Prefix Char. ({prefix})");
     }
 
     if (m.Groups.ContainsKey("type_def"))
