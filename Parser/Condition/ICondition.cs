@@ -5,5 +5,5 @@ public interface ICondition
 {
   /// <summary>Evalutates the condition.</summary>
   /// <returns><see langword="true"/> if the condition is true, <see langword="false"/> otherwise.</returns>
-  bool Evaluate (XParser parser);
+  bool Evaluate (DataStore data);
 }

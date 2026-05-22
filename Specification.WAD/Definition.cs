@@ -1,8 +1,8 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Ops.ByteReadOperation;
 using static Parser.Ops.Op;
+using static Parser.Ops.ReadDataOperation;
 
 namespace Specification.WAD;
 /// <summary>A static class containing the WAD, WAD2, and PAK specificiations.</summary>

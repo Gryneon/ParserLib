@@ -1,10 +1,8 @@
-using Common.RegExp;
-
 namespace Parser.Ops;
 /// <summary>An operation that logs the contents of the provided key.</summary>
 /// <remarks>Constructs an operation that logs the contents of the provided key.</remarks>
 /// <param name="input_key">The key to output the contents of.</param>
-public class DebugToStringOperation (string input_key) : Operation(input_key, SE)
+public class DebugToStringOperation (string input_key) : Operation()
 {
   public override bool NoOutput => true;
 
@@ -13,7 +11,7 @@ public class DebugToStringOperation (string input_key) : Operation(input_key, SE
   protected override void Execute ()
   {
     DebugIn("DebugToStringOperation", "Execute");
-    switch (WorkData)
+    switch (Data[input_key])
     {
       case string s:
         Log(MsgClass.Debug, s);
@@ -37,5 +35,5 @@ public class DebugToStringOperation (string input_key) : Operation(input_key, SE
     DebugOut();
   }
 
-  public override string ToString () => $"DebugToStringOperation Key = \"{InputKey}\"";
+  public override string ToString () => $"DebugToStringOperation Key = \"{input_key}\"";
 }

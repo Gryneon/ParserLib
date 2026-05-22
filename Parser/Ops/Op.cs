@@ -6,10 +6,6 @@ public static class Op
   #region Operation creation methods
   public static IOperation JumpTo (int index) => new OperationJump(index);
   public static IOperation End => new OperationEnd();
-  public static IOperation StoreKey (string key, object value) => new OperationAction(OAT.StoreKey, key, value);
-  public static IOperation CopyKey (string key, string to) => new OperationAction(OAT.CopyKey, key, to);
-  public static IOperation CreateCursor (string key, int start_at = 0) => new OperationAction(OAT.CreateCursor, key, start_at);
-  public static IOperation While (string cursor_key, ICondition condition, IEnumerable<IOperation> operations) => new WhileOperation(cursor_key, condition, operations);
   #endregion
   #region Throwing methods
   /// <summary>Throws a buffer overflow exception.</summary>
@@ -30,8 +26,6 @@ public static class Op
   public static OpStatus ThrowNoVar (string key) => throw new OperationNoSuchVarException(key);
   [DoesNotReturn]
   public static OpStatus ThrowBadDef (string msg) => throw new OperationBadDefinitionException(msg);
-  [DoesNotReturn]
-  public static OpStatus ThrowUnknownOp (string msg) => throw new UnknownOperationException(msg);
   [DoesNotReturn]
   public static OpStatus ThrowBadResult (string msg) => throw new OperationBadResultException(msg);
   [DoesNotReturn]

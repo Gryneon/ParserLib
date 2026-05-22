@@ -104,18 +104,18 @@ public partial class MainForm : Form
 
   private Color GetColor (string type)
   {
-    if (!colorCache.ContainsKey(type))
+    if (!colorCache.TryGetValue(type, out Color value))
     {
       Random rnd = new(type.GetHashCode());
-
-      colorCache[type] = Color.FromArgb(
+      value = Color.FromArgb(
           255,
           50 + rnd.Next(180),
           50 + rnd.Next(180),
           50 + rnd.Next(180));
+      colorCache[type] = value;
     }
 
-    return colorCache[type];
+    return value;
   }
 
   // ---------------- TREE VIEW ----------------
@@ -177,7 +177,7 @@ public partial class MainForm : Form
 
   private void RefreshHighlighting ()
   {
-    if (lastTokens == null)
+    if (lastTokens is null)
       return;
 
     DisplayTokens(lastTokens);

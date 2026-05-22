@@ -158,8 +158,8 @@ public sealed class DataStore
     }
     DebugOut();
   }
-  public bool CanLoad ([NotNullWhen(true)] string key) =>
-    _dict.ContainsKey(key) && _dict[key] != null;
+  public bool CanLoad ([NotNullWhen(true)] string? key) =>
+    key is not null && _dict.ContainsKey(key) && _dict[key] != null;
   public bool TryLoad ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out object data)
   {
     data = CanLoad(key) ? _dict[key] : null;

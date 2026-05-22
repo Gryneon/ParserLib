@@ -1,7 +1,7 @@
 namespace Parser.Condition;
 
 /// <summary>This condition compares 2 keys.</summary>
-public sealed class CompareCondition : BasicCondition
+public sealed class CompareCondition : ParsedCondition
 {
   public required string LeftKey { get; init; }
   public required string RightKey { get; init; }
@@ -11,6 +11,7 @@ public sealed class CompareCondition : BasicCondition
 
   public static ICondition AsString (string left_key, string right_key, bool ignore_case) => new CompareCondition()
   {
+    ConditionString = SE,
     DefinedType = typeof(string),
     LeftKey = left_key,
     RightKey = right_key,
@@ -18,6 +19,7 @@ public sealed class CompareCondition : BasicCondition
   };
   public static ICondition AsInt (string left_key, string right_key) => new CompareCondition()
   {
+    ConditionString = SE,
     DefinedType = typeof(int),
     LeftKey = left_key,
     RightKey = right_key,
@@ -25,6 +27,7 @@ public sealed class CompareCondition : BasicCondition
   };
   public static ICondition AsDecimal (string left_key, string right_key) => new CompareCondition()
   {
+    ConditionString = SE,
     DefinedType = typeof(decimal),
     LeftKey = left_key,
     RightKey = right_key,
@@ -33,14 +36,15 @@ public sealed class CompareCondition : BasicCondition
 
   public static ICondition As<T> (string left_key, string right_key) where T : IEquatable<T> => new CompareCondition()
   {
+    ConditionString = SE,
     DefinedType = typeof(T),
     LeftKey = left_key,
     RightKey = right_key,
     IgnoreCase = true
   };
 
-  private (T left, T right) Cast<T> () => ((T) Parser.Data[LeftKey], (T) Parser.Data[RightKey]);
-  private Type? GetKeyType () => Parser.Data[LeftKey].GetType().IsAssignableFrom(Parser.Data[RightKey].GetType()) ? Parser.Data[LeftKey].GetType() : null;
+  private (T left, T right) Cast<T> () => ((T) Data[LeftKey], (T) Data[RightKey]);
+  private Type? GetKeyType () => Data[LeftKey].GetType().IsAssignableFrom(Data[RightKey].GetType()) ? Data[LeftKey].GetType() : null;
   /// <summary>Performs a case-sensitive ordinal comparison.</summary>
   /// <remarks>Checks if the two strings are equal. Case-sensitive.</remarks>
   private void Execute_StringExact ()
@@ -75,10 +79,10 @@ public sealed class CompareCondition : BasicCondition
 
     if (found_type?.IsAssignableTo(DefinedType) != true)
     {
-      _ = Op.ThrowBadDef($"Types do not match. L:{Parser.Data[LeftKey].GetType()}, R:{Parser.Data[RightKey].GetType()}, D:{DefinedType}");
+      _ = Op.ThrowBadDef($"Types do not match. L:{Data[LeftKey].GetType()}, R:{Data[RightKey].GetType()}, D:{DefinedType}");
     }
 
-    Action exec = DefinedType.Name switch
+    Action exec = DefinedType.Name.ToUpperInvariant() switch
     {
       "STRING" when IgnoreCase => Execute_StringIgnoreCase,
       "STRING" => Execute_StringExact,

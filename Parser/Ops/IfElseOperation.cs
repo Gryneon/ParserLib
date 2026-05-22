@@ -21,7 +21,7 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
   }
   protected override void Execute ()
   {
-    if (Condition.Evaluate(Parser))
+    if (Condition.Evaluate(Data))
     {
       Status = OpStatus.ConditionPass;
       Parser.SetNextOperationIndex(IfTrueIndex);

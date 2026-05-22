@@ -15,6 +15,5 @@ public class OrCondition (params Collection<ICondition> conditions) : ICondition
     }
   }
 
-  /// <inheritdoc/>
-  public bool Evaluate (XParser parser) => Conditions.Any(item => item.Evaluate(parser));
+  public bool Evaluate (DataStore data) => Conditions.Any(item => item.Evaluate(data));
 }

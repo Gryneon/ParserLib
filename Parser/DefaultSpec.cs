@@ -21,7 +21,7 @@ public static class DefaultSpec
   {
     Name = "binary",
     FileInferences = [],
-    Operations = [ByteReadOperation.ReadRemainingBin("result", "bytes")]
+    Operations = [ReadDataOperation.ReadRemainingBin("result", "bytes")]
   };
   /// <summary>Splits a string on newlines into a <see cref="Collection{T}"/> of <see langword="string"/> objects.</summary>
   [DefinitionExport]

@@ -4,42 +4,51 @@ using static Parser.OpStatus;
 
 namespace Parser.Ops;
 
-public sealed class ByteReadOperation : Operation
+public sealed class ReadDataOperation : Operation
 {
+  public enum ByteReadMode
+  {
+    Error = 0,
+
+    Text = 1,
+    Value = 2,
+    Binary = 3,
+  }
+
   public string? CursorKey { get; init; }
   public int Size { get; set; } = -1;
-  public required ByteReadMode Mode { get; init; }
+  public required string Mode { get; init; }
   public int Position { get; set; } = -1;
   public string? PositionKey { get; init; }
   public string? ContentKey { get; init; }
 
-  public ByteReadOperation (string output_key) : base(SE, output_key) { }
-  public ByteReadOperation (string input_key, string output_key) : base(input_key, output_key) { }
+  public ReadDataOperation (string output_key) : base(SE, output_key) { }
+  public ReadDataOperation (string input_key, string output_key) : base(input_key, output_key) { }
 
   [SetsRequiredMembers]
-  private ByteReadOperation (string output_key, int size, ByteReadMode mode, string cursor_key) : base(SE, output_key)
+  private ReadDataOperation (string output_key, int size, string mode, string cursor_key) : base(SE, output_key)
   {
     Size = size;
     Mode = mode;
     CursorKey = cursor_key;
   }
   [SetsRequiredMembers]
-  private ByteReadOperation (string input_key, string output_key, ByteReadMode mode, string cursor_key) : base(input_key, output_key)
+  private ReadDataOperation (string input_key, string output_key, string mode, string cursor_key) : base(input_key, output_key)
   {
     Mode = mode;
     CursorKey = cursor_key;
   }
 
-  public static ByteReadOperation ReadInt (string output_key, string cursor_key = "bytes") => new(output_key, 4, ByteReadMode.Value, cursor_key);
-  public static ByteReadOperation ReadShort (string output_key, string cursor_key = "bytes") => new(output_key, 2, ByteReadMode.Value, cursor_key);
-  public static ByteReadOperation ReadLong (string output_key, string cursor_key = "bytes") => new(output_key, 8, ByteReadMode.Value, cursor_key);
-  public static ByteReadOperation ReadByte (string output_key, string cursor_key = "bytes") => new(output_key, 1, ByteReadMode.Value, cursor_key);
-  public static ByteReadOperation ReadString (string output_key, int length, string cursor_key = "bytes") => new(output_key, length, ByteReadMode.Text, cursor_key);
-  public static ByteReadOperation ReadString (string input_key, string output_key, string cursor_key = "bytes") => new(input_key, output_key, ByteReadMode.Text, cursor_key);
-  public static ByteReadOperation ReadBinary (string output_key, int size, string cursor_key = "bytes") => new(output_key, size, ByteReadMode.Binary, cursor_key);
-  public static ByteReadOperation ReadBinary (string input_key, string output_key, string cursor_key = "bytes") => new(input_key, output_key, ByteReadMode.Binary, cursor_key);
-  public static ByteReadOperation ReadRemainingBin (string output_key, string cursor_key = "bytes") => new(output_key, -1, ByteReadMode.Binary, cursor_key);
-  public static ByteReadOperation ReadRemainingStr (string output_key, string cursor_key = "bytes") => new(output_key, -1, ByteReadMode.Text, cursor_key);
+  public static ReadDataOperation ReadInt (string output_key, string cursor_key) => new(output_key, 4, "int", cursor_key);
+  public static ReadDataOperation ReadShort (string output_key, string cursor_key) => new(output_key, 2, "short", cursor_key);
+  public static ReadDataOperation ReadLong (string output_key, string cursor_key) => new(output_key, 8, "long", cursor_key);
+  public static ReadDataOperation ReadByte (string output_key, string cursor_key) => new(output_key, 1, "byte", cursor_key);
+  public static ReadDataOperation ReadString (string output_key, int length, string cursor_key) => new(output_key, length, "text", cursor_key);
+  public static ReadDataOperation ReadString (string length_key, string output_key, string cursor_key) => new(length_key, output_key, "text", cursor_key);
+  public static ReadDataOperation ReadBinary (string output_key, int size, string cursor_key) => new(output_key, size, "binary", cursor_key);
+  public static ReadDataOperation ReadBinary (string input_key, string output_key, string cursor_key) => new(input_key, output_key, "binary", cursor_key);
+  public static ReadDataOperation ReadRemainingBin (string output_key, string cursor_key) => new(output_key, -1, "binary", cursor_key);
+  public static ReadDataOperation ReadRemainingStr (string output_key, string cursor_key) => new(output_key, -1, "text", cursor_key);
 
   private Memory<byte> ReadBytes (int count)
   {
