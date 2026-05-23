@@ -44,6 +44,8 @@ public static class Debug
 
     DoLog(format, GetBackColor(cls), GetTextColor(cls), true);
   }
+  private static void DoLogHead (MsgClass cls, string caller) =>
+    DoLog($"{caller} : ", GetBackColor(cls), GetTextColor(cls), true);
   private static ConsoleColor GetTextColor (MsgClass msg) => msg switch
   {
     MsgClass.Debug or MsgClass.BlueInfo => C_Blue,
@@ -87,6 +89,7 @@ public static class Debug
   /// <summary>Sets the logging location for any logs.</summary>
   /// <remarks>This keeps the classname the same as it was since the last <c>DebugIn</c> call.</remarks>
   /// <param name="method">The method name.</param>
+  [Obsolete("Avoid this, it whas gaps.")]
   public static void DebugIn (string method) => CallStack.Add(new(ThisClass, method));
   /// <summary>Sets the logging location for any logs.</summary>
   /// <param name="classname">The class name.</param>
@@ -129,7 +132,7 @@ public static class Debug
     if (caller.IsEmpty())
       LogHead();
     else
-      DoLogHead(MsgClass.Debug, caller, "");
+      DoLogHead(MsgClass.Debug, caller);
     LogPart(msgClass, message);
     NewLine();
   }
