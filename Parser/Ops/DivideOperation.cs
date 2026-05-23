@@ -7,14 +7,13 @@ namespace Parser.Ops;
 /// <summary>Divides 2 integers to find the quotient.</summary>
 public class DivideOperation : Operation
 {
-  [MemberNotNullWhen(true, nameof(DivisorKey))]
-  private bool UseVar => DivisorKey is not null;
-  private string? DivisorKey { get; init; }
-  private string DividendKey { get; init; }
-  private new string OutputKey { get; init; }
+  public string? DivisorKey { get; init; }
+  public string? DividendKey { get; init; }
 
-  private int Divisor { get; set; }
-  private int Dividend { get; set; }
+  public int Divisor { get; set; }
+  public int Dividend { get; set; }
+
+  public DivideOperation () { }
 
   public DivideOperation (int divisor, string dividend_key, string output_key)
   {
@@ -32,9 +31,7 @@ public class DivideOperation : Operation
 
   protected override void Execute ()
   {
-    DebugIn("ByteDivideOperation", "Execute");
-
-    if (UseVar)
+    if (DivisorKey is not null)
     {
       if (Data[DivisorKey] is not int)
         Status = Err.ThrowBadInput("int", $"{Data[DivisorKey].GetType()}");
@@ -53,6 +50,5 @@ public class DivideOperation : Operation
     Data[OutputKey] = quotient;
     Log(MsgClass.Debug, $"{Dividend} / {Divisor} = {quotient}");
     Status = Pass;
-    DebugOut();
   }
 }

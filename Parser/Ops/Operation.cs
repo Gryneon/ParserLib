@@ -41,9 +41,9 @@ public abstract class Operation : IOperation
   #region Stored Keys & Data
   /// <summary>The input key provided.</summary>
   [NotNull]
-  protected string InputKey { get; set; }
+  public string InputKey { get; set; }
   /// <summary>The output key provided.</summary>
-  protected string OutputKey { get; init; }
+  public string OutputKey { get; init; }
   /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
   [AllowNull]
   [MemberNotNull(nameof(WorkDataType))]

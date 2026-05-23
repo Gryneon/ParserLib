@@ -16,10 +16,9 @@ public static class SpecInstructionParser
     XElement? root = doc.Root ?? throw Err.ThrowNoSpec("Spec XML is not good.");
     string name = (root.Element(NS + "Name") ?? throw Err.ThrowNoSpec("Invalid XML - No Name in Spec.")).Value;
     bool? textfile = bool.TryParse(root.Element(NS + "TextFile")?.Value, out bool result) ? result : null;
-    OperationFactory factory = new(NS);
     // Parse instructions
     IEnumerable<XElement>? instructionElements = root.Element(NS + "Instructions")?.Elements();
-    List<IOperation> ops = [.. instructionElements?.Select(factory.Produce) ?? []];
+    List<IOperation> ops = [.. instructionElements?.Select(new OperationFactory(NS).Produce) ?? []];
 
     // Parse file inferences
     XElement? fileInf = root.Element(NS + "FileInferences");
