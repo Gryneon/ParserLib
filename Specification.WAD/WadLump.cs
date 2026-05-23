@@ -4,20 +4,12 @@ using System;
 
 namespace Specification.WAD;
 
-public struct WadLump : ICloneable, IEquatable<WadLump>
+public struct WadLump (object position, object size, object name, object data) : ICloneable, IEquatable<WadLump>
 {
-  public int Position { get; set; }
-  public int Size { get; set; }
-  public string Name { get; set; }
-  public Memory<byte> Data { get; set; }
-
-  public WadLump (object position, object size, object name, object data)
-  {
-    Position = (int) position;
-    Size = (int) size;
-    Name = (string) name;
-    Data = (Memory<byte>) data;
-  }
+  public int Position { get; set; } = (int) position;
+  public int Size { get; set; } = (int) size;
+  public string Name { get; set; } = (string) name;
+  public Memory<byte> Data { get; set; } = (Memory<byte>) data;
 
   public object Clone () => new WadLump()
   {
