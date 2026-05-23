@@ -5,10 +5,10 @@
     <TextFile>false</TextFile>
     <Instructions>
       <Label name="Start"/>
-      <MakeCursor cursor_var="current_pos" cursor_ref="bytes" position="0"/>
-      <ReadData scope="global" output_var="file_id" type="text" length="4" cursor_var="current_pos"/>
-      <ReadData scope="global" output_var="numlumps" type="int" cursor_var="current_pos"/>
-      <ReadData scope="global" output_var="diroffset" type="int" cursor_var="current_pos"/>
+      <MakeCursor cursor_var="current_pos" list_var="bytes" position="0"/>
+      <ReadData output_var="file_id" type="text" length="4" cursor_var="current_pos"/>
+      <ReadData output_var="numlumps" type="int" cursor_var="current_pos"/>
+      <ReadData output_var="diroffset" type="int" cursor_var="current_pos"/>
       <SetCursorPos cursor_var="current_pos" position_var="diroffset"/>
       <Initialize initial_var="directory" type="Collection" value_type="WadLump"/>
       <ForCount length_var="numlumps" cursor_var="index">

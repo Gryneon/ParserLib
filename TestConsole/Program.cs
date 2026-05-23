@@ -128,7 +128,7 @@ internal static class Program
 
   internal static void ProcessArgs (string[] args)
   {
-    DebugIn("ProcessArgs");
+    DebugIn("Program", "ProcessArgs");
     foreach (string path in args)
     {
       string? specName = Library.CheckFile(path);
@@ -146,18 +146,15 @@ internal static class Program
       LogDebug("OpStatus is " + Status);
 
       LogDebug("Result is " + Parser.Result);
-      Collection<Specification.IPL.CommandDataSet> objects = Parser.Result as Collection<Specification.IPL.CommandDataSet> ?? [];
-      LogDebug("Result count = " + objects.Count);
-      foreach (object item in objects)
-      {
-        LogDebug($">{item}");
-      }
+      LogDebug("Result count = " + Parser.Result.AsCollection().Count);
+      if (Parser.Result is IPrintable ip)
+        ip.Print();
     }
     DebugOut();
   }
   internal static void InitialTest (string spec, string file)
   {
-    DebugIn("InitialTest");
+    DebugIn("Program", "InitialTest");
     if (!Library.TryLookup(spec, out Spec? lookup_spec))
     {
       LogError($"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.");
@@ -170,7 +167,7 @@ internal static class Program
   }
   internal static void InitialTest (Spec spec, string file)
   {
-    DebugIn("InitialTest");
+    DebugIn("Program", "InitialTest");
     ClearLog();
     LogWarn($"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
     Parser = new(spec);
@@ -200,7 +197,7 @@ internal static class Program
 
   internal static XParser TestTextParser (string path, Spec spec)
   {
-    DebugIn("TestTextParser");
+    DebugIn("Program", "TestTextParser");
     if (spec.IsTextFile)
     {
       string content = File.ReadAllText(path);
@@ -220,7 +217,7 @@ internal static class Program
   }
   internal static void DisplayOpOrder ()
   {
-    DebugIn("DisplayOpOrder");
+    DebugIn("Program", "DisplayOpOrder");
     LogDebug("Parser Operation Order:");
     foreach (IOperation op in Parser?.Operations ?? [])
     {

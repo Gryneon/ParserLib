@@ -150,7 +150,7 @@ commences.
   </xs:simpleType>
   <xs:simpleType name="RuleTypeList">
     <xs:list itemType="RuleTypeToken"/>
-  </xs:simpleType><!-- Any operation or command must be one of these -->
+  </xs:simpleType>
   <xs:complexType name="AddItemType">
     <xs:simpleContent>
       <xs:extension base="VariableListType">
@@ -170,12 +170,41 @@ commences.
   </xs:complexType>
   <xs:complexType name="ConditionType">
     <xs:complexContent>
-      <xs:extension base="InstructionSet">
+      <xs:extension base="InnerInstructionSet">
         <xs:attribute name="condition" use="required" type="IfConditionType"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="InstructionSet">
+  <xs:complexType name="FileInferencesType">
+    <xs:sequence>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="And" type="FileInferencesType"/>
+        <xs:element name="Or" type="FileInferencesType"/>
+        <xs:element name="Header">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute default="4" name="length" use="optional" type="xs:int"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Extension" type="NonEmptyTokenType"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="initial" type="AndOrType" default="or"/>
+  </xs:complexType>
+  <xs:complexType name="RequiredNameType">
+    <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+  </xs:complexType>
+  <xs:complexType name="InputOutputType">
+    <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+    <xs:attribute name="input_var" use="required" type="DataKeyType"/>
+  </xs:complexType>
+  <xs:complexType name="SuccessType">
+    <xs:attribute name="success" use="optional" default="true" type="xs:boolean"/>
+  </xs:complexType>
+  <xs:complexType name="InnerInstructionSet">
     <xs:sequence>
       <xs:choice maxOccurs="unbounded">
       <xs:element name="GotoOpIndex">
@@ -183,16 +212,8 @@ commences.
           <xs:attributeGroup ref="TargetAttrGroup"/>
         </xs:complexType>
       </xs:element>
-      <xs:element name="GotoLabel">
-        <xs:complexType>
-          <xs:attribute name="name" type="NonEmptyTokenType" use="required"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="Label" id="OpLabel">
-        <xs:complexType>
-          <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
-        </xs:complexType>
-      </xs:element>
+      <xs:element name="GotoLabel" type="RequiredNameType"/>
+      <xs:element name="Label" type="RequiredNameType"/>
       <xs:element name="Divide">
         <xs:complexType>
           <xs:attribute name="output_var" use="required" type="DataKeyType"/>
@@ -205,7 +226,11 @@ commences.
       <xs:element name="MakeCursor">
         <xs:complexType>
           <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
-          <xs:attribute name="cursor_ref" use="optional" type="DataKeyType"/>
+          <xs:attribute name="list_var" use="optional" type="DataKeyType">
+            <xs:annotation>
+              <xs:documentation>The list or array to iterate through, if there is one</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
           <xs:attributeGroup ref="PositionAttrGroup"/>
         </xs:complexType>
       </xs:element>
@@ -215,37 +240,27 @@ commences.
           <xs:attributeGroup ref="PositionAttrGroup"/>
         </xs:complexType>
       </xs:element>
-      <!-- <SavePos scope="global" name="directory_pos"/> -->
-      <xs:element name="SavePos">
-        <xs:complexType>
-          <xs:attribute name="output_var" use="required" type="DataKeyType"/>
-          <xs:attributeGroup ref="ScopeAttrGroup"/>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="ExtOperation">
         <xs:complexType>
-          <xs:sequence>
-            <xs:element name="Parameter" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:simpleContent>
-                  <xs:extension base="xs:string">
-                    <xs:attribute name="type" type="xs:token"/>
-                  </xs:extension>
-                </xs:simpleContent>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-          <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
-          <xs:attribute name="input_var" use="optional" type="DataKeyType"/>
-          <xs:attribute name="output_var" use="optional" type="DataKeyType"/>
+          <xs:complexContent>
+            <xs:extension base="InputOutputType">
+              <xs:sequence>
+                <xs:element name="Parameter" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:string">
+                        <xs:attribute name="type" type="xs:token"/>
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+            </xs:extension>
+          </xs:complexContent>
         </xs:complexType>
       </xs:element>
-      <xs:element name="Terminate">
-        <xs:complexType>
-          <xs:attribute name="success" use="optional" default="true" type="xs:boolean"/>
-        </xs:complexType>
-      </xs:element>
-      <!-- <Initialize scope="global" name="directory" type="Collection" item="DirectoryEntry"/> -->
+      <xs:element name="Terminate" type="SuccessType"/>
       <xs:element name="Initialize">
         <xs:annotation>
           <xs:documentation>
@@ -277,23 +292,10 @@ commences.
             </xs:annotation>
           </xs:attribute>
           <xs:attributeGroup ref="PositionAttrGroup"/>
-          <xs:attributeGroup ref="ScopeAttrGroup"/>
         </xs:complexType>
       </xs:element>
-      <!-- <Tokenize content_var="text" output_var="tokens" /> -->
-      <xs:element name="Tokenize">
-        <xs:complexType>
-          <xs:attribute name="output_var" use="required" type="DataKeyType"/>
-          <xs:attribute name="content_var" use="required" type="DataKeyType"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="TokenAssemble">
-        <xs:complexType>
-          <xs:attribute name="output_var" use="required" type="DataKeyType"/>
-          <xs:attribute name="tokens_var" use="required" type="DataKeyType"/>
-        </xs:complexType>
-      </xs:element>
-      <!--<ReadData scope="global" name="file_id" type="text" length="4" cursor="current_pos"/> -->
+      <xs:element name="Tokenize" type="InputOutputType"/>
+      <xs:element name="TokenAssemble" type="InputOutputType"/>
       <xs:element name="ReadData">
         <xs:complexType>
           <xs:attribute name="content_var" use="optional" type="DataKeyType"/>
@@ -301,7 +303,6 @@ commences.
           <xs:attribute name="cursor_var" use="optional" type="DataKeyType"/>
           <xs:attribute name="endian" use="optional" type="EndianessType"/>
           <xs:attribute name="encoding" use="optional" type="EncodingType"/>
-          <xs:attributeGroup ref="ScopeAttrGroup"/>
           <xs:attributeGroup ref="DataTypeAttrGroup"/>
           <xs:attributeGroup ref="LengthAttrGroup"/>
           <xs:attributeGroup ref="PositionAttrGroup"/>
@@ -310,7 +311,7 @@ commences.
       <xs:element name="ForCount">
         <xs:complexType>
           <xs:complexContent>
-            <xs:extension base="InstructionSet">
+            <xs:extension base="InnerInstructionSet">
               <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
               <xs:attributeGroup ref="LengthAttrGroup"/>
             </xs:extension>
@@ -320,8 +321,9 @@ commences.
       <xs:element name="ForEach">
         <xs:complexType>
           <xs:complexContent>
-            <xs:extension base="InstructionSet">
+            <xs:extension base="InnerInstructionSet">
               <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+              <xs:attribute name="list_var" use="required" type="DataKeyType"/>
             </xs:extension>
           </xs:complexContent>
         </xs:complexType>
@@ -332,21 +334,22 @@ commences.
           <xs:sequence maxOccurs="unbounded" minOccurs="1">
             <xs:element name="If" type="ConditionType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="ElseIf" minOccurs="0" maxOccurs="unbounded" type="ConditionType"/>
-            <xs:element name="Else" minOccurs="0" maxOccurs="unbounded" type="InstructionSet"/>
+            <xs:element name="Else" minOccurs="0" maxOccurs="unbounded" type="InnerInstructionSet"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
       <xs:element name="While" type="ConditionType"/>
       <xs:element name="Until" type="ConditionType"/>
       <xs:element name="If" type="ConditionType"/>
-        <xs:element name="Break" type="NoAttributesType"/>
-        <xs:element name="Continue" type="NoAttributesType"/>
-        <xs:element name="Print" type="DebugKeyType"/>
+      <xs:element name="Break" type="NoAttributesType"/>
+      <xs:element name="Continue" type="NoAttributesType"/>
+      <xs:element name="Print" type="DebugKeyType"/>
+      <xs:element name="ToString" type="DebugKeyType"/>
       <xs:element name="Switch">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
-            <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InstructionSet"/>
+            <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
           </xs:sequence>
           <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
         </xs:complexType>
@@ -359,7 +362,7 @@ commences.
   </xs:complexType>
   <xs:complexType name="CaseInstructionSet">
     <xs:complexContent>
-      <xs:extension base="InstructionSet">
+      <xs:extension base="InnerInstructionSet">
         <xs:attribute name="value" type="xs:string" use="required"/>
       </xs:extension>
     </xs:complexContent>
@@ -380,9 +383,14 @@ commences.
   <xs:complexType name="TokenLookupType">
     <xs:simpleContent>
       <xs:extension base="TokenTypeListType">
-        <xs:attribute name="alias" type="xs:token" use="required"/>
+        <xs:attribute name="alias" type="NonEmptyTokenType" use="required"/>
       </xs:extension>
     </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="TokenLookupsType">
+    <xs:sequence>
+      <xs:element name="TokenLookup" type="TokenLookupType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
   </xs:complexType>
   <xs:attributeGroup name="LengthAttrGroup">
     <xs:attribute name="length" type="xs:positiveInteger">
@@ -495,16 +503,6 @@ If the endian attribute is not defined, this uses little-endian order.
           </xs:enumeration>
         </xs:restriction>
       </xs:simpleType>
-    </xs:attribute>
-  </xs:attributeGroup>
-  <xs:attributeGroup name="ScopeAttrGroup">
-    <xs:attribute name="scope" default="global" use="optional" type="ScopeAttributeType">
-      <xs:annotation>
-        <xs:documentation>
-          Whether to store the value local to this section, or to store it globally
-and have it persist beyond it. If the value already exists, it will be overwritten.
-        </xs:documentation>
-      </xs:annotation>
     </xs:attribute>
   </xs:attributeGroup>
   <xs:attributeGroup name="ConditionAttrGroupReq">
