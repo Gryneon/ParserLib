@@ -215,7 +215,7 @@ public static class Definition
     Name = "zdoom.acs",
     RxOpt = ROML | ROIC | ROIPW | ROEC | ROSL,
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new TokenAssembleOperation(),
       new DebugPrintKeyOperation("tokens_assembled")
     ],
@@ -369,7 +369,7 @@ public static class Definition
       .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
     ],
     Operations = [
-      new TokenizeOperation(),
+      new TokenizeOperation("text", "tokens"),
       new DebugToStringOperation("tokens"),
       new DebugWaitForInputOperation(),
       new TokenAssembleOperation(),

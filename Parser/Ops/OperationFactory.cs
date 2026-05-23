@@ -56,6 +56,8 @@ public class OperationFactory
       int target = GetI("target");
       int position = GetI("position");
       int length = GetI("length");
+      int divisor = GetI("divisor");
+      int dividend = GetI("dividend");
 
       string initial_var = GetS("initial_var");
       string target_var = GetS("target_var");
@@ -67,6 +69,8 @@ public class OperationFactory
       string list_var = GetS("list_var");
       string user_var = GetS("user_var");
       string check_var = GetS("check_var");
+      string dividend_var = GetS("dividend_var");
+      string divisor_var = GetS("divisor_var");
 
       string condition = GetS("condition");
       string message = GetS("message");
@@ -107,7 +111,7 @@ public class OperationFactory
           ListKey = list_var,
           Position = position == -1 ? 0 : position,
         },
-        "SetCursorPosition" => new OperationSetCursor()
+        "SetCursorPos" => new OperationSetCursor()
         {
           CursorKey = cursor_var,
           Position = position,
@@ -165,12 +169,20 @@ public class OperationFactory
           Type = type,
           ParameterKeys = GetValueList()
         },
+        "Divide" => new DivideOperation()
+        {
+          DividendKey = dividend_var,
+          DivisorKey = divisor_var,
+          Dividend = dividend == -1 ? 0 : dividend,
+          Divisor = divisor == -1 ? 0 : divisor,
+          OutputKey = output_var,
+        },
         _ => Err.ThrowBadDef($"Unknown Command {element.Name.LocalName}.")
       };
     }
-    catch (Exception)
+    catch (OperationException oe)
     {
-      throw Err.ThrowBadDef("Error during Spec Parsing.");
+      throw Err.ThrowBadDef($"Error during Spec Parsing: {oe.Message}");
     }
   }
 }

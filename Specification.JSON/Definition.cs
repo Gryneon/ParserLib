@@ -22,7 +22,7 @@ public static class Definition
         //Operation.CopyKey("json_object", "result"),
         //TODO: Enhance Spec to analyse content.
         //TODO: Validate?
-        new TokenizeOperation(),
+        new TokenizeOperation("text", "tokens"),
         new DebugToStringOperation("tokens"),
         new TokenAssembleOperation(),
         new DebugToStringOperation("tokens_assembled"),

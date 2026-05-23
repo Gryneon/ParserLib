@@ -15,11 +15,10 @@ public sealed class XParser
   /// <summary>The current operation.</summary>
   public IOperation CurrentOp => Operations[OpIndex];
   /// <summary>The next operation.</summary>
-  public IOperation NextOp => (NextOpIndex == -1 || NextOpIndex >= OpCount) ? Err.End : Operations[NextOpIndex];
+  public IOperation NextOp => (NextOpIndex == -1 || NextOpIndex >= OpCount) ? new OperationEnd() : Operations[NextOpIndex];
   /// <summary>The status of the last operation performed.</summary>
   public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>Gets the file data as a list of bytes.</summary>
-  public IList<byte> FileData => [.. Data["bytes"] as IEnumerable<byte> ?? []];
   public Spec LocalDefaultSpec =>
     Data?.HasData != true ? DefaultSpec.Unknown :
     Data.CanLoad<string>("initial") ? DefaultSpec.TextByLines :
@@ -32,8 +31,6 @@ public sealed class XParser
   public Dictionary<string, int> Labels { get; } = [];
   /// <summary>The dictionary storing all of the data from the parsed file.</summary>
   [NotNull] public DataStore? Data { get; private set; }
-  /// <summary>The dictionary storing all of the temporary data from the parsed file.</summary>
-  [NotNull] public DataStore? LocalData { get; }
   /// <summary>Gets the result of a successful parse operation set.</summary>
   /// <remarks>This property returns <see langword="null"/> if the operation sequence has failed, or has not ran.</remarks>
   public object? Result => Data.CanLoad("result") ? Data["result"] : null;
@@ -200,15 +197,12 @@ public sealed class XParser
     }
     else
     {
-      byte[] contents = File.ReadAllBytes(path);
+      Memory<byte> contents = File.ReadAllBytes(path);
       return ParseData(spec, contents);
     }
   }
-  /// <summary>Gets the count of the collection stored under the <paramref name="key"/>.</summary>
-  /// <exception cref="InvalidOperationException"/>
-  public int CountOfKey (string key) => Data is not null ? Data.GetCountOfKey(key) : throw new InvalidOperationException();
   /// <summary>Sets the next operation to be the one at <paramref name="index"/>.</summary>
-  /// <param name="index">AIM=</param>
+  /// <param name="index"></param>
   public void SetNextOperationIndex (int index) => NextOpIndex = index;
   public void SetFilePath (string path) => Data.Save<string>("file_path", path);
   /// <summary>Incrementally steps through all the operations, requesting user confirmation to continue.</summary>
@@ -246,26 +240,20 @@ public sealed class XParser
 
       string[] allow_continue = [SE, "next", "quit", "exit", "skip"];
 
-      if (status != EndCommand)
+      do
       {
-        do
+        Log(MsgClass.Debug, "Enter a command to analyse parser state.");
+        promptUser();
+
+        checkPrompt("quit", "are you sure? (y/n)", user => _ = user.Like("y") ? throw new QuitException() : "no quit");
+        checkAction("data", Data.ToString(), data => Log(MsgClass.Debug, data));
+        checkPrompt("print", "Enter the key to display.", obj =>
         {
-          Log(MsgClass.Debug, "Enter a command to analyse parser state.");
-          promptUser();
-
-          if (userInput.Like("quit"))
-            throw new QuitException();
-          checkPrompt("quit", "are you sure? (y/n)", user => _ = user.Like("y") ? throw new QuitException() : "no quit");
-          checkAction("data", Data.ToString(), data => Log(MsgClass.Debug, data));
-          checkPrompt("print", "Enter the key to display.", obj =>
-          {
-            if (Data.TryLoad(obj, out object? data) && data is IPrintable ip) ip.Print();
-          });
-          checkAction("show next", $"Next Operation: {NextOpIndex} : {NextOp}", data => Log(MsgClass.Debug, data));
-          checkPrompt("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
-
-        } while (!userInput.EqualsAny(allow_continue, SCOIC));
-      }
+          if (Data.TryLoad(obj, out object? data) && data is IPrintable ip) ip.Print();
+        });
+        checkAction("show next", $"Next Operation: {NextOpIndex} : {NextOp}", data => Log(MsgClass.Debug, data));
+        checkPrompt("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
+      } while (!userInput.EqualsAny(allow_continue, SCOIC) || userInput.IsNotEmpty());
     }
     DebugOut();
     return LastStatus;
