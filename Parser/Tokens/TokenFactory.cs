@@ -7,6 +7,7 @@ namespace Parser.Tokens;
 public sealed class TokenFactory
 {
   #region Private Fields
+  private const string Area = "TokenFactory";
   private readonly TokenRuleCollection _rules = [];
   private readonly TokenCollection _result = [];
   private TokenRule? _currentRule;
@@ -132,7 +133,7 @@ public sealed class TokenFactory
   }
   private void StoreOther ()
   {
-    DebugIn("StoreOther");
+    DebugIn(Area, "StoreOther");
     DebugLog("Storing remaining zones.");
     foreach (Pos applicant in CannotMatch.Inverse())
     {
@@ -224,7 +225,7 @@ public sealed class TokenFactory
   }
   private void ErrorMatch ()
   {
-    DebugIn("ErrorMatch");
+    DebugIn(Area, "ErrorMatch");
     DebugLog("Error matching starting, from input string.");
     Regex regex = new(RuleData, IgnoreCase ? _spec.RxOpt | ROIC : _spec.RxOpt);
 

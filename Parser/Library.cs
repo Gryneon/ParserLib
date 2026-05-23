@@ -18,11 +18,11 @@ public static class SpecInstructionParser
     bool? textfile = bool.TryParse(root.Element(NS + "TextFile")?.Value, out bool result) ? result : null;
     // Parse instructions
     IEnumerable<XElement>? instructionElements = root.Element(NS + "Instructions")?.Elements();
-    List<IOperation> ops = [.. instructionElements?.Select(new OperationFactory(NS).Produce) ?? []];
+    List<IOperation> ops = [.. instructionElements?.Select(OperationFactory.Produce) ?? []];
 
     // Parse file inferences
     XElement? fileInf = root.Element(NS + "FileInferences");
-    List<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
+    Collection<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
 
     return new Spec
     {
@@ -36,6 +36,7 @@ public static class SpecInstructionParser
 
 public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
 {
+  private const string Area = "Library";
   private readonly Dictionary<string, Spec> _specs = [];
   /// <summary>The singleton instance of this object.</summary>
   private static Library? Instance { get; set; }
@@ -50,12 +51,11 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   public static Spec? Lookup (string? name) => name is not null && Instance?.ContainsKey(name) == true ? Instance[name] : null;
   public static Spec LookupOrDefault (string? name)
   {
-    DebugIn("LookupOrDefault");
+    DebugIn(Area, "LookupOrDefault");
     if (Instance is null)
     {
       Log(MsgClass.Error, "Must initialize library before using.");
-      DebugOut();
-      return DefaultSpec.Unknown;
+      throw new SpecNotDefinedException("Must initialize library before using.");
     }
     DebugOut();
     return (name is null || !TryLookup(name, out Spec? spec)) ? DefaultSpec.Unknown : spec;
@@ -76,19 +76,11 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   /// <summary>Initializes the library.</summary>
   /// <remarks>This must be called before the library is used.</remarks>
   /// <param name="domain">The domain that we are loading the <see cref="Spec"/> objects from.</param>
-  public static void InitializeLibrary (AppDomain domain)
+  public static Library InitializeLibrary (AppDomain domain)
   {
     DebugIn("Library", "InitializeLibrary");
 
     Instance = new();
-
-    foreach (string path in Directory.EnumerateFiles("Specs"))
-    {
-      Spec loaded = SpecInstructionParser.LoadSpec(path);
-
-      Instance._specs.Add(loaded.Name, loaded);
-    }
-
     domain.ThrowIfNull();
 
     List<Assembly> assemblies = [.. domain.GetAssemblies()];
@@ -111,13 +103,22 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
           {
             Spec? check = prop.GetValue(null) as Spec;
             check.ThrowIfNull();
-            Instance._specs.Add(check.Name, check);
+            Instance._specs[check.Name] = check;
           }
         }
       }
     }
+
+    foreach (string path in Directory.EnumerateFiles("Specs"))
+    {
+      Spec loaded = SpecInstructionParser.LoadSpec(path);
+
+      Instance._specs[loaded.Name] = loaded;
+    }
+
     Log(MsgClass.BlueInfo, $"{Instance._specs.Count} Specs Loaded.");
     DebugOut();
+    return Instance;
   }
   /// <summary>Provides the <see cref="Spec"/> for the provided file path.</summary>
   public static string? CheckFile (string path)

@@ -68,7 +68,7 @@ public static class IListExtensions
     /// <summary>Performs a 'pop' action, but discards the popped item.</summary>
     public void Drop ()
     {
-      list?.RemoveAt(list.Count - 1);
+      list?.RemoveLast();
     }
     /// <summary>Performs a 'pop' action like a stack would.</summary>
     public T? Pop ()
@@ -102,9 +102,12 @@ public static class IListExtensions
     }
   }
 
-  public static void TrimEmpty ([NotNull] this IList<string> list)
+  extension([NotNull] IList<string> list)
   {
-    list ??= [];
-    while (list.Remove(SE)) { }
+    public void TrimEmpty ()
+    {
+      list ??= [];
+      while (list.Remove(SE)) { }
+    }
   }
 }

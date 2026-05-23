@@ -4,84 +4,67 @@ using Parser.Ops.Text;
 
 namespace Parser.Ops;
 
-public class OperationFactory
+public static class OperationFactory
 {
-  private readonly XNamespace _ns;
-  [AllowNull]
-  private XElement _current;
-  public OperationFactory (XNamespace ns)
+  private static readonly XNamespace NS = "Parser/Spec";
+
+  private static string? GetA (string name, XElement? parent = null) => parent?.Attribute(NS + name)?.Value;
+  private static int GetI (string name, XElement? parent = null) => GetA(name, parent) is not string s ? -1 : int.Parse(s, CIIC);
+  private static string GetS (string name, XElement? parent = null) => GetA(name, parent) ?? SE;
+  private static Collection<IOperation> GetOps (XElement? parent = null)
   {
-    _ns = ns;
+    return [.. parent?.Elements().Select(Produce) ?? []];
   }
-
-  private string? GetA (string name, XElement? parent = null) => (parent ?? _current).Attribute(_ns + name)?.Value;
-  private int GetI (string name, XElement? parent = null) => GetA(name, parent) is not string s ? -1 : int.Parse(s, CIIC);
-  private string GetS (string name, XElement? parent = null) => GetA(name, parent) ?? SE;
-  private Collection<IOperation> GetOps (XElement? parent = null)
+  private static SwitchCaseItem GetCase (XElement? parent = null) => new()
   {
-    Collection<IOperation> result = [];
-
-    OperationFactory factory = new(_ns);
-
-    foreach (XElement e in (parent ?? _current).Elements())
-    {
-      result.Add(factory.Produce(e));
-    }
-
-    return result;
-  }
-  private SwitchCaseItem GetCase (XElement e)
-  {
-    string? value = e.Attribute(_ns + "value")?.Value;
-
-    return new()
-    {
-      Value = value,
-      Operations = GetOps(e)
-    };
-  }
-  private IfBlockConditional GetIfOption (XElement e) => new()
-  {
-    Condition = e.Attribute(_ns + "condition")?.Value,
-    Operations = GetOps(e)
+    Value = parent?.Attribute(NS + "value")?.Value,
+    Operations = GetOps(parent)
   };
-  private Collection<string> GetValueList (XElement? parent = null) => [.. (parent ?? _current).Value.Split(' ', '\t') ?? []];
-  private IEnumerable<XElement> GetElems (XElement? parent = null) => (parent ?? _current).Elements();
-  private IEnumerable<XElement> GetElems (string name, XElement? parent = null) => (parent ?? _current).Elements(_ns + name);
-  public IOperation Produce (XElement element)
+  private static IfBlockConditional GetIfOption (XElement? parent = null) => new()
   {
-    _current = element;
+    Condition = parent?.Attribute(NS + "condition")?.Value,
+    Operations = GetOps(parent)
+  };
+  private static Collection<string> GetValueList (XElement? parent = null) => [.. parent?.Value.Split(' ', '\t') ?? []];
+  private static IEnumerable<XElement> GetElems (XElement? parent = null) => parent?.Elements() ?? [];
+  private static IEnumerable<XElement> GetElems (string name, XElement? parent = null) => parent?.Elements(NS + name) ?? [];
+  public static IOperation Produce (XElement? element)
+  {
     try
     {
-      int target = GetI("target");
-      int position = GetI("position");
-      int length = GetI("length");
-      int divisor = GetI("divisor");
-      int dividend = GetI("dividend");
+      if (element is null)
+        throw new UnknownOperationException("Element was null.");
 
-      string initial_var = GetS("initial_var");
-      string target_var = GetS("target_var");
-      string output_var = GetS("output_var");
-      string content_var = GetS("content_var");
-      string cursor_var = GetS("cursor_var");
-      string position_var = GetS("position_var");
-      string length_var = GetS("length_var");
-      string list_var = GetS("list_var");
-      string user_var = GetS("user_var");
-      string check_var = GetS("check_var");
-      string dividend_var = GetS("dividend_var");
-      string divisor_var = GetS("divisor_var");
+      int target = GetI("target", element);
+      int position = GetI("position", element);
+      int length = GetI("length", element);
+      int divisor = GetI("divisor", element);
+      int dividend = GetI("dividend", element);
 
-      string condition = GetS("condition");
-      string message = GetS("message");
-      string value = GetS("value");
-      string name = GetS("name");
-      string type = GetS("type");
-      string key_type = GetS("key_type");
-      string value_type = GetS("value_type");
-      string success = GetS("success");
+      string initial_var = GetS("initial_var", element);
+      string target_var = GetS("target_var", element);
+      string output_var = GetS("output_var", element);
+      string input_var = GetS("input_var", element);
+      string content_var = GetS("content_var", element);
+      string cursor_var = GetS("cursor_var", element);
+      string position_var = GetS("position_var", element);
+      string length_var = GetS("length_var", element);
+      string list_var = GetS("list_var", element);
+      string user_var = GetS("user_var", element);
+      string check_var = GetS("check_var", element);
+      string dividend_var = GetS("dividend_var", element);
+      string divisor_var = GetS("divisor_var", element);
 
-      IEnumerable<IOperation> child_ops = GetOps();
+      string condition = GetS("condition", element);
+      string message = GetS("message", element);
+      string value = GetS("value", element);
+      string name = GetS("name", element);
+      string type = GetS("type", element);
+      string key_type = GetS("key_type", element);
+      string value_type = GetS("value_type", element);
+      string success = GetS("success", element);
+
+      IEnumerable<IOperation> child_ops = GetOps(element);
 
       return element.Name.LocalName switch
       {
@@ -117,15 +100,15 @@ public class OperationFactory
           Position = position,
           PositionKey = position_var
         },
-        "Tokenize" => new TokenizeOperation(content_var, output_var),
+        "Tokenize" => new TokenizeOperation(input_var, output_var),
         "Terminate" => new OperationEnd(success.Like("false")),
         "Break" => new OperationBreak(),
         "Continue" => new OperationContinue(),
         "Switch" => new OperationSwitch()
         {
           Condition = condition,
-          Cases = [.. GetElems("Case").Select(GetCase)],
-          Default = GetCase(GetElems("Default").Single())
+          Cases = [.. GetElems("Case", element).Select(GetCase)],
+          Default = GetCase(GetElems("Default", element).Single())
         },
         "ForCount" => new ForCountOperation()
         {
@@ -154,7 +137,7 @@ public class OperationFactory
         },
         "IfBlock" => new OperationIfBlock()
         {
-          Options = [.. GetElems().Select(GetIfOption)],
+          Options = [.. GetElems(element).Select(GetIfOption)],
         },
         "Initialize" => new InitializeOperation()
         {
@@ -167,7 +150,7 @@ public class OperationFactory
         {
           ListKey = list_var,
           Type = type,
-          ParameterKeys = GetValueList()
+          ParameterKeys = GetValueList(element)
         },
         "Divide" => new DivideOperation()
         {
