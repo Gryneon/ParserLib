@@ -27,7 +27,7 @@ public class TokenizeOperation : Operation
 
     if (WorkData is string input)
     {
-      TokenFactory factory = new(Rules, Spec);
+      TokenFactory factory = new(Spec, Rules);
       WorkData = (TokenCollection) ([.. factory.Produce(input)]);
       Status = OpStatus.Pass;
     }

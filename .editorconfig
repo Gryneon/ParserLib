@@ -26,6 +26,7 @@ dotnet_diagnostic.CA1707.severity = silent
 dotnet_diagnostic.CA1708.severity = silent # CA1708: Identifiers should differ by more than case
 dotnet_diagnostic.CA1711.severity = suggestion
 dotnet_diagnostic.CA1716.severity = suggestion
+dotnet_diagnostic.CA1720.severity = none
 dotnet_diagnostic.CA1727.severity = suggestion
 dotnet_diagnostic.CA1805.severity = suggestion
 dotnet_diagnostic.CA1838.severity = suggestion

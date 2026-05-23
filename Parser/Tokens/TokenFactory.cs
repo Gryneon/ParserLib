@@ -13,6 +13,7 @@ public sealed class TokenFactory
   private Spec _spec;
   private RT _default_rule;
   private bool _competed;
+  private const string Area = "TokenFactory";
   #endregion
   #region Public Properties
   public string Input { get; private set; } = SE;
@@ -21,16 +22,10 @@ public sealed class TokenFactory
   public bool PromptAfterEach { get; set; }
   #endregion
   #region Constructors
-  public TokenFactory (IEnumerable<TokenRule> rules, Spec spec)
+  public TokenFactory (Spec spec, IEnumerable<TokenRule>? rules = null)
   {
     SetSpec(spec);
-    _rules.AddRange(rules);
-  }
-  public TokenFactory (Spec spec)
-  {
-    spec.ThrowIfNull();
-    SetSpec(spec);
-    _rules.AddRange(spec.TokenRules);
+    _rules.AddRange(rules ?? spec.TokenRules);
   }
   public TokenFactory () => SetSpec(DefaultSpec.Unknown);
   #endregion
@@ -57,24 +52,9 @@ public sealed class TokenFactory
   };
   #endregion
   #region Private Logging Methods
-  private static void DebugLog (string msg)
-  {
-    LogHead(MC.Debug);
-    LogPart(MC.BlueInfo, msg);
-    NewLine();
-  }
-  private static void WarnLog (string msg)
-  {
-    LogHead(MC.Debug);
-    LogPart(MC.Warning, msg);
-    NewLine();
-  }
-  private static void ErrorLog (string msg)
-  {
-    LogHead(MC.Debug);
-    LogPart(MC.Error, msg);
-    NewLine();
-  }
+  private static void DebugLog (string msg) => Log(MC.Debug, msg);
+  private static void WarnLog (string msg) => Log(MC.Warning, msg);
+  private static void ErrorLog (string msg) => Log(MC.Error, msg);
   #endregion
   #region Private Static Methods
   private static string GetRuleRegex (TokenRule rule, int? index = null)
@@ -93,7 +73,7 @@ public sealed class TokenFactory
   private static RT GetMaskedType (RT type) => type.RemoveBitLong<RT>(RT.FlagBits);
   private static int GetRuleGroupIndex (Match match)
   {
-    DebugIn("GetRuleGroupIndex");
+    DebugIn(Area, "GetRuleGroupIndex");
     string num = match.Groups.
       AsReadOnly().
       First(static g => g.Name.StartsWith("_R", SCO) && g.Value.Length > 0).
@@ -132,7 +112,7 @@ public sealed class TokenFactory
   }
   private void StoreOther ()
   {
-    DebugIn("StoreOther");
+    DebugIn(Area, "StoreOther");
     DebugLog("Storing remaining zones.");
     foreach (Pos applicant in CannotMatch.Inverse())
     {
@@ -146,7 +126,7 @@ public sealed class TokenFactory
   /// <remarks>This will NOT see anything but the unmatched section, so any lookaheads or lookbehinds will FAIL.</remarks>
   private void StoreExtra ()
   {
-    DebugIn("StoreExtra");
+    DebugIn(Area, "StoreExtra");
     DebugLog($"Storing remaining zones matching {RuleData}");
     foreach (Pos applicant in CannotMatch.Inverse())
     {
@@ -166,7 +146,7 @@ public sealed class TokenFactory
   /// <summary>Exact (no regex) match, uses the rule's ignore case property, not the spec's one.</summary>
   private void ExactMatch ()
   {
-    DebugIn("ExactMatch");
+    DebugIn(Area, "ExactMatch");
     DebugLog("Token Exact starting, from input string.");
     int length = 0;
     if (RuleData.Length > 0)
@@ -195,7 +175,7 @@ public sealed class TokenFactory
   }
   private void RegexMatch ()
   {
-    DebugIn("RegexMatch");
+    DebugIn(Area, "RegexMatch");
     DebugLog("Token matching starting, from input string.");
     Regex regex = new(RuleData, IgnoreCase ? _spec.RxOpt | ROIC : _spec.RxOpt);
 
@@ -224,7 +204,7 @@ public sealed class TokenFactory
   }
   private void ErrorMatch ()
   {
-    DebugIn("ErrorMatch");
+    DebugIn(Area, "ErrorMatch");
     DebugLog("Error matching starting, from input string.");
     Regex regex = new(RuleData, IgnoreCase ? _spec.RxOpt | ROIC : _spec.RxOpt);
 
@@ -251,7 +231,7 @@ public sealed class TokenFactory
   }
   private void RunCompete ()
   {
-    DebugIn("RunCompete");
+    DebugIn(Area, "RunCompete");
     DebugLog("Running competition.");
     Collection<(TokenRule Rule, int Index)> contestants = [.. _rules.Where(r => r.Type.HasFlag(RT.Competitive) && r.RuleStringData is not null).Select((r, i) => (r, i))];
     string regexPatterns = contestants.Select(r => GetRuleRegex(r.Rule, r.Index)).TextJoin("|");
@@ -285,7 +265,7 @@ public sealed class TokenFactory
   [MemberNotNull(nameof(CannotMatch))]
   public TokenCollection Produce (string input)
   {
-    DebugIn("TokenFactory", "Produce");
+    DebugIn(Area, "Produce");
     _result.Clear();
     CannotMatch = new(input);
     _competed = false;

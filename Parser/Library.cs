@@ -18,17 +18,17 @@ public static class SpecInstructionParser
     bool? textfile = bool.TryParse(root.Element(NS + "TextFile")?.Value, out bool result) ? result : null;
     // Parse instructions
     IEnumerable<XElement>? instructionElements = root.Element(NS + "Instructions")?.Elements();
-    List<IOperation> ops = [.. instructionElements?.Select(new OperationFactory(NS).Produce) ?? []];
+    ReadOnlyCollection<IOperation> ops = [.. instructionElements?.Select(new OperationFactory(NS).Produce) ?? []];
 
     // Parse file inferences
     XElement? fileInf = root.Element(NS + "FileInferences");
-    List<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
+    ReadOnlyCollection<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
 
     return new Spec
     {
       Name = name,
-      Operations = [.. ops],
-      FileInferences = [.. inferenceNodes],
+      Operations = ops,
+      FileInferences = inferenceNodes,
       IsTextFile = textfile ?? true,
     };
   }
@@ -36,6 +36,7 @@ public static class SpecInstructionParser
 
 public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
 {
+  private const string Area = "Library";
   private readonly Dictionary<string, Spec> _specs = [];
   /// <summary>The singleton instance of this object.</summary>
   private static Library? Instance { get; set; }
@@ -50,7 +51,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   public static Spec? Lookup (string? name) => name is not null && Instance?.ContainsKey(name) == true ? Instance[name] : null;
   public static Spec LookupOrDefault (string? name)
   {
-    DebugIn("LookupOrDefault");
+    DebugIn(Area, "LookupOrDefault");
     if (Instance is null)
     {
       Log(MsgClass.Error, "Must initialize library before using.");
@@ -78,7 +79,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   /// <param name="domain">The domain that we are loading the <see cref="Spec"/> objects from.</param>
   public static void InitializeLibrary (AppDomain domain)
   {
-    DebugIn("Library", "InitializeLibrary");
+    DebugIn(Area, "InitializeLibrary");
 
     Instance = new();
 

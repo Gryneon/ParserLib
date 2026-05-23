@@ -28,12 +28,12 @@ internal static class Definition
     RxOpt = ROIPW | ROIC | ROML | ROSL | ROEC
   };
 
-  public static TokenFactory Factory { get; } = new([
+  public static TokenFactory Factory { get; } = new(Dummy, [
     new(TExact, CTT.Colon, ":"),
     new(TExact, CTT.Po, "("),
     new(TExact, CTT.Pc, ")"),
     new(TMatch, CTT.Prefix, @"\b[a-y]+(?=\:)"),
     new(TMatch, CTT.Content, @"(?<=c.*?\:)\w+\b"),
     new(TMatch, CTT.TypeName, @"(?<=t.*?\:)\w+\b"),
-  ], Dummy);
+  ]);
 }
