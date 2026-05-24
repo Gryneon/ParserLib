@@ -167,7 +167,7 @@ internal sealed partial class ParserForm : Form
       return;
     }
 
-    _factory = new(_workingRules, LoadedSpec);
+    _factory = new(LoadedSpec, _workingRules);
 
     foreach (IToken token in _factory.Produce(contents))
     {
