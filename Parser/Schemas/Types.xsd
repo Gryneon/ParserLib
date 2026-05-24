@@ -510,7 +510,7 @@ If the endian attribute is not defined, this uses little-endian order.
       <xs:annotation>
         <xs:documentation>
 An expression that must resolve to true or false. Formatted like
-[&apos;&apos;]
+[var_name] == {literal text}
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
