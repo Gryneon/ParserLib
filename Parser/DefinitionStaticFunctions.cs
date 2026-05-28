@@ -1,5 +1,3 @@
-using Common.RegExp;
-
 using Parser.Inference;
 
 namespace Parser;

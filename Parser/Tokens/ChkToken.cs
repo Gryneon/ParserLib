@@ -1,7 +1,5 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
-using Common.RegExp;
-
 using T = Parser.Tokens.TokenRef;
 
 namespace Parser.Tokens;

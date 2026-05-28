@@ -1,7 +1,4 @@
-using Parser.Tokens;
-
 using static Parser.DefinitionStaticFunctions;
-using static Parser.Tokens.TokenRule;
 using static Parser.Tokens.TokenRuleType;
 
 namespace Specification.INI;
@@ -32,7 +29,7 @@ public static class Definition
 
     TokenRules = [
       new(TokenComment, ITT.None, ";.*"),
-      new(Competitive, ITT.Value, @"(?<=(=))([^\\=\n;]|\\.)*(?=$|;)"),
+      new(Competitive, ITT.Value, @"(?<=(?: =))([^\\=\n;]|\\.)*(?=$|;)"),
       new(Competitive, ITT.Key, @"(?<=^\s*)([^\s\\=\n;]|\\.)*(?=\s*(=))"),
       new(TokenExact, ITT.Eq, "="),
       new(TokenExtract, ITT.Section, @"\[(?'keep'.*?)\]")],

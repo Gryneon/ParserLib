@@ -5,6 +5,8 @@ namespace Parser;
 /// <summary>A parser the takes a file's content and turns it into tokens or objects.</summary>
 public sealed class XParser
 {
+  [AllowNull]
+  internal static Library Lib;
   private const string Area = nameof(XParser);
 
   #region Public Properties
@@ -20,12 +22,10 @@ public sealed class XParser
   public OpStatus LastStatus { get; private set; } = AtStart;
   /// <summary>Gets the file data as a list of bytes.</summary>
   public Spec LocalDefaultSpec =>
-    Data?.HasData != true ? DefaultSpec.Unknown :
+    Data?.HasData != true ? Lib["unknown"] :
     Data.CanLoad<string>("initial") ? DefaultSpec.TextByLines :
     Data.CanLoad<Memory<byte>>("initial") ? DefaultSpec.Binary :
-    DefaultSpec.Unknown;
-  public Collection<CursorData> Cursors { get; } = [];
-  /// <summary>The spec to use for this parser.</summary>
+    Lib["unknown"];
   public Spec? Spec { get; private set; }
   [NotNull] public Collection<IOperation>? Operations { get; } = [];
   public Dictionary<string, int> Labels { get; } = [];
@@ -45,9 +45,8 @@ public sealed class XParser
   public XParser (Spec spec) => InitializeParser(spec);
   public XParser (string file)
   {
-    string? name = Library.CheckFile(file);
-
-    Spec spec = Library.Lookup(name) ?? throw new InvalidOperationException("Library Error");
+    string? name = Lib.CheckFile(file);
+    Spec spec = Lib.LookupOrDefault(name);
     InitializeParser(spec);
   }
   #endregion
@@ -114,12 +113,10 @@ public sealed class XParser
   private OpStatus ParseLoop ()
   {
     DebugIn(Area, "ParseLoop");
-    Log(MsgClass.Debug, "Initialized");
 
     while (NextOpIndex >= 0 && !LastStatus.IsFail(CurrentOp.ContinueOnFail))
     {
-      OpStatus status = PerformOperation();
-      Console.WriteLine($"{OpIndex} : {status}");
+      _ = PerformOperation();
     }
     DebugOut();
     return LastStatus;
@@ -134,13 +131,12 @@ public sealed class XParser
     if (CurrentOp.SkipOperation)
     {
       Log(MsgClass.Debug, "Skip Operation Encountered");
-      LastStatus = Skipped;
       AdvanceOperation();
       DebugOut();
-      return LastStatus;
+      return LastStatus = Skipped;
     }
 
-    Log(MsgClass.BlueInfo, $"Performing Operation {CurrentOp.GetType().Name}.");
+    Log(MsgClass.BlueInfo, $"Performing Operation {CurrentOp.TypeName}.");
 
     void setExceptionData (OpStatus status, OperationException toLog)
     {
@@ -187,7 +183,7 @@ public sealed class XParser
 
     if (Spec is null)
     {
-      return Err.ThrowNoSpec("No Specification defined.");
+      throw Err.ThrowNoSpec("No Specification defined.");
     }
     SetFilePath(path);
     if (Spec.IsTextFile)
@@ -202,9 +198,9 @@ public sealed class XParser
     }
   }
   /// <summary>Sets the next operation to be the one at <paramref name="index"/>.</summary>
-  /// <param name="index"></param>
+  /// <param name="index">The index of the next operation to execute.</param>
   public void SetNextOperationIndex (int index) => NextOpIndex = index;
-  public void SetFilePath (string path) => Data.Save<string>("file_path", path);
+  public void SetFilePath (string path) => Data["file_path"] = path;
   /// <summary>Incrementally steps through all the operations, requesting user confirmation to continue.</summary>
   /// <param name="input">The file data as a <see langword="string"/>.</param>
   /// <returns>The <see cref="OpStatus"/> representing the result.</returns>
@@ -213,7 +209,6 @@ public sealed class XParser
   {
     DebugIn(Area, "StepThrough");
     InitializeData(input);
-    Log(MsgClass.Debug, "Initialized");
 
     while (NextOpIndex >= 0)
     {
@@ -242,7 +237,7 @@ public sealed class XParser
 
       do
       {
-        Log(MsgClass.Debug, "Enter a command to analyse parser state.");
+        Log(MsgClass.Prompt, "Enter a command to analyse parser state.");
         promptUser();
 
         checkPrompt("quit", "are you sure? (y/n)", user => _ = user.Like("y") ? throw new QuitException() : "no quit");
@@ -250,6 +245,16 @@ public sealed class XParser
         checkPrompt("print", "Enter the key to display.", obj =>
         {
           if (Data.TryLoad(obj, out object? data) && data is IPrintable ip) ip.Print();
+        });
+        checkAction("print all", Data, data =>
+        {
+          foreach (object? item in data)
+          {
+            if (item is IPrintable pr)
+              pr.Print();
+            else
+              Log(MsgClass.GreenInfo, item.ToString2());
+          }
         });
         checkAction("show next", $"Next Operation: {NextOpIndex} : {NextOp}", data => Log(MsgClass.Debug, data));
         checkPrompt("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));

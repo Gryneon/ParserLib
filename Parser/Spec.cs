@@ -10,7 +10,7 @@ public class Spec
 {
   #region Static Members
   /// <summary>The currently active specififcation. Used for objects that cannot see the parser.</summary>
-  public static Spec Active { get => field ?? DefaultSpec.Unknown; protected set; }
+  public static Spec Active { get => field ?? XParser.Lib["unknown"]; protected set; }
   #endregion
   /// <summary>The name of this Spec.</summary>
   public required string Name { get; init; }

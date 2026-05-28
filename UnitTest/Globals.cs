@@ -7,7 +7,6 @@ global using System.Resources;
 global using Common.RegExp;
 
 global using Parser;
-global using Parser.Ops;
 global using Parser.Tokens;
 
 [assembly: AssemblyCompany("UnitTests")]

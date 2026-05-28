@@ -1,5 +1,3 @@
-using Common.RegExp;
-
 namespace Specification.REG;
 
 /// <summary>Represents the text header of a registry file.</summary>

@@ -1,5 +1,3 @@
-using Common.RegExp;
-
 namespace Specification.INI;
 
 /// <summary>A key and value pair in an INI file.</summary>

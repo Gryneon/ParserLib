@@ -13,14 +13,6 @@ public sealed class WhileOperation : Operation, IPlaceholderOperation
   /// <summary>Start of loop section.</summary>
   public int OpIndex { get; private set; }
 
-  public WhileOperation (string cursor_key, string condition, IEnumerable<IOperation> operations)
-  {
-    CursorKey = cursor_key;
-    Operations = operations;
-    Condition = condition;
-  }
-  public WhileOperation () { }
-
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     Collection<IOperation> additions = [];

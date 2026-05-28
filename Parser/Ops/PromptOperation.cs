@@ -32,6 +32,6 @@ public sealed class PromptOperation : Operation
       return;
     }
 
-    Status = Err.ThrowBadResult("Validation Operation Failed.");
+    throw Err.ThrowBadResult("Validation Operation Failed.");
   }
 }

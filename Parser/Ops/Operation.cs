@@ -105,11 +105,16 @@ public abstract class Operation : IOperation
     if (SkipOperation)
       return OpStatus.Skipped;
 
-    Initialize(parser_ref);
+    parser_ref.ThrowIfNull();
+    Parser = parser_ref;
+    WorkData = null;
+
+    if (!NoInput)
+      WorkData = Data[InputKey];
 
     if (!NoExecution)
     {
-      DebugIn($"{GetType()}", "Execute");
+      DebugIn(this.TypeName, "Execute");
       Execute();
       DebugOut();
     }
@@ -137,18 +142,4 @@ public abstract class Operation : IOperation
       Status = Err.ThrowBadDef("Loop Pre-processing not complete.");
   }
   protected static IOperation JumpTo (int pos) => new OperationJump(pos);
-  /// <summary>Assigns the <c><see cref="XParser"/></c> to this operation and loads the data for the operation to work on.</summary>
-  /// <param name="parser">The parser reference to pass to the operation.</param>
-  private void Initialize (XParser parser)
-  {
-    DebugIn(Area, "Initialize");
-    parser.ThrowIfNull();
-    Parser = parser;
-    WorkData = null;
-
-    if (!NoInput)
-      WorkData = Data[InputKey];
-
-    DebugOut();
-  }
 }

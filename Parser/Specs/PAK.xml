@@ -2,13 +2,13 @@
 <Spec xmlns="Parser/Spec" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="Parser\Spec ..\Schemas\Spec.xsd">
   <Name>pak</Name>
   <TextFile>false</TextFile>
-    
+  <TokenLookups></TokenLookups>
   <Instructions>
     <Label name="Start"/>
-    <MakeCursor cursor_var="current_pos" cursor_ref="bytes" position="0"/>
-    <ReadData scope="global" output_var="file_id" type="text" length="4" cursor_var="current_pos"/>
-    <ReadData scope="global" output_var="diroffset" type="int" cursor_var="current_pos"/>
-    <ReadData scope="global" output_var="dirsize" type="int" cursor_var="current_pos"/>
+    <MakeCursor cursor_var="current_pos" list_var="bytes" position="0"/>
+    <ReadData output_var="file_id" type="text" length="4" cursor_var="current_pos"/>
+    <ReadData output_var="diroffset" type="int" cursor_var="current_pos"/>
+    <ReadData output_var="dirsize" type="int" cursor_var="current_pos"/>
     <Divide dividend_var="dirsize" divisor="64" output_var="entrycount"/>
     <SetCursorPos cursor_var="current_pos" position_var="diroffset"/>
     <Initialize initial_var="directory" type="Collection" value_type="WadLump"/>

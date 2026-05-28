@@ -66,10 +66,7 @@ public static class IListExtensions
     // Stack Functions for IList<T>
     public T? Peek () => list.IsEmpty() ? default : list[^1];
     /// <summary>Performs a 'pop' action, but discards the popped item.</summary>
-    public void Drop ()
-    {
-      list?.RemoveLast();
-    }
+    public void Drop () => list?.RemoveLast();
     /// <summary>Performs a 'pop' action like a stack would.</summary>
     public T? Pop ()
     {

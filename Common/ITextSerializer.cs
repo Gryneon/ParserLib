@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Common;
 /// <summary>An interface specifying that this object can be represented by a <see langword="string"/>.</summary>
 public interface ITextSerializer

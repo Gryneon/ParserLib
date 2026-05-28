@@ -1,4 +1,4 @@
-namespace Parser.Ops;
+namespace Parser;
 
 /// <summary>A static class to assist with creating operation sequences in <see cref="Spec"/> objects.</summary>
 public static class Err

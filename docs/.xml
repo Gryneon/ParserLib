@@ -1,79 +1,199 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>TestConsole</name>
+        <name>Specification.INI</name>
     </assembly>
     <members>
-        <member name="T:TestConsole.Paths">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
+        <member name="T:Specification.INI.Definition">
+            <summary>Defines the INI spec.</summary>
         </member>
-        <member name="P:TestConsole.Paths.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
+        <member name="P:Specification.INI.Definition.Spec">
+            <summary>The INI Spec</summary>
         </member>
-        <member name="P:TestConsole.Paths.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
+        <member name="T:Specification.INI.INIDocument">
+            <summary>A document, which is a collection of INISections.</summary>
         </member>
-        <member name="P:TestConsole.Paths.binparse_wad">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.WAD\WAD.txt.
-            </summary>
+        <member name="M:Specification.INI.INIDocument.FromINIDocument(Specification.INI.INIDocument)">
+            <summary>Creates an <c>INIDocument</c> from another <c>INIDocument</c>.</summary>
+            <param name="other">The specified document.</param>
+            <returns>An <c>INIDocument</c> that is a deep clone of the specified object.</returns>
         </member>
-        <member name="P:TestConsole.Paths.ini_vncdefault">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.INI\Samples\default.ini.
-            </summary>
+        <member name="M:Specification.INI.INIDocument.FromSections(System.Collections.Generic.IEnumerable{Specification.INI.INISection})">
+            <summary>Creates an <c>INIDocument</c> from an array or collection of <see cref="T:Specification.INI.INISection"/> objects.</summary>
+            <param name="sections">The array or collection of INISections.</param>
+            <returns>The newly created document.</returns>
         </member>
-        <member name="P:TestConsole.Paths.ipl_batch6456">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.IPL\Samples\6456 batch.txt.
-            </summary>
+        <member name="M:Specification.INI.INIDocument.#ctor">
+            <summary>Creates an empty <see cref="T:Specification.INI.INIDocument"/>.</summary>
         </member>
-        <member name="P:TestConsole.Paths.ipl_batch6458">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.IPL\Samples\6458 batch.txt.
-            </summary>
+        <member name="M:Specification.INI.INIDocument.#ctor(System.Collections.Generic.IEnumerable{Specification.INI.INISection})">
+            <summary>Creates a <see cref="T:Specification.INI.INIDocument"/> with the provided <see cref="T:Specification.INI.INISection"/> objects in it.</summary>
         </member>
-        <member name="P:TestConsole.Paths.ipl_label">
-            <summary>
-              Looks up a localized string similar to ParserLib\Parser\Samples\label.ipl.
-            </summary>
+        <member name="M:Specification.INI.INIDocument.#ctor(Specification.INI.INIDocument)">
+            <summary>Creates a deep copy of the passed document.</summary>
+            <param name="other">The document to copy.</param>
         </member>
-        <member name="P:TestConsole.Paths.ipl_simple">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.IPL\Samples\simple.txt.
-            </summary>
+        <member name="P:Specification.INI.INIDocument.Name">
+            <summary>The name of the document.</summary>
         </member>
-        <member name="P:TestConsole.Paths.json_error">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.JSON\Samples\errors.json.
-            </summary>
+        <member name="P:Specification.INI.INIDocument.Sections">
+            <summary>A <see cref="T:System.Collections.ObjectModel.Collection`1">Collection&lt;INISection></see> object stored in this <see cref="T:Specification.INI.INIDocument"/>.</summary>
         </member>
-        <member name="P:TestConsole.Paths.json_launch">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.JSON\Samples\launchSettings.json.
-            </summary>
+        <member name="P:Specification.INI.INIDocument.Count">
+            <inheritdoc/>
         </member>
-        <member name="P:TestConsole.Paths.xml_errors">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.XML\Samples\errors.xml.
-            </summary>
+        <member name="P:Specification.INI.INIDocument.Item(System.Int32)">
+            <summary>Gets the (nth) INISection.</summary>
+            <param name="index">The index.</param>
+            <returns>The INISection at that index.</returns>
         </member>
-        <member name="P:TestConsole.Paths.xml_operation">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.XML\Samples\operation.xml.
-            </summary>
+        <member name="P:Specification.INI.INIDocument.Item(System.String)">
+            <summary>Gets the INISection named 'name'.</summary>
+            <param name="name">The name to identtiry it,</param>
+            <returns>The INISection starting with that name.</returns>
         </member>
-        <member name="P:TestConsole.Paths.xsd_specification">
-            <summary>
-              Looks up a localized string similar to ParserLib\Specification.XML\Schemas\specification.xsd.
-            </summary>
+        <member name="M:Specification.INI.INIDocument.Contains(System.String)">
+            <summary>Checks if the document contains a INISection with the provided name.</summary>
+            <param name="name">The name to check for.</param>
+            <returns><see langword="true"/> if the document contains a INISection with the given name, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Specification.INI.INIDocument.Add(Specification.INI.INISection)">
+            <summary>Adds a section if it does not exist.
+            If it does exist, it adds or updates all the values contained in the provided <see cref="T:Specification.INI.INISection"/>.</summary>
+            <param name="section">The section to add.</param>
+        </member>
+        <member name="M:Specification.INI.INIDocument.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.INISection})">
+            <summary>Adds a collection of child sections to the current document.</summary>
+            <param name="children">An enumerable collection of <see cref="T:Specification.INI.INISection"/> objects to add as children. Cannot be null.</param>
+        </member>
+        <member name="M:Specification.INI.INIDocument.Add(System.String)">
+            <summary>Adds a INISection with the specified name if it does not exist.</summary>
+            <param name="iniSection">The name of the INISection to add.</param>
+        </member>
+        <member name="M:Specification.INI.INIDocument.Update(Specification.INI.INIDocument)">
+            <summary>Merges 2 INISections, Favoring the other.</summary>
+            <param name="other">The other document.</param>
+        </member>
+        <member name="M:Specification.INI.INIDocument.Clear">
+            <summary>Clears and removes all INISections.</summary>
+        </member>
+        <member name="T:Specification.INI.INISection">
+            <summary>Represents a INISection heading in an INI formatted file.</summary>
+        </member>
+        <member name="M:Specification.INI.INISection.#ctor">
+            <summary>Creates an empty INISection.</summary>
+        </member>
+        <member name="M:Specification.INI.INISection.#ctor(System.String)">
+            <summary>Creates a <see cref="T:Specification.INI.INISection"/> with the provided name.</summary>
+            <param name="name">The name of the INISection.</param>
+        </member>
+        <member name="M:Specification.INI.INISection.op_Implicit(System.String)~Specification.INI.INISection">
+            <summary>Creates a INISection from a string.</summary>
+            <param name="name">The name of the section.</param>
+        </member>
+        <member name="P:Specification.INI.INISection.Name">
+            <summary>The name of the section.</summary>
+        </member>
+        <member name="P:Specification.INI.INISection.Properties">
+            <summary>The properties within the INISection.</summary>
+        </member>
+        <member name="P:Specification.INI.INISection.Item(System.String)">
+            <summary>Gets the value of a property from a given key.</summary>
+            <param name="key">The key of the property.</param>
+            <returns>The value of the property.</returns>
+        </member>
+        <member name="P:Specification.INI.INISection.Count">
+            <summary>The number of properties this section contains.</summary>
+        </member>
+        <member name="M:Specification.INI.INISection.SerializeProp(System.Collections.Generic.KeyValuePair{System.String,System.String})">
+            <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
+            <param name="k">The <see cref="T:System.Collections.Generic.KeyValuePair`2"/> to serialize.</param>
+            <returns>The <see langword="string"/> representation of the object.</returns>
+        </member>
+        <member name="M:Specification.INI.INISection.Set(System.String,System.String)">
+            <summary>Sets the given property to the given value.</summary>
+            <param name="key">The key name.</param>
+            <param name="value">The value to set it to.</param>
+        </member>
+        <member name="M:Specification.INI.INISection.Set(Specification.INI.PropertyObj)">
+            <summary>Sets the property and value given, or adds the property and value if it does not exist.</summary>
+            <param name="prop">The property to add or apply.</param>
+        </member>
+        <member name="M:Specification.INI.INISection.Add(Specification.INI.PropertyObj)">
+            <summary>Adds the property, or sets the value of the property if it already exists.</summary>
+            <param name="child">The property to add.</param>
+        </member>
+        <member name="M:Specification.INI.INISection.AddRange(System.Collections.Generic.IEnumerable{Specification.INI.PropertyObj})">
+            <summary>Adds multiple properties, or sets the values for any that already exist.</summary>
+            <param name="children">The properties to add.</param>
+        </member>
+        <member name="M:Specification.INI.INISection.Remove(System.String)">
+            <summary>Removes the property with the provided name.</summary>
+            <param name="name">The name of the property to remove.</param>
+            <returns><see langword="true"/> if the property was removed, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="F:Specification.INI.INITokenType.None">
+            <summary>No type defined.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Section">
+            <summary>A section title.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Property">
+            <summary>A property key and value.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Str">
+            <summary>A string.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Key">
+            <summary>A property key.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Value">
+            <summary>A property value.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.SectionWProps">
+            <summary>A section with properties in it.</summary>
+        </member>
+        <member name="F:Specification.INI.INITokenType.Eq">
+            <summary>The equals sign.</summary>
+        </member>
+        <member name="T:Specification.INI.PropertyObj">
+            <summary>A key and value pair in an INI file.</summary>
+        </member>
+        <member name="P:Specification.INI.PropertyObj.Key">
+            <summary>The key name.</summary>
+        </member>
+        <member name="P:Specification.INI.PropertyObj.Value">
+            <summary>The value assigned to the key.</summary>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor">
+            <summary>Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.</summary>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor(System.String,System.String)">
+            <summary>Creates a property from a key and value</summary>
+            <param name="key">The key of the new property.</param>
+            <param name="value">The value of the new property.</param>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.Object})">
+            <summary>Creates a property from an IProperty interface</summary>
+            <param name="iprop">The other property.</param>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.#ctor(Common.IProperty{System.String})">
+            <summary>Creates a property from an IProperty interface</summary>
+            <param name="iprop">The other property.</param>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.Generate(Common.RegExp.MatchDataSet)">
+            <inheritdoc/>
+            <remarks>
+            <list type="table">
+            <listheader>Required Groups:</listheader>
+            <item><c>key</c></item> : The name of the property.
+            <item><c>value</c></item> : The value of the property.
+            </list>
+            </remarks>
+        </member>
+        <member name="M:Specification.INI.PropertyObj.Serialize">
+            <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
+            <returns>The <see langword="string"/> representation of the object.</returns>
         </member>
     </members>
 </doc>

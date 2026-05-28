@@ -129,6 +129,9 @@
   <data name="acs_sample" xml:space="preserve">
     <value>ParserLib\Specification.ZDoom\ACS\sample.acs</value>
   </data>
+  <data name="dec_mkii" xml:space="preserve">
+    <value>ParserLib\Specification.ZDoom\Decorate\Weapon_MkII.dec</value>
+  </data>
   <data name="mapinfo_common" xml:space="preserve">
     <value>ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt</value>
   </data>

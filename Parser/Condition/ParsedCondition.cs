@@ -2,45 +2,46 @@ using static Parser.Condition.KeyOption;
 
 namespace Parser.Condition;
 
-public class ParsedCondition : ICondition
+public class ParsedExpression : IExpression
 {
   private static readonly OperationConditionStringException AndOrInvalidTypeException = new("Both values must be a boolean type for logical operations. There is no PEMDAS, it goes left to right.");
 
   #region Public Properties
-  public required string ConditionString { get; set; }
+  public required string Expression { get; set; }
   #endregion
   [AllowNull]
   public DataStore Data { get; protected set; }
-  protected bool Result { get; set; }
   protected Collection<ConditionValue> Sequence { get; } = [];
-  public ParsedCondition () { }
+  public ParsedExpression () { }
   [SetsRequiredMembers]
-  protected ParsedCondition (string condition) =>
-    ConditionString = condition;
-  protected object? GetValue (ConditionValue @ref)
+  protected ParsedExpression (string expression) =>
+    Expression = expression;
+  protected object? GetValue (ConditionValue @ref) => @ref.Type switch
   {
-    return @ref.Type switch
-    {
-      LoadKey => Data[@ref.Key],
-      CountOfKey => Data.CanLoad(@ref.Key) ? Data[@ref.Key] is IEnumerable ien ? ien.Count() : 1 : 0,
-      CheckKeyExists => Data.CanLoad(@ref.Key),
-      TypeOfKey => Data.CanLoad(@ref.Key) ? Data[@ref.Key].GetType().Name : "null",
-      Literal => @ref.Key,
-      False => false,
-      True => true,
-      Null => null,
-      _ => null
-    };
+    LoadKey => Data[@ref.Key],
+    CountOfKey => Data.CanLoad(@ref.Key) ? Data[@ref.Key] is IEnumerable ien ? ien.Count() : 1 : 0,
+    CheckKeyExists => Data.CanLoad(@ref.Key),
+    TypeOfKey => Data.CanLoad(@ref.Key) ? Data[@ref.Key].GetType().Name : "null",
+    Literal => @ref.Key,
+    False => false,
+    True => true,
+    Null => null,
+    >= OpStart => Err.ThrowBadDef($"Condition String Tried to GetValue from an operator {@ref}."),
+    _ => Err.ThrowBadDef($"Condition String Tried to GetValue from an unknown type {@ref}.")
+  };
+  protected decimal GetDecimal (object? value)
+  {
+
   }
 
-  protected void ParseConditionString ()
+  protected void Parse ()
   {
-    if (ConditionString.IsEmpty())
+    if (Expression.IsEmpty())
       return;
 
     // https://regex101.com/r/aTwSlR/2
-    string conditionPattern = new RxS(@"(?:(?'exists'exists)|(?'countof'countof)|(?'typeof'typeof))?\[(?<varname>.*?)\]|\{(?<literal>.*?)\}|(?'gteq'\>\=)|(?'lteq'<\=)|(?'gt'\>)|(?'lt'<)|(?'eq'==)|(?'like'like)|(?'is'is)|(?'and'&&)|(?'or'\|\|)|(?'int'-?\d+)|(?'dec'-?\d*\.\d+)|(?'true'(?i:true))|(?'false'(?i:false))|(?'null'(?i:null))");
-    foreach (Match m in Regex.Matches(ConditionString, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
+    string conditionPattern = new RxS(@"(?:(?:\b(?'exists'exists)|(?'countof'countof)|(?'typeof'typeof))\b)?\[(?<varname>.*?)\]|\{(?<literal>.*?)\}|(?'gteq'>=)|(?'lteq'<=)|(?'gt'>)|(?'lt'<)|(?'eq'==)|(?'noteq'!=)|(?:\b(?'like'like)|(?'seqeq'matches)|(?'is'is)\b)|(?'and'&&)|(?'or'\|\|)|(?'int'-?\d+)|(?'dec'-?\d*\.\d+)|(?:\b(?'true'(?i:true))|(?'false'(?i:false))|(?'null'(?i:null))\b)");
+    foreach (Match m in Regex.Matches(Expression, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
     {
       string? keyname = m.Groups.ContainsKey("varname") ? m.Groups["varname"].Value : null;
 
@@ -52,68 +53,53 @@ public class ParsedCondition : ICondition
       chkAdd("exists", CheckKeyExists, keyname);
       chkAdd("countof", CountOfKey, keyname);
       chkAdd("typeof", TypeOfKey, keyname);
-      chkAdd("true", True, "true");
-      chkAdd("false", False, "false");
+      chkAdd("true", True);
+      chkAdd("false", False);
+      chkAdd("null", Null);
 
       chkAdd("gteq", OpGteq);
       chkAdd("lteq", OpLteq);
       chkAdd("gt", OpGt);
       chkAdd("lt", OpLt);
       chkAdd("eq", OpEq);
+      chkAdd("noteq", OpNotEq);
+      chkAdd("and", OpAnd);
+      chkAdd("or", OpOr);
+      chkAdd("int", Integer, m.Groups["int"].Value);
+      chkAdd("dec", KeyOption.Decimal, m.Groups["dec"].Value);
     }
   }
 
-  /// <summary>Describes what the data is.</summary>
-  protected enum DataType
-  {
-    /// <summary>The value null.</summary>
-    Null,
-    /// <summary>A boolean (true/false) value.</summary>
-    Bool,
-    /// <summary>An integer value.</summary>
-    Int,
-    /// <summary>A decimal value.</summary>
-    Dec,
-    /// <summary>A string (text) value.</summary>
-    String,
-    /// <summary>The type of a value (int, List, object, Dictionary, etc.).</summary>
-    Type
-  }
-
-  public bool Evaluate (DataStore data)
-  {
-    Data = data;
-    Execute();
-    return Result;
-  }
-
   /// <summary>
-  /// This method must set <c><see cref="Result"/></c> with the results of the condition.
+  /// Evaluate
   /// </summary>
+  /// <param name="data">The <see cref="DataStore"/> reference.</param>
   /// <remarks>If the evaluation fails, it always returns <see langword="false"/>.</remarks>
-  protected virtual void Execute ()
+  public virtual object? Evaluate (DataStore data)
   {
     object? previous = null;
-    DataType prevtype = DataType.Null;
     KeyOption? op = null;
     object? current;
-    bool? result = null;
-    foreach (ConditionValue cv in Sequence)
+    object? result = null;
+    HashSet<int> or_indexes = [];
+    HashSet<int> and_indexes = [];
+    Dictionary<int, object?> evalStore = [];
+    bool nextItem = false;
+
+    for (int i = 0; i < Sequence.Count; i++)
     {
+      ConditionValue cv = Sequence[i];
       if (previous is null)
       {
         previous = GetValue(cv);
-        prevtype = cv.Type switch
-        {
-          LoadKey => throw new NotImplementedException(),
-          CountOfKey => throw new NotImplementedException(),
-          TypeOfKey => DataType.Type,
-          Literal => throw new NotImplementedException(),
-          CheckKeyExists or True or False => DataType.Bool,
-          Null => throw new NotImplementedException(),
-          Integer => throw new NotImplementedException(),
-          KeyOption.Decimal => throw new NotImplementedException(),
-        };
+        continue;
+      }
+
+      if (cv.Type is OpAnd or OpOr)
+      {
+        evalStore[i] = previous;
+        _ = cv.Type is OpAnd ? and_indexes.Add(i) : or_indexes.Add(i);
+        previous = null;
         continue;
       }
 
@@ -123,25 +109,24 @@ public class ParsedCondition : ICondition
         continue;
       }
 
-      if (op is not null)
+      current = GetValue(cv);
+
+      if (op is not null && current is not null)
       {
-        current = GetValue(cv);
-
-        if (current is null)
-          break;
-
         result = op switch
         {
-          OpIs => $"{previous}".Is($"{current}"),
+          OpIs when previous is Type typ => $"{typ.Name}".Is($"{current}"),
+          OpIs when previous is string str => str.Is($"{current}"),
+          OpLike => $"{previous}".Like($"{current}"),
           OpEq => previous == current,
           OpNotEq => previous != current,
+          OpDiv => previous / current
           OpLt => decimal.Parse($"{previous}", CIIC) < decimal.Parse($"{current}", CIIC),
           OpGt => decimal.Parse($"{previous}", CIIC) > decimal.Parse($"{current}", CIIC),
           OpLteq => decimal.Parse($"{previous}", CIIC) <= decimal.Parse($"{current}", CIIC),
           OpGteq => decimal.Parse($"{previous}", CIIC) >= decimal.Parse($"{current}", CIIC),
-          OpLike => $"{previous}".Like($"{current}"),
-          OpOr => previous is bool p && current is bool c ? p || c : throw AndOrInvalidTypeException,
-          OpAnd => previous is bool p && current is bool c ? p && c : throw AndOrInvalidTypeException,
+          //OpOr => previous is bool p && current is bool c ? p || c : throw AndOrInvalidTypeException,
+          //OpAnd => previous is bool p && current is bool c ? p && c : throw AndOrInvalidTypeException,
           _ => null
         };
 
@@ -149,13 +134,21 @@ public class ParsedCondition : ICondition
           break;
 
         previous = result;
-        current = null;
+      }
+    }
+    evalStore[Sequence.Count - 1] = previous;
+    previous = null;
+    foreach (int i in and_indexes)
+    {
+      if (previous is null)
+      {
+        previous = evalStore[i];
         continue;
       }
 
-      break;
+      result = (bool) previous && (bool) (evalStore[i] ?? false);
     }
 
-    Result = result ?? false;
+    return result;
   }
 }

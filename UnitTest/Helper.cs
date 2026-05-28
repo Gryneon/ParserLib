@@ -1,5 +1,3 @@
-﻿using System.IO;
-
 namespace UnitTest;
 
 internal static class Helper

@@ -7,9 +7,6 @@ namespace Parser;
 [DefinitionExport]
 public static class DefaultSpec
 {
-  /// <summary>The default spec.</summary>
-  [DefinitionExport]
-  public static Spec Unknown => Library.LookupOrDefault("unknown");
   /// <summary>The spec assigned if the parser gets a binary file.</summary>
   [DefinitionExport]
   public static Spec Binary { get; } = new()

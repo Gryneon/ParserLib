@@ -1,7 +1,5 @@
 #pragma warning disable CS1591 // XML Documentation
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Common.Extensions;
 
 public static class SortedSetExtensions

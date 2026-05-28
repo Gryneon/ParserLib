@@ -10,7 +10,6 @@ global using Common.Extensions;
 global using Common.RegExp;
 
 global using Parser;
-global using Parser.Ops;
 global using Parser.Ops.Text;
 
 global using static Common.Names;

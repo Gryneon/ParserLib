@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Spec xmlns="Parser/Spec" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="Parser\Spec ..\Parser\Schemas\Spec.xsd">
+<Spec xmlns="Parser/Spec" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="Parser\Spec ..\Schemas\Spec.xsd">
   <Name>wad_test</Name>
   <TextFile>false</TextFile>
   <Instructions>
@@ -20,20 +20,18 @@
       <ReadData output_var="lump_data" content_var="bytes" type="binary" length_var="lump_size" position_var="lump_pos"/>
       <AddItem name="directory" type="DirectoryEntry">lump_pos lump_size lump_name lump_data</AddItem>
     </ForCount>
-    <ForEach cursor_var="cursor">
+    <ForEach list_var="bytes" cursor_var="cursor">
       <ReadData output_var="lump_pos" type="text" cursor_var="current_pos" length_var="current_item"/>
     </ForEach>
-    <IfBlock>
-      <If condition="[file_id] == {WAD2}">
-        <!-- condition strings https://regex101.com/r/aTwSlR/1 -->
-        <!-- <Initialize initial_var="s" type="Collection" value_type="d"/> -->
-      </If>
-      <ElseIf condition="[file_id] == {PACK}">
-        <!-- PAK File -->
-        <Initialize initial_var="s" type="Set" value_type="d"/>
-      </ElseIf>
-      <Else><!-- WAD File --></Else>
-    </IfBlock>
+    <If condition="[file_id] == {WAD2}">
+      <!-- condition strings https://regex101.com/r/aTwSlR/1 -->
+      <!-- <Initialize initial_var="s" type="Collection" value_type="d"/> -->
+    </If>
+    <ElseIf condition="[file_id] == {PACK}">
+      <!-- PAK File -->
+      <Initialize initial_var="s" type="Set" value_type="d"/>
+    </ElseIf>
+    <Else><!-- WAD File --></Else>
     <Switch condition="[file_id]">
       <Case value="WAD2"/>
       <Default><!-- WAD File --></Default>

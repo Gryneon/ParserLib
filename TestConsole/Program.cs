@@ -1,6 +1,7 @@
+using Parser.Exceptions;
+
 using ResWAD = Specification.WAD.Properties.Resources;
 using ResZDoom = Specification.ZDoom.Properties.Resources;
-using SpecINI = Specification.INI.Definition;
 using SpecIPL = Specification.IPL.Definition;
 using SpecJSON = Specification.JSON.Definition;
 using SpecXML = Specification.XML.Definition;
@@ -18,8 +19,12 @@ internal static class Program
   #endregion
   #region Fields
   internal static string? UserInput;
-  internal static XParser Parser { get; set; } = new();
   internal static OpStatus Status = OpStatus.AtStart;
+  #endregion
+  #region Properties
+  internal static XParser Parser { get; set; } = new();
+  [AllowNull]
+  internal static Library LibRef { get; set; }
   #endregion
   #region Basic Methods
   [MemberNotNull(nameof(UserInput))]
@@ -52,66 +57,13 @@ internal static class Program
   internal static int Main (string[] args)
   {
     DebugIn("Program", "Main");
-    Console.Clear();
 #if DEBUG
     Verbosity = LogClass.Debug;
 #else
     Verbosity = LogClass.Verbose;
 #endif
-    Library.InitializeLibrary(AppDomain.CurrentDomain);
-  Start:
-    Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)");
-    string? choice = Console.ReadLine();
-    switch (choice?.ToLowerInvariant())
-    {
-      case "wad":
-        InitialTest(Library.Get["wad"], ResWAD.wad_rpg03);
-        InitialTest(Library.Get["wad"], ResWAD.wad_pl2);
-        InitialTest(Library.Get["wad"], ResWAD.wad_tnt);
-        break;
-      case "mapinfo":
-        InitialTest(SpecZDoom.MapInfo, ResZDoom.mapinfo_common);
-        break;
-      case "acs":
-        InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
-        InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
-        InitialTest(SpecZDoom.ACS, ResZDoom.acs_foolib);
-        InitialTest(SpecZDoom.ACS, ResZDoom.acs_sample);
-        break;
-      case "xml":
-        InitialTest(SpecXML.Spec, Paths.xml_operation);
-        InitialTest(SpecXML.Spec, Paths.xml_errors);
-        InitialTest(SpecXML.Spec, ResZDoom.xml_acs);
-        break;
-      case "sndinfo":
-        InitialTest(SpecZDoom.SndInfo, ResZDoom.sndinfo_test);
-        break;
-      case "udmf":
-        InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
-        break;
-      case "ini":
-        InitialTest(SpecINI.Spec, Paths.ini_vncdefault);
-        break;
-      case "zs" or "zscript":
-        InitialTest(SpecZDoom.ZScript, ResZDoom.zs_demon);
-        break;
-      case "ipl":
-        InitialTest(SpecIPL.Spec, Paths.ipl_simple);
-        InitialTest(SpecIPL.Spec, Paths.ipl_label);
-        break;
-      case null:
-      case "exit" or "quit":
-        goto Exit;
-      case "json":
-        InitialTest(SpecJSON.Spec, Paths.json_error);
-        break;
-      default:
-        Log(MsgClass.Warning, "Unknown test.");
-        break;
-    }
-    goto Start;
+    LibRef = Library.InitializeLibrary(AppDomain.CurrentDomain);
 
-  Exit:
     if (args.Length == 0)
     {
       LogWarn("No files specified.");
@@ -121,24 +73,88 @@ internal static class Program
       ProcessArgs(args);
     }
 
+    try { TestSelectionLoop(); }
+    catch (QuitException)
+    {
+      Log(MsgClass.Warning, "QuitException caught by outer parser.");
+    }
+
     Log(MsgClass.Prompt, "Press enter to exit.");
     _ = Console.ReadLine();
     return 0;
   }
-
+  internal static void TestSelectionLoop ()
+  {
+  Start:
+    Console.Clear();
+    Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)");
+    string? choice = Console.ReadLine();
+    switch (choice?.ToUpperInvariant())
+    {
+      case "WAD":
+        InitialTest("wad", ResWAD.wad_rpg03);
+        InitialTest("wad", ResWAD.wad_pl2);
+        InitialTest("wad", ResWAD.wad_tnt);
+        break;
+      case "MAPINFO":
+        InitialTest(SpecZDoom.MapInfo, ResZDoom.mapinfo_common);
+        break;
+      case "DECORATE":
+        InitialTest(SpecZDoom.Decorate, ResZDoom.dec_mkii);
+        break;
+      case "ACS":
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpglevel);
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_rpgmfunc);
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_foolib);
+        InitialTest(SpecZDoom.ACS, ResZDoom.acs_sample);
+        break;
+      case "XML":
+        InitialTest("xml", Paths.xml_operation);
+        InitialTest(SpecXML.Spec, Paths.xml_errors);
+        InitialTest(SpecXML.Spec, ResZDoom.xml_acs);
+        break;
+      case "SNDINFO":
+        InitialTest(SpecZDoom.SndInfo, ResZDoom.sndinfo_test);
+        break;
+      case "UDMF":
+        InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
+        break;
+      case "INI":
+        InitialTest("ini", Paths.ini_vncdefault);
+        break;
+      case "ZS" or "ZSCRIPT":
+        InitialTest(SpecZDoom.ZScript, ResZDoom.zs_demon);
+        break;
+      case "IPL":
+        InitialTest(SpecIPL.Spec, Paths.ipl_simple);
+        InitialTest(SpecIPL.Spec, Paths.ipl_label);
+        break;
+      case "EXIT" or "QUIT":
+        throw new QuitException();
+      case "JSON":
+        InitialTest(SpecJSON.Spec, Paths.json_error);
+        break;
+      default:
+        Log(MsgClass.Warning, "Unknown test.");
+        break;
+    }
+    Log(MsgClass.Prompt, "Press enter to return to the test selection.");
+    _ = Console.ReadLine();
+    goto Start;
+  }
   internal static void ProcessArgs (string[] args)
   {
     DebugIn("Program", "ProcessArgs");
     foreach (string path in args)
     {
-      string? specName = Library.CheckFile(path);
-      Spec? spec = Library.Lookup(specName);
+      string? specName = LibRef.CheckFile(path);
+      Spec? spec = LibRef.Lookup(specName);
 
       while (spec is null)
       {
         LogWarn($"Spec {specName} not found. Enter a valid Spec name");
         specName = UserLineReturn();
-        spec = Library.Lookup(specName);
+        spec = LibRef.Lookup(specName);
       }
 
       Status = Parser.ParseFile(spec, path);
@@ -155,7 +171,7 @@ internal static class Program
   internal static void InitialTest (string spec, string file)
   {
     DebugIn("Program", "InitialTest");
-    if (!Library.TryLookup(spec, out Spec? lookup_spec))
+    if (!LibRef.TryLookup(spec, out Spec? lookup_spec))
     {
       LogError($"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.");
     }
@@ -214,86 +230,5 @@ internal static class Program
     LogInfo($"The {spec.Name} test resulted in {Status}.");
     DebugOut();
     return Parser;
-  }
-  internal static void DisplayOpOrder ()
-  {
-    DebugIn("Program", "DisplayOpOrder");
-    LogDebug("Parser Operation Order:");
-    foreach (IOperation op in Parser?.Operations ?? [])
-    {
-      if (op.ToString() is not null)
-        LogDebug(">" + op);
-      else
-        LogError("Error: Bad Op");
-    }
-    DebugOut();
-  }
-  internal static void Load ()
-  {
-    DebugIn("Program", "Load");
-    Spec userSpec;
-    string userPath;
-    string? specName;
-    string fileContent;
-    byte[] byteContent;
-
-  GetFile:
-
-    LogDebug("Path to file:");
-    userPath = UserLineReturn();
-
-    if (userPath.IsAny(["back", "quit", "exit"]))
-    {
-      //throw new QuitException();
-    }
-    if (!File.Exists(userPath))
-      goto GetFile;
-
-    fileContent = File.ReadAllText(userPath);
-    byteContent = File.ReadAllBytes(userPath);
-    specName = Library.CheckFile(userPath);
-    userSpec = Library.LookupOrDefault(specName);
-    LogInfo($"Spec Chosen is {userSpec.Name}");
-
-  GetSpec:
-    LogInfo($"Input a new spec or press enter to use chosen ({userSpec.Name})");
-    UserInput = UserLineReturn();
-
-    if (UserInput.IsEmpty())
-      goto ParseFile;
-
-    Spec? chosenSpec = Library.Lookup(UserInput);
-
-    if (chosenSpec is null)
-    {
-      LogError($"Invalid Spec {UserInput}");
-      goto GetSpec;
-    }
-    else
-    {
-      userSpec = chosenSpec;
-    }
-  ParseFile:
-    if (userSpec.IsTextFile)
-    {
-      XParser parser = new();
-      OpStatus status = parser.ParseData(userSpec, fileContent);
-
-      if (status.IsFail())
-        LogError($"Failed, status is {status}");
-      else
-        LogInfo($"Good, status is {status}");
-    }
-    else
-    {
-      XParser parser = new();
-      OpStatus status = parser.ParseData(userSpec, byteContent);
-
-      if (status.IsFail())
-        Log(MsgClass.Error, $"Failed, status is {status}");
-      else
-        Log(MsgClass.BlueInfo, $"Good, status is {status}");
-    }
-    DebugOut();
   }
 }

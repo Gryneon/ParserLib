@@ -1,9 +1,3 @@
-using System.IO;
-
-using Common;
-
-using Parser;
-
 using Specification.JSON;
 
 namespace UnitTest;

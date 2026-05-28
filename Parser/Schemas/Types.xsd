@@ -151,6 +151,13 @@ commences.
   <xs:simpleType name="RuleTypeList">
     <xs:list itemType="RuleTypeToken"/>
   </xs:simpleType>
+  <xs:group name="IfGroup">
+    <xs:sequence>
+      <xs:element name="If" type="ConditionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ElseIf" minOccurs="0" maxOccurs="unbounded" type="ConditionType"/>
+      <xs:element name="Else" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
+    </xs:sequence>
+  </xs:group>
   <xs:complexType name="AddItemType">
     <xs:simpleContent>
       <xs:extension base="VariableListType">
@@ -329,36 +336,24 @@ commences.
         </xs:complexType>
       </xs:element>
       <xs:element name="AddItem" type="AddItemType"/>
-      <xs:element name="IfBlock">
-        <xs:complexType>
-          <xs:sequence maxOccurs="unbounded" minOccurs="1">
-            <xs:element name="If" type="ConditionType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="ElseIf" minOccurs="0" maxOccurs="unbounded" type="ConditionType"/>
-            <xs:element name="Else" minOccurs="0" maxOccurs="unbounded" type="InnerInstructionSet"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
+      <xs:group ref="IfGroup"/>
       <xs:element name="While" type="ConditionType"/>
       <xs:element name="Until" type="ConditionType"/>
-      <xs:element name="If" type="ConditionType"/>
       <xs:element name="Break" type="NoAttributesType"/>
       <xs:element name="Continue" type="NoAttributesType"/>
       <xs:element name="Print" type="DebugKeyType"/>
       <xs:element name="ToString" type="DebugKeyType"/>
-      <xs:element name="Switch">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
-            <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
-          </xs:sequence>
-          <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
-        </xs:complexType>
-      </xs:element>
-        
+        <xs:element name="Switch">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
+              <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
-      
     </xs:sequence>
-    
   </xs:complexType>
   <xs:complexType name="CaseInstructionSet">
     <xs:complexContent>

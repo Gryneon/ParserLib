@@ -1,5 +1,3 @@
-using Common.RegExp;
-
 using static Common.RegExp.RegexStaticFunctions;
 
 namespace Parser;

@@ -97,6 +97,15 @@ namespace Specification.ZDoom.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\Decorate\Weapon_MkII.dec.
+        /// </summary>
+        public static string dec_mkii {
+            get {
+                return ResourceManager.GetString("dec_mkii", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt.
         /// </summary>
         public static string mapinfo_common {

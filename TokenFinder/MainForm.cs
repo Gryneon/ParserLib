@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using Parser;
+using Parser.Exceptions;
 using Parser.Tokens;
 
 using Specification.ZDoom;
@@ -48,7 +49,7 @@ public partial class MainForm : Form
     "ACS" => Definition.ACS,
     "UDMF" => Definition.UDMF,
     "ZScript" => Definition.ZScript,
-    _ => DefaultSpec.Unknown,
+    _ => throw new SpecNotDefinedException(),
   };
 
   // ---------------- ENGINE ----------------

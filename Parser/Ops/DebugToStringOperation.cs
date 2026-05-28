@@ -1,17 +1,21 @@
 namespace Parser.Ops;
 /// <summary>An operation that logs the contents of the provided key.</summary>
-/// <remarks>Constructs an operation that logs the contents of the provided key.</remarks>
-/// <param name="input_key">The key to output the contents of.</param>
-public class DebugToStringOperation (string input_key) : Operation()
+public class DebugToStringOperation : Operation
 {
+  /// <summary>Constructs an operation that logs the contents of the provided key.</summary>
+  /// <param name="input_key">The key to output the contents of.</param>
+  public DebugToStringOperation (string input_key)
+  {
+    InputKey = input_key;
+  }
+
   public override bool NoOutput => true;
 
   /// <inheritdoc/>
   /// <remarks>This is a debugging operation and does not store data.</remarks>
   protected override void Execute ()
   {
-    DebugIn("DebugToStringOperation", "Execute");
-    switch (Data[input_key])
+    switch (Data[InputKey])
     {
       case string s:
         Log(MsgClass.Debug, s);
@@ -19,10 +23,6 @@ public class DebugToStringOperation (string input_key) : Operation()
       case IEnumerable<string> strs:
         foreach (string str in strs)
           Log(MsgClass.Debug, str);
-        break;
-      case IEnumerable<MatchDataSet> mdds:
-        foreach (MatchDataSet mdd in mdds)
-          Log(MsgClass.Debug, mdd.ToString2());
         break;
       case IEnumerable<IToken> itokens:
         foreach (IToken it in itokens)
@@ -32,8 +32,7 @@ public class DebugToStringOperation (string input_key) : Operation()
         Log(MsgClass.Debug, WorkData?.ToString2() ?? "<null data>");
         break;
     }
-    DebugOut();
   }
 
-  public override string ToString () => $"DebugToStringOperation Key = \"{input_key}\"";
+  public override string ToString () => $"DebugToStringOperation Key = \"{InputKey}\"";
 }

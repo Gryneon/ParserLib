@@ -1,7 +1,5 @@
 using System;
 
-using Parser;
-
 namespace UnitTest;
 
 public class ParserTests
@@ -9,9 +7,9 @@ public class ParserTests
   [Fact]
   public void LibraryTest ()
   {
-    Library.InitializeLibrary(AppDomain.CurrentDomain);
-    Assert.True(Library.SpecList.Count > 3);
-    Assert.Equal("ipl", Library.LookupOrDefault("ipl").Name);
+    Library lib = Library.InitializeLibrary(AppDomain.CurrentDomain);
+    Assert.True(lib.Count > 3);
+    Assert.Equal("ipl", lib.LookupOrDefault("ipl").Name);
   }
 
   //[Theory]

@@ -1,5 +1,3 @@
-using Common.RegExp;
-
 using Specification.IPL;
 
 namespace UnitTest;

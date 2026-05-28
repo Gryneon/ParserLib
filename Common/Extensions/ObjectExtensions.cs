@@ -24,7 +24,7 @@ public static class ObjectExtensions
   /// <param name="obj">The object reference.</param>
   extension(object? obj)
   {
-    public string GetTypeName () => obj?.GetType().Name ?? "null";
+    public string TypeName => obj?.GetType().Name ?? "null";
     /// <summary>Returns the object as a collection.</summary>
     /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
     public Collection<object> AsCollection () => obj.AsCollection<object>();
@@ -67,7 +67,7 @@ public static class ObjectExtensions
   }
   extension(object)
   {
-    public static T? ThrowIfFalse<T> (bool condition, string? msg = null)
+    public static dynamic? ThrowIfFalse (bool condition, string? msg = null)
     {
       if (condition)
         return default;
@@ -77,7 +77,7 @@ public static class ObjectExtensions
       throw new InvalidOperationException();
     }
     [DoesNotReturn]
-    public static T NotSupported<T> (string? msg = null)
+    public static dynamic NotSupported (string? msg = null)
     {
       if (msg is not null)
         throw new NotSupportedException(msg);

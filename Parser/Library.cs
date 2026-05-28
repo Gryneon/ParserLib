@@ -1,70 +1,35 @@
 #pragma warning disable CA1710 // Rename Parser.Library to end in either 'Dictionary' or 'Collection'
 
-using System.Xml.Linq;
-
 using Parser.Inference;
 
 namespace Parser;
 
-public static class SpecInstructionParser
-{
-  private static readonly XNamespace NS = "Parser/Spec";
-
-  public static Spec LoadSpec(string path)
-  {
-    XDocument doc = XDocument.Load(path);
-    XElement? root = doc.Root ?? throw Err.ThrowNoSpec("Spec XML is not good.");
-    string name = (root.Element(NS + "Name") ?? throw Err.ThrowNoSpec("Invalid XML - No Name in Spec.")).Value;
-    bool? textfile = bool.TryParse(root.Element(NS + "TextFile")?.Value, out bool result) ? result : null;
-    // Parse instructions
-    IEnumerable<XElement>? instructionElements = root.Element(NS + "Instructions")?.Elements();
-    ReadOnlyCollection<IOperation> ops = [.. instructionElements?.Select(new OperationFactory(NS).Produce) ?? []];
-
-    // Parse file inferences
-    XElement? fileInf = root.Element(NS + "FileInferences");
-    ReadOnlyCollection<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
-
-    return new Spec
-    {
-      Name = name,
-      Operations = ops,
-      FileInferences = inferenceNodes,
-      IsTextFile = textfile ?? true,
-    };
-  }
-}
-
-public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
+public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable, IReadOnlyCollection<Spec>
 {
   private const string Area = "Library";
   private readonly Dictionary<string, Spec> _specs = [];
   /// <summary>The singleton instance of this object.</summary>
-  private static Library? Instance { get; set; }
-  public static Library Get => Instance ?? throw new InvalidOperationException("Library must be initialized.");
-  private static Dictionary<string, ReadOnlyCollection<InferenceNode>> SpecInferences =>
-    [.. Instance?.Select(
+  private Dictionary<string, ReadOnlyCollection<InferenceNode>> SpecInferences =>
+    [.. _specs.Select(
       item => new KeyValuePair<string, ReadOnlyCollection<InferenceNode>>(item.Key, item.Value.FileInferences)) ?? throw new InvalidOperationException("Library must be initialized.")];
 
-  private Library() { }
+  private Library () { }
   public Spec this[string key] { get => _specs[key]; set => _specs[key] = value; }
-  public static ReadOnlyCollection<Spec> SpecList => Instance is null ? throw new InvalidOperationException("Library must be initialized.") : [.. Instance._specs.Values];
-  public static Spec? Lookup(string? name) => name is not null && Instance?.ContainsKey(name) == true ? Instance[name] : null;
-  public static Spec LookupOrDefault(string? name)
+  public Spec? Lookup (string? name) => name is not null && ContainsKey(name) ? _specs[name] : null;
+  public Spec LookupOrDefault (string? name)
   {
-    DebugIn(Area, "LookupOrDefault");
-    if (Instance is null)
+    if (name is null)
     {
-      Log(MsgClass.Error, "Must initialize library before using.");
-      throw new SpecNotDefinedException("Must initialize library before using.");
+      Log(MsgClass.Error, "Tried to lookup name of null.");
+      throw new SpecNotDefinedException("Tried to lookup name of null.");
     }
-    DebugOut();
-    return (name is null || !TryLookup(name, out Spec? spec)) ? DefaultSpec.Unknown : spec;
+    return !TryLookup(name, out Spec? spec) ? XParser.Lib["unknown"] : spec;
   }
-  public static bool TryLookup(string? name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
+  public bool TryLookup (string? name, [NotNullWhen(true)][MaybeNullWhen(false)] out Spec spec)
   {
-    if (name is not null && Instance?.ContainsKey(name) == true)
+    if (name is not null && ContainsKey(name))
     {
-      spec = Instance[name];
+      spec = _specs[name];
       return true;
     }
     else
@@ -76,11 +41,11 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
   /// <summary>Initializes the library.</summary>
   /// <remarks>This must be called before the library is used.</remarks>
   /// <param name="domain">The domain that we are loading the <see cref="Spec"/> objects from.</param>
-  public static Library InitializeLibrary(AppDomain domain)
+  public static Library InitializeLibrary (AppDomain domain)
   {
     DebugIn(Area, "InitializeLibrary");
-
-    Instance = new();
+    Library lib = new();
+    XParser.Lib = lib;
     domain.ThrowIfNull();
 
     List<Assembly> assemblies = [.. domain.GetAssemblies()];
@@ -103,7 +68,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
           {
             Spec? check = prop.GetValue(null) as Spec;
             check.ThrowIfNull();
-            Instance._specs[check.Name] = check;
+            lib._specs[check.Name] = check;
           }
         }
       }
@@ -113,21 +78,16 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
     {
       Spec loaded = SpecInstructionParser.LoadSpec(path);
 
-      Instance._specs[loaded.Name] = loaded;
+      lib._specs[loaded.Name] = loaded;
     }
 
-    Log(MsgClass.BlueInfo, $"{Instance._specs.Count} Specs Loaded.");
+    Log(MsgClass.BlueInfo, $"{lib._specs.Count} Specs Loaded.");
     DebugOut();
-    return Instance;
+    return lib;
   }
   /// <summary>Provides the <see cref="Spec"/> for the provided file path.</summary>
-  public static string? CheckFile(string path)
+  public string? CheckFile (string path)
   {
-    DebugIn("Library", "CheckFile");
-    if (Instance is null)
-    {
-      throw new InvalidOperationException("Library must be initialized.");
-    }
     foreach (KeyValuePair<string, ReadOnlyCollection<InferenceNode>> fi in SpecInferences)
     {
       foreach (InferenceNode node in fi.Value)
@@ -135,28 +95,28 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable
         if (node.CheckFile(path))
         {
           Log(MsgClass.BlueInfo, $"File match found. Using {fi.Key} as Spec.");
-          DebugOut();
           return fi.Key;
         }
       }
     }
-    DebugOut();
     return null;
   }
 
-  public void Add(string key, Spec value) => _specs.Add(key, value);
-  public void AddRange(IEnumerable<KeyValuePair<string, Spec>> list) => _specs.AddRange(list);
-  public bool ContainsKey(string key) => _specs.ContainsKey(key);
-  public bool TryGetValue(string key, [MaybeNullWhen(false)] out Spec value) => _specs.TryGetValue(key, out value);
-  public void Add(KeyValuePair<string, Spec> item) => _specs.Add(item);
-  public IEnumerator<KeyValuePair<string, Spec>> GetEnumerator() => _specs.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator() => _specs.GetEnumerator();
-  public void Print(int indent)
+  public void Add (string key, Spec value) => _specs.Add(key, value);
+  public void AddRange (IEnumerable<KeyValuePair<string, Spec>> list) => _specs.AddRange(list);
+  public bool ContainsKey (string key) => _specs.ContainsKey(key);
+  public bool TryGetValue (string key, [MaybeNullWhen(false)] out Spec value) => _specs.TryGetValue(key, out value);
+  public void Add (KeyValuePair<string, Spec> item) => _specs.Add(item);
+  IEnumerator IEnumerable.GetEnumerator () => _specs.GetEnumerator();
+  public void Print (int indent)
   {
 
   }
 
+  public IEnumerator<Spec> GetEnumerator () => _specs.Values.GetEnumerator();
+  IEnumerator<KeyValuePair<string, Spec>> IEnumerable<KeyValuePair<string, Spec>>.GetEnumerator () => _specs.GetEnumerator();
+
   IEnumerable<string> IReadOnlyDictionary<string, Spec>.Keys => _specs.Keys;
-  IEnumerable<Spec> IReadOnlyDictionary<string, Spec>.Values => _specs.Values;
-  int IReadOnlyCollection<KeyValuePair<string, Spec>>.Count => _specs.Count;
+  public IEnumerable<Spec> Values => _specs.Values;
+  public int Count => _specs.Count;
 }

@@ -20,20 +20,15 @@ public class TokenizeOperation : Operation
 
   protected override void Execute ()
   {
-    if (!Rules.Any())
-    {
-      Rules.AddRange(Spec.TokenRules);
-    }
-
     if (WorkData is string input)
     {
-      TokenFactory factory = new(Spec, Rules);
-      WorkData = (TokenCollection) ([.. factory.Produce(input)]);
+      TokenFactory factory = new(Spec, !Rules.Any() ? null : Rules);
+      WorkData = factory.Produce(input);
       Status = OpStatus.Pass;
     }
     else
     {
-      Status = Err.ThrowBadInput("string", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput("string", WorkData.TypeName);
     }
   }
 }

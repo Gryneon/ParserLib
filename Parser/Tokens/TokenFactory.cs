@@ -14,7 +14,6 @@ public sealed class TokenFactory
   private Spec _spec;
   private RT _default_rule;
   private bool _competed;
-  private const string Area = "TokenFactory";
   #endregion
   #region Public Properties
   public string Input { get; private set; } = SE;
@@ -28,7 +27,7 @@ public sealed class TokenFactory
     SetSpec(spec);
     _rules.AddRange(rules ?? spec.TokenRules);
   }
-  public TokenFactory () => SetSpec(DefaultSpec.Unknown);
+  public TokenFactory () => SetSpec(XParser.Lib["unknown"]);
   #endregion
   #region Private Helper Properties
   private bool IgnoreCase => (_currentRule?.Type.HasFlag(RT.IgnoreCase) ?? false) || _default_rule.HasFlag(RT.IgnoreCase);

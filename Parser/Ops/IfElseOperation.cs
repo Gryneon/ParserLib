@@ -1,10 +1,10 @@
 namespace Parser.Ops;
 
-public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IOperation? ifFalse = null) : Operation, IPlaceholderOperation
+public sealed class IfElseOperation (IExpression condition, IOperation ifTrue, IOperation? ifFalse = null) : Operation, IPlaceholderOperation
 {
-  public ICondition Condition { get; init; } = condition;
+  public IExpression Condition { get; init; } = condition;
   public IOperation IfTrue { get; set; } = ifTrue;
-  public IOperation IfElse { get; set; } = ifFalse ?? new OperationEnd();
+  public IOperation? IfElse { get; set; } = ifFalse;
   private int IfTrueIndex { get; set; }
   private int IfElseIndex { get; set; }
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
@@ -14,19 +14,19 @@ public sealed class IfElseOperation (ICondition condition, IOperation ifTrue, IO
     IfTrueIndex = operations.Count;
     operations.Add(IfTrue);
     operations.Add(JumpTo(nextOrEnd(index)));
-    operations.Add(IfElse);
+    if (IfElse is not null) operations.Add(IfElse);
     IfElseIndex = operations.Count;
     operations.Add(JumpTo(nextOrEnd(index)));
     return operations.Count;
   }
   protected override void Execute ()
   {
-    if (Condition.Evaluate(Data))
+    if (Condition.LogicalEvaluate(Data))
     {
       Status = OpStatus.ConditionPass;
       Parser.SetNextOperationIndex(IfTrueIndex);
     }
-    else
+    else if (IfElse is not null)
     {
       Status = OpStatus.ConditionFail;
       Parser.SetNextOperationIndex(IfElseIndex);
