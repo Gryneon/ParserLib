@@ -4,18 +4,26 @@ namespace Parser.Condition;
 
 public class ParsedExpression : IExpression
 {
-  private static readonly OperationConditionStringException AndOrInvalidTypeException = new("Both values must be a boolean type for logical operations. There is no PEMDAS, it goes left to right.");
-
   #region Public Properties
-  public required string Expression { get; set; }
+  public required string Expression
+  {
+    get;
+    init
+    {
+      field = value;
+      Parse();
+    }
+  }
   #endregion
   [AllowNull]
   public DataStore Data { get; protected set; }
-  protected Collection<ConditionValue> Sequence { get; } = [];
+  protected Collection<IValueNode> Sequence { get; } = [];
+  [AllowNull]
+  private Collection<IValueNode> _workingSequence;
   public ParsedExpression () { }
   [SetsRequiredMembers]
-  protected ParsedExpression (string expression) =>
-    Expression = expression;
+  protected ParsedExpression (string expression) => Expression = expression;
+
   protected object? GetValue (ConditionValue @ref) => @ref.Type switch
   {
     LoadKey => Data[@ref.Key],
@@ -29,9 +37,20 @@ public class ParsedExpression : IExpression
     >= OpStart => Err.ThrowBadDef($"Condition String Tried to GetValue from an operator {@ref}."),
     _ => Err.ThrowBadDef($"Condition String Tried to GetValue from an unknown type {@ref}.")
   };
-  protected decimal GetDecimal (object? value)
+  protected static dynamic? GetNum (object? left)
   {
+    dynamic? ret_l = null;
 
+    if (left is string s && int.TryParse(s, out int i))
+      ret_l = i;
+    else if (left is string s2 && decimal.TryParse(s2, out decimal d))
+      ret_l = d;
+    else if (left is int or decimal)
+      ret_l = left;
+    else if (left is bool b)
+      ret_l = b ? 1 : 0;
+
+    return ret_l;
   }
 
   protected void Parse ()
@@ -48,7 +67,7 @@ public class ParsedExpression : IExpression
       void chkAdd (string group, KeyOption type, string? value = null)
       {
         if (m.Groups.ContainsKey(group))
-          Sequence.Add(new(type, value));
+          Sequence.Add(new ConditionValue(type, value));
       }
       chkAdd("exists", CheckKeyExists, keyname);
       chkAdd("countof", CountOfKey, keyname);
@@ -69,6 +88,56 @@ public class ParsedExpression : IExpression
       chkAdd("dec", KeyOption.Decimal, m.Groups["dec"].Value);
     }
   }
+  protected static object? Operate (KeyOption op, object? lobj, object? robj)
+  {
+    if (!op.IsOperator)
+      return null;
+
+    dynamic? left_num = GetNum(lobj);
+    dynamic? right_num = GetNum(robj);
+
+    if (op.UsesNumericInput && left_num is not null && right_num is not null)
+    {
+      return op switch
+      {
+        OpDiv => left_num / right_num,
+        OpMul => left_num * right_num,
+        OpMod => left_num % right_num,
+        OpExp => left_num ^ right_num,
+        OpLt => left_num < right_num,
+        OpGt => left_num > right_num,
+        OpLteq => left_num <= right_num,
+        OpGteq => left_num >= right_num,
+        OpEq => left_num == right_num,
+        OpNotEq => left_num != right_num,
+        _ => null
+      };
+    }
+
+    if (op.UsesObjectInput)
+    {
+      return op switch
+      {
+        OpIs when robj is Type or null => lobj?.GetType().IsAssignableTo(robj as Type) ?? robj is null,
+        OpIs when lobj is string str => str.Is($"{robj}"),
+        OpLike => $"{lobj}".Like($"{robj}"),
+        OpSeqEq when lobj is IEnumerable<object> li && robj is IEnumerable<object> ri => li.SequenceEqual(ri),
+        _ => null
+      };
+    }
+
+    if (op.UsesLogicalInput)
+    {
+      return op switch
+      {
+        OpOr when lobj is bool l && robj is bool r => l || r,
+        OpAnd when lobj is bool l && robj is bool r => l && r,
+        _ => null
+      };
+    }
+
+    return null;
+  }
 
   /// <summary>
   /// Evaluate
@@ -77,78 +146,106 @@ public class ParsedExpression : IExpression
   /// <remarks>If the evaluation fails, it always returns <see langword="false"/>.</remarks>
   public virtual object? Evaluate (DataStore data)
   {
-    object? previous = null;
-    KeyOption? op = null;
-    object? current;
-    object? result = null;
-    HashSet<int> or_indexes = [];
-    HashSet<int> and_indexes = [];
-    Dictionary<int, object?> evalStore = [];
-    bool nextItem = false;
+    int left_index, right_index, op_index, i;
+    _workingSequence = [.. Sequence];
+    bool allowLogical;
+    object? left, right;
+    KeyOption op;
 
-    for (int i = 0; i < Sequence.Count; i++)
+    void restartSequence ()
     {
-      ConditionValue cv = Sequence[i];
-      if (previous is null)
+      i = 0;
+      op = Undefined;
+      op_index = -1;
+      allowLogical = true;
+      clearLeft();
+      clearRight();
+    }
+    void clearLeft ()
+    {
+      left = null;
+      left_index = -1;
+    }
+    void clearRight ()
+    {
+      right = null;
+      right_index = -1;
+    }
+    void clearOp ()
+    {
+      op_index = -1;
+      op = Undefined;
+    }
+
+    restartSequence();
+    while (_workingSequence.Count != 1)
+    {
+      if (i >= _workingSequence.Count)
       {
-        previous = GetValue(cv);
-        continue;
+        restartSequence();
       }
 
-      if (cv.Type is OpAnd or OpOr)
-      {
-        evalStore[i] = previous;
-        _ = cv.Type is OpAnd ? and_indexes.Add(i) : or_indexes.Add(i);
-        previous = null;
-        continue;
-      }
+      IValueNode ivn = _workingSequence[i];
 
-      if (cv.IsOperator)
+      if (ivn is ConditionValue cv)
       {
-        op = cv.Type;
-        continue;
-      }
-
-      current = GetValue(cv);
-
-      if (op is not null && current is not null)
-      {
-        result = op switch
+        if (left is null && !cv.Type.IsOperator)
         {
-          OpIs when previous is Type typ => $"{typ.Name}".Is($"{current}"),
-          OpIs when previous is string str => str.Is($"{current}"),
-          OpLike => $"{previous}".Like($"{current}"),
-          OpEq => previous == current,
-          OpNotEq => previous != current,
-          OpDiv => previous / current
-          OpLt => decimal.Parse($"{previous}", CIIC) < decimal.Parse($"{current}", CIIC),
-          OpGt => decimal.Parse($"{previous}", CIIC) > decimal.Parse($"{current}", CIIC),
-          OpLteq => decimal.Parse($"{previous}", CIIC) <= decimal.Parse($"{current}", CIIC),
-          OpGteq => decimal.Parse($"{previous}", CIIC) >= decimal.Parse($"{current}", CIIC),
-          //OpOr => previous is bool p && current is bool c ? p || c : throw AndOrInvalidTypeException,
-          //OpAnd => previous is bool p && current is bool c ? p && c : throw AndOrInvalidTypeException,
-          _ => null
-        };
+          left = GetValue(cv);
+          left_index = i++;
+          continue;
+        }
 
-        if (result is null)
-          break;
+        if (cv.Type.UsesLogicalInput && !allowLogical)
+        {
+          clearLeft();
+          i++;
+          continue;
+        }
 
-        previous = result;
+        else if (cv.IsOperator)
+        {
+          op = cv.Type;
+          op_index = i++;
+          continue;
+        }
+
+        if (left is not null && op is not Undefined && right is null)
+        {
+          right = GetValue(cv);
+          right_index = i;
+        }
       }
-    }
-    evalStore[Sequence.Count - 1] = previous;
-    previous = null;
-    foreach (int i in and_indexes)
-    {
-      if (previous is null)
+      else if (ivn is AssignedValue av)
       {
-        previous = evalStore[i];
-        continue;
+        if (left is null)
+        {
+          left = av.Value;
+          left_index = i++;
+          continue;
+        }
+
+        if (op is not Undefined && right is null)
+        {
+          right = av.Value;
+          right_index = i;
+        }
       }
 
-      result = (bool) previous && (bool) (evalStore[i] ?? false);
+      if (left is not null && op is not Undefined && right is not null)
+      {
+        _workingSequence.RemoveAt(right_index);
+        _workingSequence.RemoveAt(op_index);
+        _workingSequence.RemoveAt(left_index);
+        _workingSequence.Insert(left_index, new AssignedValue() { Value = Operate(op, left, right) });
+        i = left_index;
+        clearRight();
+        clearLeft();
+        clearOp();
+        i++;
+      }
     }
 
-    return result;
+    return _workingSequence[0].Value;
   }
 }

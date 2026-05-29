@@ -106,6 +106,15 @@
       </xs:simpleType>
     </xs:union>
   </xs:simpleType>
+  <xs:simpleType name="DataReadLength">
+    <xs:union memberTypes="xs:positiveInteger">
+      <xs:simpleType>
+        <xs:restriction base="xs:int">
+          <xs:minInclusive value="-1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
   <xs:simpleType name="ScopeAttributeType">
     <xs:restriction base="NonEmptyTokenType">
       <xs:enumeration value="global">
@@ -311,7 +320,7 @@ commences.
           <xs:attribute name="endian" use="optional" type="EndianessType"/>
           <xs:attribute name="encoding" use="optional" type="EncodingType"/>
           <xs:attributeGroup ref="DataTypeAttrGroup"/>
-          <xs:attributeGroup ref="LengthAttrGroup"/>
+          <xs:attributeGroup ref="ReadDataLengthAttrGroup"/>
           <xs:attributeGroup ref="PositionAttrGroup"/>
         </xs:complexType>
       </xs:element>
@@ -343,18 +352,18 @@ commences.
       <xs:element name="Continue" type="NoAttributesType"/>
       <xs:element name="Print" type="DebugKeyType"/>
       <xs:element name="ToString" type="DebugKeyType"/>
-        <xs:element name="Switch">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
-              <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
-            </xs:sequence>
-            <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
-          </xs:complexType>
-        </xs:element>
-      </xs:choice>
-    </xs:sequence>
-  </xs:complexType>
+      <xs:element name="Switch">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
+            <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
+          </xs:sequence>
+          <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:sequence>
+</xs:complexType>
   <xs:complexType name="CaseInstructionSet">
     <xs:complexContent>
       <xs:extension base="InnerInstructionSet">
@@ -371,10 +380,10 @@ commences.
     <xs:attribute name="name" type="xs:token"/>
   </xs:complexType>
   <xs:complexType name="RuleList">
-    <xs:sequence>
-      <xs:element name="Rule" type="RuleDef" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
+      <xs:sequence>
+        <xs:element name="Rule" type="RuleDef" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
   <xs:complexType name="TokenLookupType">
     <xs:simpleContent>
       <xs:extension base="TokenTypeListType">
@@ -387,14 +396,14 @@ commences.
       <xs:element name="TokenLookup" type="TokenLookupType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
-  <xs:attributeGroup name="LengthAttrGroup">
-    <xs:attribute name="length" type="xs:positiveInteger">
-      <xs:annotation>
-        <xs:documentation>
-          Length of data or text, must be 1 or higher.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
+  <xs:attributeGroup name="DataReadLengthAttrGroup">
+      <xs:attribute name="length" type="DataReadLength">
+        <xs:annotation>
+          <xs:documentation>
+            Length of data or text, must be 1 or higher.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
     <xs:attribute name="length_var" type="DataKeyType">
       <xs:annotation>
         <xs:documentation>
