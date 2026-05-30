@@ -1,4 +1,3 @@
-
 using static Parser.Condition.KeyOption;
 
 namespace Parser.Condition;

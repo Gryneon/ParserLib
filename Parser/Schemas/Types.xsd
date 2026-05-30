@@ -320,7 +320,7 @@ commences.
           <xs:attribute name="endian" use="optional" type="EndianessType"/>
           <xs:attribute name="encoding" use="optional" type="EncodingType"/>
           <xs:attributeGroup ref="DataTypeAttrGroup"/>
-          <xs:attributeGroup ref="ReadDataLengthAttrGroup"/>
+          <xs:attributeGroup ref="DataReadLengthAttrGroup"/>
           <xs:attributeGroup ref="PositionAttrGroup"/>
         </xs:complexType>
       </xs:element>
@@ -400,7 +400,7 @@ commences.
       <xs:attribute name="length" type="DataReadLength">
         <xs:annotation>
           <xs:documentation>
-            Length of data or text, must be 1 or higher.
+            Length of data or text, must be greater than zero, zero, or -1.
           </xs:documentation>
         </xs:annotation>
       </xs:attribute>
@@ -409,6 +409,23 @@ commences.
         <xs:documentation>
           Stored data entry to read the length from as an integer.
 Referenced data should be an integer greater than 0.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="LengthAttrGroup">
+    <xs:attribute name="length" type="xs:positiveInteger">
+      <xs:annotation>
+        <xs:documentation>
+          Length of data or text, must be 1 or higher.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="length_var" type="DataKeyType">
+      <xs:annotation>
+        <xs:documentation>
+          Stored data entry to read the length from as an integer.
+          Referenced data should be an integer greater than 0.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>

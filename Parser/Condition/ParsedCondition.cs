@@ -58,34 +58,65 @@ public class ParsedExpression : IExpression
     if (Expression.IsEmpty())
       return;
 
-    // https://regex101.com/r/aTwSlR/2
+    Dictionary<string, KeyOption> groupKeyReference = new()
+    {
+      ["exists"] = CheckKeyExists,
+      ["countof"] = CountOfKey,
+      ["typeof"] = TypeOfKey,
+    };
+
+    Dictionary<string, KeyOption> groupReference = new()
+    {
+      ["true"] = True,
+      ["false"] = False,
+      ["null"] = Null,
+      ["gteq"] = OpGteq,
+      ["lteq"] = OpLteq,
+      ["gt"] = OpGt,
+      ["lt"] = OpLt,
+      ["eq"] = OpEq,
+      ["noteq"] = OpNotEq,
+      ["seqeq"] = OpSeqEq,
+      ["and"] = OpAnd,
+      ["or"] = OpOr,
+      ["add"] = OpAdd,
+      ["sub"] = OpSub,
+
+    };
+
+    // https://regex101.com/r/aTwSlR/5
     string conditionPattern = new RxS(@"(?:(?:\b(?'exists'exists)|(?'countof'countof)|(?'typeof'typeof))\b)?\[(?<varname>.*?)\]|\{(?<literal>.*?)\}|(?'gteq'>=)|(?'lteq'<=)|(?'gt'>)|(?'lt'<)|(?'eq'==)|(?'noteq'!=)|(?:\b(?'like'like)|(?'seqeq'matches)|(?'is'is)\b)|(?'and'&&)|(?'or'\|\|)|(?'int'-?\d+)|(?'dec'-?\d*\.\d+)|(?:\b(?'true'(?i:true))|(?'false'(?i:false))|(?'null'(?i:null))\b)");
     foreach (Match m in Regex.Matches(Expression, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
     {
       string? keyname = m.Groups.ContainsKey("varname") ? m.Groups["varname"].Value : null;
 
-      void chkAdd (string group, KeyOption type, string? value = null)
+      void processSpecialGroup (string group, KeyOption type, string? value)
       {
         if (m.Groups.ContainsKey(group))
           Sequence.Add(new ConditionValue(type, value));
       }
-      chkAdd("exists", CheckKeyExists, keyname);
-      chkAdd("countof", CountOfKey, keyname);
-      chkAdd("typeof", TypeOfKey, keyname);
-      chkAdd("true", True);
-      chkAdd("false", False);
-      chkAdd("null", Null);
+      void processKeyGroups ()
+      {
+        foreach (KeyValuePair<string, KeyOption> item in groupKeyReference)
+        {
+          if (m.Groups.ContainsKey(item.Key))
+            Sequence.Add(new ConditionValue(item.Value, keyname));
+        }
+      }
+      void processGroups ()
+      {
+        foreach (KeyValuePair<string, KeyOption> item in groupReference)
+        {
+          if (m.Groups.ContainsKey(item.Key))
+            Sequence.Add(new ConditionValue(item.Value, null));
+        }
+      }
 
-      chkAdd("gteq", OpGteq);
-      chkAdd("lteq", OpLteq);
-      chkAdd("gt", OpGt);
-      chkAdd("lt", OpLt);
-      chkAdd("eq", OpEq);
-      chkAdd("noteq", OpNotEq);
-      chkAdd("and", OpAnd);
-      chkAdd("or", OpOr);
-      chkAdd("int", Integer, m.Groups["int"].Value);
-      chkAdd("dec", KeyOption.Decimal, m.Groups["dec"].Value);
+      processKeyGroups();
+      processGroups();
+      processSpecialGroup("int", Integer, m.Groups["int"].Value);
+      processSpecialGroup("dec", KeyOption.Decimal, m.Groups["dec"].Value);
+      processSpecialGroup("literal", Literal, m.Groups["literal"].Value);
     }
   }
   protected static object? Operate (KeyOption op, object? lobj, object? robj)
