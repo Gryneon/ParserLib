@@ -29,14 +29,9 @@ public class FilterTokenOperation : Operation
 
   protected override void Execute ()
   {
-    DebugIn(nameof(FilterTokenOperation), nameof(Execute));
-    if (WorkData is IEnumerable<IToken> tc)
+    if (Data[InputKey] is IEnumerable<IToken> tc)
     {
-      static TokenCollection err ()
-      {
-        _ = Err.ThrowBadDef("Invalid Filter Parameters.");
-        return [];
-      }
+      static TokenCollection err () => throw Err.ThrowBadDef("Invalid Filter Parameters.");
       WorkData = _type switch
       {
         FilterTokenType.Empty => [.. tc.Where(tok => tok.Content.IsNotEmpty())],
@@ -50,8 +45,7 @@ public class FilterTokenOperation : Operation
     }
     else
     {
-      Status = Err.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
+      throw Err.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
     }
-    DebugOut();
   }
 }

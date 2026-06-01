@@ -1,5 +1,40 @@
 namespace Parser;
 
+public class PositionalItemData
+{
+  public string Name { get; set; } = SE;
+  public int Position { get; set; } = -1;
+  public int Length => Data.Length;
+  public Memory<byte> Data { get; set; }
+
+  public PositionalItemData (params object[] parameters)
+  {
+    int the_pos = -1, the_pos2 = -1;
+
+    foreach (object p in parameters)
+    {
+      if (p is int pos && the_pos == -1)
+      {
+        the_pos = pos;
+      }
+      if (p is int alt && the_pos != -1)
+      {
+        the_pos2 = alt;
+      }
+      if (p is string s)
+      {
+        Name = s;
+      }
+      if (p is Memory<byte> mem)
+      {
+        Data = mem;
+      }
+    }
+
+    Position = the_pos == Data.Length ? the_pos2 : the_pos;
+  }
+}
+
 /// <summary>The data for a loop or cursor object.</summary>
 public class CursorData
 {
@@ -17,6 +52,7 @@ public class CursorData
   public string? ListKey { get; init; }
   public bool AtEnd => Index >= Length;
 
+  #region Constructors
   public CursorData () { }
   /// <summary>Creates a new cursor.</summary>
   /// <param name="parser">The parser reference.</param>
@@ -46,7 +82,8 @@ public class CursorData
   public CursorData (XParser parser)
   {
     Parser = parser;
-    Index = -1;
-    Length = -1;
+    Index = DNE;
+    Length = DNE;
   }
+  #endregion
 }

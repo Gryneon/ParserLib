@@ -89,7 +89,7 @@ public static class Definition
   {
     Name = "ipl",
     Operations = [
-      new SplitOperation(Rx(@"(<ETX>).*?(<STX>)|\A.*?(<STX>)|;"), RxOpts, "text", "textparts"),
+      new SplitOperation(@"(<ETX>).*?(<STX>)|\A.*?(<STX>)|;", RxOpts, "text", "textparts"),
 
       //new TokenizeOperation(),
       //new DebugToStringOperation("tokens"),

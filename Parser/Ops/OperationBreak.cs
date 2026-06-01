@@ -32,6 +32,6 @@ public sealed class OperationSetCursor () : Operation
   protected override void Execute ()
   {
     CursorData cursor = Data.GetCursorByKey(CursorKey);
-    cursor.Index = Position == -1 ? (int) Data[PositionKey] : Position;
+    cursor.Index = Position == -1 ? Data[PositionKey] is int i ? i : 0 : Position;
   }
 }

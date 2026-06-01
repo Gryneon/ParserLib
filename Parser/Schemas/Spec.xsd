@@ -4,7 +4,7 @@
   
   <xs:element name="Spec">
     <xs:complexType>
-      <xs:all>
+      <xs:all maxOccurs="1">
         <xs:element name="Name" type="NonEmptyTokenType" minOccurs="1" maxOccurs="1"/>
         <xs:element name="TextFile" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false"/>
         <xs:element name="CaseInsensitive" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false"/>
@@ -13,6 +13,14 @@
         <xs:element name="TokenRules" type="RuleList" minOccurs="0" maxOccurs="1"/>
         <xs:element name="GroupTokenRules" type="RuleList" minOccurs="0" maxOccurs="1"/>
         <xs:element name="TokenLookups" type="TokenLookupsType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="TokenConstructs" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Construct" type="ComplexTokenType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="allow_unlisted" type="xs:boolean" use="optional" default="true"/>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="Instructions" minOccurs="0" type="InnerInstructionSet" maxOccurs="1"/>
         <xs:element name="FileInferences" minOccurs="0" type="FileInferencesType" maxOccurs="1"/>
       </xs:all>

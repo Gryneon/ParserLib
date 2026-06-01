@@ -15,7 +15,7 @@ public static class DefaultSpec
     FileInferences = [],
     Operations = [ReadDataOperation.ReadRemainingBin("result", "bytes")]
   };
-  /// <summary>Splits a string on newlines into a <see cref="Collection{T}"/> of <see langword="string"/> objects.</summary>
+  /// <summary>Splits a <see langword="string"/> on newlines into a <see cref="Collection{T}"/> of <see langword="string"/> objects.</summary>
   [DefinitionExport]
   public static Spec TextByLines { get; } = new()
   {

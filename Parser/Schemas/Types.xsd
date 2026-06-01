@@ -67,7 +67,7 @@
   <xs:simpleType name="IfConditionType">
     <xs:restriction base="xs:string">
       <xs:whiteSpace value="collapse"/>
-      <xs:pattern value="(\[.*\]|\{.*\})\s*(==|&gt;=?|&lt;=?|is|!=|contains|like)\s*(\[.*\]|\{.*\})"/>
+      <xs:pattern value="(\w*\[.*\]|\{.*\})\s*(==|&gt;=?|&lt;=?|is|!=|contains|like|matches|within)\s*(\w*\[.*\]|\{.*\})"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="AndOrType">
@@ -159,6 +159,16 @@ commences.
   </xs:simpleType>
   <xs:simpleType name="RuleTypeList">
     <xs:list itemType="RuleTypeToken"/>
+  </xs:simpleType>
+  <xs:simpleType name="RegexOptionListType">
+    <xs:list itemType="RegexOptionType"/>
+  </xs:simpleType>
+  <xs:simpleType name="RegexOptionType">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="CaseInsensitive"/>
+      <xs:enumeration value="MultiLine"/>
+      <xs:enumeration value="DotMatchesNewline"/>
+    </xs:restriction>
   </xs:simpleType>
   <xs:group name="IfGroup">
     <xs:sequence>
@@ -396,6 +406,27 @@ commences.
       <xs:element name="TokenLookup" type="TokenLookupType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="ComplexTokenType">
+    <xs:sequence>
+      <xs:element name="Name" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="PropertyList" maxOccurs="1" type="ComplexTokenType"/>
+        <xs:element name="Property" maxOccurs="unbounded" type="ComplexTokenType"/>
+      </xs:choice>
+      <xs:choice minOccurs="0">
+        <xs:element name="StatementList" maxOccurs="1" type="ComplexTokenType"/>
+        <xs:element name="Statement" maxOccurs="unbounded" type="ComplexTokenType"/>
+      </xs:choice>
+      <xs:element name="Type" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      <xs:element name="Value" maxOccurs="unbounded" minOccurs="0" type="ComplexTokenType"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="ComplexTokenAttrGroup"/>
+  </xs:complexType>
+  <xs:attributeGroup name="ComplexTokenAttrGroup">
+    <xs:attribute name="tokentype" type="xs:token"/>
+    <xs:attribute name="class" type="xs:token"/>
+    <xs:attribute name="class_type_params" type="xs:normalizedString"/>
+  </xs:attributeGroup>
   <xs:attributeGroup name="DataReadLengthAttrGroup">
       <xs:attribute name="length" type="DataReadLength">
         <xs:annotation>

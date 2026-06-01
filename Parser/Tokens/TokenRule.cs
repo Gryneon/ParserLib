@@ -8,6 +8,7 @@ public class TokenRule
   public string TypeToAssign { get; set; }
   public ChkSequence GroupSequence { get; } = [];
 
+  #region Constructors
   [SetsRequiredMembers]
   public TokenRule (RT type, string typeToAssign, [SS("regex")] string ruleStringData)
   {
@@ -43,6 +44,8 @@ public class TokenRule
     RuleStringData = ruleStringData;
     TypeToAssign = typeToAssign?.ToString() ?? SE;
   }
+  #endregion
+  #region Static Generation
   public static TokenRule[] CopyOfRuleSet (TokenRuleCollection rules)
   {
     Collection<TokenRule> new_rules = [];
@@ -112,5 +115,6 @@ public class TokenRule
 
     return [.. tokenRules];
   }
+  #endregion
   public override string ToString () => $"TokenRule ({Type} => {TypeToAssign})";
 }

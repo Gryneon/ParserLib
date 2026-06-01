@@ -2,6 +2,10 @@
 
 namespace Parser.Tokens;
 
+/// <summary>A class that holds the results of a token grouping operation.</summary>
+/// <param name="Tokens">The token list, of physical tokens. These are actual segments of text.</param>
+/// <param name="Parents">The grouping constructs.</param>
+/// <param name="Hierarchy">The whole assembly in a full hierarchy.</param>
 public record class TokenAssemblyResult (TokenCollection Tokens, TokenCollection Parents, TokenCollection Hierarchy) : IPrintable
 {
   public override string ToString () => Tokens + "\n\n\n" + Parents + "\n\n\n" + Hierarchy;
@@ -84,73 +88,6 @@ public sealed class TokenAssembler
 
     if (tokens_to_assemble.IsEmpty()) return;
 
-    //bool tryGetToken (TokenRef type, [NotNullWhen(true)] out IToken? token)
-    //{
-    //  Validate();
-    //  token = null;
-    //  for (int i = 0; i < tokens_to_assemble.Count; i++)
-    //  {
-    //    TokenRef? assnTo = tokens_to_assemble[i].AssignTo;
-    //    assnTo.ThrowIfNull();
-
-    //    if (assnTo.Value == type)
-    //    {
-    //      token = tokens_to_assemble[i];
-    //      return true;
-    //    }
-    //  }
-    //  return false;
-    //}
-    //ComplexToken buildObject ()
-    //{
-    //  ComplexToken new_token;
-
-    //  if (tryGetToken(TokenRef.Inherit, out IToken? baseToken) && baseToken is ComplexToken ct)
-    //  {
-    //    new_token = (ComplexToken) ct.Clone();
-    //    new_token.Type = _rule.TypeToAssign;
-    //    new_token.Children = [.. tokens_to_assemble];
-    //  }
-    //  else
-    //  {
-    //    new_token = new()
-    //    {
-    //      Type = _rule.TypeToAssign,
-    //      Children = [.. tokens_to_assemble],
-    //    };
-    //  }
-
-    //  void trySet (TokenRef piece_type, out IToken? name)
-    //  {
-    //    if (tryGetToken(piece_type, out name))
-    //      new_token[piece_type] = name;
-    //  }
-    //  void trySetList (TokenRef piece_type, TokenRef list_type)
-    //  {
-    //    if (tryGetToken(piece_type, out IToken? maybe_list))
-    //    {
-    //      TokenCollection? tc = (TokenCollection?) maybe_list;
-    //      if (tc?.Count > 1)
-    //        new_token.SetPieceType(list_type, tc);
-    //      else if (tc?.Count == 1)
-    //        new_token.SetPieceType(piece_type, tc[0]);
-    //    }
-    //  }
-
-    //  trySet(TokenRef.Name, out IToken? name);
-    //  trySet(TokenRef.Type, out IToken? type);
-    //  trySet(TokenRef.Left, out IToken? left);
-    //  trySet(TokenRef.Right, out IToken? right);
-    //  trySet(TokenRef.Center, out IToken? center);
-    //  trySetList(TokenRef.Value, TokenRef.ValueList);
-    //  trySetList(TokenRef.Property, TokenRef.PropertyList);
-    //  trySetList(TokenRef.AddFlag, TokenRef.AddFlagList);
-    //  trySetList(TokenRef.SubFlag, TokenRef.SubFlagList);
-    //  trySetList(TokenRef.Parameter, TokenRef.ParameterList);
-    //  trySetList(TokenRef.Statement, TokenRef.StatementList);
-
-    //  return new_token;
-    //}
     _constructed_items++;
 
     ComplexToken complex_token = new()
@@ -284,7 +221,7 @@ public sealed class TokenAssembler
   public TokenAssemblyResult Execute (TokenCollection tokens)
   {
     DebugIn(Area, "Execute");
-    _tokens = [.. tokens];
+    _tokens = [.. tokens.Order()];
     _pass_list = [.. tokens];
 
     int recurseCounter = 0;

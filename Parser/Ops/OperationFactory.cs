@@ -71,10 +71,10 @@ public static class OperationFactory
         "GotoOpIndex" => target is -1 ? new OperationJump(target_var, true) : new OperationJump(target),
         "GotoLabel" => new OperationJump(name),
         "Label" => new OperationLabel(name),
-        "ReadData" when length_var.IsEmpty() => new ReadDataOperation(output_var)
+        "ReadData" when length_var.IsEmpty() => new ReadDataOperation()
         {
           Mode = type,
-          Size = length == -1 ? type switch { "byte" => 1, "short" => 2, "int" => 4, "long" => 8, _ => -1 } : length,
+          Length = length == -1 ? type switch { "byte" => 1, "short" => 2, "int" => 4, "long" => 8, _ => -1 } : length,
           ContentKey = content_var,
           CursorKey = cursor_var,
           Position = position,

@@ -117,7 +117,7 @@ Must have only one of these:
   - Type - Optional
   - Value - Optional
   - ParameterList - Zero or more items
-* `<b><font name="cascadia code" size=3 color=#5588FF>TokenExpression\<T\></font></b>`
+* <b><font name="cascadia code" size=3 color=#5588FF>TokenExpression\<T\></font></b>
   - Left - Optional
   - Type - Optional
   - Right - Optional

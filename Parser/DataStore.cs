@@ -24,29 +24,47 @@ public sealed class DataStore
   /// <summary>Gets or sets data to a given key.</summary>
   /// <param name="key">The key to assign to or look up.
   /// Prefixing this string with a "+" when assigning will cause it to make a list instead of overrwriting.</param>
+  /// <param name="throw_on_fail">Specifies whether to throw an exception on a missing key, or to return <see langword="null"/>.</param>
   /// <returns>The data assigned to the given key, or throws an exception if it is not found.</returns>
   /// <exception cref="ArgumentException"/>
+  [DisallowNull]
+  public object? this[string? key, bool throw_on_fail]
+  {
+    get => key is null ? null! : throw_on_fail ? LoadOrFail(key) : LoadIfAble(key);
+    set
+    {
+      if (throw_on_fail && key is null)
+        key.ThrowIfNull();
+      else if (key is null)
+        return;
+
+      _ = DoSave<object>(key, value, DM.Overwrite);
+    }
+  }
+
+  [DisallowNull]
+  [NotNull]
   public object this[string? key]
   {
     get => key is null ? null! : LoadOrFail(key);
     set
     {
-      DebugIn("DataStore", $"[{key}]");
       key.ThrowIfNull();
-      bool hasKey = _dict.ContainsKey(key);
-      if (key.StartsWith('+', SCO) && hasKey)
-      {
-        key = key[1..];
-        bool success = DoSave<object>(key, value, DM.Overwrite | DM.AddToCollection | DM.MakeCollection | DM.MergeCollection);
-        if (!success)
-        {
-          Log(MsgClass.Error, $"Accessor tried to make list, but failed. Value:{value} & Key:{key} & Current: {_dict[key]}.");
-        }
-      }
-      else
-      {
-        _ = DoSave<object>(key, value, DM.Overwrite);
-      }
+      _ = DoSave<object>(key, value, DM.Overwrite);
+    }
+  }
+
+  [DisallowNull]
+  [NotNull]
+  public object this[string? key, dynamic value_if_not_found]
+  {
+    get => key is null ? null! : LoadIfAble(key) ?? value_if_not_found;
+    set
+    {
+      if (key is null)
+        return;
+
+      _ = DoSave<object>(key, value, DM.Overwrite);
     }
   }
 
@@ -54,30 +72,10 @@ public sealed class DataStore
   /// <param name="key">The key to load.</param>
   /// <returns>The value of the key.</returns>
   /// <exception cref="OperationNoSuchVarException">The key is not present in the <see cref="DataStore"/>.</exception>
-  public object LoadOrFail (string key)
-  {
-
-    return TryLoad(key, out object? value) ? value : Err.ThrowNoVar(key);
-  }
-  public T LoadOrFail<T> (string key)
-  {
-
-    if (TryLoad(key, out T? value))
-      return value;
-    else
-      _ = Err.ThrowNoVar(key);
-    throw null;
-  }
-  public object? LoadIfAble (string key)
-  {
-
-    return TryLoad(key, out object? value) ? value : null;
-  }
-  public T? LoadIfAble<T> (string key)
-  {
-
-    return TryLoad(key, out T? value) ? value : default;
-  }
+  public object LoadOrFail (string key) => TryLoad(key, out object? value) ? value : Err.ThrowNoVar(key);
+  public T LoadOrFail<T> (string key) => TryLoad(key, out T? value) ? value : Err.ThrowNoVar(key);
+  public object? LoadIfAble (string key) => TryLoad(key, out object? value) ? value : null;
+  public T? LoadIfAble<T> (string key) => TryLoad(key, out T? value) ? value : default;
 
   public override string ToString ()
   {
@@ -93,14 +91,20 @@ public sealed class DataStore
 
   /// <summary>The internal saving logic.</summary>
   /// <typeparam name="T">The data type to save.</typeparam>
-  /// <param name="key"></param>
-  /// <param name="data"></param>
-  /// <param name="mode"></param>
-  /// <returns></returns>
+  /// <param name="key">The key to save to.</param>
+  /// <param name="data">The data to save.</param>
+  /// <param name="mode">The <see cref="DM"/> to utilize.</param>
+  /// <returns><see langword="true"/> if the save was successful, <see langword="false"/> otherwise.</returns>
   private bool DoSave<T> (string key, object data, DM mode)
   {
     if (data is null)
       return false;
+
+    if (key.StartsWith('+', SCO))
+    {
+      key = key[1..];
+      mode |= DM.MergeCollection | DM.AddToCollection | DM.MakeCollection;
+    }
 
     if (mode.HasFlag(DM.MergeCollection) && TryLoadArray(key, out IEnumerable<T>? existing_to_merge) && data is IEnumerable<T> new_list)
     {
@@ -132,7 +136,7 @@ public sealed class DataStore
       return false;
     }
   }
-  public void Initialize<T> ([NotNull] T initial)
+  internal void Initialize<T> (T initial)
   {
     DebugIn("DataStore", "Initialize");
     initial.ThrowIfNull();
@@ -141,30 +145,27 @@ public sealed class DataStore
     if (initial is string s)
     {
       Save("text", s);
-      Save<int>("file_size", s.Length);
+      Save("file_size", s.Length);
     }
     else if (initial is IEnumerable<byte> bytes)
     {
       Memory<byte> list = bytes.ToArray().AsMemory();
       Save("bytes", list);
-      Save<int>("file_size", list.Length);
+      Save("file_size", list.Length);
     }
     else if (initial is IEnumerable list)
     {
       Log(MsgClass.Warning, "Initialization of an unknown list.");
       Collection<object> coll = [.. list.OfType<object>()];
       Save("list", coll);
-      Save<int>("list_size", coll.Count);
+      Save("list_size", coll.Count);
     }
     DebugOut();
   }
   public bool CanLoad ([NotNullWhen(true)] string? key) =>
     key is not null && _dict.ContainsKey(key) && _dict[key] != null;
-  public bool TryLoad ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out object data)
-  {
-    data = CanLoad(key) ? _dict[key] : null;
-    return data is not null;
-  }
+  public bool TryLoad ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out object data) =>
+    (CanLoad(key) ? data = _dict[key] : data = null) is not null;
   public bool TryLoadArray ([NotNullWhen(true)] string key, [NotNullWhen(true)][MaybeNullWhen(false)] out IEnumerable data)
   {
     data = CanLoad<IEnumerable>(key) ? this[key] as IEnumerable : null;
@@ -204,7 +205,7 @@ public sealed class DataStore
   public CursorData GetCursorByKey (string key) =>
     !CanLoad(key) ? throw new OperationNoSuchVarException(key) :
     _dict[key] is CursorData cursor ? cursor :
-    throw new OperationBadInputTypeException("", $"{_dict[key].GetType()}");
+    throw new OperationBadInputTypeException(nameof(CursorData), $"{_dict[key].GetType()}");
 
   public void SetCursorIndex (string key, int index) => GetCursorByKey(key).Index = index;
   public void IncCursorIndex (string key, int inc) => GetCursorByKey(key).Index += inc;

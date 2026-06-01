@@ -81,7 +81,6 @@ public class ParsedExpression : IExpression
       ["or"] = OpOr,
       ["add"] = OpAdd,
       ["sub"] = OpSub,
-
     };
 
     // https://regex101.com/r/aTwSlR/5

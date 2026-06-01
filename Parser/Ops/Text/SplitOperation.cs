@@ -17,10 +17,10 @@ namespace Parser.Ops.Text;
 public class SplitOperation : Operation
 {
   #region Private Members
-  private readonly Type _type;
-  private readonly IEnumerable<string>? _items;
-  private readonly RegexOptions _options;
-  private enum Type
+  internal Type Procedure { get; init; }
+  internal IEnumerable<string>? Delims { get; init; }
+  internal RegexOptions RXOptions { get; init; }
+  internal enum Type
   {
     None = 0,
     Regex = 1,
@@ -28,42 +28,59 @@ public class SplitOperation : Operation
   }
   #endregion
   #region Constructors
-  public SplitOperation (string delimeter, string input_key = "text", string output_key = "textparts") : base(input_key, output_key)
+  internal SplitOperation ()
   {
-    _type = Type.Delim;
-    _items = [delimeter];
+
   }
-  public SplitOperation (IEnumerable<string> delimeters, string input_key = "text", string output_key = "textparts") : base(input_key, output_key)
+  public SplitOperation (string delimeter, string input_key, string output_key)
   {
-    _type = Type.Delim;
-    _items = [.. delimeters];
+    Procedure = Type.Delim;
+    Delims = [delimeter];
+    InputKey = input_key;
+    OutputKey = output_key;
   }
-  public SplitOperation (RxS regex, RegexOptions regex_options, string input_key = "text", string output_key = "textparts") : base(input_key, output_key)
+  public SplitOperation (IEnumerable<string> delimeters, string input_key = "text", string output_key = "textparts")
   {
-    _type = Type.Regex;
-    _items = [regex];
-    _options = regex_options;
+    Procedure = Type.Delim;
+    Delims = [.. delimeters];
+    InputKey = input_key;
+    OutputKey = output_key;
   }
-  public SplitOperation (RxSCollection regexes, RegexOptions regex_options, string input_key = "text", string output_key = "textparts") : base(input_key, output_key)
+  public SplitOperation ([SS("regex")] string regex, RegexOptions regex_options, string input_key = "text", string output_key = "textparts")
   {
-    _type = Type.Regex;
-    _items = [.. regexes];
-    _options = regex_options;
+    Procedure = Type.Regex;
+    Delims = [regex];
+    RXOptions = regex_options;
+    InputKey = input_key;
+    OutputKey = output_key;
   }
-  public SplitOperation (string input_key = "text", string output_key = "textparts") : base(input_key, output_key) => _type = Type.None;
+  public SplitOperation (RxSCollection regexes, RegexOptions regex_options, string input_key = "text", string output_key = "textparts")
+  {
+    Procedure = Type.Regex;
+    Delims = [.. regexes];
+    RXOptions = regex_options;
+    InputKey = input_key;
+    OutputKey = output_key;
+  }
+  public SplitOperation (string input_key = "text", string output_key = "textparts")
+  {
+    Procedure = Type.None;
+    InputKey = input_key;
+    OutputKey = output_key;
+  }
   #endregion Constructors
   protected override void Execute ()
   {
-    IEnumerable<string> delimSplit (string input) => input.Split([.. _items ?? []], SSORT);
+    IEnumerable<string> delimSplit (string input) => input.Split([.. Delims ?? []], SSORT);
 
-    WorkData = _type switch
+    Data[OutputKey] = Procedure switch
     {
-      Type.None when WorkData is string str => RX.LineEnd.Split(str),
-      Type.Delim when WorkData is string str => delimSplit(str),
-      Type.Delim when WorkData is IEnumerable<string> list => list.SelectMany(delimSplit),
-      Type.Regex when WorkData is string str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str),
-      Type.Regex when WorkData is IEnumerable<string> list => list.SelectMany(str => new Regex((_items ?? []).TextJoin("|"), _options).Split(str)),
-      _ => Err.ThrowBadInput("string or list", $"{WorkData?.GetType()}"),
+      Type.None when Data[InputKey] is string str => RX.LineEnd.Split(str),
+      Type.Delim when Data[InputKey] is string str => delimSplit(str),
+      Type.Delim when Data[InputKey] is IEnumerable<string> list => list.SelectMany(delimSplit),
+      Type.Regex when Data[InputKey] is string str => new Regex((Delims ?? []).TextJoin("|"), RXOptions).Split(str),
+      Type.Regex when Data[InputKey] is IEnumerable<string> list => list.SelectMany(str => new Regex((Delims ?? []).TextJoin("|"), RXOptions).Split(str)),
+      _ => Err.ThrowBadInput("string or list", Data[InputKey].TypeName),
     };
 
     Status = OpStatus.Pass;
