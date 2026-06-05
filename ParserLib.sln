@@ -75,6 +75,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Language Specifications", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenFinder", "TokenFinder\TokenFinder.csproj", "{74876821-F752-4F6D-B09D-6DBD4B58A1E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialSenderApp", "SerialSenderApp\SerialSenderApp.csproj", "{FB94C54A-9E1C-6DA3-0F6F-C06E25B9AAA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -145,6 +147,10 @@ Global
 		{74876821-F752-4F6D-B09D-6DBD4B58A1E0}.Debug|x64.Build.0 = Debug|x64
 		{74876821-F752-4F6D-B09D-6DBD4B58A1E0}.Release|x64.ActiveCfg = Release|x64
 		{74876821-F752-4F6D-B09D-6DBD4B58A1E0}.Release|x64.Build.0 = Release|x64
+		{FB94C54A-9E1C-6DA3-0F6F-C06E25B9AAA1}.Debug|x64.ActiveCfg = Debug|x64
+		{FB94C54A-9E1C-6DA3-0F6F-C06E25B9AAA1}.Debug|x64.Build.0 = Debug|x64
+		{FB94C54A-9E1C-6DA3-0F6F-C06E25B9AAA1}.Release|x64.ActiveCfg = Release|x64
+		{FB94C54A-9E1C-6DA3-0F6F-C06E25B9AAA1}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
