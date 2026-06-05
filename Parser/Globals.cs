@@ -15,7 +15,6 @@ global using Common;
 global using Common.Extensions;
 global using Common.RegExp;
 
-global using Parser.Condition;
 global using Parser.Exceptions;
 global using Parser.Ops;
 global using Parser.Tokens;

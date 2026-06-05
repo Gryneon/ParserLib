@@ -57,9 +57,6 @@
     <None Update="Specs\WAD.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Specs\WAD2.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Specs\HTML.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

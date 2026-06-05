@@ -192,13 +192,26 @@ public static class Definition
     Name = "zdoom.decorate",
     Operations = [
       new TokenizeOperation("text", "tokens"),
+      new DebugPrintKeyOperation("tokens"),
       new TokenAssembleOperation(),
+      new DebugPrintKeyOperation("tokens_assembled"),
     ],
     TokenRules = [
       s_cString,
       s_cLineComment,
       s_cBlkComment,
-      .. TokenRule.MakeWordMatchRules(true, "const", "include", "states", "actor", "int", "goto", "replaces", ""),
+      /* Keywords */
+      .. TokenRule.MakeWordMatchRules(true, "const", "include", "states", "actor", "int", "goto", "replaces", "native"),
+      /* State Commands */
+      .. TokenRule.MakeWordMatchRules(true, "stop", "fail", "wait", "loop", "goto"),
+      /* Symbols */
+      .. TokenRule.MakeSingleCharRules("{}()[]=+-*/", RT.TokenExact, new string[] {
+        "Bo", "Bc",
+        "Po", "Pc",
+        "Ao", "Ac",
+        "Eq", "Pl",
+        "Mi", "Mu",
+        "Sl"}),
       new(RT.TokenMatch, DecorateTokenType.StateName, @"\b[\w\.-]+(?=\:)"),
       new(RT.TokenMatch, DecorateTokenType.FlagName, @"(?<=[+-])[\w.]+\b"),
     ]
@@ -327,10 +340,10 @@ public static class Definition
       new(RT.Recursive, AT.IfBlock,                     "x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
       new(RT.Recursive, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
       new(RT.Recursive, AT.LoopBlock,                   "t:Loop x:Po v:Value x:Pc s:(Stmt|Block)"),
-      new(RT.Recursive, AT.ElseBlock,                   "x:Else x:Bo sa:(Stmt|Block) x:Bc"),
-      new(RT.Recursive, AT.ElseBlock,                   "x:Else s:(Stmt|Block)"),
       new(RT.Recursive, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc x:Bo sa:(Stmt|Block) x:Bc"),
       new(RT.Recursive, AT.ElseIfBlock,                 "x:Else x:If x:Po v:Value x:Pc s:(Stmt|Block)"),
+      new(RT.Recursive, AT.ElseBlock,                   "x:Else x:Bo sa:(Stmt|Block) x:Bc"),
+      new(RT.Recursive, AT.ElseBlock,                   "x:Else s:(Stmt|Block)"),
       new(RT.Recursive, AT.SwitchBlock,                 "x:Switch x:Po v:Value x:Pc x:Bo sa:(CaseLabel|Stmt|Block) x:Bc"),
       new(RT.Recursive, AT.ForHeader,                   "x:For x:Po qo:(VarAssn|VarDeclAssn) x:Sc qo:Value x:Sc qo:Value x:Pc"),
       new(RT.Recursive, AT.ForBlock,                    "d:ForHeader x:Bo sa:(Stmt|Block) x:Bc"),
@@ -370,10 +383,9 @@ public static class Definition
     ],
     Operations = [
       new TokenizeOperation("text", "tokens"),
-      new DebugToStringOperation("tokens"),
-      new DebugWaitForInputOperation(),
-      new TokenAssembleOperation(),
-      new DebugWaitForInputOperation(),
+      new DebugPrintKeyOperation("tokens"),
+      new TokenAssembleOperation("tokens", "tokengroups"),
+      new DebugPrintKeyOperation("tokengroups"),
     ]
   };
 
@@ -400,10 +412,8 @@ public static class Definition
     Operations = [
       new TokenizeOperation("text", "tokens"),
       new DebugPrintKeyOperation("tokens"),
-      new DebugWaitForInputOperation(),
-      new TokenAssembleOperation(),
-      new DebugPrintKeyOperation("tokens_assembled"),
-      new DebugWaitForInputOperation(),
+      new TokenAssembleOperation("tokens", "tokengroups"),
+      new DebugPrintKeyOperation("tokengroups"),
     ]
   };
 }

@@ -1,9 +1,8 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="Debug"/>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
   <PropertyGroup>
     <Authors>John Taylor</Authors>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <DocumentationFile>..\docs\$(AssemblyName).xml</DocumentationFile>
+    <DocumentationFile>..\docs\$(MSBuildProjectName).xml</DocumentationFile>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
@@ -15,6 +14,7 @@
     <NuGetAuditMode>all</NuGetAuditMode>
     <Nullable>enable</Nullable>
     <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
     <RepositoryType>git</RepositoryType>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>

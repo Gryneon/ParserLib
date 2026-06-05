@@ -1,6 +1,6 @@
 namespace Parser.Ops;
 
-public class OperationIfBlock : Operation
+public class OperationIf : Operation
 {
   public Collection<IfBlockConditional> Options { get; init; } = [];
 }

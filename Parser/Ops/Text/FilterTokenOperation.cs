@@ -1,10 +1,14 @@
 namespace Parser.Ops.Text;
 
+/// <summary>
+/// Represents an operation to filter tokens based on specified criteria.
+/// </summary>
 public class FilterTokenOperation : Operation
 {
-  private readonly FilterTokenType _type;
-  private readonly string? _data;
+  public string StrType { get; init; }
+  public string? OpData { get; init; }
 
+  private FilterTokenType Type => Enum.Parse<FilterTokenType>(StrType, true);
   private enum FilterTokenType
   {
     None = 0,
@@ -14,38 +18,45 @@ public class FilterTokenOperation : Operation
     MatchEntireToken = 4,
     AnyMatchInToken = 5
   }
-  public FilterTokenOperation (string input_key, string output_key, [StringSyntax("regex")] string rx, bool accept_any_match) : base(input_key, output_key)
+  public FilterTokenOperation (string input_key, string output_key, [StringSyntax("regex")] string rx, bool accept_any_match)
   {
-    _type = accept_any_match ? FilterTokenType.AnyMatchInToken : FilterTokenType.MatchEntireToken;
-    _data = rx;
+    InputKey = input_key;
+    OutputKey = output_key;
+    StrType = accept_any_match ? "AnyMatchInToken" : "MatchEntireToken";
+    OpData = rx;
   }
   public FilterTokenOperation (string input_key, string output_key, object token_type) : base(input_key, output_key)
   {
-    _type = FilterTokenType.TokenType;
-    _data = token_type.ToString();
+    InputKey = input_key;
+    OutputKey = output_key;
+    StrType = "TokenType";
+    OpData = token_type.ToString();
   }
-  public FilterTokenOperation (string input_key, string output_key, bool only_remove_empty_tokens) : base(input_key, output_key) =>
-    _type = only_remove_empty_tokens ? FilterTokenType.Empty : FilterTokenType.Whitespace;
+  public FilterTokenOperation (string input_key, string output_key, bool only_remove_empty_tokens) : base(input_key, output_key)
+  {
+    InputKey = input_key;
+    OutputKey = output_key;
+    StrType = only_remove_empty_tokens ? "Empty" : "Whitespace";
+  }
 
   protected override void Execute ()
   {
     if (Data[InputKey] is IEnumerable<IToken> tc)
     {
-      static TokenCollection err () => throw Err.ThrowBadDef("Invalid Filter Parameters.");
-      WorkData = _type switch
+      Data[OutputKey] = Type switch
       {
         FilterTokenType.Empty => [.. tc.Where(tok => tok.Content.IsNotEmpty())],
         FilterTokenType.Whitespace => [.. tc.Where(tok => !tok.Content.IsWhitespace())],
-        FilterTokenType.AnyMatchInToken when _data is not null => [.. tc.Where(tok => tok is Token && !Regex.IsMatch(tok.Content, _data))],
-        FilterTokenType.MatchEntireToken when _data is not null => [.. tc.Where(tok => tok is Token && Regex.Match(tok.Content, _data).Length != tok.Content.Length)],
-        FilterTokenType.TokenType => [.. tc.Where(tok => !tok.Type.Like(_data))],
-        _ => err()
+        FilterTokenType.AnyMatchInToken when OpData is not null => [.. tc.Where(tok => tok is Token && !Regex.IsMatch(tok.Content, OpData))],
+        FilterTokenType.MatchEntireToken when OpData is not null => [.. tc.Where(tok => tok is Token && Regex.Match(tok.Content, OpData).Length != tok.Content.Length)],
+        FilterTokenType.TokenType => [.. tc.Where(tok => !tok.Type.Like(OpData))],
+        _ => (TokenCollection) Err.ThrowBadDef("Invalid Filter Parameters.")
       };
       Status = OpStatus.Pass;
     }
     else
     {
-      throw Err.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
+      throw Err.ThrowBadInput("IEnumerable<IToken>", Data[InputKey].TypeName);
     }
   }
 }

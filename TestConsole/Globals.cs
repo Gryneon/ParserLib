@@ -9,7 +9,6 @@ global using Common;
 global using Common.Extensions;
 
 global using Parser;
-global using Parser.Ops;
 
 global using static Common.Debug;
 //global using Terminal.Menu;

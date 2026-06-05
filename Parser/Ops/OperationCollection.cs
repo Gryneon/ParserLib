@@ -3,8 +3,8 @@ namespace Parser.Ops;
 /// <summary>A collection of operations that are executed in the given order.</summary>
 public sealed class OperationCollection : Operation, IReadOnlyCollection<IOperation>, IPlaceholderOperation
 {
-  public Collection<IOperation> Operations { get; init; }
-
+  private readonly List<IOperation> _operations;
+  public ReadOnlyCollection<IOperation> Operations => [.. _operations];
   public int Count => Operations.Count;
   public override bool NoInput => true;
   public override bool NoExecution => true;
@@ -20,13 +20,9 @@ public sealed class OperationCollection : Operation, IReadOnlyCollection<IOperat
 
   public OperationCollection (IEnumerable<IOperation> ops)
   {
-    ops.ThrowIfNull();
-    Operations = [.. ops];
-    foreach (IOperation op in Operations)
-    {
-      op.ApplyProperties(ContinueOnFail, SkipOperation);
-    }
+    _operations = [.. ops];
+    _operations.ForEach(op => op.ApplyProperties(ContinueOnFail, SkipOperation));
   }
-  public IEnumerator<IOperation> GetEnumerator () => Operations.GetEnumerator();
+  public IEnumerator<IOperation> GetEnumerator () => _operations.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }

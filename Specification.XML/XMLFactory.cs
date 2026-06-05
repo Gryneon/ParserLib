@@ -27,7 +27,7 @@ public sealed class XMLFactory
     {
       IXMLObject? xml = token.Type switch
       {
-        string d when d == "ElementStart" => token is ComplexToken ct ? new XMLElement() { Tag = ct.Name!.Content } : null,
+        "ElementStart" => token is ComplexToken ct ? new XMLElement() { Tag = ct.Name!.Content } : null,
         _ => new XMLContent() { Content = token.Content }
       };
 

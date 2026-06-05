@@ -1,6 +1,6 @@
 #Handmade
 
-* text=auto
+* text=auto eol=lf
 
 *.cs text eol=lf
 *.ini text eol=lf
@@ -14,11 +14,10 @@
 *.dtd text eol=lf
 *.reg text eol=lf
 *.csproj text eol=lf
-
-*.txt text eol=crlf
-*.ps1 text eol=crlf
-*.psm1 text eol=crlf
-*.bat text eol=crlf
+*.txt text eol=lf
+*.ps1 text eol=lf
+*.psm1 text eol=lf
+*.bat text eol=lf
 
 *.ico -text
 *.png -text

@@ -1,23 +1,18 @@
 namespace Parser.Ops;
 
-/// <include file="operation.xml" path="/doc/members/member[@name=&quot;T:Parser.Ops.Operation`1.DoOperation(`0)&quot;]"></include>
+/// <include file="operation.xml" path="/doc/members/member[@name=&quot;T:Parser.Ops.Operation&quot;]"></include>
 /// <summary>Constructs an operation that waits for a specific key press or the enter key.</summary>
 /// <param name="key">The key to wait for.</param>
 public class DebugWaitForInputOperation (ConsoleKey key = ConsoleKey.Enter) : Operation()
 {
-  private const string Area = "DebugWaitForInputOperation";
-
   public override bool NoInput => true;
   public override bool NoOutput => true;
 
   protected override void Execute ()
   {
-    DebugIn(Area, "Execute");
     ConsoleKeyInfo keyInfo;
-
-    Log(MsgClass.Critical, Area, "Execute", $"Press the {key} key to continue.");
+    Log(MsgClass.Prompt, $"Press the {key} key to continue.");
     do keyInfo = Console.ReadKey(true);
     while (keyInfo.Key != key);
-    DebugOut();
   }
 }

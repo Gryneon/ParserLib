@@ -115,26 +115,6 @@
       </xs:simpleType>
     </xs:union>
   </xs:simpleType>
-  <xs:simpleType name="ScopeAttributeType">
-    <xs:restriction base="NonEmptyTokenType">
-      <xs:enumeration value="global">
-        <xs:annotation>
-          <xs:documentation>
-This value is stored globally and persists outside of the section it was created in.
-          </xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="local">
-        <xs:annotation>
-          <xs:documentation>
-This value is stored locally (temporarily) and only exists until the
-block that it resides in completes, or the next iteration of the loop
-commences.
-          </xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
   <xs:simpleType name="RuleTypeToken">
     <xs:restriction base="xs:token">
       <xs:enumeration value="None"/><!-- Token Rule Types -->
@@ -381,6 +361,20 @@ commences.
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="NamedRuleDef">
+    <xs:complexContent>
+      <xs:extension base="RuleDef">
+        <xs:attribute name="name" type="xs:token" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NamedTokenLookupType">
+    <xs:complexContent>
+      <xs:extension base="TokenLookupType">
+        <xs:attribute name="name" type="xs:token" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="RuleDef">
     <xs:all>
       <xs:element name="TypeToAssign" minOccurs="0" maxOccurs="1" type="xs:token" default="None"/>
@@ -406,19 +400,44 @@ commences.
       <xs:element name="TokenLookup" type="TokenLookupType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="NamedComplexTokenType">
+    <xs:complexContent>
+      <xs:extension base="ComplexTokenType">
+        <xs:attribute name="name" type="xs:token" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="ComplexTokenType">
     <xs:sequence>
       <xs:element name="Name" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      <xs:element name="Type" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      <xs:element name="Left" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      <xs:element name="Center" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      <xs:element name="Right" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
       <xs:choice minOccurs="0">
         <xs:element name="PropertyList" maxOccurs="1" type="ComplexTokenType"/>
         <xs:element name="Property" maxOccurs="unbounded" type="ComplexTokenType"/>
       </xs:choice>
       <xs:choice minOccurs="0">
+        <xs:element name="AddFlagList" maxOccurs="1" type="ComplexTokenType"/>
+        <xs:element name="AddFlag" maxOccurs="unbounded" type="ComplexTokenType"/>
+      </xs:choice>
+      <xs:choice minOccurs="0">
+        <xs:element name="SubFlagList" maxOccurs="1" type="ComplexTokenType"/>
+        <xs:element name="SubFlag" maxOccurs="unbounded" type="ComplexTokenType"/>
+      </xs:choice>
+      <xs:choice minOccurs="0">
+        <xs:element name="ParameterList" maxOccurs="1" type="ComplexTokenType"/>
+        <xs:element name="Parameter" maxOccurs="unbounded" type="ComplexTokenType"/>
+      </xs:choice>
+      <xs:choice minOccurs="0">
         <xs:element name="StatementList" maxOccurs="1" type="ComplexTokenType"/>
         <xs:element name="Statement" maxOccurs="unbounded" type="ComplexTokenType"/>
       </xs:choice>
-      <xs:element name="Type" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
-      <xs:element name="Value" maxOccurs="unbounded" minOccurs="0" type="ComplexTokenType"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="ValueList" maxOccurs="1" type="ComplexTokenType"/>
+        <xs:element name="Value" maxOccurs="unbounded" type="ComplexTokenType"/>
+      </xs:choice>
     </xs:sequence>
     <xs:attributeGroup ref="ComplexTokenAttrGroup"/>
   </xs:complexType>

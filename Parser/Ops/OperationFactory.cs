@@ -28,6 +28,7 @@ public static class OperationFactory
   private static Collection<string> GetValueList (XElement? parent = null) => [.. parent?.Value.Split(' ', '\t') ?? []];
   private static IEnumerable<XElement> GetElems (XElement? parent = null) => parent?.Elements() ?? [];
   private static IEnumerable<XElement> GetElems (string name, XElement? parent = null) => parent?.Elements(NS + name) ?? [];
+  private static OperationIf? s_thisBlock;
   public static IOperation Produce (XElement? element)
   {
     try
@@ -66,7 +67,44 @@ public static class OperationFactory
 
       IEnumerable<IOperation> child_ops = GetOps(element);
 
-      return element.Name.LocalName switch
+      //Reset block if any non-conditional block is reached.
+      //This allows for multiple if blocks in a row without else if/else sections.
+      string lname = element.Name.LocalName;
+      if (lname is not "If" and not "ElseIf" and not "Else")
+        s_thisBlock = null;
+
+      static IOperation getIf ()
+      {
+        var section = GetIfOption();
+        var block = new OperationIf() { Options = [section] };
+        s_thisBlock = block;
+        return block;
+      }
+      static IOperation getElseIf ()
+      {
+        if (s_thisBlock is null)
+          throw Err.ThrowBadDef("ElseIf block without preceding If block.");
+        var section = GetIfOption();
+        s_thisBlock.Options.Add(section);
+        var temp = s_thisBlock;
+        if (section.Condition is null)
+        {
+          s_thisBlock = null;
+        }
+        return temp;
+      }
+      static IOperation getElse ()
+      {
+        if (s_thisBlock is null)
+          throw Err.ThrowBadDef("Else block without preceding If block.");
+        var section = GetIfOption();
+        s_thisBlock.Options.Add(section);
+        var temp = s_thisBlock;
+        s_thisBlock = null;
+        return temp;
+      }
+
+      return lname switch
       {
         "GotoOpIndex" => target is -1 ? new OperationJump(target_var, true) : new OperationJump(target),
         "GotoLabel" => new OperationJump(name),
@@ -102,8 +140,11 @@ public static class OperationFactory
         },
         "Tokenize" => new TokenizeOperation(input_var, output_var),
         "Terminate" => new OperationEnd(success.Like("false")),
-        "Break" => new OperationBreak(),
-        "Continue" => new OperationContinue(),
+        // Theses are setup during unpacking, so they can be used as placeholders for
+        // break/continue targets in loops and switches. They will be replaced with the
+        // correct target index during unpacking.
+        "Break" => OperationBreak.Null,
+        "Continue" => OperationContinue.Null,
         "Switch" => new OperationSwitch()
         {
           Condition = condition,
@@ -135,10 +176,9 @@ public static class OperationFactory
           ListKey = list_var,
           Operations = child_ops,
         },
-        "IfBlock" => new OperationIfBlock()
-        {
-          Options = [.. GetElems(element).Select(GetIfOption)],
-        },
+        "If" => getIf(),
+        "ElseIf" => getElseIf(),
+        "Else" => getElse(),
         "Initialize" => new InitializeOperation()
         {
           InitialKey = initial_var,
@@ -152,6 +192,8 @@ public static class OperationFactory
           Type = type,
           ParameterKeys = GetValueList(element)
         },
+        // TODO: Replace with expression evaluation system that can handle
+        // more than just basic math operations. It is built.
         "Divide" => new DivideOperation()
         {
           DividendKey = dividend_var,

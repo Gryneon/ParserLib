@@ -1,13 +1,12 @@
 namespace Parser.Ops.Text;
 
-public class DictionaryOperation (RxSCollection list, RegexOptions options = RegexOptions.None, bool fullMatchText = false, string input_key = "text", string output_key = "matches", RxS? full_match_fail = null) : Operation(input_key, output_key)
+public class DictionaryOperation (RxSCollection list, RegexOptions options, bool fullMatchText, string input_key, string output_key, RxS? full_match_fail) : Operation(input_key, output_key)
 {
   protected Regex OpRegex => new(list.Combined, options);
   protected Regex OpRegexFail => full_match_fail is null ? OpRegex : new(full_match_fail, options);
 
   protected override void Execute ()
   {
-    DebugIn("DictionaryOperation", "Execute");
     if (WorkData is string s)
     {
       WorkData = OpRegex.Matches(s).ToMDDCollection();
@@ -42,7 +41,6 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options = Reg
     {
       Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
     }
-    DebugOut();
   }
 
   public override string ToString ()

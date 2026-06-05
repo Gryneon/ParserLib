@@ -52,11 +52,6 @@ public abstract class Operation : IOperation
   protected OpStatus Status { get; set; } = OpStatus.Pass;
   protected Type? WorkDataType => WorkData?.GetType();
   #endregion
-  #region Calculated Properties
-  /// <summary>The adjusted status taking into account operation flags.</summary>
-  protected virtual OpStatus AdjustedStatus =>
-    Status is OpStatus.Skipped ? OpStatus.Skipped : Status.IsFail() && ContinueOnFail ? OpStatus.FailOverride : Status;
-  #endregion
   #region Operation Flags
   public bool ContinueOnFail { get; set; }
   public bool SkipOperation { get; set; }
@@ -114,7 +109,7 @@ public abstract class Operation : IOperation
 
     if (!NoExecution)
     {
-      DebugIn(this.TypeName, "Execute");
+      DebugIn(this.TypeName, nameof(Execute));
       Execute();
       DebugOut();
     }
@@ -122,7 +117,7 @@ public abstract class Operation : IOperation
       Data[OutputKey] = WorkData;
 
     DebugOut();
-    return AdjustedStatus;
+    return Status;
   }
   /// <summary>
   /// Performs the operation and stores the value in <c><see cref="WorkData"/></c>,
@@ -132,14 +127,7 @@ public abstract class Operation : IOperation
   /// </summary>
   /// <exception cref="OperationException"/>
   /// <exception cref="OperationBadDefinitionException"/>
-  protected virtual void Execute ()
-  {
-    Status = Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
-  }
-  protected void CheckUnpacked (XParser parser)
-  {
-    if (parser?.OpIndex == 0)
-      Status = Err.ThrowBadDef("Loop Pre-processing not complete.");
-  }
+  protected virtual void Execute () => Status = Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
+  protected void CheckUnpacked (int index) => Status = (index == 0) ? Err.ThrowBadDef("Loop Pre-processing not complete.") : Status;
   protected static IOperation JumpTo (int pos) => new OperationJump(pos);
 }

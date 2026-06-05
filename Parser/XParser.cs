@@ -23,8 +23,8 @@ public sealed class XParser
   /// <summary>Gets the file data as a list of bytes.</summary>
   public Spec LocalDefaultSpec =>
     Data?.HasData != true ? Lib["unknown"] :
-    Data.CanLoad<string>("initial") ? DefaultSpec.TextByLines :
-    Data.CanLoad<Memory<byte>>("initial") ? DefaultSpec.Binary :
+    Data.CanLoad<string>("initial") ? Lib["textbylines"] :
+    Data.CanLoad<Memory<byte>>("initial") ? Lib["binary"] :
     Lib["unknown"];
   public Spec? Spec { get; private set; }
   [NotNull] public Collection<IOperation>? Operations { get; } = [];
@@ -78,11 +78,12 @@ public sealed class XParser
     Spec.ThrowIfNull();
     if (Spec.Name.Like("unknown"))
     {
-      Spec = data is string
-          ? DefaultSpec.TextByLines
-        : data is IEnumerable<byte>
-          ? DefaultSpec.Binary
-        : throw new InvalidDataException("Data must by a byte array or a string.");
+      Spec = data switch
+      {
+        string => Lib["textbylines"],
+        IEnumerable<byte> => Lib["binary"],
+        _ => throw new InvalidDataException("Data must by a byte array or a string.")
+      };
     }
     OperationLoad();
     data.ThrowIfNull();
