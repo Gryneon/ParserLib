@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 using static Parser.Condition.KeyOption;
 
 namespace Parser.Condition;
@@ -17,7 +19,7 @@ public class ParsedExpression : IExpression
   #endregion
   [AllowNull]
   public DataStore Data { get; protected set; }
-  protected Collection<IValueNode> Sequence { get; } = [];
+  protected ImmutableArray<IValueNode> Sequence { get; private set; }
   [AllowNull]
   private Collection<IValueNode> _workingSequence;
   public ParsedExpression () { }
@@ -58,6 +60,15 @@ public class ParsedExpression : IExpression
     if (Expression.IsEmpty())
       return;
 
+    _workingSequence = [];
+
+    Dictionary<string, KeyOption> literalReference = new()
+    {
+      ["int"] = Integer,
+      ["dec"] = KeyOption.Decimal,
+      ["literal"] = Literal,
+    };
+
     Dictionary<string, KeyOption> groupKeyReference = new()
     {
       ["exists"] = CheckKeyExists,
@@ -87,19 +98,20 @@ public class ParsedExpression : IExpression
     string conditionPattern = new RxS(@"(?:(?:\b(?'exists'exists)|(?'countof'countof)|(?'typeof'typeof))\b)?\[(?<varname>.*?)\]|\{(?<literal>.*?)\}|(?'gteq'>=)|(?'lteq'<=)|(?'gt'>)|(?'lt'<)|(?'eq'==)|(?'noteq'!=)|(?:\b(?'like'like)|(?'seqeq'matches)|(?'is'is)\b)|(?'and'&&)|(?'or'\|\|)|(?'int'-?\d+)|(?'dec'-?\d*\.\d+)|(?:\b(?'true'(?i:true))|(?'false'(?i:false))|(?'null'(?i:null))\b)");
     foreach (Match m in Regex.Matches(Expression, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
     {
-      string? keyname = m.Groups.ContainsKey("varname") ? m.Groups["varname"].Value : null;
-
-      void processSpecialGroup (string group, KeyOption type, string? value)
+      void processLiterals ()
       {
-        if (m.Groups.ContainsKey(group))
-          Sequence.Add(new ConditionValue(type, value));
+        foreach (KeyValuePair<string, KeyOption> item in literalReference)
+        {
+          if (m.Groups.ContainsKey(item.Key))
+            _workingSequence.Add(new ConditionValue(item.Value, m.Groups[item.Key].Value));
+        }
       }
       void processKeyGroups ()
       {
         foreach (KeyValuePair<string, KeyOption> item in groupKeyReference)
         {
           if (m.Groups.ContainsKey(item.Key))
-            Sequence.Add(new ConditionValue(item.Value, keyname));
+            _workingSequence.Add(new ConditionValue(item.Value, m.Groups["varname"].Value));
         }
       }
       void processGroups ()
@@ -107,15 +119,15 @@ public class ParsedExpression : IExpression
         foreach (KeyValuePair<string, KeyOption> item in groupReference)
         {
           if (m.Groups.ContainsKey(item.Key))
-            Sequence.Add(new ConditionValue(item.Value, null));
+            _workingSequence.Add(new ConditionValue(item.Value, null));
         }
       }
 
       processKeyGroups();
       processGroups();
-      processSpecialGroup("int", Integer, m.Groups["int"].Value);
-      processSpecialGroup("dec", KeyOption.Decimal, m.Groups["dec"].Value);
-      processSpecialGroup("literal", Literal, m.Groups["literal"].Value);
+      processLiterals();
+
+      Sequence = [.. _workingSequence];
     }
   }
   protected static object? Operate (KeyOption op, object? lobj, object? robj)
