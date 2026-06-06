@@ -20,6 +20,11 @@ public static class OperationFactory
     Value = parent?.Attribute(NS + "value")?.Value,
     Operations = GetOps(parent)
   };
+  private static IEnumerable<SwitchCaseItem> GetSwitchCases (XElement? parent = null)
+  {
+    IEnumerable<SwitchCaseItem> cases = GetElems("Case", parent).Select(GetCase);
+    object def =
+  }
   private static IfBlockConditional GetIfOption (XElement? parent = null) => new()
   {
     Condition = parent?.Attribute(NS + "condition")?.Value,
@@ -132,7 +137,7 @@ public static class OperationFactory
           ListKey = list_var,
           Position = position == -1 ? 0 : position,
         },
-        "SetCursorPos" => new OperationSetCursor()
+        "SetCursorPos" => new SetCursorOperation()
         {
           CursorKey = cursor_var,
           Position = position,
@@ -149,8 +154,7 @@ public static class OperationFactory
         "Switch" => new OperationSwitch()
         {
           Condition = condition,
-          Cases = [.. GetElems("Case", element).Select(GetCase)],
-          Default = GetCase(GetElems("Default", element).Single())
+          Cases = [.. GetSwitchCases(element)],
         },
         "ForCount" => new ForCountOperation()
         {

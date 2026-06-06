@@ -1,6 +1,6 @@
 namespace Parser.Ops;
 
-public sealed class OperationSetCursor () : Operation
+public sealed class SetCursorOperation () : Operation
 {
   public required string CursorKey { get; init; }
   public int Position { get; init; } = -1;

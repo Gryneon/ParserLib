@@ -1,6 +1,7 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
 namespace Parser.Tokens;
+
 public sealed class TokenAssembler
 {
   private const string Area = nameof(TokenAssembler);
@@ -40,23 +41,12 @@ public sealed class TokenAssembler
     Validate();
     if (_rule.GroupSequence.IsEmpty())
     {
-      if (_rule.RuleStringData is null)
-        throw new InvalidOperationException("No valid data in rule.");
-
-      string data = _rule.RuleStringData;
-
-      string[] data_strings = data.Split([' ', '\t'], 255, SSORT);
-      foreach (string item in data_strings)
+      string? data = _rule.RuleStringData
+        ?? throw new InvalidOperationException("No valid data in rule.");
+      foreach (string item in data.Split([' ', '\t'], 255, SSORT))
       {
-        try
-        {
-          _rule.GroupSequence.Add(ChkToken.Parse(item, _spec));
-        }
-        catch (ArgumentException ae)
-        {
-          Log(MsgClass.Error, "TokenAssembler", "Parse", $"{ae.Message}");
-          continue;
-        }
+        try { _rule.GroupSequence.Add(ChkToken.Parse(item, _spec)); }
+        catch (ArgumentException ae) { Log(MsgClass.Error, "TokenAssembler", "Parse", $"{ae.Message}"); }
       }
     }
     DebugOut();
