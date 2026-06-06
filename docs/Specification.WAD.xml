@@ -4,9 +4,6 @@
         <name>Specification.WAD</name>
     </assembly>
     <members>
-        <member name="T:Specification.WAD.Definition">
-            <summary>A static class containing the WAD, WAD2, and PAK specificiations.</summary>
-        </member>
         <member name="T:Specification.WAD.Properties.Resources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

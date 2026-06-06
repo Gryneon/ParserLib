@@ -1,20 +1,20 @@
 namespace Parser.Ops;
 
-public class OperationJump : Operation
+public class JumpOperation : Operation
 {
   protected int TargetIndex { get; set; }
   private string? TargetIndexVar { get; }
   private string? TargetLabel { get; }
   public override bool NoInput => true;
   public override bool NoOutput => true;
-  public OperationJump (int index)
+  public JumpOperation (int index)
   {
     TargetIndex = index;
 
     if (TargetIndex < 0)
       _ = Err.ThrowBadDef("Cannot jump to a negative index.");
   }
-  public OperationJump (string label_or_var, bool use_var = false)
+  public JumpOperation (string label_or_var, bool use_var = false)
   {
     TargetIndex = -1;
     if (use_var)
@@ -27,7 +27,7 @@ public class OperationJump : Operation
     }
   }
 
-  protected OperationJump () { }
+  protected JumpOperation () { }
   protected override void Execute ()
   {
     int index;

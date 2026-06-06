@@ -58,9 +58,9 @@
         <member name="M:Specification.IPL.CommandDataSet.#ctor">
             <summary>Creates an empty object. IsNull would equal <see langword="true"/>.</summary>
         </member>
-        <member name="M:Specification.IPL.CommandDataSet.#ctor(Common.Regexp.MatchDataSet)">
-            <summary>Creates an object from a <see cref="T:Common.Regexp.MatchDataSet"/>. IsNull would equal <see langword="false"/>.</summary>
-            <param name="mdd">The <see cref="T:Common.Regexp.MatchDataSet"/> to create an object from.</param>
+        <member name="M:Specification.IPL.CommandDataSet.#ctor(Common.RegExp.MatchDataSet)">
+            <summary>Creates an object from a <see cref="T:Common.RegExp.MatchDataSet"/>. IsNull would equal <see langword="false"/>.</summary>
+            <param name="mdd">The <see cref="T:Common.RegExp.MatchDataSet"/> to create an object from.</param>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.#ctor(System.String)">
             <summary>Creates an object from a <see cref="T:System.String"/>. IsNull would equal <see langword="false"/>.</summary>
@@ -119,7 +119,7 @@
         <member name="M:Specification.IPL.CommandDataSet.Serialize">
             <inheritdoc/>
         </member>
-        <member name="M:Specification.IPL.CommandDataSet.Generate(Common.Regexp.MatchDataSet)">
+        <member name="M:Specification.IPL.CommandDataSet.Generate(Common.RegExp.MatchDataSet)">
             <inheritdoc/>
         </member>
         <member name="M:Specification.IPL.CommandDataSet.op_Equality(Specification.IPL.CommandDataSet,Specification.IPL.CommandDataSet)">

@@ -97,11 +97,16 @@ public abstract class Operation : IOperation
   public OpStatus DoOperation (XParser parser_ref)
   {
     DebugIn(Area, "DoOperation");
+
     if (SkipOperation)
       return OpStatus.Skipped;
 
+    if (this is IPlaceholderOperation ipo)
+      ipo.CheckUnpacked();
+
     parser_ref.ThrowIfNull();
     Parser = parser_ref;
+
     WorkData = null;
 
     if (!NoInput)
@@ -128,6 +133,5 @@ public abstract class Operation : IOperation
   /// <exception cref="OperationException"/>
   /// <exception cref="OperationBadDefinitionException"/>
   protected virtual void Execute () => Status = Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
-  protected void CheckUnpacked (int index) => Status = (index == 0) ? Err.ThrowBadDef("Loop Pre-processing not complete.") : Status;
-  protected static IOperation JumpTo (int pos) => new OperationJump(pos);
+  protected static IOperation JumpTo (int pos) => new JumpOperation(pos);
 }

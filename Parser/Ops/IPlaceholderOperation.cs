@@ -9,4 +9,8 @@ public interface IPlaceholderOperation
   /// <param name="parser_ref">The parser reference.</param>
   /// <returns>The operation count after unpacking.</returns>
   int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null);
+  /// <summary>Checks if the operation properly unpacked.</summary>
+  /// <returns>Returns if the operation unpacked correctly, otherwise it will throw a <see  cref="OperationUnpackingException"/>.</returns>
+  /// <exception cref="OperationUnpackingException">The operation did not unpack correctly.</exception>
+  void CheckUnpacked ();
 }

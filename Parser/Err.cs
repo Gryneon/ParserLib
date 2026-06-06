@@ -9,7 +9,7 @@ public static class Err
   /// <returns>Does not return.</returns>
   /// <exception cref="OperationBufferOverflowException"/>
   [DoesNotReturn]
-  public static OpStatus ThrowBufferOver (int position, int end_of_file) => throw new OperationBufferOverflowException(position, end_of_file);
+  public static dynamic ThrowBufferOver (int position, int end_of_file) => throw new OperationBufferOverflowException(position, end_of_file);
   /// <summary>Throws a bad input exception.</summary>
   /// <param name="expected">The expected input.</param>
   /// <param name="got">The input recieved.</param>
@@ -25,4 +25,6 @@ public static class Err
   public static dynamic ThrowBadResult (string msg) => throw new OperationBadResultException(msg);
   [DoesNotReturn]
   public static dynamic ThrowNoSpec (string msg) => throw new SpecNotDefinedException(msg);
+  [DoesNotReturn]
+  public static dynamic ThrowUnpacked (string msg) => throw new OperationUnpackingException(msg);
 }

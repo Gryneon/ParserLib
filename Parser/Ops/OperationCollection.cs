@@ -25,4 +25,5 @@ public sealed class OperationCollection : Operation, IReadOnlyCollection<IOperat
   }
   public IEnumerator<IOperation> GetEnumerator () => _operations.GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
+  public void CheckUnpacked () => Err.ThrowUnpacked("This operation replaces itself with a jump operation, unpacking did not occur.");
 }

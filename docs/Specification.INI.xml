@@ -181,7 +181,7 @@
             <summary>Creates a property from an IProperty interface</summary>
             <param name="iprop">The other property.</param>
         </member>
-        <member name="M:Specification.INI.PropertyObj.Generate(Common.Regex.MatchDataSet)">
+        <member name="M:Specification.INI.PropertyObj.Generate(Common.RegExp.MatchDataSet)">
             <inheritdoc/>
             <remarks>
             <list type="table">

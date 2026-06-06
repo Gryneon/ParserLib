@@ -76,9 +76,10 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable, IRe
 
     foreach (string path in Directory.EnumerateFiles("Specs"))
     {
-      Spec loaded = SpecInstructionParser.LoadSpec(path);
-
-      lib._specs[loaded.Name] = loaded;
+      foreach (Spec spec in SpecInstructionParser.LoadSpecFile(path))
+      {
+        lib._specs[spec.Name] = spec;
+      }
     }
 
     Log(MsgClass.BlueInfo, $"{lib._specs.Count} Specs Loaded.");

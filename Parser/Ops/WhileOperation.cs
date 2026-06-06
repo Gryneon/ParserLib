@@ -4,7 +4,7 @@ public sealed class WhileOperation : LoopOperation
 {
   /// <summary>While Condition</summary>
   public required string? Condition { get; init; }
-  protected override IOperation Continue => new OperationContinue(LoopIndex, 0, CursorKey);
+  protected override IOperation ContinueOp => new OperationContinue(LoopIndex, 0, CursorKey);
   protected override IOperation StartLoop
   {
     get
@@ -17,8 +17,6 @@ public sealed class WhileOperation : LoopOperation
 
   protected override void Execute ()
   {
-    CheckUnpacked(LoopIndex);
-
     Data[CursorKey] = new CursorData(Parser);
     Parser.SetNextOperationIndex(LoopIndex);
   }

@@ -8,7 +8,7 @@ public static class OperationFactory
 {
   private static readonly XNamespace NS = "Parser/Spec";
 
-  private static string? GetA (string name, XElement? parent = null) => parent?.Attribute(NS + name)?.Value;
+  private static string? GetA (string name, XElement? parent = null) => parent?.Attribute(name)?.Value;
   private static int GetI (string name, XElement? parent = null) => GetA(name, parent) is not string s ? -1 : int.Parse(s, CIIC);
   private static string GetS (string name, XElement? parent = null) => GetA(name, parent) ?? SE;
   private static Collection<IOperation> GetOps (XElement? parent = null)
@@ -26,7 +26,7 @@ public static class OperationFactory
     Operations = GetOps(parent)
   };
   private static Collection<string> GetValueList (XElement? parent = null) => [.. parent?.Value.Split(' ', '\t') ?? []];
-  private static IEnumerable<XElement> GetElems (XElement? parent = null) => parent?.Elements() ?? [];
+  //private static IEnumerable<XElement> GetElems (XElement? parent = null) => parent?.Elements() ?? [];
   private static IEnumerable<XElement> GetElems (string name, XElement? parent = null) => parent?.Elements(NS + name) ?? [];
   private static OperationIf? s_thisBlock;
   public static IOperation Produce (XElement? element)
@@ -75,8 +75,8 @@ public static class OperationFactory
 
       static IOperation getIf ()
       {
-        var section = GetIfOption();
-        var block = new OperationIf() { Options = [section] };
+        IfBlockConditional section = GetIfOption();
+        OperationIf block = new() { Options = [section] };
         s_thisBlock = block;
         return block;
       }
@@ -84,9 +84,9 @@ public static class OperationFactory
       {
         if (s_thisBlock is null)
           throw Err.ThrowBadDef("ElseIf block without preceding If block.");
-        var section = GetIfOption();
+        IfBlockConditional section = GetIfOption();
         s_thisBlock.Options.Add(section);
-        var temp = s_thisBlock;
+        OperationIf temp = s_thisBlock;
         if (section.Condition is null)
         {
           s_thisBlock = null;
@@ -97,17 +97,17 @@ public static class OperationFactory
       {
         if (s_thisBlock is null)
           throw Err.ThrowBadDef("Else block without preceding If block.");
-        var section = GetIfOption();
+        IfBlockConditional section = GetIfOption();
         s_thisBlock.Options.Add(section);
-        var temp = s_thisBlock;
+        OperationIf temp = s_thisBlock;
         s_thisBlock = null;
         return temp;
       }
 
       return lname switch
       {
-        "GotoOpIndex" => target is -1 ? new OperationJump(target_var, true) : new OperationJump(target),
-        "GotoLabel" => new OperationJump(name),
+        "GotoOpIndex" => target is -1 ? new JumpOperation(target_var, true) : new JumpOperation(target),
+        "GotoLabel" => new JumpOperation(name),
         "Label" => new OperationLabel(name),
         "ReadData" when length_var.IsEmpty() => new ReadDataOperation()
         {
@@ -139,6 +139,7 @@ public static class OperationFactory
           PositionKey = position_var
         },
         "Tokenize" => new TokenizeOperation(input_var, output_var),
+        "TokenAssemble" => new TokenAssembleOperation(input_var, output_var),
         "Terminate" => new OperationEnd(success.Like("false")),
         // Theses are setup during unpacking, so they can be used as placeholders for
         // break/continue targets in loops and switches. They will be replaced with the
@@ -192,6 +193,7 @@ public static class OperationFactory
           Type = type,
           ParameterKeys = GetValueList(element)
         },
+        "Print" => new DebugPrintKeyOperation(check_var),
         // TODO: Replace with expression evaluation system that can handle
         // more than just basic math operations. It is built.
         "Divide" => new DivideOperation()

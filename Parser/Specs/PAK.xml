@@ -3,7 +3,6 @@
   <Spec>
     <Name>pak</Name>
     <TextFile>false</TextFile>
-    <TokenLookups></TokenLookups>
     <Instructions>
       <Label name="Start"/>
       <MakeCursor cursor_var="current_pos" list_var="bytes" position="0"/>

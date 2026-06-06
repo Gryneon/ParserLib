@@ -273,6 +273,11 @@
               Looks up a localized string similar to ParserLib\Specification.ZDoom\ACS\sample.acs.
             </summary>
         </member>
+        <member name="P:Specification.ZDoom.Properties.Resources.dec_mkii">
+            <summary>
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Decorate\Weapon_MkII.dec.
+            </summary>
+        </member>
         <member name="P:Specification.ZDoom.Properties.Resources.mapinfo_common">
             <summary>
               Looks up a localized string similar to ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt.

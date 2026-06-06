@@ -8,6 +8,14 @@ public sealed class OperationLabel (string name) : Operation, IPlaceholderOperat
   public override bool NoExecution => true;
   public override bool NoOutput => true;
 
+  public void CheckUnpacked ()
+  {
+    if (string.IsNullOrEmpty(Name.Trim()))
+    {
+      Err.ThrowUnpacked("Name is null or empty.");
+    }
+  }
+
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     parser_ref?.Labels.Add(Name, index);
