@@ -23,5 +23,5 @@ public class DebugPrintKeyOperation (string input_key) : Operation(input_key, SE
     }
   }
 
-  public override string ToString () => $"DebugPrintKeyOperation Key = \"{InputKey}\"";
+  public override string ToString () => $"DebugPrintKeyOperation Key = \"{LengthKey}\"";
 }

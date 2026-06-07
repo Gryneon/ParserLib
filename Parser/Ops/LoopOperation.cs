@@ -21,7 +21,7 @@ public abstract class LoopOperation : Operation, IPlaceholderOperation
   /// <summary>The inner operations with the breaks and continues configured.</summary>
   protected IEnumerable<IOperation> InnerOperations => Operations.Select(item => item switch
   {
-    OperationBreak ob => new OperationBreak(CurrentIndex, CursorKey),
+    OperationBreak ob => new OperationBreak(CurrentIndex + 1, CursorKey),
     OperationContinue oc => ContinueOp,
     _ => item
   });

@@ -4,12 +4,19 @@ namespace Common.Extensions;
 
 public static class SortedSetExtensions
 {
-  public static string ToString (this SortedSet<char>? set)
+  extension(SortedSet<char>? set)
   {
-    string s = SE;
-    foreach (char c in set ?? [])
-      s += c;
-    return s;
+    public string ToString ()
+    {
+      string s = SE;
+      foreach (char c in set ?? [])
+        s += c;
+      return s;
+    }
   }
-  public static void Add ([NotNull] this SortedSet<char> set, string chars) => set.UnionWith(chars);
+
+  extension([NotNull] SortedSet<char> set)
+  {
+    public void Add (string chars) => set.UnionWith(chars);
+  }
 }

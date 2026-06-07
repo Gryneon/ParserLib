@@ -20,7 +20,6 @@
       </ForCount>
       <Terminate success="true"/>
     </Instructions>
-
     <FileInferences initial="and">
       <Extension>wad</Extension>
       <Or>

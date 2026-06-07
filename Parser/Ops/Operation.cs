@@ -41,7 +41,7 @@ public abstract class Operation : IOperation
   #region Stored Keys & Data
   /// <summary>The input key provided.</summary>
   [NotNull]
-  public string InputKey { get; set; }
+  public string LengthKey { get; set; }
   /// <summary>The output key provided.</summary>
   public string OutputKey { get; init; }
   /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
@@ -60,8 +60,8 @@ public abstract class Operation : IOperation
   /// <summary>Whether or not this operation loads a key from a <see cref="DataStore"/>.</summary>
   /// <remarks>Set this to false on any operation that does not use or load data.</remarks>
 
-  [MemberNotNullWhen(false, nameof(InputKey), nameof(WorkData))]
-  public virtual bool NoInput => InputKey.IsEmpty();
+  [MemberNotNullWhen(false, nameof(LengthKey), nameof(WorkData))]
+  public virtual bool NoInput => LengthKey.IsEmpty();
   #endregion
   #region Reference Properties
   /// <summary>The reference to the parser.</summary>
@@ -84,13 +84,13 @@ public abstract class Operation : IOperation
   /// <summary>Constructor for a explicit operation object.</summary>
   protected Operation ()
   {
-    InputKey = SE;
+    LengthKey = SE;
     OutputKey = SE;
   }
   /// <summary>Single input key.</summary>
   protected Operation (string input_key, string output_key)
   {
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
   }
   #endregion
@@ -110,7 +110,7 @@ public abstract class Operation : IOperation
     WorkData = null;
 
     if (!NoInput)
-      WorkData = Data[InputKey];
+      WorkData = Data[LengthKey];
 
     if (!NoExecution)
     {

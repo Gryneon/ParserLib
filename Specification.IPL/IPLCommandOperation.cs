@@ -26,11 +26,11 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
         items = dic.Values;
         break;
       case IEnumerable<CommandDataSet> enm:
-        Log(MsgClass.BlueInfo, "Input is a collection of CommandData.");
+        Log(MsgClass.BlueInfo, "Input is a collection of CommandDataSet.");
         items = enm;
         break;
       default:
-        _ = Err.ThrowBadInput("IDictionary or IEnumerable of CommandDataSet", $"{WorkDataType}");
+        _ = Err.ThrowBadInput("IDictionary<CommandDataSet> or IEnumerable<CommandDataSet>", $"{WorkDataType}");
         throw null;
     }
 
@@ -121,7 +121,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       OpStatus assignCommon ()
       {
         setLineCmd();
-        if (Status.IsFail(ContinueOnFail)) { return Status; }
+        if (Status.IsFail && !ContinueOnFail) { return Status; }
         setMode();
         setFormat();
         setQty();
@@ -133,7 +133,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
 
       OpStatus status = assignCommon();
 
-      if (status.IsFail(ContinueOnFail))
+      if (status.IsFail && !ContinueOnFail)
       {
         Log(MsgClass.Warning, $"Failed to assign common properties for command: {item.CmdLetter}");
         Status = status;

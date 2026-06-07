@@ -20,28 +20,28 @@ public class FilterTokenOperation : Operation
   }
   public FilterTokenOperation (string input_key, string output_key, [StringSyntax("regex")] string rx, bool accept_any_match)
   {
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
     StrType = accept_any_match ? "AnyMatchInToken" : "MatchEntireToken";
     OpData = rx;
   }
   public FilterTokenOperation (string input_key, string output_key, object token_type) : base(input_key, output_key)
   {
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
     StrType = "TokenType";
     OpData = token_type.ToString();
   }
   public FilterTokenOperation (string input_key, string output_key, bool only_remove_empty_tokens) : base(input_key, output_key)
   {
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
     StrType = only_remove_empty_tokens ? "Empty" : "Whitespace";
   }
 
   protected override void Execute ()
   {
-    if (Data[InputKey] is IEnumerable<IToken> tc)
+    if (Data[LengthKey] is IEnumerable<IToken> tc)
     {
       Data[OutputKey] = Type switch
       {
@@ -56,7 +56,7 @@ public class FilterTokenOperation : Operation
     }
     else
     {
-      throw Err.ThrowBadInput("IEnumerable<IToken>", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput("IEnumerable<IToken>", Data[LengthKey].TypeName);
     }
   }
 }

@@ -20,10 +20,17 @@ public static class OperationFactory
     Value = parent?.Attribute(NS + "value")?.Value,
     Operations = GetOps(parent)
   };
+  private static SwitchCaseItem GetDefault (XElement? parent = null) => new()
+  {
+    IsDefaultCase = true,
+    Operations = GetOps(parent)
+  };
   private static IEnumerable<SwitchCaseItem> GetSwitchCases (XElement? parent = null)
   {
     IEnumerable<SwitchCaseItem> cases = GetElems("Case", parent).Select(GetCase);
-    object def =
+    XElement? def = GetElems("Default", parent).FirstOrDefault();
+
+    return def is not null ? cases.Append(GetDefault(def)) : cases;
   }
   private static IfBlockConditional GetIfOption (XElement? parent = null) => new()
   {
@@ -69,6 +76,8 @@ public static class OperationFactory
       string key_type = GetS("key_type", element);
       string value_type = GetS("value_type", element);
       string success = GetS("success", element);
+      string endian = GetS("endian", element);
+      string encoding = GetS("encoding", element);
 
       IEnumerable<IOperation> child_ops = GetOps(element);
 
@@ -121,11 +130,14 @@ public static class OperationFactory
           ContentKey = content_var,
           CursorKey = cursor_var,
           Position = position,
-          PositionKey = position_var
+          PositionKey = position_var,
+          OutputKey = output_var,
         },
-        "ReadData" when length_var.IsNotEmpty() => new ReadDataOperation(length_var, output_var)
+        "ReadData" when length_var.IsNotEmpty() => new ReadDataOperation
         {
           Mode = type,
+          LengthKey = length_var,
+          OutputKey = output_var,
           ContentKey = content_var,
           CursorKey = cursor_var,
           Position = position,

@@ -7,13 +7,13 @@ public class TokenizeOperation : Operation
 
   public TokenizeOperation (IEnumerable<TokenRule> rules, string input_key, string output_key)
   {
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
     Rules = [.. rules];
   }
   public TokenizeOperation (string input_key, string output_key)
   {
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
     Rules = [];
   }

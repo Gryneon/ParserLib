@@ -41,9 +41,6 @@ public static class Definition
     },
     TokenRules = [
       new(RT.Competitive, Str, $"\"{Gp(@"[^\\]|\\.").Any.Lazy}\""),
-      new(RT.TokenMatch, Bool, @"\b(true|false)\b"),
-      new(RT.TokenMatch, Null, @"\b(null)\b"),
-      new(RT.TokenMatch, Undef, @"\b(undefined)\b"),
       new(RT.TokenMatch, Num, @"-?(\d+(\.\d*)?|\.\d+)"),
       .. TokenRule.MakeWordMatchRules(false, [
         ("true", Bool),

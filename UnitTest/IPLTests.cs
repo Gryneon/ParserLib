@@ -10,7 +10,7 @@ public class IPLTests
   {
     XParser parser = new();
     OpStatus status = parser.ParseData(Definition.Spec, initial_string);
-    Assert.False(status.IsFail(false));
+    Assert.False(status.IsFail);
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);
     Assert.Contains("matches", parser.Data.Keys);
@@ -26,7 +26,7 @@ public class IPLTests
   {
     XParser parser = new();
     OpStatus status = parser.ParseFile(Definition.Spec, Helper.GitDir + label_file);
-    Assert.False(status.IsFail(false));
+    Assert.False(status.IsFail);
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);
     Assert.Contains("matches", parser.Data.Keys);

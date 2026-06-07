@@ -268,12 +268,12 @@
         <member name="F:Parser.OpStatus.EndCommand">
             <summary>Indicates that the operation sequence has been completed successfully, and no further operations are needed.</summary>
         </member>
-        <member name="M:Parser.OpStatusExtensions.IsFail(Parser.OpStatus,System.Boolean)">
+        <member name="M:Parser.OpStatusExtensions.get_IsFail(Parser.OpStatus)">
+            <inheritdoc cref="P:Parser.OpStatusExtensions.&lt;G&gt;$F6DF33A3E7BC049BA485872BF96B2A4E.IsFail"/>
+        </member>
+        <member name="P:Parser.OpStatusExtensions.&lt;G&gt;$F6DF33A3E7BC049BA485872BF96B2A4E.IsFail">
             <summary>Checks a status for failure.</summary>
-            <param name="status">The status to check.</param>
-            <param name="continueOnFail">The continue on fail value.</param>
             <returns><see langword="true"/> if the status was a failure code, <see langword="false"/> otherwise.</returns>
-            <remarks>If the <paramref name="continueOnFail"/> value is <see langword="true"/>, this method always returns <see langword="true"/>.</remarks>
         </member>
         <member name="T:Parser.Ops.DebugPrintKeyOperation">
             <summary>Prints a key that implements <see cref="T:Common.IPrintable"/>.</summary>
@@ -359,7 +359,7 @@
         </member>
         <member name="M:Parser.Ops.IPlaceholderOperation.CheckUnpacked">
             <summary>Checks if the operation properly unpacked.</summary>
-            <returns><see langword="true"/> if the operation unpacked correctly, <see langword="false"/> otherwise.</returns>
+            <returns>Returns if the operation unpacked correctly, otherwise it will throw a <see  cref="T:Parser.Exceptions.OperationUnpackingException"/>.</returns>
             <exception cref="T:Parser.Exceptions.OperationUnpackingException">The operation did not unpack correctly.</exception>
         </member>
         <member name="P:Parser.Ops.LoopOperation.CursorKey">
@@ -391,7 +391,7 @@
             <param name="msg">The exception message.</param>
             <exception cref="T:Parser.Exceptions.OperationException"></exception>
         </member>
-        <member name="P:Parser.Ops.Operation.InputKey">
+        <member name="P:Parser.Ops.Operation.LengthKey">
             <summary>The input key provided.</summary>
         </member>
         <member name="P:Parser.Ops.Operation.OutputKey">
@@ -866,8 +866,13 @@
         </member>
         <member name="F:Parser.Tokens.TokenRef.Inherit">
             <summary>This token sequence entry will supply any fields not already filled by other definitions from its own respective values.</summary>
-            <remarks>If a <see cref="T:Parser.Tokens.ComplexToken"/> was passed to any field of a <see cref="T:Parser.Tokens.ComplexToken"/> with this flag assigned, all of its parts would populate the one being created..
-            These properties would be overwritten by any defined token sequence entries.</remarks>
+            <remarks>
+            If a <see cref="T:Parser.Tokens.ComplexToken"/> was passed to any field of a <see cref="T:Parser.Tokens.ComplexToken"/> with this type assigned, all of its parts would populate the one being created.
+            These properties would be overwritten by any defined token sequence entries.<br/>
+            If a <see cref="T:Parser.Tokens.Token"/> was passed to any field of a <see cref="T:Parser.Tokens.ComplexToken"/> with this
+            type assigned, only the Token Type would copy, and the value would be assigned
+            to the <see cref="F:Parser.Tokens.TokenRef.Value"/> entry.<br/>
+            </remarks>
         </member>
         <member name="M:Parser.Tokens.TokenRule.#ctor(System.String,System.String)">
             <summary>Use this constructor to make a basic non-recurrsive group rule.</summary>

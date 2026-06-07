@@ -13,7 +13,7 @@ public class RemoveSymbolOperation : Operation
     Pattern = pattern;
     LookupGroup = lookupGroup;
     Nodes = nodes;
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
   }
 

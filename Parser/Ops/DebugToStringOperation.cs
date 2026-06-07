@@ -6,7 +6,7 @@ public class DebugToStringOperation : Operation
   /// <param name="input_key">The key to output the contents of.</param>
   public DebugToStringOperation (string input_key)
   {
-    InputKey = input_key;
+    LengthKey = input_key;
   }
 
   public override bool NoOutput => true;
@@ -15,7 +15,7 @@ public class DebugToStringOperation : Operation
   /// <remarks>This is a debugging operation and does not store data.</remarks>
   protected override void Execute ()
   {
-    switch (Data[InputKey])
+    switch (Data[LengthKey])
     {
       case string s:
         Log(MsgClass.Debug, s);
@@ -34,5 +34,5 @@ public class DebugToStringOperation : Operation
     }
   }
 
-  public override string ToString () => $"DebugToStringOperation Key = \"{InputKey}\"";
+  public override string ToString () => $"DebugToStringOperation Key = \"{LengthKey}\"";
 }

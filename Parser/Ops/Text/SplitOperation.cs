@@ -36,14 +36,14 @@ public class SplitOperation : Operation
   {
     Procedure = Type.Delim;
     Delims = [delimeter];
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
   }
   public SplitOperation (IEnumerable<string> delimeters, string input_key = "text", string output_key = "textparts")
   {
     Procedure = Type.Delim;
     Delims = [.. delimeters];
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
   }
   public SplitOperation ([SS("regex")] string regex, RegexOptions regex_options, string input_key = "text", string output_key = "textparts")
@@ -51,7 +51,7 @@ public class SplitOperation : Operation
     Procedure = Type.Regex;
     Delims = [regex];
     RXOptions = regex_options;
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
   }
   public SplitOperation (RxSCollection regexes, RegexOptions regex_options, string input_key = "text", string output_key = "textparts")
@@ -59,13 +59,13 @@ public class SplitOperation : Operation
     Procedure = Type.Regex;
     Delims = [.. regexes];
     RXOptions = regex_options;
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
   }
   public SplitOperation (string input_key = "text", string output_key = "textparts")
   {
     Procedure = Type.None;
-    InputKey = input_key;
+    LengthKey = input_key;
     OutputKey = output_key;
   }
   #endregion Constructors
@@ -75,12 +75,12 @@ public class SplitOperation : Operation
 
     Data[OutputKey] = Procedure switch
     {
-      Type.None when Data[InputKey] is string str => RX.LineEnd.Split(str),
-      Type.Delim when Data[InputKey] is string str => delimSplit(str),
-      Type.Delim when Data[InputKey] is IEnumerable<string> list => list.SelectMany(delimSplit),
-      Type.Regex when Data[InputKey] is string str => new Regex((Delims ?? []).TextJoin("|"), RXOptions).Split(str),
-      Type.Regex when Data[InputKey] is IEnumerable<string> list => list.SelectMany(str => new Regex((Delims ?? []).TextJoin("|"), RXOptions).Split(str)),
-      _ => Err.ThrowBadInput("string or list", Data[InputKey].TypeName),
+      Type.None when Data[LengthKey] is string str => RX.LineEnd.Split(str),
+      Type.Delim when Data[LengthKey] is string str => delimSplit(str),
+      Type.Delim when Data[LengthKey] is IEnumerable<string> list => list.SelectMany(delimSplit),
+      Type.Regex when Data[LengthKey] is string str => new Regex((Delims ?? []).TextJoin("|"), RXOptions).Split(str),
+      Type.Regex when Data[LengthKey] is IEnumerable<string> list => list.SelectMany(str => new Regex((Delims ?? []).TextJoin("|"), RXOptions).Split(str)),
+      _ => Err.ThrowBadInput("string or list", Data[LengthKey].TypeName),
     };
 
     Status = OpStatus.Pass;

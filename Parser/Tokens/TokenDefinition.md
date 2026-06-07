@@ -1,3 +1,6 @@
+
+# _OBSOLETE_
+
 # Token Rules Guide
 
   This is a guide to explain the new token system, and the rule syntax.

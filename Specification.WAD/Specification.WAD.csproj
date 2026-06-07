@@ -7,10 +7,6 @@
     <TargetFramework>net11.0</TargetFramework>
     <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <None Remove="Specification.WAD.csproj.lscache" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Roslynator.Analyzers" Version="4.15.0">

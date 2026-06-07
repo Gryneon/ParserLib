@@ -8,7 +8,7 @@ public sealed class XParser
   [AllowNull]
   internal static Library Lib;
   private const string Area = nameof(XParser);
-
+  private bool ActiveFailure => LastStatus.IsFail && !CurrentOp.ContinueOnFail;
   #region Public Properties
   /// <summary>The current operation index.</summary>
   public int OpIndex { get; private set; }
@@ -115,7 +115,7 @@ public sealed class XParser
   {
     DebugIn(Area, "ParseLoop");
 
-    while (NextOpIndex >= 0 && !LastStatus.IsFail(CurrentOp.ContinueOnFail))
+    while (NextOpIndex >= 0 && !ActiveFailure)
     {
       _ = PerformOperation();
     }
@@ -155,7 +155,7 @@ public sealed class XParser
     catch (OperationException o) { setExceptionData(Fail, o); }
     Log(MsgClass.Debug, $"Operation resulted in {LastStatus}.");
 
-    if (LastStatus is EndCommand || LastStatus.IsFail(CurrentOp.ContinueOnFail))
+    if (LastStatus is EndCommand || ActiveFailure)
       NextOpIndex = -1;
 
     AdvanceOperation();

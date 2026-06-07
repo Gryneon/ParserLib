@@ -2,7 +2,6 @@ namespace Parser.Ops;
 
 public sealed class ForCountOperation : LoopOperation
 {
-  public string? LengthKey { get; init; }
   public int Length { get; set; } = -1;
 
   protected override IOperation ContinueOp => new OperationContinue(LoopIndex, 1, CursorKey);

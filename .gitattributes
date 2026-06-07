@@ -2,22 +2,30 @@
 
 * text=auto eol=lf
 
-*.cs text eol=lf
-*.ini text eol=lf
-*.vnc text eol=lf
 *.acs text eol=lf
-*.zs text eol=lf
-*.ipl text eol=lf
-*.md text eol=lf
-*.xml text eol=lf
-*.xsd text eol=lf
-*.dtd text eol=lf
-*.reg text eol=lf
+*.bat text eol=lf
+*.cs text eol=lf
 *.csproj text eol=lf
-*.txt text eol=lf
+*.dtd text eol=lf
+*.ini text eol=lf
+*.ipl text eol=lf
+*.json text eol=lf
+*.lmp text eol=lf
+*.md text eol=lf
 *.ps1 text eol=lf
 *.psm1 text eol=lf
-*.bat text eol=lf
+*.reg text eol=lf
+*.txt text eol=lf
+*.vnc text eol=lf
+*.xml text eol=lf
+*.xsd text eol=lf
+*.zs text eol=lf
+LICENSE text eol=lf
 
 *.ico -text
 *.png -text
+*.wad -text
+*.pak -text
+*.jpg -text
+
+
