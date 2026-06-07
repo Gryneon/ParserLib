@@ -210,12 +210,10 @@
         </member>
         <member name="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsLower">
             <summary>Checks if this character is lowercase a thru z.</summary>
-            <param name="c">The character to check.</param>
             <returns>true is the character is between ascii 'a' and 'z', false otherwise.</returns>
         </member>
         <member name="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.Is16bit">
             <summary>Checks if this character must be represented in 16 bits (256-65535).</summary>
-            <param name="c">The character to check.</param>
             <returns><see langword="true"/> if it is within the specified range, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsWhitespace">
@@ -224,7 +222,6 @@
         </member>
         <member name="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.ToUpper">
             <summary>Gets the uppercase variant of this character, or the character, if there isn't one.</summary>
-            <param name="c">The character to make uppercase.</param>
             <returns>The uppercase variant, or the character itself.</returns>
         </member>
         <member name="T:Common.Extensions.DictionaryExtensions">
@@ -412,6 +409,10 @@
             <summary>Determines if a <see cref="T:System.Globalization.NumberStyles"/> object contains the binary flag.</summary>
             <returns><see langword="true"/> if <paramref name="styles"/> contains <see cref="F:System.Globalization.NumberStyles.AllowBinarySpecifier"/>, otherwise <see langword="false"/>.</returns>
         </member>
+        <member name="T:Common.Extensions.SpanExtensions.&lt;G&gt;$BFA23C8808B2873C0738C2637169E9F3.&lt;M&gt;$5EFF6029FDB3B46985DC897556F4B3E8">
+            <summary>Span Extensions</summary>
+            <param name="buffer">The span buffer to read from.</param>
+        </member>
         <member name="T:Common.Extensions.StringExtensions">
             <summary>Extensions for string objects.</summary>
         </member>
@@ -454,14 +455,20 @@
             <summary>Checks if this string is a positive integer.</summary>
             <returns><see langword="true"/> if the <see langword="string"/> is a positive integer, <see langword="false"/> otherwise.</returns>
         </member>
+        <member name="T:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.&lt;M&gt;$92988C5B2720EB08D27C8F55602303EC">
+            <summary>string extensions</summary>
+            <param name="text">The <see langword="string"/> to check.</param>
+        </member>
         <member name="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsEmpty">
             <summary>Checks if a <see langword="string"/> is <see langword="null"/> or empty.</summary>
-            <param name="text">The <see langword="string"/> to check.</param>
             <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="T:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.&lt;M&gt;$540C99D624ED2EECC4A4235F206A3178">
+            <summary>string extensions</summary>
+            <param name="text">The <see langword="string"/> to check.</param>
         </member>
         <member name="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsNotEmpty">
             <summary>Checks if a <see langword="string"/> is not <see langword="null"/> or empty.</summary>
-            <param name="text">The <see langword="string"/> to check.</param>
             <returns><see langword="false"/> if the <see langword="string"/> is empty or <see langword="null"/>, <see langword="true"/> otherwise.</returns>
         </member>
         <member name="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Like(System.String)">
@@ -470,6 +477,18 @@
             <param name="other">The other text.</param>
             <returns><see langword="true"/> if the values match, otherwise <see langword="false"/>.<br/>
             If either <paramref name="other"/> or <paramref name="text"/> are <see langword="null"/>, this method will return <see langword="false"/>.</returns>
+        </member>
+        <member name="T:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.&lt;M&gt;$95F501AA0E8724735C4141225132CAB6">
+            <summary>string extensions</summary>
+            <param name="text">The <see langword="string"/> to check.</param>
+        </member>
+        <member name="T:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.&lt;M&gt;$AD3B1481E6FD0D68AB4EC792EBD27222">
+            <summary>string extensions</summary>
+            <param name="s">The <see langword="string"/> to check.</param>
+        </member>
+        <member name="T:Common.Extensions.StringExtensions.&lt;G&gt;$F7FA263FC92DBCBA83A0107FB1627724.&lt;M&gt;$AEFD9F126DE2C6FCD08FD85135E85DEA">
+            <summary>string extensions</summary>
+            <param name="lines">The <see langword="string"/>[] to check.</param>
         </member>
         <member name="T:Common.Extensions.ReplaceNodeKVPConverter">
             <summary>Converter between a <see cref="T:Common.ReplaceNode"/>s and a <see cref="T:System.Collections.Generic.KeyValuePair"/>.</summary>

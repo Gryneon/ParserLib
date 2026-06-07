@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Catharsis.Commons" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.csproj" />
     <ProjectReference Include="..\Specification.INI\Specification.INI.csproj" />
     <ProjectReference Include="..\Specification.IPL\Specification.IPL.csproj" />
