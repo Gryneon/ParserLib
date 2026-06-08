@@ -5,8 +5,6 @@ namespace Parser.Ops;
 /// <param name="key">The key to wait for.</param>
 public class DebugWaitForInputOperation (ConsoleKey key = ConsoleKey.Enter) : Operation()
 {
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
 
   protected override void Execute ()
   {

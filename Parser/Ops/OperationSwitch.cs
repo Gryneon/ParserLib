@@ -8,8 +8,6 @@ public class OperationSwitch : Operation, IPlaceholderOperation
   public Collection<SwitchCaseItem> Cases { get; init; } = [];
   public SwitchCaseItem? Default => Cases.LastOrDefault(item => item.IsDefaultCase, null!);
   protected ParsedExpression Expression => new() { Expression = Condition };
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
   protected override void Execute ()
   {
     object? result = Expression.Evaluate(Data);

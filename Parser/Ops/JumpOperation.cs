@@ -5,8 +5,6 @@ public class JumpOperation : Operation
   protected int TargetIndex { get; set; }
   private string? TargetIndexVar { get; }
   private string? TargetLabel { get; }
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
   public JumpOperation (int index)
   {
     TargetIndex = index;

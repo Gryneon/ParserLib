@@ -21,36 +21,40 @@ namespace Parser.Ops.Text;
 public class ReplaceOperation : Operation
 {
   private readonly ReplaceNodes _nodes;
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   /// <summary>Creates a new <see cref="ReplaceOperation"/> with nodes.</summary>
   /// <param name="nodes">The replacement and look for pairs.</param>
-  /// <param name="input_key">The key to get the input from.</param>
-  /// <param name="output_key">The key to write the output to.</param>
-  public ReplaceOperation (ReplaceNodes nodes, string input_key, string output_key) : base(input_key, output_key) => _nodes = nodes;
-  public ReplaceOperation (string ln, string input_key, string output_key) : base(input_key, output_key) => _nodes = [(RX.LnEnd, ln)];
+  public ReplaceOperation (ReplaceNodes nodes) => _nodes = nodes;
+  public ReplaceOperation (string ln)
+  {
+
+    _nodes = [(RX.LnEnd, ln)];
+  }
 
   protected override void Execute ()
   {
-    if (WorkData is string s)
+    if (Data[InputKey] is string s)
     {
       foreach (ReplaceNode node in _nodes)
       {
         s = node.ReplaceRegex(s, Spec.RxOpt);
       }
-      WorkData = s;
+      Data[OutputKey] = s;
       Status = OpStatus.Pass;
     }
-    else if (WorkData is IEnumerable<string> list)
+    else if (Data[InputKey] is IEnumerable<string> list)
     {
       foreach (ReplaceNode node in _nodes)
       {
         list = [.. list.Select(line => node.ReplaceRegex(line, Spec.RxOpt))];
       }
-      WorkData = list.ToCollection();
+      Data[OutputKey] = list.ToCollection();
       Status = OpStatus.Pass;
     }
     else
     {
-      Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
     }
   }
 }

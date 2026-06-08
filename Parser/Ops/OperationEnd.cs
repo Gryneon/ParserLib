@@ -3,8 +3,6 @@ namespace Parser.Ops;
 /// <summary>This operation ends the operation sequence with a success.</summary>
 public sealed class OperationEnd (bool fail = false) : Operation
 {
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
   protected override void Execute ()
   {
     Parser.SetNextOperationIndex(-1);

@@ -2,7 +2,6 @@ namespace Parser.Ops;
 
 public class SampleOperation : Operation
 {
-  public override bool NoInput => true;
   protected string NewInputKey { get; init; }
   protected string ModInputKey { get; init; }
   protected string NewOutputKey { get; init; }
@@ -39,29 +38,13 @@ public abstract class Operation : IOperation
   }
   #endregion
   #region Stored Keys & Data
-  /// <summary>The input key provided.</summary>
-  [NotNull]
-  public string LengthKey { get; set; }
-  /// <summary>The output key provided.</summary>
-  public string OutputKey { get; init; }
-  /// <summary>The object to be assigned to the output key at after the <c><see cref="Execute"/></c> step completes successfully.</summary>
-  [AllowNull]
-  [MemberNotNull(nameof(WorkDataType))]
-  protected object WorkData { get; set; }
   /// <summary>The status of the operation.</summary>
-  protected OpStatus Status { get; set; } = OpStatus.Pass;
-  protected Type? WorkDataType => WorkData?.GetType();
+  protected OpStatus Status { get; set; } = OpStatus.AtStart;
   #endregion
   #region Operation Flags
   public bool ContinueOnFail { get; set; }
   public bool SkipOperation { get; set; }
-  public virtual bool NoOutput => SkipOperation;
   public virtual bool NoExecution => SkipOperation;
-  /// <summary>Whether or not this operation loads a key from a <see cref="DataStore"/>.</summary>
-  /// <remarks>Set this to false on any operation that does not use or load data.</remarks>
-
-  [MemberNotNullWhen(false, nameof(LengthKey), nameof(WorkData))]
-  public virtual bool NoInput => LengthKey.IsEmpty();
   #endregion
   #region Reference Properties
   /// <summary>The reference to the parser.</summary>
@@ -81,20 +64,14 @@ public abstract class Operation : IOperation
   }
   #endregion
   #region Constructors
-  /// <summary>Constructor for a explicit operation object.</summary>
-  protected Operation ()
-  {
-    LengthKey = SE;
-    OutputKey = SE;
-  }
-  /// <summary>Single input key.</summary>
-  protected Operation (string input_key, string output_key)
-  {
-    LengthKey = input_key;
-    OutputKey = output_key;
-  }
+  /// <summary>Constructor for an operation object.</summary>
+  protected Operation () { }
   #endregion
-  public OpStatus DoOperation (XParser parser_ref)
+  /// <summary>This method is the entry point for all operations.</summary>
+  /// <param name="parser_ref">The reference to the parser executing this operation.</param>
+  /// <returns>An <see cref="OpStatus"/> reflecting the result of the operation. Failures will be thrown,
+  /// and then caught by the <see cref="XParser"/>.</returns>
+  public OpStatus DoOperation ([NotNull] XParser parser_ref)
   {
     DebugIn(Area, "DoOperation");
 
@@ -104,34 +81,33 @@ public abstract class Operation : IOperation
     if (this is IPlaceholderOperation ipo)
       ipo.CheckUnpacked();
 
-    parser_ref.ThrowIfNull();
     Parser = parser_ref;
-
-    WorkData = null;
-
-    if (!NoInput)
-      WorkData = Data[LengthKey];
 
     if (!NoExecution)
     {
       DebugIn(this.TypeName, nameof(Execute));
       Execute();
       DebugOut();
+
+      if (Status is OpStatus.AtStart)
+        Log(MsgClass.Warning, $"Status was not defined in operation {this.TypeName}.");
     }
-    if (!NoOutput)
-      Data[OutputKey] = WorkData;
 
     DebugOut();
     return Status;
   }
   /// <summary>
-  /// Performs the operation and stores the value in <c><see cref="WorkData"/></c>,
-  /// and the <c><see cref="OpStatus"/></c> in <c><see cref="Status"/></c>.<br/>
-  /// If you output multiple values, set <c><see cref="NoOutput"/></c> to
-  /// <c><see langword="true"/></c> and handle the data saving here.
+  /// Performs the operation, storing and loading data from <see cref="Data"/>.<br/>
+  /// The <see cref="Status"/> property should be assigned a value,
+  /// if the value is <see cref="OpStatus.AtStart"/> upon completion, a warning will display.
   /// </summary>
   /// <exception cref="OperationException"/>
   /// <exception cref="OperationBadDefinitionException"/>
   protected virtual void Execute () => Status = Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
   protected static IOperation JumpTo (int pos) => new JumpOperation(pos);
+  public void ApplyProperties (bool cont, bool skip)
+  {
+    ContinueOnFail = cont || ContinueOnFail;
+    SkipOperation = skip || SkipOperation;
+  }
 }

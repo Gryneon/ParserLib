@@ -168,6 +168,7 @@ internal static class Program
     }
     DebugOut();
   }
+
   internal static void InitialTest (string spec, string file)
   {
     DebugIn("Program", "InitialTest");

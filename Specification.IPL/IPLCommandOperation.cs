@@ -1,10 +1,14 @@
+using Common.Extensions;
+
 using Parser.Ops;
 
 namespace Specification.IPL;
 
 /// <summary>An operation that fills out the mode, format, and field numbers.</summary>
-public class IPLCommandOperation (string input_key, string output_key) : Operation(input_key, output_key)
+public class IPLCommandOperation : Operation
 {
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   /// <inheritdoc/>
   protected override void Execute ()
   {
@@ -19,7 +23,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       bqty = 1;
     IEnumerable<CommandDataSet>? items;
 
-    switch (WorkData)
+    switch (Data[InputKey])
     {
       case IDictionary<int, CommandDataSet> dic:
         Log(MsgClass.BlueInfo, "Input is a dictionary of CommandDataSet.");
@@ -30,7 +34,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
         items = enm;
         break;
       default:
-        _ = Err.ThrowBadInput("IDictionary<CommandDataSet> or IEnumerable<CommandDataSet>", $"{WorkDataType}");
+        _ = Err.ThrowBadInput("IDictionary<CommandDataSet> or IEnumerable<CommandDataSet>", Data[InputKey].TypeName);
         throw null;
     }
 
@@ -140,7 +144,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
         return;
       }
     }
-    WorkData = newData;
+    Data[OutputKey] = newData;
     DebugOut();
   }
 }

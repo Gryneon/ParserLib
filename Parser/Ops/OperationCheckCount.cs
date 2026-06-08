@@ -4,8 +4,6 @@ public sealed class OperationCheckCount : Operation
 {
   public int BreakTarget { get; init; }
   public string CursorKey { get; init; }
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
 
   public OperationCheckCount (string cursor_key, int break_target)
   {

@@ -6,7 +6,6 @@ public class InitializeOperation : Operation
   public string? KeyType { get; init; }
   public string? ValueType { get; init; }
   public required string Type { get; init; }
-  public override bool NoInput => true;
   protected override void Execute ()
   {
     Type key = Type switch { "string" => typeof(string), _ => typeof(int) };

@@ -23,7 +23,7 @@ public static class Definition
     TokenType = typeof(ITT),
 
     Operations = [
-      new TokenizeOperation("text", "tokens"),
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
       new TokenAssembleOperation()
     ],
 

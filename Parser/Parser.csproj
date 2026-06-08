@@ -46,6 +46,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Specs\XML.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Specs\IPL.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Specs\PAK.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

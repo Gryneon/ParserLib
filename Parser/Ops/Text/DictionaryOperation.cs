@@ -4,15 +4,16 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options, bool
 {
   protected Regex OpRegex => new(list.Combined, options);
   protected Regex OpRegexFail => full_match_fail is null ? OpRegex : new(full_match_fail, options);
-
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   protected override void Execute ()
   {
-    if (WorkData is string s)
+    if (Data[InputKey] is string s)
     {
-      WorkData = OpRegex.Matches(s).ToMDDCollection();
+      Data[OutputKey] = OpRegex.Matches(s).ToMDDCollection();
       Status = OpStatus.Pass;
     }
-    else if (WorkData is IEnumerable<string> list)
+    else if (Data[InputKey] is IEnumerable<string> list)
     {
       Collection<MatchDataSet> result = [];
       foreach (string part in list)
@@ -35,11 +36,11 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options, bool
       }
 
       Status = OpStatus.Pass;
-      WorkData = result;
+      Data[OutputKey] = result;
     }
     else
     {
-      Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
+      Status = Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
     }
   }
 

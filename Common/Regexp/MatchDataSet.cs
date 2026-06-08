@@ -40,62 +40,17 @@ public sealed class MatchDataSet : GroupDataSet,
     Index = i;
   }
 
-  public MatchDataSet (ICollection<GroupDataSet> groups)
-  {
-    Groups = [.. groups.Select(g => g.ToKVP())];
-    Origin = default;
-    Index = -1;
-  }
-
   /// <summary>
   /// Empty constructor for serialization purposes only.</summary>
   public MatchDataSet () { }
-  public bool UsesGroupDefinitions => HasGroupStartingWithAny("m_", "t_");
-  /// <summary>Determines if a <see cref="MatchDataSet"/> has a certain marker.</summary>
-  /// <param name="markerName">The marker <b><i>without</i></b> the prefix. Use <see langword="null"/> to </param>
-  /// <returns><see langword="true"/> if the marker is present, <see langword="false"/> otherwise.</returns>
-  public bool HasMarker (string? markerName) => markerName is null ? HasGroupStartingWith("m_") : HasGroup($"m_{markerName}");
-  public bool HasProperty (string propName) => HasGroup($"m_prop_{propName}");
-  public bool HasListProperty (string propName) => HasGroup($"m_prop_list_{propName}");
-  public bool HasKVProperty (int index) => HasGroup($"m_prop_key_{index}") && HasGroup($"m_prop_value_{index}");
   /// <summary>Checks if the specified group exists in the match.</summary>
   /// <param name="group">The name of the group.</param>
   /// <returns><see langword="true"/> if the group exists; otherwise, <see langword="false"/>.</returns>
   public bool HasGroup (string group) => Groups.Keys.Any(item => item.Like(group));
   /// <summary>
-  /// Determines whether the specified group does not exist.</summary>
-  /// <param name="group">The name of the group to check. Cannot be null or empty.</param>
-  /// <returns><see langword="true"/> if the specified group does not exist; otherwise, <see langword="false"/>.</returns>
-  public bool DoesNotHaveGroup (string group) => !HasGroup(group);
-  /// <summary>
   /// Determines whether the specified group exists and contains no content.</summary>
   /// <param name="group">The name of the group to check. Cannot be null or empty.</param>
   /// <returns><see langword="true"/> if the group exists and its content is empty; otherwise, <see langword="false"/>.</returns>
-  public bool HasEmptyGroup (string group) => HasGroup(group) && Groups[group].Content.IsEmpty();
-  /// <summary>
-  /// Determines whether the specified group does not exist or exists but is empty.</summary>
-  /// <param name="group">The name of the group to check. Cannot be null or empty.</param>
-  /// <returns><see langword="true"/> if the group does not exist or exists but is empty; otherwise, <see langword="false"/>.</returns>
-  public bool HasEmptyOrNoGroup (string group) => !HasGroup(group) || HasEmptyGroup(group);
-  /// <summary>Determines whether all specified group names exist in the current collection of groups.</summary>
-  /// <param name="groups">A collection of group names to check for existence.</param>
-  /// <returns><see langword="true"/> if all specified group names exist in the collection; otherwise, <see langword="false"/>.</returns>
-  public bool HasGroups (IEnumerable<string> groups) => groups.All(HasGroup);
-  public bool HasAnyGroup () => Groups.Any(item => item.Key != "0");
-  /// <summary>Determines whether the current instance contains any of the specified group names.</summary>
-  /// <param name="groups">A collection of group names to check for existence.</param>
-  /// <returns><see langword="true"/> if at least one of the specified group names exists in the current instance;  otherwise,
-  /// <see langword="false"/>.</returns>
-  public bool HasAnyGroup (IEnumerable<string> groups) => groups.Any(HasGroup);
-  /// <summary>Determines whether any group name starts with the specified prefix.</summary>
-  /// <remarks>This method performs a case-insensitive comparison when checking for group names that start with
-  /// the specified prefix.</remarks>
-  /// <param name="namePart">The prefix to search for in group names. This value is case-insensitive.</param>
-  /// <returns><see langword="true"/> if at least one group name starts with the specified prefix; otherwise, <see
-  /// langword="false"/>.</returns>
-  public bool HasGroupStartingWith (string namePart) => Groups.Keys.Any(item => item.StartsWith(namePart, SCOIC));
-  public bool HasGroupStartingWithAny (params Collection<string> nameParts) => Groups.Keys.Any(item => item.StartsWithAny(nameParts, SCOIC));
-  /// <inheritdoc/>
   public new IEnumerator<GroupDataSet> GetEnumerator () => Groups.Values.GetEnumerator();
   /// <summary>
   /// Gets the GroupData associated with the specified group name.</summary>
@@ -142,38 +97,18 @@ public sealed class MatchDataSet : GroupDataSet,
       grps += Chars.CRLF;
       foreach (KeyValuePair<string, GroupDataSet> grp in Groups)
       {
-        grps += indent + i2 + grp.Key + " = " + grp.Value + Chars.CRLF;
+        grps += indent + i2 + grp.Key + " = " + grp.Value + Chars.LFs;
       }
-      grps += indent + i1 + "}" + Chars.CRLF;
+      grps += indent + i1 + "}" + Chars.LFs;
     }
     else
     {
-      grps += " <Empty> }" + Chars.CRLF;
+      grps += " <Empty> }" + Chars.LFs;
     }
 
     return head + grps;
   }
-  public Collection<IProperty<string>> MatchKVProperties
-  {
-    get
-    {
-      IEnumerable<KeyValuePair<string, string>> keys = Groups.Where(grp => grp.Key.StartsWith("m_prop_key_", SCOIC)).Select(g => (g.Key[7..], g.Value.Content).ToKVP());
-      IEnumerable<KeyValuePair<string, string>> values = Groups.Where(grp => grp.Key.StartsWith("m_prop_value_", SCOIC)).Select(g => (g.Key[11..], g.Value.Content).ToKVP());
-      IEnumerable<(KeyValuePair<string, string> First, KeyValuePair<string, string> Second)>? zip = keys.Zip(values);
-      Collection<IProperty<string>> result = [];
-      foreach ((KeyValuePair<string, string> first, KeyValuePair<string, string> second) in zip)
-      {
-        result.Add(new PropertyBase<string>() { Key = first.Value, Value = second.Value });
-      }
-      return result;
-    }
-  }
 
-  /// <summary>Gets the match properties as a collection of key-value pairs.</summary>
-  public Collection<KeyValuePair<string, string>> MatchProperties =>
-    [.. Groups.Where(grp => grp.Key.StartsWith("m_prop_", SCOIC)).Select(g => (g.Key[7..], g.Value.Content).ToKVP())];
-  public Collection<string> Markers =>
-    [.. Groups.Select(g => g.Key).Where(grp => grp.StartsWith("m_", SCOIC))];
   /// <summary>Returns a string representation of the current <see cref="MatchDataSet"/> object.</summary>
   /// <remarks>The returned string includes a header and a detailed list of all groups in the match. If the
   /// match is empty, the string will indicate that no groups are present.</remarks>
@@ -188,9 +123,6 @@ public sealed class MatchDataSet : GroupDataSet,
   bool ICollection<GroupDataSet>.Contains (GroupDataSet item) => throw new NotSupportedException();
   void ICollection<GroupDataSet>.CopyTo (GroupDataSet[] array, int arrayIndex) => throw new NotSupportedException();
   bool ICollection<GroupDataSet>.Remove (GroupDataSet item) => throw new NotSupportedException();
-  /// <summary>Creates a copy of the object.</summary>
-  /// <inheritdoc/>
-  public static MatchDataSet Generate (MatchDataSet input) => input is not null ? new(input.Origin) : throw new ANEx(nameof(input));
   public bool Equals (MatchDataSet? other)
   {
     if (other?.IsNull != false)

@@ -6,7 +6,6 @@ public sealed class PromptOperation : Operation
 {
   public required string Message { get; init; }
   public string? UserKey { get; init; }
-  public override bool NoInput => true;
   public Predicate<string>? Validation { get; init; }
 
   /// <summary>Constructor for <see cref="PromptOperation"/>.</summary>

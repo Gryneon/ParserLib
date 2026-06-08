@@ -24,18 +24,20 @@ public class ExternalOperation<TIn, TOut> (Func<TIn, TOut> operation, Func<TOut,
 {
   private readonly Func<TIn, TOut> _operation = operation;
   private readonly Func<TOut, bool> _validation = validation;
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
 
   protected override void Execute ()
   {
-    if (WorkData is TIn casted)
+    if (Data[InputKey] is TIn casted)
     {
       TOut result = _operation(casted);
       Status = _validation(result) ? OpStatus.Pass : Err.ThrowBadResult("Validation Failed");
-      WorkData = result;
+      Data[OutputKey] = result;
     }
     else
     {
-      Status = Err.ThrowBadInput($"{typeof(TIn)}", $"{WorkData?.GetType()}");
+      Status = Err.ThrowBadInput($"{typeof(TIn)}", Data[InputKey].TypeName);
     }
   }
 }

@@ -3,46 +3,41 @@
 namespace Parser.Ops.Text;
 
 /// <summary>Loads a path as text.</summary>
-/// <param name="input_key">The path to the file(s).</param>
-/// <param name="output_key">The key to store the text in.</param>
-/// <param name="ignoreMissing">Whether or not to </param>
-public class LoadOperation (string input_key, string output_key, bool ignoreMissing) : Operation(input_key, output_key)
+public class LoadOperation : Operation
 {
+  public bool IgnoreMissing { get; init; }
+  public bool LoadBinary { get; init; }
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
+  private dynamic DoLoad (string file)
+  {
+    if (File.Exists(file))
+    {
+      return LoadBinary ? new Memory<byte>(File.ReadAllBytes(file)) : File.ReadAllText(file);
+    }
+    else if (IgnoreMissing)
+    {
+      return LoadBinary ? Memory<byte>.Empty : SE;
+    }
+
+    throw Err.ThrowBadResult($"File {file} was not found.");
+  }
+
   protected override void Execute ()
   {
-    if (WorkData is string s && !File.Exists(s) && ignoreMissing)
+    if (Data[InputKey] is string str)
     {
-      Status = OpStatus.Skipped;
-    }
-    else if (WorkData is string s2 && File.Exists(s2))
-    {
-      //TODO: Text or bytes?
-      WorkData = File.ReadAllText(s2);
-      Status = OpStatus.Skipped;
-    }
-    else if (WorkData is IEnumerable<string> list)
-    {
-      Collection<string> result = [];
-      foreach (string ea in list)
-      {
-        if (!File.Exists(ea) && ignoreMissing)
-        {
-          continue;
-        }
-        else if (!File.Exists(ea))
-        {
-          Status = Err.ThrowBadResult($"File was missing ({ea})");
-        }
-
-        result.Add(File.ReadAllText(ea));
-      }
-      WorkData = result;
+      Data[OutputKey] = DoLoad(str);
       Status = OpStatus.Pass;
-      return;
+    }
+    else if (Data[InputKey] is IEnumerable<string> list)
+    {
+      Data[OutputKey] = (Collection<string>) [.. list.Select(DoLoad)];
+      Status = OpStatus.Pass;
     }
     else
     {
-      Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
+      throw Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
     }
   }
 }

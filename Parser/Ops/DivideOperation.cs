@@ -9,25 +9,10 @@ public class DivideOperation : Operation
 {
   public string? DivisorKey { get; init; }
   public string? DividendKey { get; init; }
+  public string? OutputKey { get; init; }
 
   public int Divisor { get; set; }
   public int Dividend { get; set; }
-
-  public DivideOperation () { }
-
-  public DivideOperation (int divisor, string dividend_key, string output_key)
-  {
-    Divisor = divisor;
-    DividendKey = dividend_key;
-    OutputKey = output_key;
-  }
-
-  public DivideOperation (string divisor_key, string dividend_key, string output_key)
-  {
-    DivisorKey = divisor_key;
-    DividendKey = dividend_key;
-    OutputKey = output_key;
-  }
 
   protected override void Execute ()
   {

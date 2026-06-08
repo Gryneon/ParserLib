@@ -11,6 +11,9 @@ public sealed class ReadDataOperation : Operation
   private bool IsValue => Mode.Like(["int", "integer", "int32", "value", "short", "byte", "long", "int16", "int64"]);
 
   public string? CursorKey { get; init; }
+  public string? OutputKey { get; init; }
+  public string? LengthKey { get; init; }
+
   public int Length { get; set; } = -1;
   public required string Mode { get; init; }
   public int Position { get; set; } = -1;
