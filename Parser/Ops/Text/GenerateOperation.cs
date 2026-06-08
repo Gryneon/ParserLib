@@ -23,7 +23,7 @@ namespace Parser.Ops.Text;
 /// <see cref="OS.FailNoSuchVarName"/>: The key was not found in the <see cref="DataStore"/>.
 /// </code>
 /// </remarks>
-public class GenerateOperation<TIn, TOut> : Operation
+public class GenerateOperation<TIn, TOut> : Operation where TOut : notnull
 {
   protected Dictionary<int, TOut> Results { get; } = [];
   protected Predicate<TIn> Predicate { get; }
@@ -32,12 +32,10 @@ public class GenerateOperation<TIn, TOut> : Operation
   public required string OutputKey { get; init; }
   /// <summary>
   /// Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
-  /// Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result in <paramref name="output_key"/>.
+  /// Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result.
   /// </summary>
   /// <param name="func">The generation function.</param>
   /// <param name="predicate">The condition that the generation function requires.</param>
-  /// <param name="input_key">The key to pull data from.</param>
-  /// <param name="output_key">The key to store the output objects in.</param>
   public GenerateOperation (Func<TIn, TOut> func, Predicate<TIn> predicate)
   {
     Predicate = predicate;
@@ -71,8 +69,7 @@ public class GenerateOperation<TIn, TOut> : Operation
     {
       if (Predicate(mdd))
       {
-        TOut? result = Function(mdd);
-        Data[OutputKey] = result;
+        Data[OutputKey] = Function(mdd);
         Status = OS.Pass;
       }
       else

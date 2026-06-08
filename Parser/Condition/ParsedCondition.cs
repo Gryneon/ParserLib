@@ -26,6 +26,8 @@ public class ParsedExpression : IExpression
   [SetsRequiredMembers]
   protected ParsedExpression (string expression) => Expression = expression;
 
+  public static explicit operator ParsedExpression (string expression) => new(expression);
+
   protected object? GetValue (ConditionValue @ref) => @ref.Type switch
   {
     LoadKey => Data[@ref.Key],

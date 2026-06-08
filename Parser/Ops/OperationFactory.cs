@@ -165,7 +165,7 @@ public static class OperationFactory
         "Continue" => OperationContinue.Null,
         "Switch" => new OperationSwitch()
         {
-          Condition = condition,
+          ConditionString = condition,
           Cases = [.. GetSwitchCases(element)],
         },
         "ForCount" => new ForCountOperation()

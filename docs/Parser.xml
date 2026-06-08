@@ -139,11 +139,23 @@
             <returns>Does not return.</returns>
             <exception cref="T:Parser.Exceptions.OperationBadInputTypeException"/>
         </member>
+        <member name="T:Parser.Exceptions.InvalidFileInferenceException">
+            <summary>Thrown when there is a problem parsing the file inferences.</summary>
+        </member>
         <member name="T:Parser.Exceptions.InvalidDefinitionException">
             <summary>Represents an exception that is thrown when an invalid parse type is passed to a generate operation.</summary>
         </member>
-        <member name="T:Parser.Exceptions.OperationUnpackingException">
-            <summary>Represents an exception that is thrown when an a packed operation is executed. Operations that must unpack must do so prior to execution.</summary>
+        <member name="T:Parser.Exceptions.OperationBadInputTypeException">
+            <summary>Thrown when the operation expects a different type of input than what it was given.</summary>
+        </member>
+        <member name="T:Parser.Exceptions.OperationBadResultException">
+            <summary>A catch-all exception that simply means the operation's result was not what it should be.</summary>
+        </member>
+        <member name="T:Parser.Exceptions.OperationBufferOverflowException">
+            <summary>Thrown when a cursor overruns its maximum size, or an attempt to access a non-existant array item occurs.</summary>
+        </member>
+        <member name="T:Parser.Exceptions.OperationConditionStringException">
+            <summary>Thrown when a formatting or structural issue with parsing an expression string occurs.</summary>
         </member>
         <member name="T:Parser.Exceptions.OperationException">
             <summary>An exception thrown by an operation. Should be caught and converted to an <see cref="T:Parser.OpStatus"/>.</summary>
@@ -151,8 +163,14 @@
         <member name="T:Parser.Exceptions.OperationNoSuchVarException">
             <summary>An exception thrown by an operation when the key does nt exist in the <see cref="T:Parser.DataStore"/>.</summary>
         </member>
+        <member name="T:Parser.Exceptions.OperationUnpackingException">
+            <summary>Represents an exception that is thrown when an a packed operation is executed. Operations that must unpack must do so prior to execution.</summary>
+        </member>
         <member name="T:Parser.Exceptions.QuitException">
             <summary>This is for quickly jumping back to the parser to quit the parse cycle.</summary>
+        </member>
+        <member name="T:Parser.Exceptions.SpecNotDefinedException">
+            <summary>Thrown when the requested <see cref="T:Parser.Spec"/> does not exist in the <see cref="T:Parser.Library"/>.</summary>
         </member>
         <member name="M:Parser.Inference.InferenceNode.CheckFile(System.String)">
             <summary>Checks a file and determines if it satisfies the inference node.</summary>
@@ -277,13 +295,10 @@
         </member>
         <member name="T:Parser.Ops.DebugPrintKeyOperation">
             <summary>Prints a key that implements <see cref="T:Common.IPrintable"/>.</summary>
-            <param name="input_key">The key to print.</param>
             <remarks>If the key does not implement <see cref="T:Common.IPrintable"/>, nothing happens, and the operation returns <see cref="F:Parser.OpStatus.Skipped"/>.</remarks>
         </member>
-        <member name="M:Parser.Ops.DebugPrintKeyOperation.#ctor(System.String)">
-            <summary>Prints a key that implements <see cref="T:Common.IPrintable"/>.</summary>
-            <param name="input_key">The key to print.</param>
-            <remarks>If the key does not implement <see cref="T:Common.IPrintable"/>, nothing happens, and the operation returns <see cref="F:Parser.OpStatus.Skipped"/>.</remarks>
+        <member name="P:Parser.Ops.DebugPrintKeyOperation.InputKey">
+            <summary>The key to print.</summary>
         </member>
         <member name="M:Parser.Ops.DebugPrintKeyOperation.Execute">
             <inheritdoc/>
@@ -291,10 +306,6 @@
         </member>
         <member name="T:Parser.Ops.DebugToStringOperation">
             <summary>An operation that logs the contents of the provided key.</summary>
-        </member>
-        <member name="M:Parser.Ops.DebugToStringOperation.#ctor(System.String)">
-            <summary>Constructs an operation that logs the contents of the provided key.</summary>
-            <param name="input_key">The key to output the contents of.</param>
         </member>
         <member name="M:Parser.Ops.DebugToStringOperation.Execute">
             <inheritdoc/>
@@ -327,12 +338,6 @@
         </member>
         <member name="P:Parser.Ops.IOperation.SkipOperation">
             <summary>Specifies that the operation should be skipped.</summary>
-        </member>
-        <member name="P:Parser.Ops.IOperation.NoInput">
-            <summary>Specifies that the operation loads no data.</summary>
-        </member>
-        <member name="P:Parser.Ops.IOperation.NoOutput">
-            <summary>Specifies that the operation writes no data.</summary>
         </member>
         <member name="P:Parser.Ops.IOperation.NoExecution">
             <summary>Specifies that the operation performs no action, and simply advances to the next operation.</summary>
@@ -391,21 +396,8 @@
             <param name="msg">The exception message.</param>
             <exception cref="T:Parser.Exceptions.OperationException"></exception>
         </member>
-        <member name="P:Parser.Ops.Operation.LengthKey">
-            <summary>The input key provided.</summary>
-        </member>
-        <member name="P:Parser.Ops.Operation.OutputKey">
-            <summary>The output key provided.</summary>
-        </member>
-        <member name="P:Parser.Ops.Operation.WorkData">
-            <summary>The object to be assigned to the output key at after the <c><see cref="M:Parser.Ops.Operation.Execute"/></c> step completes successfully.</summary>
-        </member>
         <member name="P:Parser.Ops.Operation.Status">
             <summary>The status of the operation.</summary>
-        </member>
-        <member name="P:Parser.Ops.Operation.NoInput">
-            <summary>Whether or not this operation loads a key from a <see cref="T:Parser.DataStore"/>.</summary>
-            <remarks>Set this to false on any operation that does not use or load data.</remarks>
         </member>
         <member name="P:Parser.Ops.Operation.Parser">
             <summary>The reference to the parser.</summary>
@@ -417,17 +409,19 @@
             <summary>The reference to the specification.</summary>
         </member>
         <member name="M:Parser.Ops.Operation.#ctor">
-            <summary>Constructor for a explicit operation object.</summary>
+            <summary>Constructor for an operation object.</summary>
         </member>
-        <member name="M:Parser.Ops.Operation.#ctor(System.String,System.String)">
-            <summary>Single input key.</summary>
+        <member name="M:Parser.Ops.Operation.DoOperation(Parser.XParser)">
+            <summary>This method is the entry point for all operations.</summary>
+            <param name="parser_ref">The reference to the parser executing this operation.</param>
+            <returns>An <see cref="T:Parser.OpStatus"/> reflecting the result of the operation. Failures will be thrown,
+            and then caught by the <see cref="T:Parser.XParser"/>.</returns>
         </member>
         <member name="M:Parser.Ops.Operation.Execute">
             <summary>
-            Performs the operation and stores the value in <c><see cref="P:Parser.Ops.Operation.WorkData"/></c>,
-            and the <c><see cref="T:Parser.OpStatus"/></c> in <c><see cref="P:Parser.Ops.Operation.Status"/></c>.<br/>
-            If you output multiple values, set <c><see cref="P:Parser.Ops.Operation.NoOutput"/></c> to
-            <c><see langword="true"/></c> and handle the data saving here.
+            Performs the operation, storing and loading data from <see cref="P:Parser.Ops.Operation.Data"/>.<br/>
+            The <see cref="P:Parser.Ops.Operation.Status"/> property should be assigned a value,
+            if the value is <see cref="F:Parser.OpStatus.AtStart"/> upon completion, a warning will display.
             </summary>
             <exception cref="T:Parser.Exceptions.OperationException"/>
             <exception cref="T:Parser.Exceptions.OperationBadDefinitionException"/>
@@ -455,16 +449,31 @@
             <param name="validation">An optional validator.</param>
         </member>
         <member name="T:Parser.Ops.Text.CombineOperation">
-            <summary><!-- No matching elements were found for the following include tag --><include file="..\operation.xml" path="doc/members/member[@name=&quot;M:Parser.Ops.Operation`1.DoOperation(`0)&quot;]/*" /></summary>
-            <param name="input_key">The input key.</param>
-            <param name="output_key">The output key.</param>
-            <param name="delimiter">What to space the text parts with.</param>
+            <summary><summary>
+        Performs an operation that uses and may alter or reassign the data.<br />
+      </summary><remarks>
+        <see cref="F:Parser.OpStatus.Error" /> : The operation encountered a fatal error.<br />
+        <see cref="F:Parser.OpStatus.Pass" /> : The operation completed.<br />
+        <see cref="F:Parser.OpStatus.Skipped" /> : The operation was skipped or not executed. <br />
+        <see cref="F:Parser.OpStatus.FailBadInputNull" /> : The operation was given a null value. <br />
+        <see cref="F:Parser.OpStatus.FailBadInputType" /> : The operation was given an incompatible object as input. <br />
+        <see cref="F:Parser.OpStatus.FailBadOpDefinition" /> : The operation or specification definition has an error or is not valid. <br />
+        <see cref="F:Parser.OpStatus.FailBadOpImpossible" /> : The operation reached an impossible statement. <br />
+        <see cref="F:Parser.OpStatus.FailNullOpResult" /> : The operation resulted in a null value. <br />
+        <see cref="F:Parser.OpStatus.FailBufferOverflow" /> : The operation advanced beyond the EOL of the input. <br />
+        <see cref="F:Parser.OpStatus.FailNoSuchVarName" /> : The operation was supplied an invalid key.<br />
+        <see cref="F:Parser.OpStatus.FailNoSpec" /> : The operation does not have a valid <see cref="T:Parser.Spec" />.<br />
+        <see cref="F:Parser.OpStatus.EndCommand" /> : The operation completed and was the final operation. <br />
+      </remarks><exception cref="T:Parser.UnknownOperationException" /></summary>
         </member>
-        <member name="M:Parser.Ops.Text.CombineOperation.#ctor(System.String,System.String,System.Object)">
-            <summary><!-- No matching elements were found for the following include tag --><include file="..\operation.xml" path="doc/members/member[@name=&quot;M:Parser.Ops.Operation`1.DoOperation(`0)&quot;]/*" /></summary>
-            <param name="input_key">The input key.</param>
-            <param name="output_key">The output key.</param>
-            <param name="delimiter">What to space the text parts with.</param>
+        <member name="P:Parser.Ops.Text.CombineOperation.Delimeter">
+            <summary>The <see langword="char"/> or <see langword="string"/> to bridge the combined values of the data at <see cref="P:Parser.Ops.Text.CombineOperation.InputKey"/>.</summary>
+        </member>
+        <member name="P:Parser.Ops.Text.CombineOperation.InputKey">
+            <summary>The input key.</summary>
+        </member>
+        <member name="P:Parser.Ops.Text.CombineOperation.OutputKey">
+            <summary>The output key.</summary>
         </member>
         <member name="T:Parser.Ops.Text.ExternalOperation`2">
             <summary>
@@ -476,8 +485,6 @@
             <typeparam name="TOut">The type of object written to the output key.</typeparam>
             <param name="operation">The function to perform to change from a <typeparamref name="TIn"/> to a <typeparamref name="TOut"/>.</param>
             <param name="validation">The function that determines whether or not the conversion was a success.</param>
-            <param name="input_key">The key to get the input from.</param>
-            <param name="output_key">The key to write the output to.</param>
             <remarks><code>
             Inputs: <typeparamref name="TIn"/><br/>
             Output: <typeparamref name="TOut"/>
@@ -487,7 +494,7 @@
             <exception cref="T:Parser.Exceptions.OperationNoSuchVarException"/>
             <exception cref="T:Parser.Exceptions.OperationBadInputTypeException"/>
         </member>
-        <member name="M:Parser.Ops.Text.ExternalOperation`2.#ctor(System.Func{`0,`1},System.Func{`1,System.Boolean},System.String,System.String)">
+        <member name="M:Parser.Ops.Text.ExternalOperation`2.#ctor(System.Func{`0,`1},System.Func{`1,System.Boolean})">
             <summary>
             Takes an input as a <typeparamref name="TIn"/> object,
             and generates a <typeparamref name="TOut"/> from it,
@@ -497,8 +504,6 @@
             <typeparam name="TOut">The type of object written to the output key.</typeparam>
             <param name="operation">The function to perform to change from a <typeparamref name="TIn"/> to a <typeparamref name="TOut"/>.</param>
             <param name="validation">The function that determines whether or not the conversion was a success.</param>
-            <param name="input_key">The key to get the input from.</param>
-            <param name="output_key">The key to write the output to.</param>
             <remarks><code>
             Inputs: <typeparamref name="TIn"/><br/>
             Output: <typeparamref name="TOut"/>
@@ -509,9 +514,7 @@
             <exception cref="T:Parser.Exceptions.OperationBadInputTypeException"/>
         </member>
         <member name="T:Parser.Ops.Text.FilterTokenOperation">
-            <summary>
-            Represents an operation to filter tokens based on specified criteria.
-            </summary>
+            <summary>Represents an operation to filter tokens based on specified criteria.</summary>
         </member>
         <member name="T:Parser.Ops.Text.GenerateOperation`2">
             <summary>
@@ -536,27 +539,16 @@
             </code>
             </remarks>
         </member>
-        <member name="M:Parser.Ops.Text.GenerateOperation`2.#ctor(System.Func{`0,`1},System.Predicate{`0},System.String,System.String)">
+        <member name="M:Parser.Ops.Text.GenerateOperation`2.#ctor(System.Func{`0,`1},System.Predicate{`0})">
             <summary>
             Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
-            Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result in <paramref name="output_key"/>.
+            Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result.
             </summary>
             <param name="func">The generation function.</param>
             <param name="predicate">The condition that the generation function requires.</param>
-            <param name="input_key">The key to pull data from.</param>
-            <param name="output_key">The key to store the output objects in.</param>
         </member>
         <member name="T:Parser.Ops.Text.LoadOperation">
             <summary>Loads a path as text.</summary>
-            <param name="input_key">The path to the file(s).</param>
-            <param name="output_key">The key to store the text in.</param>
-            <param name="ignoreMissing">Whether or not to </param>
-        </member>
-        <member name="M:Parser.Ops.Text.LoadOperation.#ctor(System.String,System.String,System.Boolean)">
-            <summary>Loads a path as text.</summary>
-            <param name="input_key">The path to the file(s).</param>
-            <param name="output_key">The key to store the text in.</param>
-            <param name="ignoreMissing">Whether or not to </param>
         </member>
         <member name="T:Parser.Ops.Text.ReplaceOperation">
             <summary>
@@ -576,11 +568,9 @@
             </code>
             </remarks>
         </member>
-        <member name="M:Parser.Ops.Text.ReplaceOperation.#ctor(Common.ReplaceNodes,System.String,System.String)">
+        <member name="M:Parser.Ops.Text.ReplaceOperation.#ctor(Common.ReplaceNodes)">
             <summary>Creates a new <see cref="T:Parser.Ops.Text.ReplaceOperation"/> with nodes.</summary>
             <param name="nodes">The replacement and look for pairs.</param>
-            <param name="input_key">The key to get the input from.</param>
-            <param name="output_key">The key to write the output to.</param>
         </member>
         <member name="T:Parser.Ops.Text.SplitOperation">
             <summary>
@@ -603,16 +593,9 @@
             Internally uses a <see cref="T:Parser.Tokens.TokenAssembler"/> to do the work.
             </summary>
             <remarks><code>
-            Inputs: <see cref="T:Parser.Tokens.TokenCollection"/>, <see cref="T:System.Collections.Generic.IEnumerable`1">IEnumerable</see>&lt;<see cref="T:Parser.Tokens.IToken"/>&gt;<br/>
-            Output: <see cref="T:Parser.Tokens.TokenCollection"/></code>
+            InputKey: <see cref="T:Parser.Tokens.TokenCollection"/>, <see cref="T:System.Collections.Generic.IEnumerable`1">IEnumerable</see>&lt;<see cref="T:Parser.Tokens.IToken"/>&gt;<br/>
+            OutputKey: <see cref="T:Parser.Tokens.TokenCollection"/></code>
             <br/>
-            Statuses:
-            <code>
-            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
-            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/>.
-            <see cref="F:Parser.OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="T:Parser.DataStore"/>.
-            </code>
             </remarks>
         </member>
         <member name="T:Parser.Ops.Text.TokenizeOperation">

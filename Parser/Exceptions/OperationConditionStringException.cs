@@ -1,5 +1,6 @@
 namespace Parser.Exceptions;
 
+/// <summary>Thrown when a formatting or structural issue with parsing an expression string occurs.</summary>
 public class OperationConditionStringException : OperationException
 {
   public OperationConditionStringException () : base("Condition String Contained Errors") { }

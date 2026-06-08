@@ -211,12 +211,6 @@
         <member name="M:Specification.IPL.CommandValidator_InMode.Validate(Specification.IPL.CommandDataSet)">
             <inheritdoc/>
         </member>
-        <member name="P:Specification.IPL.Definition.Splits">
-            <summary>
-            <para>Command Splitter Regex</para>
-            Build from https://regex101.com/r/WJUiK8/2
-            </summary>
-        </member>
         <member name="F:Specification.IPL.Definition.Regex">
             <summary>
             <para>Command Reader Regex</para>
@@ -239,9 +233,6 @@
             <param name="innerException">The inner exception.</param>
         </member>
         <member name="T:Specification.IPL.IPLCommandOperation">
-            <summary>An operation that fills out the mode, format, and field numbers.</summary>
-        </member>
-        <member name="M:Specification.IPL.IPLCommandOperation.#ctor(System.String,System.String)">
             <summary>An operation that fills out the mode, format, and field numbers.</summary>
         </member>
         <member name="M:Specification.IPL.IPLCommandOperation.Execute">
