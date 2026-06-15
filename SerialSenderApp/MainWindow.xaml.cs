@@ -39,7 +39,7 @@ public partial class MainWindow : Window
       string s when s.Contains('\'', StringComparison.Ordinal) => "No single quotes.",
       string s when s.Contains("--", StringComparison.Ordinal) => "No Comment starts",
       string s when s.IsWhiteSpace() => "No whitespace only.",
-      null =>
+      null => "null",
       _ => ""
     };
 
