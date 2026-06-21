@@ -9,7 +9,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.[Cc]sproj.[Ll]scache
 
 # Windows BS
 thumbs.db
