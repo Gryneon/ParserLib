@@ -58,7 +58,7 @@ public sealed class DataStore
   [NotNull]
   public object this[string? key, dynamic value_if_not_found]
   {
-    get => key is null ? null! : LoadIfAble(key) ?? value_if_not_found;
+    get => key is null ? value_if_not_found : LoadIfAble(key) ?? value_if_not_found;
     set
     {
       if (key is null)
@@ -155,7 +155,7 @@ public sealed class DataStore
     }
     else if (initial is IEnumerable list)
     {
-      Log(MsgClass.Warning, "Initialization of an unknown list.");
+      Log(MsgClass.Warning, "Initialization of an unknown list.", this);
       Collection<object> coll = [.. list.OfType<object>()];
       Save("list", coll);
       Save("list_size", coll.Count);

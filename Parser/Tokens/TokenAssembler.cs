@@ -26,7 +26,7 @@ public sealed class TokenAssembler
     _rules = spec.GroupTokenRules;
     _spec = spec;
   }
-  private static void LogInfo (string message) => Log(MsgClass.BlueInfo, message);
+  private static void LogInfo (string message) => Log(MsgClass.BlueInfo, message, nameof(TokenAssembler));
 
   [MemberNotNull(nameof(_tokens), nameof(_rule))]
   private void Validate ()
@@ -46,7 +46,7 @@ public sealed class TokenAssembler
       foreach (string item in data.Split([' ', '\t'], 255, SSORT))
       {
         try { _rule.GroupSequence.Add(ChkToken.Parse(item, _spec)); }
-        catch (ArgumentException ae) { Log(MsgClass.Error, "TokenAssembler", "Parse", $"{ae.Message}"); }
+        catch (ArgumentException ae) { Log(MsgClass.Error, $"{ae.Message}", this); }
       }
     }
     DebugOut();

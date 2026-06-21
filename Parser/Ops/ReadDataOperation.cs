@@ -39,6 +39,17 @@ public sealed class ReadDataOperation : Operation
     }
 
     Memory<byte> mem2 = (Memory<byte>) Data[ContentKey];
+
+    int max = (int) Data["file_size"];
+
+    // Throw if Position over file max size
+    if (Position > max)
+      Err.ThrowBufferOver(Position, max);
+
+    // Truncate if length overshoots but initial is valid.
+    if (Position + count > max)
+      count = max - Position;
+
     return mem2.Slice(Position, count);
 
   }
@@ -49,7 +60,7 @@ public sealed class ReadDataOperation : Operation
 
     if (Length == 0 && IsBinary)
     {
-      Log(MsgClass.BlueInfo, "Found Marker");
+      Log(MsgClass.BlueInfo, "Found Marker", this);
     }
 
     if (Length == -1 && CursorKey is not null && (IsBinary || IsText))
@@ -69,7 +80,7 @@ public sealed class ReadDataOperation : Operation
       _ => Err.ThrowBadResult("Size was not valid")
     };
 
-    Log(MsgClass.BlueInfo, $"Read: {value}");
+    Log(MsgClass.BlueInfo, $"Read: {value}", this);
 
     Data[OutputKey] = value;
     Status = Pass;

@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.csproj.lscache
+*/*.csproj.lscache
 
 # Windows BS
 thumbs.db

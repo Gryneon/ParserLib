@@ -52,9 +52,9 @@ public sealed class TokenFactory
   };
   #endregion
   #region Private Logging Methods
-  private static void DebugLog (string msg) => Log(MC.Debug, msg);
-  private static void WarnLog (string msg) => Log(MC.Warning, msg);
-  private static void ErrorLog (string msg) => Log(MC.Error, msg);
+  private static void DebugLog (string msg) => Log(MC.Debug, msg, nameof(TokenFactory));
+  private static void WarnLog (string msg) => Log(MC.Warning, msg, nameof(TokenFactory));
+  private static void ErrorLog (string msg) => Log(MC.Error, msg, nameof(TokenFactory));
   #endregion
   #region Private Static Methods
   private static string GetRuleRegex (TokenRule rule, int? index = null)

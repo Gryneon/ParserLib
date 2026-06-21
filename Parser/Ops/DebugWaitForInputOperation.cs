@@ -9,7 +9,7 @@ public class DebugWaitForInputOperation (ConsoleKey key = ConsoleKey.Enter) : Op
   protected override void Execute ()
   {
     ConsoleKeyInfo keyInfo;
-    Log(MsgClass.Prompt, $"Press the {key} key to continue.");
+    Log(MsgClass.Prompt, $"Press the {key} key to continue.", this);
     do keyInfo = Console.ReadKey(true);
     while (keyInfo.Key != key);
   }

@@ -90,7 +90,7 @@ public abstract class Operation : IOperation
       DebugOut();
 
       if (Status is OpStatus.AtStart)
-        Log(MsgClass.Warning, $"Status was not defined in operation {this.TypeName}.");
+        Log(MsgClass.Warning, $"Status was not defined in operation {this.TypeName}.", this);
     }
 
     DebugOut();

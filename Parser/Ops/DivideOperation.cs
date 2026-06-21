@@ -33,7 +33,7 @@ public class DivideOperation : Operation
 
     int quotient = Dividend / Divisor;
     Data[OutputKey] = quotient;
-    Log(MsgClass.Debug, $"{Dividend} / {Divisor} = {quotient}");
+    Log(MsgClass.Debug, $"{Dividend} / {Divisor} = {quotient}", this);
     Status = Pass;
   }
 }

@@ -12,11 +12,11 @@ public class InitializeOperation : Operation
     Type value = System.Type.GetType(ValueType ?? SE) ?? typeof(object);
     Type container_type = Type switch
     {
-      "Set" => typeof(HashSet<object>).MakeGenericType(value),
-      "List" => typeof(List<object>).MakeGenericType(value),
-      "Collection" => typeof(Collection<object>).MakeGenericType(value),
-      "Dictionary" => typeof(Dictionary<int, object>).MakeGenericType(key, value),
-      "LinkedList" => typeof(LinkedList<object>).MakeGenericType(value),
+      "Set" => typeof(HashSet<>).MakeGenericType(value),
+      "List" => typeof(List<>).MakeGenericType(value),
+      "Collection" => typeof(Collection<>).MakeGenericType(value),
+      "Dictionary" => typeof(Dictionary<,>).MakeGenericType(key, value),
+      "LinkedList" => typeof(LinkedList<>).MakeGenericType(value),
       _ => throw new OperationBadDefinitionException($"Invalid Type ({Type}) on Initalize Operation.")
     };
 

@@ -21,7 +21,7 @@ public sealed class PromptOperation : Operation
   public PromptOperation () { }
   protected override void Execute ()
   {
-    Log(MsgClass.Prompt, Message);
+    Log(MsgClass.Prompt, Message, this);
     string userInput = Console.ReadLine()!;
 
     if (Validation?.Invoke(userInput) is null or true)

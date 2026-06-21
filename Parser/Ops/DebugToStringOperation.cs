@@ -11,18 +11,18 @@ public class DebugToStringOperation : Operation
     switch (Data[InputKey])
     {
       case string s:
-        Log(MsgClass.Debug, s);
+        Log(MsgClass.Debug, s, this);
         break;
       case IEnumerable<string> strs:
         foreach (string str in strs)
-          Log(MsgClass.Debug, str);
+          Log(MsgClass.Debug, str, this);
         break;
       case IEnumerable<IToken> itokens:
         foreach (IToken it in itokens)
-          Log(MsgClass.Debug, it.ToString2() ?? "<null data>");
+          Log(MsgClass.Debug, it.ToString2() ?? "<null data>", this);
         break;
       default:
-        Log(MsgClass.Debug, Data[InputKey]?.ToString2() ?? "<null data>");
+        Log(MsgClass.Debug, Data[InputKey]?.ToString2() ?? "<null data>", this);
         break;
     }
   }

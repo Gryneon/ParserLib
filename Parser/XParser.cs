@@ -68,7 +68,7 @@ public sealed class XParser
       if (op is IPlaceholderOperation ipo)
       {
         int newCount = ipo.Unpack(Operations, i, this);
-        Log(MsgClass.Debug, $"Operation Group Expanded From {oldCount} to {newCount}.");
+        Log(MsgClass.Debug, $"Operation Group Expanded From {oldCount} to {newCount}.", this);
       }
     }
     DebugOut();
@@ -131,19 +131,19 @@ public sealed class XParser
 
     if (CurrentOp.SkipOperation)
     {
-      Log(MsgClass.Debug, "Skip Operation Encountered");
+      Log(MsgClass.Debug, "Skip Operation Encountered", this);
       AdvanceOperation();
       DebugOut();
       return LastStatus = Skipped;
     }
 
-    Log(MsgClass.BlueInfo, $"Performing Operation {CurrentOp.TypeName}.");
+    Log(MsgClass.BlueInfo, $"Performing Operation {CurrentOp.TypeName}.", this);
 
     void setExceptionData (OpStatus status, OperationException toLog)
     {
       DoCatch("PerformOperation");
       LastStatus = status;
-      Log(MsgClass.Error, toLog.Message);
+      Log(MsgClass.Error, toLog.Message, this);
     }
 
     try { LastStatus = CurrentOp.DoOperation(this); }
@@ -153,7 +153,7 @@ public sealed class XParser
     catch (OperationNoSuchVarException onsv) { setExceptionData(FailNoSuchVarName, onsv); }
     catch (UnknownOperationException uoe) { setExceptionData(FailNoSpec, uoe); }
     catch (OperationException o) { setExceptionData(Fail, o); }
-    Log(MsgClass.Debug, $"Operation resulted in {LastStatus}.");
+    Log(MsgClass.Debug, $"Operation resulted in {LastStatus}.", this);
 
     if (LastStatus is EndCommand || ActiveFailure)
       NextOpIndex = -1;
@@ -228,7 +228,7 @@ public sealed class XParser
       {
         if (userInput.Like(input))
         {
-          Log(MsgClass.Prompt, askmsg);
+          Log(MsgClass.Prompt, askmsg, this);
           promptUser();
           actionOnInput(userInput);
         }
@@ -238,11 +238,11 @@ public sealed class XParser
 
       do
       {
-        Log(MsgClass.Prompt, "Enter a command to analyse parser state.");
+        Log(MsgClass.Prompt, "Enter a command to analyse parser state.", this);
         promptUser();
 
         checkPrompt("quit", "are you sure? (y/n)", user => _ = user.Like("y") ? throw new QuitException() : "no quit");
-        checkAction("data", Data.ToString(), data => Log(MsgClass.Debug, data));
+        checkAction("data", Data.ToString(), data => Log(MsgClass.Debug, data, this));
         checkPrompt("print", "Enter the key to display.", obj =>
         {
           if (Data.TryLoad(obj, out object? data) && data is IPrintable ip) ip.Print();
@@ -254,11 +254,11 @@ public sealed class XParser
             if (item is IPrintable pr)
               pr.Print();
             else
-              Log(MsgClass.GreenInfo, item.ToString2());
+              Log(MsgClass.GreenInfo, item.ToString2(), this);
           }
         });
-        checkAction("show next", $"Next Operation: {NextOpIndex} : {NextOp}", data => Log(MsgClass.Debug, data));
-        checkPrompt("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}"));
+        checkAction("show next", $"Next Operation: {NextOpIndex} : {NextOp}", data => Log(MsgClass.Debug, data, this));
+        checkPrompt("data in", "Enter the key to display.", _ => Log(MsgClass.Debug, $"[{userInput}] = {(Data.TryLoad(userInput, out object? data) ? data : "<Load Failure>")}", this));
       } while (!userInput.EqualsAny(allow_continue, SCOIC) || userInput.IsNotEmpty());
     }
     DebugOut();

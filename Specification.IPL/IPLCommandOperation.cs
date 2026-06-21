@@ -26,11 +26,11 @@ public class IPLCommandOperation : Operation
     switch (Data[InputKey])
     {
       case IDictionary<int, CommandDataSet> dic:
-        Log(MsgClass.BlueInfo, "Input is a dictionary of CommandDataSet.");
+        Log(MsgClass.BlueInfo, "Input is a dictionary of CommandDataSet.", this);
         items = dic.Values;
         break;
       case IEnumerable<CommandDataSet> enm:
-        Log(MsgClass.BlueInfo, "Input is a collection of CommandDataSet.");
+        Log(MsgClass.BlueInfo, "Input is a collection of CommandDataSet.", this);
         items = enm;
         break;
       default:
@@ -40,7 +40,7 @@ public class IPLCommandOperation : Operation
 
     foreach (CommandDataSet item in items)
     {
-      Log(MsgClass.BlueInfo, $"Processing command: {item.FullCommandText}");
+      Log(MsgClass.BlueInfo, $"Processing command: {item.FullCommandText}", this);
 
       #region Local Methods
       bool isPrintCommand () =>
@@ -64,7 +64,7 @@ public class IPLCommandOperation : Operation
         if (item.Type is ICT.SetFormat or ICT.SelectFormat)
           format = item.GetIntData(0);
         else if (isClearFormatCommand())
-          Log(MsgClass.BlueInfo, $"Format {item.GetIntData(0)} cleared.");
+          Log(MsgClass.BlueInfo, $"Format {item.GetIntData(0)} cleared.", this);
         item.Format = format;
       }
       void setLineCmd ()
@@ -77,12 +77,12 @@ public class IPLCommandOperation : Operation
         {
           if (current is null)
           {
-            Log(MsgClass.BlueInfo, "The currently selected line object is null.");
+            Log(MsgClass.BlueInfo, "The currently selected line object is null.", this);
             Status = OpStatus.FailBadOpResult;
           }
           else if (current.Type is not ICT.Line)
           {
-            Log(MsgClass.BlueInfo, "The currently selected line object is not a line object.");
+            Log(MsgClass.BlueInfo, "The currently selected line object is not a line object.", this);
             Status = OpStatus.FailBadOpResult;
           }
           else if (current.Type is ICT.Line)
@@ -139,7 +139,7 @@ public class IPLCommandOperation : Operation
 
       if (status.IsFail && !ContinueOnFail)
       {
-        Log(MsgClass.Warning, $"Failed to assign common properties for command: {item.CmdLetter}");
+        Log(MsgClass.Warning, $"Failed to assign common properties for command: {item.CmdLetter}", this);
         Status = status;
         return;
       }

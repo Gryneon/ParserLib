@@ -33,7 +33,7 @@ public class DictionaryOperation (RegexOptions options, bool fullMatchText, RxS?
       }
       if (result.Count != list.Count() && fullMatchText)
       {
-        Log(MsgClass.Error, $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
+        Log(MsgClass.Error, $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.", this);
       }
 
       Status = OpStatus.Pass;
