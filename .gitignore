@@ -404,5 +404,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-ParserTestsProject.zip
-/Specification.IPL/Specification.IPL.csproj.lscache
+
+*.zip
+
+**/*/*.csproj.lscache
