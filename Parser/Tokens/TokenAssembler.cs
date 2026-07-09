@@ -235,9 +235,9 @@ public sealed class TokenAssembler
       }
 
       if (times > 0)
-        LogInfo($"Rule {r} Executed {times} Times.");
+        Log(MsgClass.BlueInfo, $"Rule {r} Executed {times} Times.", this);
       else
-        LogInfo($"Rule {r} Did not match any content.");
+        Log(MsgClass.BlueInfo, $"Rule {r} Did not match any content.", this);
 
       if (wasInBlock() && hasMatched() && r + 1 == _rules.Count)
       {
@@ -246,10 +246,11 @@ public sealed class TokenAssembler
       }
     }
 
-    LogInfo("Token Assembly Complete");
+    Log(MsgClass.GreenInfo, "Token Assembly Complete", this);
     DebugOut();
     return new(_pass_list, _parent_list, _tokens);
   }
 
   public override string ToString () => $"TokenAssembler ({_spec.Name})";
+
 }
