@@ -26,7 +26,7 @@
         </member>
         <member name="M:Parser.Condition.ParsedExpression.Evaluate(Parser.DataStore)">
             <summary>
-            Evaluate
+            Evaluate the expression.
             </summary>
             <param name="data">The <see cref="T:Parser.DataStore"/> reference.</param>
             <remarks>If the evaluation fails, it always returns <see langword="false"/>.</remarks>

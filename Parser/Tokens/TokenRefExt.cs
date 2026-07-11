@@ -35,6 +35,6 @@ public static class TokenRefExt
     public bool IsUsed (Dictionary<TokenRef, IToken> token_pieces) =>
       token_pieces is not null &&
       token_pieces.TryGetValue(type, out IToken? value) &&
-      (!type.IsTokenCollection() || (type.IsTokenCollection() && value is TokenCollection tc && tc.Count > 0));
+      (!type.IsTokenCollection || (type.IsTokenCollection && value is TokenCollection tc && tc.Count > 0));
   }
 }

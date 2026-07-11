@@ -1,6 +1,6 @@
 namespace Parser.Condition;
 
-public readonly struct ConditionValue : IValueNode
+public readonly struct ConditionValue : IValueNode, IEquatable<IValueNode>, IEquatable<ConditionValue>
 {
   public ConditionValue (KeyOption type, string? data)
   {
@@ -16,8 +16,11 @@ public readonly struct ConditionValue : IValueNode
   public readonly dynamic? Value => Data;
   public override readonly string ToString () => $"{Type}: {Data ?? "<null>"}";
 
-  public override bool Equals (object? obj) => obj is IValueNode cv && Type == cv.Type && Value == cv.Value;
+  public override bool Equals (object? obj) => obj is IValueNode cv && Equals(cv);
   public override int GetHashCode () => HashCode.Combine(Type, Data);
+  public bool Equals (IValueNode? other) => Type == other?.Type && Value == other?.Value;
+  bool IEquatable<ConditionValue>.Equals (ConditionValue other) => Equals(other);
+
   public static bool operator == (ConditionValue left, IValueNode right) => left.Equals(right);
   public static bool operator != (ConditionValue left, IValueNode right) => !(left == right);
 }

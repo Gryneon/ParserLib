@@ -1,5 +1,3 @@
-using Catharsis.Commons;
-
 using Parser.Exceptions;
 
 using ResWAD = Specification.WAD.Properties.Resources;
@@ -30,12 +28,7 @@ internal static class Program
   #endregion
   #region Basic Methods
   [MemberNotNull(nameof(UserInput))]
-  internal static void UserLine () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
-  internal static string UserLineReturn () => Console.ReadLine() ?? SE;
-  internal static void LogError (string message) => Log(MsgClass.Error, message, nameof(Program));
-  internal static void LogDebug (string message) => Log(MsgClass.Debug, message, nameof(Program));
-  internal static void LogInfo (string message) => Log(MsgClass.BlueInfo, message, nameof(Program));
-  internal static void LogWarn (string message) => Log(MsgClass.Warning, message, nameof(Program));
+  internal static string GetInput () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
   internal static string FinishPath (string path)
   {
     return Directory.Exists(CheckPath) ? $@"{LaptopPath}\{path}" : $@"{DesktopPath}\{path}";
@@ -68,7 +61,7 @@ internal static class Program
 
     if (args.Length == 0)
     {
-      LogWarn("No files specified.");
+      Log(MsgClass.Warning, "No files specified.", nameof(Program));
     }
     else
     {
@@ -90,8 +83,7 @@ internal static class Program
   Start:
     Console.Clear();
     Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)", nameof(Program));
-    string? choice = Console.ReadLine();
-    switch (choice?.ToUpperInvariant())
+    switch (GetInput())
     {
       case "WAD":
         InitialTest("wad", ResWAD.wad_rpg03);
@@ -144,7 +136,7 @@ internal static class Program
         break;
     }
     Log(MsgClass.Prompt, "Press enter to return to the test selection.", nameof(Program));
-    _ = Console.ReadLine();
+    _ = GetInput();
     goto Start;
   }
   internal static void ProcessArgs (string[] args)
@@ -157,17 +149,17 @@ internal static class Program
 
       while (spec is null)
       {
-        LogWarn($"Spec {specName} not found. Enter a valid Spec name");
-        specName = UserLineReturn();
+        Log(MsgClass.Warning, $"Spec {specName} not found. Enter a valid Spec name", nameof(Program));
+        specName = GetInput();
         spec = LibRef.Lookup(specName);
       }
 
       Status = Parser.ParseFile(spec, path);
 
-      LogDebug("OpStatus is " + Status);
+      Log(MsgClass.Debug, "OpStatus is " + Status, nameof(Program));
 
-      LogDebug("Result is " + Parser.Result);
-      LogDebug("Result count = " + Parser.Result.AsCollection().Count);
+      Log(MsgClass.Debug, "Result is " + Parser.Result, nameof(Program));
+      Log(MsgClass.Debug, "Result count = " + Parser.Result.AsCollection().Count, nameof(Program));
       if (Parser.Result is IPrintable ip)
         ip.Print();
     }
@@ -179,7 +171,7 @@ internal static class Program
     DebugIn("Program", "InitialTest");
     if (!LibRef.TryLookup(spec, out Spec? lookup_spec))
     {
-      LogError($"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.");
+      Log(MsgClass.Error, $"Cannot start test of '{Path.GetFileName(file)}' with '{spec}', the spec was not found.", nameof(Program));
     }
     else
     {
@@ -191,7 +183,7 @@ internal static class Program
   {
     DebugIn("Program", "InitialTest");
     ClearLog();
-    LogWarn($"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.");
+    Log(MsgClass.Warning, $"Starting test of '{Path.GetFileName(file)}' with '{spec.Name}'.", nameof(Program));
     Parser = new(spec);
     OpStatus status;
 
@@ -213,7 +205,7 @@ internal static class Program
       byte[] data = File.ReadAllBytes(FinishPath(file));
       status = Parser.StepThrough(data);
     }
-    LogWarn($"Operations have concluded with status {status}.");
+    Log(MsgClass.Warning, $"Operations have concluded with status {status}.", nameof(Program));
     DebugOut();
   }
 
@@ -233,7 +225,7 @@ internal static class Program
       Status = Parser.StepThrough(bytes);
     }
 
-    LogInfo($"The {spec.Name} test resulted in {Status}.");
+    Log(MsgClass.BlueInfo, $"The {spec.Name} test resulted in {Status}.", nameof(Program));
     DebugOut();
     return Parser;
   }

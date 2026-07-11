@@ -30,11 +30,11 @@ public class ParsedExpression : IExpression
 
   protected object? GetValue (ConditionValue @ref) => @ref.Type switch
   {
-    LoadKey => Data[@ref.Key],
-    CountOfKey => Data.CanLoad(@ref.Key) ? Data[@ref.Key] is IEnumerable ien ? ien.Count() : 1 : 0,
-    CheckKeyExists => Data.CanLoad(@ref.Key),
-    TypeOfKey => Data.CanLoad(@ref.Key) ? Data[@ref.Key].GetType().Name : "null",
-    Literal => @ref.Key,
+    LoadKey => Data[@ref.Value],
+    CountOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value] is IEnumerable ien ? ien.Count() : 1 : 0,
+    CheckKeyExists => Data.CanLoad(@ref.Value),
+    TypeOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value].GetType().Name : "null",
+    Literal => @ref.Value,
     False => false,
     True => true,
     Null => null,
@@ -59,10 +59,10 @@ public class ParsedExpression : IExpression
 
   protected void Parse ()
   {
+    _workingSequence = [];
+
     if (Expression.IsEmpty())
       return;
-
-    _workingSequence = [];
 
     Dictionary<string, KeyOption> literalReference = new()
     {
@@ -184,7 +184,7 @@ public class ParsedExpression : IExpression
   }
 
   /// <summary>
-  /// Evaluate
+  /// Evaluate the expression.
   /// </summary>
   /// <param name="data">The <see cref="DataStore"/> reference.</param>
   /// <remarks>If the evaluation fails, it always returns <see langword="false"/>.</remarks>
@@ -282,11 +282,10 @@ public class ParsedExpression : IExpression
         _workingSequence.RemoveAt(op_index);
         _workingSequence.RemoveAt(left_index);
         _workingSequence.Insert(left_index, new AssignedValue() { Value = Operate(op, left, right) });
-        i = left_index;
+        i = left_index + 1;
         clearRight();
         clearLeft();
         clearOp();
-        i++;
       }
     }
 
