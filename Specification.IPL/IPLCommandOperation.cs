@@ -1,10 +1,14 @@
+using Common.Extensions;
+
 using Parser.Ops;
 
 namespace Specification.IPL;
 
 /// <summary>An operation that fills out the mode, format, and field numbers.</summary>
-public class IPLCommandOperation (string input_key, string output_key) : Operation(input_key, output_key)
+public class IPLCommandOperation : Operation
 {
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   /// <inheritdoc/>
   protected override void Execute ()
   {
@@ -19,24 +23,24 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
       bqty = 1;
     IEnumerable<CommandDataSet>? items;
 
-    switch (WorkData)
+    switch (Data[InputKey])
     {
       case IDictionary<int, CommandDataSet> dic:
-        Log(MsgClass.BlueInfo, "Input is a dictionary of CommandDataSet.");
+        Log(MsgClass.BlueInfo, "Input is a dictionary of CommandDataSet.", this);
         items = dic.Values;
         break;
       case IEnumerable<CommandDataSet> enm:
-        Log(MsgClass.BlueInfo, "Input is a collection of CommandDataSet.");
+        Log(MsgClass.BlueInfo, "Input is a collection of CommandDataSet.", this);
         items = enm;
         break;
       default:
-        _ = Err.ThrowBadInput("IDictionary<CommandDataSet> or IEnumerable<CommandDataSet>", $"{WorkDataType}");
+        _ = Err.ThrowBadInput("IDictionary<CommandDataSet> or IEnumerable<CommandDataSet>", Data[InputKey].TypeName);
         throw null;
     }
 
     foreach (CommandDataSet item in items)
     {
-      Log(MsgClass.BlueInfo, $"Processing command: {item.FullCommandText}");
+      Log(MsgClass.BlueInfo, $"Processing command: {item.FullCommandText}", this);
 
       #region Local Methods
       bool isPrintCommand () =>
@@ -60,7 +64,7 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
         if (item.Type is ICT.SetFormat or ICT.SelectFormat)
           format = item.GetIntData(0);
         else if (isClearFormatCommand())
-          Log(MsgClass.BlueInfo, $"Format {item.GetIntData(0)} cleared.");
+          Log(MsgClass.BlueInfo, $"Format {item.GetIntData(0)} cleared.", this);
         item.Format = format;
       }
       void setLineCmd ()
@@ -73,12 +77,12 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
         {
           if (current is null)
           {
-            Log(MsgClass.BlueInfo, "The currently selected line object is null.");
+            Log(MsgClass.BlueInfo, "The currently selected line object is null.", this);
             Status = OpStatus.FailBadOpResult;
           }
           else if (current.Type is not ICT.Line)
           {
-            Log(MsgClass.BlueInfo, "The currently selected line object is not a line object.");
+            Log(MsgClass.BlueInfo, "The currently selected line object is not a line object.", this);
             Status = OpStatus.FailBadOpResult;
           }
           else if (current.Type is ICT.Line)
@@ -135,12 +139,12 @@ public class IPLCommandOperation (string input_key, string output_key) : Operati
 
       if (status.IsFail && !ContinueOnFail)
       {
-        Log(MsgClass.Warning, $"Failed to assign common properties for command: {item.CmdLetter}");
+        Log(MsgClass.Warning, $"Failed to assign common properties for command: {item.CmdLetter}", this);
         Status = status;
         return;
       }
     }
-    WorkData = newData;
+    Data[OutputKey] = newData;
     DebugOut();
   }
 }

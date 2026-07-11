@@ -27,7 +27,7 @@ public static class ObjectExtensions
     public string TypeName => obj?.GetType().Name ?? "null";
     /// <summary>Returns the object as a collection.</summary>
     /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
-    public Collection<object> AsCollection () => obj.AsCollection<object>();
+    public Collection<object> AsCollection () => obj?.AsCollection<object>() ?? [];
     /// <summary>Returns the object as a collection.</summary>
     /// <typeparam name="T">The type of collection expected.</typeparam>
     /// <returns>A collection from the object given, or an empty collection if the object cannot be translated.</returns>
@@ -54,6 +54,9 @@ public static class ObjectExtensions
       IConvertible ic => ic.ToString(CIIC),
       IEnumerable<object> col => col.TextJoin("\n"),
       IReadOnlyProperty<string> prp => $"IProperty \"{prp.Key}\" : \"{prp.Value}\"",
+      IReadOnlyProperty<object?> prpobj => $"IProperty \"{prpobj.Key}\" : \"{prpobj.Value.ToString2()}\"",
+      IEnumerable ie => ie.Cast<object>().ToString2(),
+
       _ => obj.ToString(),
     } ?? SE;
     public string DecodeAsEnum (Type enumType)
@@ -67,10 +70,16 @@ public static class ObjectExtensions
   }
   extension(object)
   {
-    public static dynamic? ThrowIfFalse (bool condition, string? msg = null)
+    /// <summary>Throws an <see cref="InvalidOperationException"/> if <paramref name="condition"/> is <see langword="false"/>.</summary>
+    /// <param name="condition">The condition to evaluate.</param>
+    /// <param name="msg">The message of the exception.</param>
+    /// <param name="iftrue">The value to return if true.</param>
+    /// <returns>Returns <paramref name="iftrue"/> if <paramref name="condition"/> is <see langword="true"/>, otherwise does not return.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="condition"/> is <see langword="false"/>.</exception>
+    public static dynamic? ThrowIfFalse (bool condition, string? msg = null, dynamic? iftrue = default)
     {
       if (condition)
-        return default;
+        return iftrue;
 
       if (msg is not null)
         throw new InvalidOperationException(msg);

@@ -61,7 +61,7 @@ public static class IEnumerableExtensions
     }
     return result;
   }
-  public static Collection<string> ToStringCollection (this IEnumerable list) => list.AsCollection<string>();
+  public static Collection<string> ToStringCollection (this IEnumerable list) => [.. list.Cast<string>()];
   public static bool IsEmpty ([NotNullWhen(true)] this IEnumerable? list) => list is null || list.Count() == 0;
 
   // IEnumerable<string>

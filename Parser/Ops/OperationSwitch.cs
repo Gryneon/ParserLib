@@ -4,12 +4,10 @@ namespace Parser.Ops;
 
 public class OperationSwitch : Operation, IPlaceholderOperation
 {
-  public required string Condition { get; init; }
+  public required string ConditionString { get; init; }
   public Collection<SwitchCaseItem> Cases { get; init; } = [];
   public SwitchCaseItem? Default => Cases.LastOrDefault(item => item.IsDefaultCase, null!);
-  protected ParsedExpression Expression => new() { Expression = Condition };
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
+  protected ParsedExpression Expression => (field) ?? (field = (ParsedExpression) ConditionString);
   protected override void Execute ()
   {
     object? result = Expression.Evaluate(Data);

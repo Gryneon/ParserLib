@@ -13,8 +13,6 @@ public sealed class OperationBreak : Operation
 
   public required int BreakTarget { get; init; }
   public required string? BreakCursor { get; init; }
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
 
   protected override void Execute ()
   {

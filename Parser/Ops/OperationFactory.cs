@@ -155,7 +155,7 @@ public static class OperationFactory
           Position = position,
           PositionKey = position_var
         },
-        "Tokenize" => new TokenizeOperation(input_var, output_var),
+        "Tokenize" => new TokenizeOperation { InputKey = input_var, OutputKey = output_var },
         "TokenAssemble" => new TokenAssembleOperation(input_var, output_var),
         "Terminate" => new OperationEnd(success.Like("false")),
         // Theses are setup during unpacking, so they can be used as placeholders for
@@ -165,7 +165,7 @@ public static class OperationFactory
         "Continue" => OperationContinue.Null,
         "Switch" => new OperationSwitch()
         {
-          Condition = condition,
+          ConditionString = condition,
           Cases = [.. GetSwitchCases(element)],
         },
         "ForCount" => new ForCountOperation()
@@ -209,7 +209,7 @@ public static class OperationFactory
           Type = type,
           ParameterKeys = GetValueList(element)
         },
-        "Print" => new DebugPrintKeyOperation(check_var),
+        "Print" => new DebugPrintKeyOperation { InputKey = check_var },
         // TODO: Replace with expression evaluation system that can handle
         // more than just basic math operations. It is built.
         "Divide" => new DivideOperation()

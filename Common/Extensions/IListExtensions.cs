@@ -2,6 +2,7 @@
 
 namespace Common.Extensions;
 
+/// <summary><see cref="IList{T}"/> extensions.</summary>
 public static class IListExtensions
 {
   /// <summary>List extensions with <typeparamref name="T"/> as the item type.</summary>
@@ -16,6 +17,8 @@ public static class IListExtensions
   extension<T> (IList<T> list)
   {
     #region Queue Functions for IList<T>
+    /// <summary>Adds an item to the queue.</summary>
+    /// <param name="item">The item to add.</param>
     public void Enqueue (T item)
     {
       if (item is null)

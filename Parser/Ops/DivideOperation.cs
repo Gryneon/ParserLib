@@ -9,46 +9,26 @@ public class DivideOperation : Operation
 {
   public string? DivisorKey { get; init; }
   public string? DividendKey { get; init; }
+  public string? OutputKey { get; init; }
 
   public int Divisor { get; set; }
   public int Dividend { get; set; }
-
-  public DivideOperation () { }
-
-  public DivideOperation (int divisor, string dividend_key, string output_key)
-  {
-    Divisor = divisor;
-    DividendKey = dividend_key;
-    OutputKey = output_key;
-  }
-
-  public DivideOperation (string divisor_key, string dividend_key, string output_key)
-  {
-    DivisorKey = divisor_key;
-    DividendKey = dividend_key;
-    OutputKey = output_key;
-  }
 
   protected override void Execute ()
   {
     if (DivisorKey is not null)
     {
-      if (Data[DivisorKey] is not int)
-        Status = Err.ThrowBadInput("int", $"{Data[DivisorKey].GetType()}");
-      else Divisor = (int) Data[DivisorKey];
+      Divisor = Data[DivisorKey] is int dvs ? dvs : throw Err.ThrowBadInput("int", $"{Data[DivisorKey].GetType()}");
     }
 
-    if (Data[DividendKey] is not int)
-      Status = Err.ThrowBadInput("int", $"{Data[DividendKey].GetType()}");
-    else
-      Dividend = (int) Data[DividendKey];
+    Dividend = Data[DividendKey] is int dvd ? dvd : throw Err.ThrowBadInput("int", $"{Data[DividendKey].GetType()}");
 
     if (Divisor == 0)
-      Status = Err.ThrowBadResult("Cannot divide by zero.");
+      throw Err.ThrowBadResult("Cannot divide by zero.");
 
     int quotient = Dividend / Divisor;
     Data[OutputKey] = quotient;
-    Log(MsgClass.Debug, $"{Dividend} / {Divisor} = {quotient}");
+    Log(MsgClass.Debug, $"{Dividend} / {Divisor} = {quotient}", this);
     Status = Pass;
   }
 }

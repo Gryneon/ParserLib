@@ -1,18 +1,20 @@
 namespace Parser.Ops.Text;
 
-public class DictionaryOperation (RxSCollection list, RegexOptions options, bool fullMatchText, string input_key, string output_key, RxS? full_match_fail) : Operation(input_key, output_key)
+public class DictionaryOperation (RegexOptions options, bool fullMatchText, RxS? full_match_fail) : Operation
 {
-  protected Regex OpRegex => new(list.Combined, options);
+  protected Regex OpRegex => new(RegexList.Combined, options);
   protected Regex OpRegexFail => full_match_fail is null ? OpRegex : new(full_match_fail, options);
-
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
+  public required RxSCollection RegexList { get; init; } = [];
   protected override void Execute ()
   {
-    if (WorkData is string s)
+    if (Data[InputKey] is string s)
     {
-      WorkData = OpRegex.Matches(s).ToMDDCollection();
+      Data[OutputKey] = OpRegex.Matches(s).ToMDDCollection();
       Status = OpStatus.Pass;
     }
-    else if (WorkData is IEnumerable<string> list)
+    else if (Data[InputKey] is IEnumerable<string> list)
     {
       Collection<MatchDataSet> result = [];
       foreach (string part in list)
@@ -31,15 +33,15 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options, bool
       }
       if (result.Count != list.Count() && fullMatchText)
       {
-        Log(MsgClass.Error, $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.");
+        Log(MsgClass.Error, $"Not all input strings matched. Expected {list.Count()}, got {result.Count}.", this);
       }
 
       Status = OpStatus.Pass;
-      WorkData = result;
+      Data[OutputKey] = result;
     }
     else
     {
-      Status = Err.ThrowBadInput("string or IEnumerable<string>", $"{WorkDataType}");
+      throw Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
     }
   }
 
@@ -47,7 +49,7 @@ public class DictionaryOperation (RxSCollection list, RegexOptions options, bool
   {
     string result = SE;
 
-    result += $"DictionaryOperation: {list.Count} Regexes";
+    result += $"DictionaryOperation: {RegexList.Count} Regexes";
 
     return result;
   }

@@ -32,7 +32,7 @@ public sealed class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<
   string IProperty<string?>.Key { get => LookFor; set => LookFor = value; }
   string? IProperty<string?>.Value { get => ReplaceWith; set => ReplaceWith = value; }
 
-  /// <summary>An empty node.</summary>
+  /// <summary>Creates an empty node.</summary>
   private ReplaceNode ()
   {
     LookFor = SE;
@@ -72,14 +72,13 @@ public sealed class ReplaceNode : IEquatable<ReplaceNode>, IEquatable<IProperty<
   /// <inheritdoc/>
   public override int GetHashCode () => HashCode.Combine(LookFor, ReplaceWith);
 
-  public string ReplaceRegex (string input, RegexOptions options, TimeSpan? timeOut = null)
-  {
-    SysRegex opRegex =
-      timeOut is null ?
-        new(LookFor, options) :
-        new(LookFor, options, timeOut.Value);
-    return opRegex.Replace(input, ReplaceWith ?? SE);
-  }
+  /// <summary>Executes the replace on a given string.</summary>
+  /// <param name="input">The string to operate on.</param>
+  /// <param name="options">The regex options.</param>
+  /// <param name="timeOut">The <see cref="TimeSpan"/> to limit the operation to. Defaults to 5 seconds.</param>
+  /// <returns>The modified <see langword="string"/>.</returns>
+  public string ReplaceRegex (string input, RegexOptions options, TimeSpan? timeOut = null) =>
+    SysRegex.Replace(input, LookFor, ReplaceWith ?? SE, options, timeOut ?? TimeSpan.FromSeconds(5));
   /// <summary>Recursively replaces text literallly, and does not interpret the string as a regular expression.</summary>
   /// <param name="input">The text to operate on.</param>
   /// <param name="sc"><see cref="StringComparison"/> properties.</param>

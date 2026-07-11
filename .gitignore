@@ -9,7 +9,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.csproj.lscache
 
 # Windows BS
 thumbs.db
@@ -23,7 +22,7 @@ mono_crash.*
 
 # Build results+
 [Dd]ebug/
-[Dd]ebugPublic/++++++++++
+[Dd]ebugPublic/
 [Rr]elease+/
 [Rr]eleases/
 x64/
@@ -404,4 +403,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-ParserTestsProject.zip
+
+*.zip
+
+**/*/*.csproj.lscache

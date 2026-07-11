@@ -6,7 +6,6 @@ public sealed class OperationContinue : Operation
   public required int Target { get; set; }
   public string? CursorKey { get; set; }
   public int Increment { get; set; }
-  public override bool NoOutput => true;
 
   [SetsRequiredMembers]
   public OperationContinue (int continue_target, int increment, string cursor_key)
@@ -21,7 +20,7 @@ public sealed class OperationContinue : Operation
   {
     if (Target == -1)
     {
-      Status = Err.ThrowBadDef("Continue operation not set up.");
+      throw Err.ThrowBadDef("Continue operation not set up.");
     }
 
     Parser.SetNextOperationIndex(Target);

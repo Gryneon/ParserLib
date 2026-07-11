@@ -6,9 +6,7 @@ public sealed class OperationCollection : Operation, IReadOnlyCollection<IOperat
   private readonly List<IOperation> _operations;
   public ReadOnlyCollection<IOperation> Operations => [.. _operations];
   public int Count => Operations.Count;
-  public override bool NoInput => true;
   public override bool NoExecution => true;
-  public override bool NoOutput => true;
   public int Unpack ([NotNull] Collection<IOperation> operations, int index, XParser? parser_ref = null)
   {
     int nextOrEnd = index + 1 >= operations.Count ? -1 : index + 1;

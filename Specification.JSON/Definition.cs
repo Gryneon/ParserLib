@@ -22,10 +22,10 @@ public static class Definition
         //Operation.CopyKey("json_object", "result"),
         //TODO: Enhance Spec to analyse content.
         //TODO: Validate?
-        new TokenizeOperation("text", "tokens"),
-        new DebugToStringOperation("tokens"),
+        new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
+        new DebugToStringOperation { InputKey = "tokens" },
         new TokenAssembleOperation(),
-        new DebugToStringOperation("tokens_assembled"),
+        new DebugToStringOperation { InputKey = "tokens_assembled" },
       ],
     RxOpt = ROML | ROIPW | ROEC | ROSL,
     IsTextFile = true,

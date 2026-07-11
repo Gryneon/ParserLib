@@ -15,6 +15,7 @@
                       <xs:element name="Construct" type="NamedComplexTokenType" minOccurs="1" maxOccurs="unbounded"/>
                       <xs:element name="TokenLookup" type="NamedTokenLookupType" minOccurs="1" maxOccurs="unbounded"/>
                       <xs:element name="GroupTokenRule" type="NamedRuleDef" minOccurs="1" maxOccurs="unbounded"/>
+                      <xs:element name="CmdSequence" type="InnerInstructionSet" minOccurs="1" maxOccurs="unbounded"/>
                     </xs:choice>
                   </xs:sequence>
                 </xs:complexType>

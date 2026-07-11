@@ -20,7 +20,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable, IRe
   {
     if (name is null)
     {
-      Log(MsgClass.Error, "Tried to lookup name of null.");
+      Log(MsgClass.Error, "Tried to lookup name of null.", this);
       throw new SpecNotDefinedException("Tried to lookup name of null.");
     }
     return !TryLookup(name, out Spec? spec) ? XParser.Lib["unknown"] : spec;
@@ -82,7 +82,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable, IRe
       }
     }
 
-    Log(MsgClass.BlueInfo, $"{lib._specs.Count} Specs Loaded.");
+    Log(MsgClass.BlueInfo, $"{lib._specs.Count} Specs Loaded.", nameof(Library));
     DebugOut();
     return lib;
   }
@@ -95,7 +95,7 @@ public sealed class Library : IReadOnlyDictionary<string, Spec>, IPrintable, IRe
       {
         if (node.CheckFile(path))
         {
-          Log(MsgClass.BlueInfo, $"File match found. Using {fi.Key} as Spec.");
+          Log(MsgClass.BlueInfo, $"File match found. Using {fi.Key} as Spec.", this);
           return fi.Key;
         }
       }

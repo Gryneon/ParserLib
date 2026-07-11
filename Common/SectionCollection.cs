@@ -3,7 +3,7 @@
 namespace Common;
 
 /// <summary>Now uses Pos struct for speed.</summary>
-public sealed class SectionCollection (string full_text) : ICollection<Pos>, ICanAddChildren<Pos>, ICanAccessChildren<int, Pos>
+public sealed class SectionCollection (string full_text) : ICollection<Pos>
 {
   private List<Pos> _sections = [];
   private BitArray BitArray { get; init; } = new(full_text.Length);

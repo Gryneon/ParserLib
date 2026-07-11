@@ -14,7 +14,8 @@ namespace Specification.IPL;
 public static class Definition
 {
   #region Old Op Data
-  internal static readonly SplitOperation SplitOp = new(Splits, ROML | ROIPW | ROEC | ROSL, "text", "textparts");
+  /*
+  //internal static readonly SplitOperation SplitOp = new(Splits, ROML | ROIPW | ROEC | ROSL, "text", "textparts");
   /// <summary>
   /// <para>Command Splitter Regex</para>
   /// Build from https://regex101.com/r/WJUiK8/2
@@ -36,6 +37,7 @@ public static class Definition
       "d3",
       "standard",
       "fieldtext"];
+  */
   private static readonly RxS
     AVal = Gp($",?{Value()}"),
     MVal = AVal.Any,
@@ -46,7 +48,7 @@ public static class Definition
     Ack = Gp($"{ACK}|<ACK>"),
     Etx = Gp($"{ETX}|<ETX>"),
     Stx = Gp($"{STX}|<STX>"),
-    Nul = Gp($"{NUL}|<NUL>"),
+    //Nul = Gp($"{NUL}|<NUL>"),
     //Sub = Gp($"{SUB}|<SUB>"),
     Si = Gp($"{SI}|<SI>"),
     Cr = Gp($"{CR}|<CR>"),

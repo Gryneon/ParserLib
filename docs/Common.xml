@@ -157,12 +157,21 @@
             <summary>Writes a newline to the output stream.</summary>
             <param name="back">The background color.<br/>Default is black.</param>
         </member>
-        <member name="M:Common.Debug.Log(Common.MsgClass,System.String,System.String)">
+        <member name="M:Common.Debug.Log(Common.MsgClass,System.String,System.String,System.String)">
+            <summary>Logs a message to the output stream using the callers name.</summary>
+            <remarks>This method always assumes that <see cref="M:Common.Debug.DebugIn(System.String,System.String)"/> has been called, and uses that location as the caller.</remarks>
+            <param name="msgClass">The color and verbosity of the message.</param>
+            <param name="message">The message text.</param>
+            <param name="caller">The name of the caller of this method.</param>
+            <param name="method">The name of this method.</param>
+        </member>
+        <member name="M:Common.Debug.Log(Common.MsgClass,System.String,System.Object,System.String)">
             <summary>Logs a message to the output stream.</summary>
             <remarks>This method always assumes that <see cref="M:Common.Debug.DebugIn(System.String,System.String)"/> has been called, and uses that location as the caller.</remarks>
             <param name="msgClass">The color and verbosity of the message.</param>
             <param name="message">The message text.</param>
-            <param name="caller">The caller of this method.</param>
+            <param name="caller">The object calling this method.</param>
+            <param name="method">The name of this method.</param>
         </member>
         <member name="M:Common.Debug.LogException(System.Exception)">
             <summary>Logs an exception that was handled internally.</summary>
@@ -188,6 +197,12 @@
         </member>
         <member name="F:Common.DictionaryMode.MergeCollection">
             <summary>If the existing value is a collection, and this value is a collection of the same type, merge the two collections.</summary>
+        </member>
+        <member name="T:Common.EntryNameEqual`1">
+            <summary>An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Common.IProperty`1"/> is the same as another.</summary>
+        </member>
+        <member name="M:Common.EntryNameEqual`1.#ctor">
+            <summary>An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Common.IProperty`1"/> is the same as another.</summary>
         </member>
         <member name="T:Common.Extensions.CharExtensions">
             <summary>Extension methods for the <see cref="T:System.Char"/> type.</summary>
@@ -276,8 +291,14 @@
             <param name="index">The index to retrieve.</param>
             <returns>The object at position <paramref name="index"/>.</returns>
         </member>
+        <member name="T:Common.Extensions.IListExtensions">
+            <summary><see cref="T:System.Collections.Generic.IList`1"/> extensions.</summary>
+        </member>
         <member name="M:Common.Extensions.IListExtensions.IsEmpty``1(System.Collections.Generic.IList{``0})">
             <inheritdoc cref="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty"/>
+        </member>
+        <member name="M:Common.Extensions.IListExtensions.Enqueue``1(System.Collections.Generic.IList{``0},``0)">
+            <inheritdoc cref="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.Enqueue(`0)"/>
         </member>
         <member name="M:Common.Extensions.IListExtensions.AddRange``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEnumerable{``0})">
             <inheritdoc cref="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.AddRange(System.Collections.Generic.IEnumerable{`0})"/>
@@ -296,6 +317,10 @@
         <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty">
             <summary>Checks if an <see cref="T:System.Collections.Generic.IList`1"/> is <see langword="null"/> or empty.</summary>
             <returns><see langword="true"/> if the list is empty or null, <see langword="false"/> otherwise.</returns>
+        </member>
+        <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.Enqueue(`0)">
+            <summary>Adds an item to the queue.</summary>
+            <param name="item">The item to add.</param>
         </member>
         <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
             <summary>Adds a range of items to an <see cref="T:System.Collections.Generic.IList`1"/>.</summary>
@@ -369,6 +394,9 @@
         <member name="M:Common.Extensions.ObjectExtensions.ToString2(System.Object)">
             <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.ToString2"/>
         </member>
+        <member name="M:Common.Extensions.ObjectExtensions.ThrowIfFalse(System.Boolean,System.String,System.Object)">
+            <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.ThrowIfFalse(System.Boolean,System.String,System.Object)"/>
+        </member>
         <member name="M:Common.Extensions.ObjectExtensions.DoNothing">
             <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.DoNothing"/>
         </member>
@@ -398,6 +426,14 @@
         <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.ToString2">
             <summary>An alternatative string output method.</summary>
             <returns>A string representation of the object.</returns>
+        </member>
+        <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.ThrowIfFalse(System.Boolean,System.String,System.Object)">
+            <summary>Throws an <see cref="T:System.InvalidOperationException"/> if <paramref name="condition"/> is <see langword="false"/>.</summary>
+            <param name="condition">The condition to evaluate.</param>
+            <param name="msg">The message of the exception.</param>
+            <param name="iftrue">The value to return if true.</param>
+            <returns>Returns <paramref name="iftrue"/> if <paramref name="condition"/> is <see langword="true"/>, otherwise does not return.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if <paramref name="condition"/> is <see langword="false"/>.</exception>
         </member>
         <member name="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.DoNothing">
             <summary>Does Nothing.</summary>
@@ -970,55 +1006,16 @@
             <summary>
             Empty constructor for serialization purposes only.</summary>
         </member>
-        <member name="M:Common.RegExp.MatchDataSet.HasMarker(System.String)">
-            <summary>Determines if a <see cref="T:Common.RegExp.MatchDataSet"/> has a certain marker.</summary>
-            <param name="markerName">The marker <b><i>without</i></b> the prefix. Use <see langword="null"/> to </param>
-            <returns><see langword="true"/> if the marker is present, <see langword="false"/> otherwise.</returns>
-        </member>
         <member name="M:Common.RegExp.MatchDataSet.HasGroup(System.String)">
             <summary>Checks if the specified group exists in the match.</summary>
             <param name="group">The name of the group.</param>
             <returns><see langword="true"/> if the group exists; otherwise, <see langword="false"/>.</returns>
         </member>
-        <member name="M:Common.RegExp.MatchDataSet.DoesNotHaveGroup(System.String)">
-            <summary>
-            Determines whether the specified group does not exist.</summary>
-            <param name="group">The name of the group to check. Cannot be null or empty.</param>
-            <returns><see langword="true"/> if the specified group does not exist; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="M:Common.RegExp.MatchDataSet.HasEmptyGroup(System.String)">
+        <member name="M:Common.RegExp.MatchDataSet.GetEnumerator">
             <summary>
             Determines whether the specified group exists and contains no content.</summary>
             <param name="group">The name of the group to check. Cannot be null or empty.</param>
             <returns><see langword="true"/> if the group exists and its content is empty; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="M:Common.RegExp.MatchDataSet.HasEmptyOrNoGroup(System.String)">
-            <summary>
-            Determines whether the specified group does not exist or exists but is empty.</summary>
-            <param name="group">The name of the group to check. Cannot be null or empty.</param>
-            <returns><see langword="true"/> if the group does not exist or exists but is empty; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="M:Common.RegExp.MatchDataSet.HasGroups(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>Determines whether all specified group names exist in the current collection of groups.</summary>
-            <param name="groups">A collection of group names to check for existence.</param>
-            <returns><see langword="true"/> if all specified group names exist in the collection; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="M:Common.RegExp.MatchDataSet.HasAnyGroup(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>Determines whether the current instance contains any of the specified group names.</summary>
-            <param name="groups">A collection of group names to check for existence.</param>
-            <returns><see langword="true"/> if at least one of the specified group names exists in the current instance;  otherwise,
-            <see langword="false"/>.</returns>
-        </member>
-        <member name="M:Common.RegExp.MatchDataSet.HasGroupStartingWith(System.String)">
-            <summary>Determines whether any group name starts with the specified prefix.</summary>
-            <remarks>This method performs a case-insensitive comparison when checking for group names that start with
-            the specified prefix.</remarks>
-            <param name="namePart">The prefix to search for in group names. This value is case-insensitive.</param>
-            <returns><see langword="true"/> if at least one group name starts with the specified prefix; otherwise, <see
-            langword="false"/>.</returns>
-        </member>
-        <member name="M:Common.RegExp.MatchDataSet.GetEnumerator">
-            <inheritdoc/>
         </member>
         <member name="P:Common.RegExp.MatchDataSet.Item(System.String)">
             <summary>
@@ -1047,9 +1044,6 @@
             <returns>A string that represents the current <see cref="T:Common.RegExp.MatchDataSet"/> object, including its groups and their
             values.</returns>
         </member>
-        <member name="P:Common.RegExp.MatchDataSet.MatchProperties">
-            <summary>Gets the match properties as a collection of key-value pairs.</summary>
-        </member>
         <member name="M:Common.RegExp.MatchDataSet.ToString">
             <summary>Returns a string representation of the current <see cref="T:Common.RegExp.MatchDataSet"/> object.</summary>
             <remarks>The returned string includes a header and a detailed list of all groups in the match. If the
@@ -1061,10 +1055,6 @@
             <summary>
             Adds the specified <see cref="T:Common.RegExp.GroupDataSet"/> item to the collection.</summary>
             <param name="item">The <see cref="T:Common.RegExp.GroupDataSet"/> item to add to the collection. Cannot be null.</param>
-        </member>
-        <member name="M:Common.RegExp.MatchDataSet.Generate(Common.RegExp.MatchDataSet)">
-            <summary>Creates a copy of the object.</summary>
-            <inheritdoc/>
         </member>
         <member name="T:Common.RegExp.RegexExtensions">
             <summary>A static class contianing extension methods for <see cref="T:System.Text.RegularExpressions.Regex"/> related types.</summary>
@@ -1213,7 +1203,7 @@
             <summary>The string to replace matches with. If <see langword="null"/>, matches will be removed.</summary>
         </member>
         <member name="M:Common.ReplaceNode.#ctor">
-            <summary>An empty node.</summary>
+            <summary>Creates an empty node.</summary>
         </member>
         <member name="M:Common.ReplaceNode.Equals(Common.ReplaceNode)">
             <summary>Checks if the 2 nodes are equal to each other.</summary>
@@ -1225,6 +1215,13 @@
         </member>
         <member name="M:Common.ReplaceNode.GetHashCode">
             <inheritdoc/>
+        </member>
+        <member name="M:Common.ReplaceNode.ReplaceRegex(System.String,System.Text.RegularExpressions.RegexOptions,System.Nullable{System.TimeSpan})">
+            <summary>Executes the replace on a given string.</summary>
+            <param name="input">The string to operate on.</param>
+            <param name="options">The regex options.</param>
+            <param name="timeOut">The <see cref="T:System.TimeSpan"/> to limit the operation to. Defaults to 5 seconds.</param>
+            <returns>The modified <see langword="string"/>.</returns>
         </member>
         <member name="M:Common.ReplaceNode.ReplaceText(System.String,System.StringComparison)">
             <summary>Recursively replaces text literallly, and does not interpret the string as a regular expression.</summary>

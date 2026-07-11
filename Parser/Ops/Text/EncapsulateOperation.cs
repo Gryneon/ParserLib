@@ -1,21 +1,23 @@
 namespace Parser.Ops.Text;
 
-public class EncapsulateOperation<TParent, TChild> (string input_key, string output_key) : Operation(input_key, output_key) where TParent : class, ICanAddChildren<TChild>, new()
+public class EncapsulateOperation<TParent, TChild> : Operation where TParent : class, ICanAddChildren<TChild>, new()
 {
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   protected override void Execute ()
   {
     IEnumerable<TChild> list = [];
-    list = WorkData switch
+    list = Data[InputKey] switch
     {
       IEnumerable<TChild> col => col,
       IDictionary<int, TChild> dic => dic.Select(item => item.Value),
-      _ => Err.ThrowBadInput("IEnumerable<TChild> or IDictionary<int,TChild>", WorkData.TypeName)
+      _ => Err.ThrowBadInput("IEnumerable<TChild> or IDictionary<int,TChild>", Data[InputKey].TypeName)
     };
     TParent parent = new();
 
     foreach (TChild item in list)
       parent.Add(item);
-    WorkData = parent;
+    Data[OutputKey] = parent;
     Status = OpStatus.Pass;
   }
 }

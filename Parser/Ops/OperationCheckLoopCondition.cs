@@ -5,8 +5,6 @@ public sealed class OperationCheckLoopCondition (string condition, string cursor
   public int BreakTarget { get; init; } = break_target;
   public string CursorKey { get; init; } = cursor_key;
   public string Condition { get; init; } = condition;
-  public override bool NoInput => true;
-  public override bool NoOutput => true;
 
   protected override void Execute ()
   {

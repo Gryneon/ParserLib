@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema targetNamespace="Parser/Spec" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="Parser/Spec" xml:lang="en-us"><!-- Simple Types TODO: Finish Documentation -->
+<xs:schema targetNamespace="Parser/Spec" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="Parser/Spec" xml:lang="en-us">
+  <!-- Simple Types TODO: Finish Documentation -->
   <xs:simpleType name="NonEmptyTokenType">
+    <xs:annotation>
+      <xs:documentation>
+        Must be a token type (Not Enforced), with a length greater than 0.
+      </xs:documentation>
+    </xs:annotation>
     <xs:restriction base="xs:token">
       <xs:minLength value="1"/>
     </xs:restriction>
@@ -17,8 +23,8 @@
       <xs:enumeration value="Dictionary">
         <xs:annotation>
           <xs:documentation>
-          Not Implemented
-        </xs:documentation>
+            Not Implemented
+          </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="LinkedList">
@@ -31,7 +37,7 @@
       <xs:enumeration value="Set">
         <xs:annotation>
           <xs:documentation>
-            Not Implemented
+            A HashSet that can only store a certain value one time.
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -45,11 +51,11 @@
       <xs:enumeration value="BitArray">
         <xs:annotation>
           <xs:documentation>
-          Not Implemented
-        </xs:documentation>
+            An array of bits (boolean).
+          </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:pattern value="\@?[a-zA-Z_]+"/>
+      <xs:pattern value="\@?[a-zA-Z_][a-zA-Z0-9_]*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="VariableListType">
@@ -79,18 +85,19 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="EndianessType">
-    <xs:restriction base="xs:string">
+    <xs:restriction base="xs:token">
       <xs:enumeration value="Little"/>
       <xs:enumeration value="Big"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="EncodingType">
-    <xs:restriction base="xs:string">
+    <xs:restriction base="xs:token">
       <xs:enumeration value="ASCII"/>
-      <xs:enumeration value="UTF-8"/>
-      <xs:enumeration value="UTF-16"/>
-      <xs:enumeration value="UTF-8wBOM"/>
-      <xs:enumeration value="UTF-32"/>
+      <xs:enumeration value="UTF7"/>
+      <xs:enumeration value="UTF8"/>
+      <xs:enumeration value="UTF16"/>
+      <xs:enumeration value="UTF8-BOM"/>
+      <xs:enumeration value="UTF32"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="DataKeyType">
@@ -117,7 +124,8 @@
   </xs:simpleType>
   <xs:simpleType name="RuleTypeToken">
     <xs:restriction base="xs:token">
-      <xs:enumeration value="None"/><!-- Token Rule Types -->
+      <xs:enumeration value="None"/>
+      <!-- Token Rule Types -->
       <xs:enumeration value="Competitive"/>
       <xs:enumeration value="TokenMatch"/>
       <xs:enumeration value="TokenExact"/>
@@ -126,15 +134,21 @@
       <xs:enumeration value="SplitMatch"/>
       <xs:enumeration value="SplitExact"/>
       <xs:enumeration value="StoreExtra"/>
-      <xs:enumeration value="StoreOther"/><!-- Combos -->
-      <xs:enumeration value="ThrowMatch"/><!-- IgnoredToken & TokenMatch -->
-      <xs:enumeration value="TokenComment"/><!-- IgnoredToken & Competitive --><!-- Flags -->
+      <xs:enumeration value="StoreOther"/>
+      <!-- Combos -->
+      <!-- IgnoredToken & TokenMatch -->
+      <xs:enumeration value="ThrowMatch"/>
+      <!-- IgnoredToken & Competitive -->
+      <xs:enumeration value="TokenComment"/>
+      <!-- Flags -->
       <xs:enumeration value="IgnoreCase"/>
       <xs:enumeration value="IgnoredToken"/>
       <xs:enumeration value="Opt"/>
       <xs:enumeration value="Mult"/>
       <xs:enumeration value="Recursive"/>
-      <xs:enumeration value="Any"/><!-- Opt & Mult -->
+      <!-- Opt & Mult -->
+      <xs:enumeration value="Any"/>
+      
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="RuleTypeList">
@@ -150,6 +164,7 @@
       <xs:enumeration value="DotMatchesNewline"/>
     </xs:restriction>
   </xs:simpleType>
+  <!-- Groups TODO: Finish Documentation -->
   <xs:group name="IfGroup">
     <xs:sequence>
       <xs:element name="If" type="ConditionType" minOccurs="0" maxOccurs="1"/>
@@ -157,6 +172,7 @@
       <xs:element name="Else" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
     </xs:sequence>
   </xs:group>
+  <!-- Complex Types TODO: Finish Documentation -->
   <xs:complexType name="AddItemType">
     <xs:simpleContent>
       <xs:extension base="VariableListType">
@@ -208,152 +224,181 @@
     <xs:attribute name="input_var" use="required" type="DataKeyType"/>
   </xs:complexType>
   <xs:complexType name="SuccessType">
-    <xs:attribute name="success" use="optional" default="true" type="xs:boolean"/>
+    <xs:attribute name="success" use="optional" default="true" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>
+Whether or not this results in a pass or a fail.
+True by default.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="InnerInstructionSet">
     <xs:sequence>
       <xs:choice maxOccurs="unbounded">
-      <xs:element name="GotoOpIndex">
-        <xs:complexType>
-          <xs:attributeGroup ref="TargetAttrGroup"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="GotoLabel" type="RequiredNameType"/>
-      <xs:element name="Label" type="RequiredNameType"/>
-      <xs:element name="Divide">
-        <xs:complexType>
-          <xs:attribute name="output_var" use="required" type="DataKeyType"/>
-          <xs:attribute name="dividend_var" use="optional" type="DataKeyType"/>
-          <xs:attribute name="divisor_var" use="optional" type="DataKeyType"/>
-          <xs:attribute name="dividend" use="optional" type="xs:int"/>
-          <xs:attribute name="divisor" use="optional" type="xs:int"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="MakeCursor">
-        <xs:complexType>
-          <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
-          <xs:attribute name="list_var" use="optional" type="DataKeyType">
-            <xs:annotation>
-              <xs:documentation>The list or array to iterate through, if there is one</xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attributeGroup ref="PositionAttrGroup"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="SetCursorPos">
-        <xs:complexType>
-          <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
-          <xs:attributeGroup ref="PositionAttrGroup"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="ExtOperation">
-        <xs:complexType>
-          <xs:complexContent>
-            <xs:extension base="InputOutputType">
-              <xs:sequence>
-                <xs:element name="Parameter" maxOccurs="unbounded">
-                  <xs:complexType>
-                    <xs:simpleContent>
-                      <xs:extension base="xs:string">
-                        <xs:attribute name="type" type="xs:token"/>
-                      </xs:extension>
-                    </xs:simpleContent>
-                  </xs:complexType>
-                </xs:element>
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
-            </xs:extension>
-          </xs:complexContent>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="Terminate" type="SuccessType"/>
-      <xs:element name="Initialize">
-        <xs:annotation>
-          <xs:documentation>
-            Initializes a collection type.
-          </xs:documentation>
-        </xs:annotation>
-        <xs:complexType>
-          <xs:attribute name="initial_var" use="required" type="DataKeyType"/>
-          <xs:attribute name="type" use="required" type="InitializeType">
-            <xs:annotation>
-              <xs:documentation>
-                The type of collection to make.
-              </xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attribute name="value_type" use="required" type="NonEmptyTokenType">
-            <xs:annotation>
-              <xs:documentation>
-                The type of item in the collection.
-              </xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attribute name="key_type" use="optional" type="NonEmptyTokenType">
-            <xs:annotation>
-              <xs:documentation>
-                The type of key in the collection.
-                This is ignored unless needed.
-              </xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attributeGroup ref="PositionAttrGroup"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="Tokenize" type="InputOutputType"/>
-      <xs:element name="TokenAssemble" type="InputOutputType"/>
-      <xs:element name="ReadData">
-        <xs:complexType>
-          <xs:attribute name="content_var" use="optional" type="DataKeyType"/>
-          <xs:attribute name="output_var" use="required" type="DataKeyType"/>
-          <xs:attribute name="cursor_var" use="optional" type="DataKeyType"/>
-          <xs:attribute name="endian" use="optional" type="EndianessType"/>
-          <xs:attribute name="encoding" use="optional" type="EncodingType"/>
-          <xs:attributeGroup ref="DataTypeAttrGroup"/>
-          <xs:attributeGroup ref="DataReadLengthAttrGroup"/>
-          <xs:attributeGroup ref="PositionAttrGroup"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="ForCount">
-        <xs:complexType>
-          <xs:complexContent>
-            <xs:extension base="InnerInstructionSet">
-              <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
-              <xs:attributeGroup ref="LengthAttrGroup"/>
-            </xs:extension>
-          </xs:complexContent>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="ForEach">
-        <xs:complexType>
-          <xs:complexContent>
-            <xs:extension base="InnerInstructionSet">
-              <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
-              <xs:attribute name="list_var" use="required" type="DataKeyType"/>
-            </xs:extension>
-          </xs:complexContent>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="AddItem" type="AddItemType"/>
-      <xs:group ref="IfGroup"/>
-      <xs:element name="While" type="ConditionType"/>
-      <xs:element name="Until" type="ConditionType"/>
-      <xs:element name="Break" type="NoAttributesType"/>
-      <xs:element name="Continue" type="NoAttributesType"/>
-      <xs:element name="Print" type="DebugKeyType"/>
-      <xs:element name="ToString" type="DebugKeyType"/>
-      <xs:element name="Switch">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
-            <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
-          </xs:sequence>
-          <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
-        </xs:complexType>
-      </xs:element>
-    </xs:choice>
-  </xs:sequence>
-</xs:complexType>
+        <xs:element name="CmdSequence" >
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Parameter">
+                <xs:complexType mixed="true">
+                  <xs:sequence>
+                    <xs:any processContents="lax"/>
+                  </xs:sequence>
+                  <xs:attribute name="variable_name"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="ref" type="xs:token" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="GotoOpIndex">
+          <xs:complexType>
+            <xs:attributeGroup ref="TargetAttrGroup"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="GotoLabel" type="RequiredNameType"/>
+        <xs:element name="Label" type="RequiredNameType"/>
+        <xs:element name="Divide">
+          <xs:complexType>
+            <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+            <xs:attribute name="dividend_var" use="optional" type="DataKeyType"/>
+            <xs:attribute name="divisor_var" use="optional" type="DataKeyType"/>
+            <xs:attribute name="dividend" use="optional" type="xs:int"/>
+            <xs:attribute name="divisor" use="optional" type="xs:int"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="MakeCursor">
+          <xs:complexType>
+            <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+            <xs:attribute name="list_var" use="optional" type="DataKeyType">
+              <xs:annotation>
+                <xs:documentation>The list or array to iterate through, if there is one</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attributeGroup ref="PositionAttrGroup"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SetCursorPos">
+          <xs:complexType>
+            <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+            <xs:attributeGroup ref="PositionAttrGroup"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ExtOperation">
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="InputOutputType">
+                <xs:sequence>
+                  <xs:element name="Parameter" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                          <xs:attribute name="type" type="xs:token"/>
+                        </xs:extension>
+                      </xs:simpleContent>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Terminate" type="SuccessType"/>
+        <xs:element name="Initialize">
+          <xs:annotation>
+            <xs:documentation>
+              Initializes a collection type.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:attribute name="initial_var" use="required" type="DataKeyType"/>
+            <xs:attribute name="type" use="required" type="InitializeType">
+              <xs:annotation>
+                <xs:documentation>
+                  The type of collection to make.
+                </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="value_type" use="required" type="NonEmptyTokenType">
+              <xs:annotation>
+                <xs:documentation>
+                  The type of item in the collection.
+                </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="key_type" use="optional" type="NonEmptyTokenType">
+              <xs:annotation>
+                <xs:documentation>
+                  The type of key in the collection.
+                  This is ignored unless needed.
+                </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attributeGroup ref="PositionAttrGroup"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Tokenize" type="InputOutputType"/>
+        <xs:element name="TokenAssemble" type="InputOutputType"/>
+        <xs:element name="ReadData">
+          <xs:complexType>
+            <xs:attribute name="content_var" use="optional" type="DataKeyType"/>
+            <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+            <xs:attribute name="cursor_var" use="optional" type="DataKeyType"/>
+            <xs:attribute name="endian" use="optional" type="EndianessType"/>
+            <xs:attribute name="encoding" use="optional" type="EncodingType"/>
+            <xs:attributeGroup ref="DataTypeAttrGroup"/>
+            <xs:attributeGroup ref="DataReadLengthAttrGroup"/>
+            <xs:attributeGroup ref="PositionAttrGroup"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ForCount">
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="InnerInstructionSet">
+                <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+                <xs:attributeGroup ref="LengthAttrGroup"/>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ForEach">
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="InnerInstructionSet">
+                <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+                <xs:attribute name="list_var" use="required" type="DataKeyType"/>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="AddItem" type="AddItemType"/>
+        <xs:group ref="IfGroup"/>
+        <xs:element name="While" type="ConditionType"/>
+        <xs:element name="Until" type="ConditionType"/>
+        <xs:element name="Break" type="NoAttributesType"/>
+        <xs:element name="Continue" type="NoAttributesType"/>
+        <xs:element name="Print" type="DebugKeyType"/>
+        <xs:element name="ToString" type="DebugKeyType"/>
+        <xs:element name="Switch">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Case" minOccurs="0" maxOccurs="unbounded" type="CaseInstructionSet"/>
+              <xs:element name="Default" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="ConditionAttrGroupSwitch"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NamedInnerInstructionSet">
+    <xs:complexContent>
+      <xs:extension base="InnerInstructionSet">
+        <xs:attribute name="name" type="xs:token" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="CaseInstructionSet">
     <xs:complexContent>
       <xs:extension base="InnerInstructionSet">
@@ -364,14 +409,7 @@
   <xs:complexType name="NamedRuleDef">
     <xs:complexContent>
       <xs:extension base="RuleDef">
-        <xs:attribute name="name" type="xs:token" use="required"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="NamedTokenLookupType">
-    <xs:complexContent>
-      <xs:extension base="TokenLookupType">
-        <xs:attribute name="name" type="xs:token" use="required"/>
+        <xs:attribute name="name" type="xs:ID" id="ruledef" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -381,13 +419,20 @@
       <xs:element name="Type" type="RuleTypeList" minOccurs="1" maxOccurs="1"/>
       <xs:element name="Data" minOccurs="0" maxOccurs="1" default="" type="xs:string"/>
     </xs:all>
-    <xs:attribute name="name" type="xs:token"/>
+    <xs:attribute name="ref" type="xs:IDREF" id="ruledefref" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="NamedTokenLookupType">
+    <xs:complexContent>
+      <xs:extension base="TokenLookupType">
+        <xs:attribute name="name" type="xs:token" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="RuleList">
-      <xs:sequence>
-        <xs:element name="Rule" type="RuleDef" maxOccurs="unbounded" minOccurs="0"/>
-      </xs:sequence>
-    </xs:complexType>
+    <xs:sequence>
+      <xs:element name="Rule" type="RuleDef" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="TokenLookupType">
     <xs:simpleContent>
       <xs:extension base="TokenTypeListType">
@@ -441,23 +486,24 @@
     </xs:sequence>
     <xs:attributeGroup ref="ComplexTokenAttrGroup"/>
   </xs:complexType>
+  <!-- Attribute Groups TODO: Finish Documentation -->
   <xs:attributeGroup name="ComplexTokenAttrGroup">
     <xs:attribute name="tokentype" type="xs:token"/>
     <xs:attribute name="class" type="xs:token"/>
     <xs:attribute name="class_type_params" type="xs:normalizedString"/>
   </xs:attributeGroup>
   <xs:attributeGroup name="DataReadLengthAttrGroup">
-      <xs:attribute name="length" type="DataReadLength">
-        <xs:annotation>
-          <xs:documentation>
-            Length of data or text, must be greater than zero, zero, or -1.
-          </xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
+    <xs:attribute name="length" type="DataReadLength">
+      <xs:annotation>
+        <xs:documentation>
+          Length of data or text, must be greater than zero, zero, or -1.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="length_var" type="DataKeyType">
       <xs:annotation>
         <xs:documentation>
-          Stored data entry to read the length from as an integer.
+Stored data entry to read the length from as an integer.
 Referenced data should be an integer greater than 0.
         </xs:documentation>
       </xs:annotation>
@@ -474,8 +520,8 @@ Referenced data should be an integer greater than 0.
     <xs:attribute name="length_var" type="DataKeyType">
       <xs:annotation>
         <xs:documentation>
-          Stored data entry to read the length from as an integer.
-          Referenced data should be an integer greater than 0.
+Stored data entry to read the length from as an integer.
+Referenced data should be an integer greater than 0.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -492,7 +538,7 @@ Referenced data should be an integer greater than 0.
       <xs:annotation>
         <xs:documentation>
           Stored data entry to read the position from as an integer.
-Referenced data should be an integer equal to or greater than 0.
+          Referenced data should be an integer equal to or greater than 0.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -508,7 +554,7 @@ Referenced data should be an integer equal to or greater than 0.
     <xs:attribute name="target_var" type="DataKeyType">
       <xs:annotation>
         <xs:documentation>
-          Stored data entry to read the target from as an integer.
+Stored data entry to read the target from as an integer.
 Referenced data should be an integer equal to or greater than 0.
         </xs:documentation>
       </xs:annotation>
@@ -527,7 +573,7 @@ Referenced data should be an integer equal to or greater than 0.
             <xs:annotation>
               <xs:documentation>
                 Reads a sequence of bytes, stored internally as a Memory&lt;byte&gt; object.
-If the length attribute is not defined, it reads until the cursor reaches the end.
+                If the length attribute is not defined, it reads until the cursor reaches the end.
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -535,8 +581,8 @@ If the length attribute is not defined, it reads until the cursor reaches the en
             <xs:annotation>
               <xs:documentation>
                 Reads a sequence of charcters, stored internally as a string.
-If the length attribute is not defined, it reads until the cursor reaches the end.
-If the encoding attribute is not defined, it uses ASCII by default.
+                If the length attribute is not defined, it reads until the cursor reaches the end.
+                If the encoding attribute is not defined, it uses ASCII by default.
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -544,8 +590,8 @@ If the encoding attribute is not defined, it uses ASCII by default.
             <xs:annotation>
               <xs:documentation>
                 Reads a sequence of charcters, stored internally as a string.
-If the length attribute is not defined, it reads until the cursor reaches the end.
-If the encoding attribute is not defined, it uses ASCII by default.
+                If the length attribute is not defined, it reads until the cursor reaches the end.
+                If the encoding attribute is not defined, it uses ASCII by default.
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -553,7 +599,7 @@ If the encoding attribute is not defined, it uses ASCII by default.
             <xs:annotation>
               <xs:documentation>
                 Reads a sequence of 4 bytes, stored internally as an int.
-If the endian attribute is not defined, this uses little-endian order.
+                If the endian attribute is not defined, this uses little-endian order.
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -561,7 +607,7 @@ If the endian attribute is not defined, this uses little-endian order.
             <xs:annotation>
               <xs:documentation>
                 Reads 2 bytes, stored internally as a short integer.
-If the endian attribute is not defined, this uses little-endian order.
+                If the endian attribute is not defined, this uses little-endian order.
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>

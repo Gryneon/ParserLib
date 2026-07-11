@@ -4,9 +4,7 @@ public sealed class OperationLabel (string name) : Operation, IPlaceholderOperat
 {
   /// <summary>The name of this label.</summary>
   public string Name { get; init; } = name;
-  public override bool NoInput => true;
   public override bool NoExecution => true;
-  public override bool NoOutput => true;
 
   public void CheckUnpacked ()
   {

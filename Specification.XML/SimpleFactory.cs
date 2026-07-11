@@ -7,12 +7,14 @@ using Parser.Tokens;
 
 namespace Specification.XML;
 
-public class EnumerateFactoryOperation<TOut> (string input_key, string output_key, SimpleFactory<TOut> factory) : Operation(input_key, output_key) where TOut : notnull
+public class EnumerateFactoryOperation<TOut> (SimpleFactory<TOut> factory) : Operation where TOut : notnull
 {
   protected SimpleFactory<TOut> Factory { get; } = factory;
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   protected override void Execute ()
   {
-    if (WorkData is IEnumerable<IToken> tc)
+    if (Data[InputKey] is IEnumerable<IToken> tc)
     {
       Collection<TOut> output = [];
       foreach (IToken tok in tc)
@@ -20,12 +22,12 @@ public class EnumerateFactoryOperation<TOut> (string input_key, string output_ke
         TOut item = Factory.Produce(tok);
         output.Add(item);
       }
-      WorkData = output;
+      Data[OutputKey] = output;
       Status = OpStatus.Pass;
     }
     else
     {
-      Status = Err.ThrowBadInput("IEnumerable<IToken>", $"{WorkDataType}");
+      throw Err.ThrowBadInput("IEnumerable<IToken>", Data[InputKey].TypeName);
     }
   }
 }

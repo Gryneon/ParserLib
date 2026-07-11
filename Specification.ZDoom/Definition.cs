@@ -29,7 +29,7 @@ public static class Definition
     RxOpt = ROML | ROIPW | ROIC | ROEC,
     Name = "zdoom.zscript",
     Operations = [
-      new TokenizeOperation("text", "tokens")
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" }
     ],
     IsTextFile = true,
     SC = SCOIC,
@@ -78,7 +78,7 @@ public static class Definition
     FileInferences = [IfN(InferenceType.Ext | InferenceType.Like, "udmf")],
     RxOpt = ROML | ROIPW | ROIC | ROEC | ROSL,
     Operations = [
-      new TokenizeOperation("text", "tokens"),
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
       new TokenAssembleOperation(),
     ],
     DefaultRuleSet = RT.IgnoreCase,
@@ -135,7 +135,7 @@ public static class Definition
     ],
     GroupTokenRules = [],
     Operations = [
-      new TokenizeOperation("text", "tokens"),
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
       new TokenAssembleOperation(),
     ],
   };
@@ -152,8 +152,8 @@ public static class Definition
       IfN(FName | Is, "mapinfo"),
       IfN(FName | Is, "zmapinfo")],
     Operations = [
-      new TokenizeOperation("text", "tokens"),
-      new DebugToStringOperation ("tokens")
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
+      new DebugToStringOperation { InputKey = "tokens" }
     ],
     RxOpt = ROIC | ROEC | ROML,
     IsTextFile = true,
@@ -191,10 +191,10 @@ public static class Definition
     TokenType = typeof(DecorateTokenType),
     Name = "zdoom.decorate",
     Operations = [
-      new TokenizeOperation("text", "tokens"),
-      new DebugPrintKeyOperation("tokens"),
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
+      new DebugPrintKeyOperation { InputKey = "tokens" },
       new TokenAssembleOperation(),
-      new DebugPrintKeyOperation("tokens_assembled"),
+      new DebugPrintKeyOperation { InputKey = "tokens_assembled" },
     ],
     TokenRules = [
       s_cString,
@@ -228,9 +228,9 @@ public static class Definition
     Name = "zdoom.acs",
     RxOpt = ROML | ROIC | ROIPW | ROEC | ROSL,
     Operations = [
-      new TokenizeOperation("text", "tokens"),
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
       new TokenAssembleOperation(),
-      new DebugPrintKeyOperation("tokens_assembled")
+      new DebugPrintKeyOperation { InputKey = "tokens_assembled" }
     ],
     IsTextFile = true,
     SC = SCOIC,
@@ -382,10 +382,10 @@ public static class Definition
       .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
     ],
     Operations = [
-      new TokenizeOperation("text", "tokens"),
-      new DebugPrintKeyOperation("tokens"),
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
+      new DebugPrintKeyOperation { InputKey = "tokens" },
       new TokenAssembleOperation("tokens", "tokengroups"),
-      new DebugPrintKeyOperation("tokengroups"),
+      new DebugPrintKeyOperation { InputKey = "tokengroups" },
     ]
   };
 
@@ -410,10 +410,10 @@ public static class Definition
       .. TokenRule.MakeSingleCharRules("{}()=,;", RT.TokenExact ,new MdlT[] { MdlT.Bo, MdlT.Bc, MdlT.Po, MdlT.Pc, MdlT.Eq, MdlT.Cm, MdlT.Sc }),
     ],
     Operations = [
-      new TokenizeOperation("text", "tokens"),
-      new DebugPrintKeyOperation("tokens"),
+      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
+      new DebugPrintKeyOperation { InputKey = "tokens" },
       new TokenAssembleOperation("tokens", "tokengroups"),
-      new DebugPrintKeyOperation("tokengroups"),
+      new DebugPrintKeyOperation { InputKey = "tokengroups" },
     ]
   };
 }

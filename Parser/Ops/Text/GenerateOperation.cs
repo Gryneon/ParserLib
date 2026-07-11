@@ -23,25 +23,25 @@ namespace Parser.Ops.Text;
 /// <see cref="OS.FailNoSuchVarName"/>: The key was not found in the <see cref="DataStore"/>.
 /// </code>
 /// </remarks>
-public class GenerateOperation<TIn, TOut> : Operation
+public class GenerateOperation<TIn, TOut> : Operation where TOut : notnull
 {
   protected Dictionary<int, TOut> Results { get; } = [];
   protected Predicate<TIn> Predicate { get; }
   protected Func<TIn, TOut> Function { get; }
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   /// <summary>
   /// Generates a <typeparamref name="TOut"/> from a <typeparamref name="TIn"/>.
-  /// Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result in <paramref name="output_key"/>.
+  /// Validates the <typeparamref name="TOut"/> against the <paramref name="predicate"/> and stores the result.
   /// </summary>
   /// <param name="func">The generation function.</param>
   /// <param name="predicate">The condition that the generation function requires.</param>
-  /// <param name="input_key">The key to pull data from.</param>
-  /// <param name="output_key">The key to store the output objects in.</param>
-  public GenerateOperation (Func<TIn, TOut> func, Predicate<TIn> predicate, string input_key, string output_key) : base(input_key, output_key)
+  public GenerateOperation (Func<TIn, TOut> func, Predicate<TIn> predicate)
   {
     Predicate = predicate;
     Function = func;
   }
-  public GenerateOperation (Func<TIn, TOut> func, string input_key, string output_key) : base(input_key, output_key)
+  public GenerateOperation (Func<TIn, TOut> func)
   {
     Predicate = _ => true;
     Function = func;
@@ -49,7 +49,7 @@ public class GenerateOperation<TIn, TOut> : Operation
 
   protected override void Execute ()
   {
-    if (WorkData is IEnumerable<TIn> mdds)
+    if (Data[InputKey] is IEnumerable<TIn> mdds)
     {
       Collection<TIn> mddList = [.. mdds];
       for (int i = 0; i < mddList.Count; i++)
@@ -62,15 +62,14 @@ public class GenerateOperation<TIn, TOut> : Operation
           Results.Add(i, result);
         }
       }
-      WorkData = Results;
+      Data[OutputKey] = Results;
       Status = OS.Pass;
     }
-    else if (WorkData is TIn mdd)
+    else if (Data[InputKey] is TIn mdd)
     {
       if (Predicate(mdd))
       {
-        TOut? result = Function(mdd);
-        WorkData = result;
+        Data[OutputKey] = Function(mdd);
         Status = OS.Pass;
       }
       else
@@ -80,7 +79,7 @@ public class GenerateOperation<TIn, TOut> : Operation
     }
     else
     {
-      Status = Err.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", $"{WorkData?.GetType()}");
+      throw Err.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", Data[InputKey].TypeName);
     }
   }
 }

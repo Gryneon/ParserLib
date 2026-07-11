@@ -1,17 +1,16 @@
 namespace Parser.Ops;
 
 /// <summary>Prints a key that implements <see cref="IPrintable"/>.</summary>
-/// <param name="input_key">The key to print.</param>
 /// <remarks>If the key does not implement <see cref="IPrintable"/>, nothing happens, and the operation returns <see cref="OpStatus.Skipped"/>.</remarks>
-public class DebugPrintKeyOperation (string input_key) : Operation(input_key, SE)
+public class DebugPrintKeyOperation : Operation
 {
-  public override bool NoOutput => true;
-
+  /// <summary>The key to print.</summary>
+  public required string? InputKey { get; init; }
   /// <inheritdoc/>
   /// <remarks>This is a debugging operation and does not store data.</remarks>
   protected override void Execute ()
   {
-    if (WorkData is IPrintable printable)
+    if (Data[InputKey] is IPrintable printable)
     {
       printable.Print();
       NewLine();
@@ -23,5 +22,5 @@ public class DebugPrintKeyOperation (string input_key) : Operation(input_key, SE
     }
   }
 
-  public override string ToString () => $"DebugPrintKeyOperation Key = \"{LengthKey}\"";
+  public override string ToString () => $"DebugPrintKeyOperation Key = \"{InputKey}\"";
 }

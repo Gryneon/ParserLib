@@ -2,8 +2,6 @@ namespace Parser.Ops;
 
 public abstract class LoopOperation : Operation, IPlaceholderOperation
 {
-  public override bool NoOutput => true;
-  public override bool NoInput => true;
 
   /// <summary>The name of this loop.</summary>
   public required string CursorKey { get; init; }

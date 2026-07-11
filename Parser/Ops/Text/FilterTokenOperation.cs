@@ -1,12 +1,12 @@
 namespace Parser.Ops.Text;
 
-/// <summary>
-/// Represents an operation to filter tokens based on specified criteria.
-/// </summary>
+/// <summary>Represents an operation to filter tokens based on specified criteria.</summary>
 public class FilterTokenOperation : Operation
 {
   public string StrType { get; init; }
   public string? OpData { get; init; }
+  public string InputKey { get; init; }
+  public string OutputKey { get; init; }
 
   private FilterTokenType Type => Enum.Parse<FilterTokenType>(StrType, true);
   private enum FilterTokenType
@@ -20,28 +20,28 @@ public class FilterTokenOperation : Operation
   }
   public FilterTokenOperation (string input_key, string output_key, [StringSyntax("regex")] string rx, bool accept_any_match)
   {
-    LengthKey = input_key;
+    InputKey = input_key;
     OutputKey = output_key;
     StrType = accept_any_match ? "AnyMatchInToken" : "MatchEntireToken";
     OpData = rx;
   }
-  public FilterTokenOperation (string input_key, string output_key, object token_type) : base(input_key, output_key)
+  public FilterTokenOperation (string input_key, string output_key, object token_type)
   {
-    LengthKey = input_key;
+    InputKey = input_key;
     OutputKey = output_key;
     StrType = "TokenType";
     OpData = token_type.ToString();
   }
-  public FilterTokenOperation (string input_key, string output_key, bool only_remove_empty_tokens) : base(input_key, output_key)
+  public FilterTokenOperation (string input_key, string output_key, bool only_remove_empty_tokens)
   {
-    LengthKey = input_key;
+    InputKey = input_key;
     OutputKey = output_key;
     StrType = only_remove_empty_tokens ? "Empty" : "Whitespace";
   }
 
   protected override void Execute ()
   {
-    if (Data[LengthKey] is IEnumerable<IToken> tc)
+    if (Data[InputKey] is IEnumerable<IToken> tc)
     {
       Data[OutputKey] = Type switch
       {
@@ -56,7 +56,7 @@ public class FilterTokenOperation : Operation
     }
     else
     {
-      throw Err.ThrowBadInput("IEnumerable<IToken>", Data[LengthKey].TypeName);
+      throw Err.ThrowBadInput("IEnumerable<IToken>", Data[InputKey].TypeName);
     }
   }
 }

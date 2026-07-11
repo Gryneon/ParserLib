@@ -1,3 +1,5 @@
+using Catharsis.Commons;
+
 using Parser.Exceptions;
 
 using ResWAD = Specification.WAD.Properties.Resources;
@@ -30,10 +32,10 @@ internal static class Program
   [MemberNotNull(nameof(UserInput))]
   internal static void UserLine () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
   internal static string UserLineReturn () => Console.ReadLine() ?? SE;
-  internal static void LogError (string message) => Log(MsgClass.Error, message);
-  internal static void LogDebug (string message) => Log(MsgClass.Debug, message);
-  internal static void LogInfo (string message) => Log(MsgClass.BlueInfo, message);
-  internal static void LogWarn (string message) => Log(MsgClass.Warning, message);
+  internal static void LogError (string message) => Log(MsgClass.Error, message, nameof(Program));
+  internal static void LogDebug (string message) => Log(MsgClass.Debug, message, nameof(Program));
+  internal static void LogInfo (string message) => Log(MsgClass.BlueInfo, message, nameof(Program));
+  internal static void LogWarn (string message) => Log(MsgClass.Warning, message, nameof(Program));
   internal static string FinishPath (string path)
   {
     return Directory.Exists(CheckPath) ? $@"{LaptopPath}\{path}" : $@"{DesktopPath}\{path}";
@@ -76,10 +78,10 @@ internal static class Program
     try { TestSelectionLoop(); }
     catch (QuitException)
     {
-      Log(MsgClass.Warning, "QuitException caught by outer parser.");
+      Log(MsgClass.Warning, "QuitException caught by outer parser.", nameof(Program));
     }
 
-    Log(MsgClass.Prompt, "Press enter to exit.");
+    Log(MsgClass.Prompt, "Press enter to exit.", nameof(Program));
     _ = Console.ReadLine();
     return 0;
   }
@@ -87,7 +89,7 @@ internal static class Program
   {
   Start:
     Console.Clear();
-    Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)");
+    Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)", nameof(Program));
     string? choice = Console.ReadLine();
     switch (choice?.ToUpperInvariant())
     {
@@ -134,11 +136,14 @@ internal static class Program
       case "JSON":
         InitialTest(SpecJSON.Spec, Paths.json_error);
         break;
+      case "":
+        Log(MsgClass.Warning, "Nothing selected, enter a test, or type exit or quit to exit the program.", nameof(Program));
+        break;
       default:
-        Log(MsgClass.Warning, "Unknown test.");
+        Log(MsgClass.Warning, "Unknown test.", nameof(Program));
         break;
     }
-    Log(MsgClass.Prompt, "Press enter to return to the test selection.");
+    Log(MsgClass.Prompt, "Press enter to return to the test selection.", nameof(Program));
     _ = Console.ReadLine();
     goto Start;
   }
@@ -168,6 +173,7 @@ internal static class Program
     }
     DebugOut();
   }
+
   internal static void InitialTest (string spec, string file)
   {
     DebugIn("Program", "InitialTest");
@@ -222,7 +228,7 @@ internal static class Program
     }
     else
     {
-      byte[] bytes = File.ReadAllBytes(path);
+      Memory<byte> bytes = File.ReadAllBytes(path);
       Parser = new(spec);
       Status = Parser.StepThrough(bytes);
     }

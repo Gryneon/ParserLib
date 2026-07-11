@@ -66,7 +66,7 @@ public static class Debug
   {
     while (CallStack.Count > depth + 1)
       CallStack.Drop();
-    Log(MsgClass.Debug, "Purged back to here.");
+    Log(MsgClass.Debug, "Purged back to here.", nameof(Debug));
   }
   private static void PurgeStackTo (string key)
   {
@@ -76,7 +76,7 @@ public static class Debug
     }
     else
     {
-      Log(MsgClass.Debug, $"No Catch Defined under {key}.");
+      Log(MsgClass.Debug, $"No Catch Defined under {key}.", nameof(Debug));
     }
   }
   #endregion
@@ -116,9 +116,18 @@ public static class Debug
   /// <summary>Writes a newline to the output stream.</summary>
   /// <param name="back">The background color.<br/>Default is black.</param>
   public static void NewLine (ConsoleColor back = C_Black) => DoLog(LFs, back, back, true);
-  public static void Log (MsgClass msgClass, string className, string methodName, string message)
+  /// <summary>Logs a message to the output stream using the callers name.</summary>
+  /// <remarks>This method always assumes that <see cref="DebugIn(string, string)"/> has been called, and uses that location as the caller.</remarks>
+  /// <param name="msgClass">The color and verbosity of the message.</param>
+  /// <param name="message">The message text.</param>
+  /// <param name="caller">The name of the caller of this method.</param>
+  /// <param name="method">The name of this method.</param>
+  public static void Log (MsgClass msgClass, string message, string caller, [CallerMemberName] string method = "")
   {
-    DoLogHead(MsgClass.Debug, className, methodName);
+    if (method.IsEmpty())
+      DoLogHead(MsgClass.Debug, caller);
+    else
+      DoLogHead(MsgClass.Debug, caller, method);
     LogPart(msgClass, message);
     NewLine();
   }
@@ -126,16 +135,9 @@ public static class Debug
   /// <remarks>This method always assumes that <see cref="DebugIn(string, string)"/> has been called, and uses that location as the caller.</remarks>
   /// <param name="msgClass">The color and verbosity of the message.</param>
   /// <param name="message">The message text.</param>
-  /// <param name="caller">The caller of this method.</param>
-  public static void Log (MsgClass msgClass, string message, [CallerMemberName] string caller = "")
-  {
-    if (caller.IsEmpty())
-      LogHead();
-    else
-      DoLogHead(MsgClass.Debug, caller);
-    LogPart(msgClass, message);
-    NewLine();
-  }
+  /// <param name="caller">The object calling this method.</param>
+  /// <param name="method">The name of this method.</param>
+  public static void Log (MsgClass msgClass, string message, object caller, [CallerMemberName] string method = "") => Log(msgClass, message, caller.TypeName, method);
   /// <summary>Logs an exception that was handled internally.</summary>
   /// <param name="e">The exception to log.</param>
   public static void LogException (Exception e) =>
