@@ -6,7 +6,7 @@ public static class TokenRefExt
 {
   extension(TokenRef type)
   {
-    private bool IsTokenCollection () => type switch
+    private bool IsTokenCollection => type switch
     {
       TokenRef.Value => false,
       TokenRef.Name => false,

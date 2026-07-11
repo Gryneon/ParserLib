@@ -16,7 +16,7 @@ public readonly struct ConditionValue : IValueNode
   public readonly dynamic? Value => Data;
   public override readonly string ToString () => $"{Type}: {Data ?? "<null>"}";
 
-  public override bool Equals (object? obj) => obj is IValueNode cv && Type == cv.Type && Data == cv.Data;
+  public override bool Equals (object? obj) => obj is IValueNode cv && Type == cv.Type && Value == cv.Value;
   public override int GetHashCode () => HashCode.Combine(Type, Data);
   public static bool operator == (ConditionValue left, IValueNode right) => left.Equals(right);
   public static bool operator != (ConditionValue left, IValueNode right) => !(left == right);
