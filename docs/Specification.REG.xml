@@ -10,18 +10,6 @@
         <member name="P:Specification.REG.Definition.Spec">
             <summary>Defines the Registry spec.</summary>
         </member>
-        <member name="T:Specification.REG.EntryNameEqual">
-            <summary>An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Specification.REG.RegProperty"/> is the same as another.</summary>
-        </member>
-        <member name="M:Specification.REG.EntryNameEqual.#ctor">
-            <summary>An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Specification.REG.RegProperty"/> is the same as another.</summary>
-        </member>
-        <member name="M:Specification.REG.EntryNameEqual.Equals(Specification.REG.RegProperty,Specification.REG.RegProperty)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Specification.REG.EntryNameEqual.GetHashCode(Specification.REG.RegProperty)">
-            <inheritdoc/>
-        </member>
         <member name="T:Specification.REG.Header">
             <summary>Represents the text header of a registry file.</summary>
             <param name="text">The text if not using the default text.</param>

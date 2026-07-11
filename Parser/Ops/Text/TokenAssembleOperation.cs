@@ -33,7 +33,7 @@ public class TokenAssembleOperation : Operation
     }
     else
     {
-      Status = Err.ThrowBadInput("TokenCollection", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput("TokenCollection", Data[InputKey].TypeName);
     }
   }
 }

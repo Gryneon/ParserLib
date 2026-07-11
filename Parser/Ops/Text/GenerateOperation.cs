@@ -79,7 +79,7 @@ public class GenerateOperation<TIn, TOut> : Operation where TOut : notnull
     }
     else
     {
-      Status = Err.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", Data[InputKey].TypeName);
     }
   }
 }

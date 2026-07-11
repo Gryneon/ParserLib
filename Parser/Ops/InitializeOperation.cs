@@ -22,13 +22,6 @@ public class InitializeOperation : Operation
 
     object? container = container_type.InvokeMember(SE, BindingFlags.CreateInstance, null, null, null, CIIC);
 
-    if (container is not null)
-    {
-      Data[InitialKey] = container;
-    }
-    else
-    {
-      Status = Err.ThrowBadDef($"Something went wrong when trying to create a {container_type}.");
-    }
+    Data[InitialKey] = container ?? throw Err.ThrowBadDef($"Something went wrong when trying to create a {container_type}.");
   }
 }

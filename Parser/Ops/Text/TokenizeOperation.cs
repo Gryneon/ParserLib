@@ -25,7 +25,7 @@ public class TokenizeOperation : Operation
     }
     else
     {
-      Status = Err.ThrowBadInput("string", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput("string", Data[InputKey].TypeName);
     }
   }
 }

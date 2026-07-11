@@ -198,6 +198,12 @@
         <member name="F:Common.DictionaryMode.MergeCollection">
             <summary>If the existing value is a collection, and this value is a collection of the same type, merge the two collections.</summary>
         </member>
+        <member name="T:Common.EntryNameEqual`1">
+            <summary>An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Common.IProperty`1"/> is the same as another.</summary>
+        </member>
+        <member name="M:Common.EntryNameEqual`1.#ctor">
+            <summary>An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> comparer to determine if the name of the <see cref="T:Common.IProperty`1"/> is the same as another.</summary>
+        </member>
         <member name="T:Common.Extensions.CharExtensions">
             <summary>Extension methods for the <see cref="T:System.Char"/> type.</summary>
         </member>

@@ -54,7 +54,7 @@ public class ReplaceOperation : Operation
     }
     else
     {
-      Status = Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
     }
   }
 }

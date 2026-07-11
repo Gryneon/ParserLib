@@ -15,6 +15,6 @@ public class TrimOperation : Operation
     };
 
     if (Data[InputKey] is not string and not IEnumerable<string>)
-      Status = Err.ThrowBadInput("string or list", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput("string or list", Data[InputKey].TypeName);
   }
 }

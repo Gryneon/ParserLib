@@ -18,18 +18,13 @@ public class DivideOperation : Operation
   {
     if (DivisorKey is not null)
     {
-      if (Data[DivisorKey] is not int)
-        Status = Err.ThrowBadInput("int", $"{Data[DivisorKey].GetType()}");
-      else Divisor = (int) Data[DivisorKey];
+      Divisor = Data[DivisorKey] is int dvs ? dvs : throw Err.ThrowBadInput("int", $"{Data[DivisorKey].GetType()}");
     }
 
-    if (Data[DividendKey] is not int)
-      Status = Err.ThrowBadInput("int", $"{Data[DividendKey].GetType()}");
-    else
-      Dividend = (int) Data[DividendKey];
+    Dividend = Data[DividendKey] is int dvd ? dvd : throw Err.ThrowBadInput("int", $"{Data[DividendKey].GetType()}");
 
     if (Divisor == 0)
-      Status = Err.ThrowBadResult("Cannot divide by zero.");
+      throw Err.ThrowBadResult("Cannot divide by zero.");
 
     int quotient = Dividend / Divisor;
     Data[OutputKey] = quotient;

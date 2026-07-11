@@ -103,7 +103,7 @@ public abstract class Operation : IOperation
   /// </summary>
   /// <exception cref="OperationException"/>
   /// <exception cref="OperationBadDefinitionException"/>
-  protected virtual void Execute () => Status = Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
+  protected virtual void Execute () => throw Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
   protected static IOperation JumpTo (int pos) => new JumpOperation(pos);
   public void ApplyProperties (bool cont, bool skip)
   {

@@ -1,7 +1,7 @@
 namespace Specification.INI;
 
 /// <summary>A document, which is a collection of INISections.</summary>
-public sealed class INIDocument : ICanAddChildren<INISection>, ITextSerializer, ICloneable, ICanAccessChildren<string, INISection>, ICanAccessChildren<int, INISection>
+public sealed class INIDocument : ITextSerializer, ICloneable, IEnumerable<INISection>
 {
   #region Static Constructors
   /// <summary>Creates an <c>INIDocument</c> from another <c>INIDocument</c>.</summary>

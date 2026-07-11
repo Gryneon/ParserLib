@@ -27,7 +27,7 @@ public class EnumerateFactoryOperation<TOut> (SimpleFactory<TOut> factory) : Ope
     }
     else
     {
-      Status = Err.ThrowBadInput("IEnumerable<IToken>", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput("IEnumerable<IToken>", Data[InputKey].TypeName);
     }
   }
 }

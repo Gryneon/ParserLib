@@ -20,7 +20,7 @@ public sealed class OperationContinue : Operation
   {
     if (Target == -1)
     {
-      Status = Err.ThrowBadDef("Continue operation not set up.");
+      throw Err.ThrowBadDef("Continue operation not set up.");
     }
 
     Parser.SetNextOperationIndex(Target);

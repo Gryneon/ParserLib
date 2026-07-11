@@ -41,7 +41,7 @@ public class DictionaryOperation (RegexOptions options, bool fullMatchText, RxS?
     }
     else
     {
-      Status = Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
+      throw Err.ThrowBadInput("string or IEnumerable<string>", Data[InputKey].TypeName);
     }
   }
 
