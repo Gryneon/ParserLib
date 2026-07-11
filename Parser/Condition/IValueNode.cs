@@ -6,5 +6,6 @@ public interface IValueNode
   dynamic? Value { get; }
   int? IntValue { get; }
   decimal? DecValue { get; }
+  public string? StrValue => Type is KeyOption.Literal ? Key : null;
   string ToString ();
 }

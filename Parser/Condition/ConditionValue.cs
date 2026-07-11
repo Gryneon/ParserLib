@@ -1,11 +1,23 @@
 namespace Parser.Condition;
 
-public readonly record struct ConditionValue (KeyOption Type, string? Key) : IValueNode
+public readonly struct ConditionValue : IValueNode
 {
+  public ConditionValue (KeyOption type, string? data)
+  {
+    Data = data;
+    Type = type;
+  }
+  public string? Data { get; }
+  public KeyOption Type { get; }
   public readonly bool IsOperator => Type > KeyOption.OpStart;
-  public readonly int? IntValue => int.TryParse(Key, out int val) ? val : null;
-  public readonly decimal? DecValue => decimal.TryParse(Key, out decimal val) ? val : null;
-  public readonly string? StrValue => Type is KeyOption.Literal ? Key : null;
-  public readonly dynamic? Value => Key;
-  public override readonly string ToString () => $"{Type}: {Key ?? "<null>"}";
+  public readonly int? IntValue => int.TryParse(Data, out int val) ? val : null;
+  public readonly decimal? DecValue => decimal.TryParse(Data, out decimal val) ? val : null;
+  public readonly string? StrValue => Type is KeyOption.Literal ? Data : null;
+  public readonly dynamic? Value => Data;
+  public override readonly string ToString () => $"{Type}: {Data ?? "<null>"}";
+
+  public override bool Equals (object? obj) => obj is IValueNode cv && Type == cv.Type && Data == cv.Data;
+  public override int GetHashCode () => HashCode.Combine(Type, Data);
+  public static bool operator == (ConditionValue left, IValueNode right) => left.Equals(right);
+  public static bool operator != (ConditionValue left, IValueNode right) => !(left == right);
 }
