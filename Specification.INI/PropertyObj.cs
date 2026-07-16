@@ -3,10 +3,6 @@ namespace Specification.INI;
 /// <summary>A key and value pair in an INI file.</summary>
 public class PropertyObj : PropertyBase<string>, ITextSerializer
 {
-  /// <summary>The key name.</summary>
-  public override required string Key { get; set; } = SE;
-  /// <summary>The value assigned to the key.</summary>
-  public override string? Value { get; set; } = SE;
   /// <summary>Creates an empty <see cref="PropertyObj"/>.</summary>
   public PropertyObj () { }
   /// <summary>Creates a property from a key and value</summary>
@@ -66,16 +62,10 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
     };
   }
   public override bool Equals (IProperty<string>? other) =>
-    Key.Equals(other?.Key, SCOIC) && (Value?.Equals(other.Value, SCO) ?? false);
-  public override int CompareTo (IProperty<string>? other) =>
-    Key.CompareTo(other?.Key, SCOIC);
-  public override bool Equals (object? obj) =>
-    obj is IProperty<string> prop && Equals(prop);
-  public override int GetHashCode () => HashCode.Combine(Key, Value);
+    Key.Like(other?.Key) && (Value?.Is(other.Value) ?? false);
   /// <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
   /// <returns>The <see langword="string"/> representation of the object.</returns>
   public string Serialize () => $"  {Key}={Value}";
-  public bool Equals (PropertyObj? other) => Key.Like(other?.Key) && Value.Is(other?.Value);
   public static implicit operator KeyValuePair<string, string> (PropertyObj from)
   {
     from.ThrowIfNull();

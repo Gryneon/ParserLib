@@ -1,6 +1,6 @@
 namespace Parser;
 
-public class PositionalDataBlock
+public class PositionalDataBlock : IIndexSortable
 {
   public string? Name { get; set; }
   public int Index { get; set; } = -1;
@@ -12,4 +12,7 @@ public class PositionalDataBlock
   public bool IsVirtual => Index == -1 && Size > 0;
 
   public string AsString => Data.Span.ByteArrToString();
+
+  public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
+  public int CompareTo (object? obj) => obj is IIndexSortable iis ? CompareTo(iis) : 1;
 }

@@ -1,9 +1,11 @@
+using Catharsis.Commons;
+
 namespace Parser.Ops;
 
 public class AddItemOperation : Operation
 {
   public required string ListKey { get; init; }
-  public Collection<string> ParameterKeys { get; init; } = [];
+  public Dictionary<string, string> ParameterKeys { get; init; } = [];
   public required string Type { get; init; }
 
   protected override void Execute ()
@@ -14,5 +16,14 @@ public class AddItemOperation : Operation
     {
       _ = Err.ThrowBadDef("Object " + Type + "not found.");
     }
+
+    Dictionary<string, object> values = [.. ParameterKeys.Select(kvp => new KeyValuePair<string, object>(kvp.Key, Data[kvp.Value]))];
+
+    object created = t.NewInstance(values);
+
+    if (Data[ListKey] is IList<object> il)
+      il.Add(created);
+    else
+      throw Err.ThrowBadResult("ListKey was not an IList");
   }
 }

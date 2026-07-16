@@ -37,7 +37,7 @@ public static class OperationFactory
     Condition = parent?.Attribute(NS + "condition")?.Value,
     Operations = GetOps(parent)
   };
-  private static Collection<string> GetValueList (XElement? parent = null) => [.. parent?.Value.Split(' ', '\t') ?? []];
+  private static Dictionary<string, string> GetValueList (XElement? parent = null) => [.. parent?.Elements().Select(i => new KeyValuePair<string, string>(i.Attribute("name")?.Value ?? SE, i.Attribute("content_var")?.Value ?? SE)) ?? []];
   //private static IEnumerable<XElement> GetElems (XElement? parent = null) => parent?.Elements() ?? [];
   private static IEnumerable<XElement> GetElems (string name, XElement? parent = null) => parent?.Elements(NS + name) ?? [];
   private static OperationIf? s_thisBlock;

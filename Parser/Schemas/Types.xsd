@@ -174,17 +174,21 @@
   </xs:group>
   <!-- Complex Types TODO: Finish Documentation -->
   <xs:complexType name="AddItemType">
-    <xs:simpleContent>
-      <xs:extension base="VariableListType">
-        <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
-        <xs:attribute name="key" use="optional" type="NonEmptyTokenType">
-          <xs:annotation>
-            <xs:documentation>The key if storing in a dictionary</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="type" use="required" type="NonEmptyTokenType"/>
-      </xs:extension>
-    </xs:simpleContent>
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Property">
+        <xs:complexType>
+          <xs:attribute name="name" type="NonEmptyTokenType"/>
+          <xs:attribute name="content_var" type="DataKeyType"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+    <xs:attribute name="key" use="optional" type="NonEmptyTokenType">
+      <xs:annotation>
+        <xs:documentation>The key if storing in a dictionary</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="type" use="required" type="NonEmptyTokenType"/>
   </xs:complexType>
   <xs:complexType name="NoAttributesType"/>
   <xs:complexType name="DebugKeyType">

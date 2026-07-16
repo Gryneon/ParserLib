@@ -48,10 +48,10 @@ public class Spec
   /// <param name="tokenType">The name of the token type.</param>
   /// <remarks>This is dependent on defining <see cref="TokenType"/> in the defined <see cref="Spec"/>.</remarks>
   /// <returns>The value of the token type.</returns>
-  /// <exception cref="ArgumentException"/>
-  /// <exception cref="InvalidOperationException"/>
-  /// <exception cref="ArgumentNullException"/>
-  /// <exception cref="OverflowException"/>
+  /// <exception cref="ArgumentException">Tokentype is not valid.</exception>
+  /// <exception cref="InvalidOperationException"></exception>
+  /// <exception cref="ArgumentNullException"></exception>
+  /// <exception cref="OverflowException"></exception>
   public dynamic GetTokenTypeValue (string tokenType) => TokenType == typeof(string) || TokenType is null
       ? tokenType
       : (dynamic) (TokenType.IsEnum ? Enum.Parse(TokenType, tokenType) : throw new ArgumentException("TokenType is not valid."));

@@ -72,10 +72,10 @@ public sealed class DataStore
   /// <param name="key">The key to load.</param>
   /// <returns>The value of the key.</returns>
   /// <exception cref="OperationNoSuchVarException">The key is not present in the <see cref="DataStore"/>.</exception>
-  public object LoadOrFail (string key) => TryLoad(key, out object? value) ? value : Err.ThrowNoVar(key);
-  public T LoadOrFail<T> (string key) => TryLoad(key, out T? value) ? value : Err.ThrowNoVar(key);
-  public object? LoadIfAble (string key) => TryLoad(key, out object? value) ? value : null;
-  public T? LoadIfAble<T> (string key) => TryLoad(key, out T? value) ? value : default;
+  internal object LoadOrFail (string key) => TryLoad(key, out object? value) ? value : Err.ThrowNoVar(key);
+  internal T LoadOrFail<T> (string key) => TryLoad(key, out T? value) ? value : Err.ThrowNoVar(key);
+  internal object? LoadIfAble (string key) => TryLoad(key, out object? value) ? value : null;
+  internal T? LoadIfAble<T> (string key) => TryLoad(key, out T? value) ? value : default;
 
   public override string ToString ()
   {
