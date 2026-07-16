@@ -63,7 +63,7 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IComp
     "E" when IsEscaped && !IsShifted => ICT.SelectFormat,
     "P" or "R" when !IsEscaped && !IsShifted => ICT.Simple,
     "C" or "P" or "c" when IsEscaped && !IsShifted => ICT.Simple,
-    string when Mode is IPLPrinterMode.Print && !IsEscaped => ICT.FieldData,
+    string when Mode is IPLPrinterMode.Print && !IsEscaped && !IsShifted => ICT.FieldData,
     "F" when IsEscaped && Mode is IPLPrinterMode.Print => ICT.FieldSet,
     _ => ICT.Unknown
   };
@@ -233,12 +233,7 @@ public class CommandDataSet : IEquatable<CommandDataSet>, ITextSerializer, IComp
     return escape + shift + cmd + field + props;
   }
   /// <inheritdoc/>
-  public static CommandDataSet Generate (MatchDataSet input)
-  {
-    CommandDataSet result = new(input);
-
-    return result;
-  }
+  public static CommandDataSet Generate (MatchDataSet input) => new(input);
   #endregion
   #region Static Operators
   /// <summary>Checks basic equality with another CommonData object.</summary>

@@ -12,9 +12,9 @@
       </Rule>
       <Rule>
         <TypeToAssign>Value</TypeToAssign>
-        <Type>Competitive</Type>
+        <Type>TokenMatch</Type>
         <Data>
-          (?&lt;=(=))([^\\=\n;]|\\.)*(?=$|;)
+          (?&lt;= ( , | a-zA-Z | \s) ) \d+ 
         </Data>
       </Rule>
       <Rule>
@@ -25,9 +25,9 @@
         </Data>
       </Rule>
       <Rule>
-        <TypeToAssign>Eq</TypeToAssign>
+        <TypeToAssign>Sc</TypeToAssign>
         <Type>TokenExact</Type>
-        <Data> = </Data>
+        <Data> ; </Data>
       </Rule>
       <Rule>
         <TypeToAssign>Section</TypeToAssign>
@@ -38,9 +38,9 @@
     <GroupTokenRules>
       <Rule>
         <Type>None</Type>
-        <TypeToAssign>Property</TypeToAssign>
+        <TypeToAssign>OriginProp</TypeToAssign>
         <Data>
-          n:Key x:Eq v:value
+          n:Letter{o} q:Value x:Cm q:Value xo:Sc
         </Data>
       </Rule>
     </GroupTokenRules>
