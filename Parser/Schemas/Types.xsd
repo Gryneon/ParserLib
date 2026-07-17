@@ -167,7 +167,7 @@
   <!-- Groups TODO: Finish Documentation -->
   <xs:group name="IfGroup">
     <xs:sequence>
-      <xs:element name="If" type="ConditionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="If" type="ConditionType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="ElseIf" minOccurs="0" maxOccurs="unbounded" type="ConditionType"/>
       <xs:element name="Else" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
     </xs:sequence>
@@ -177,12 +177,13 @@
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Property">
         <xs:complexType>
-          <xs:attribute name="name" type="NonEmptyTokenType"/>
-          <xs:attribute name="content_var" type="DataKeyType"/>
+          <xs:attribute use="required" name="name" type="NonEmptyTokenType"/>
+          <xs:attribute use="optional" name="content_var" type="DataKeyType"/>
+          <xs:attribute use="optional" name="content" type="xs:string"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
-    <xs:attribute name="name" use="required" type="NonEmptyTokenType"/>
+    <xs:attribute name="list_var" use="required" type="DataKeyType"/>
     <xs:attribute name="key" use="optional" type="NonEmptyTokenType">
       <xs:annotation>
         <xs:documentation>The key if storing in a dictionary</xs:documentation>
@@ -274,7 +275,7 @@ True by default.
         <xs:element name="MakeCursor">
           <xs:complexType>
             <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
-            <xs:attribute name="list_var" use="optional" type="DataKeyType">
+            <xs:attribute name="content_var" use="optional" type="DataKeyType">
               <xs:annotation>
                 <xs:documentation>The list or array to iterate through, if there is one</xs:documentation>
               </xs:annotation>

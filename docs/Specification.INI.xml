@@ -159,12 +159,6 @@
         <member name="T:Specification.INI.PropertyObj">
             <summary>A key and value pair in an INI file.</summary>
         </member>
-        <member name="P:Specification.INI.PropertyObj.Key">
-            <summary>The key name.</summary>
-        </member>
-        <member name="P:Specification.INI.PropertyObj.Value">
-            <summary>The value assigned to the key.</summary>
-        </member>
         <member name="M:Specification.INI.PropertyObj.#ctor">
             <summary>Creates an empty <see cref="T:Specification.INI.PropertyObj"/>.</summary>
         </member>

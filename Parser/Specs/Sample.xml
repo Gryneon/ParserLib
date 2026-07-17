@@ -28,7 +28,6 @@
         <ReadData output_var="lump_size" type="int" cursor_var="current_pos"/>
         <ReadData output_var="lump_name" type="text" length="8" cursor_var="current_pos"/>
         <ReadData output_var="lump_data" content_var="bytes" type="binary" length_var="lump_size" position_var="lump_pos"/>
-        <AddItem name="directory" type="DirectoryEntry">lump_pos lump_size lump_name lump_data</AddItem>
       </ForCount>
       <ForEach list_var="bytes" cursor_var="cursor">
         <ReadData output_var="lump_pos" type="text" cursor_var="current_pos" length_var="current_item"/>

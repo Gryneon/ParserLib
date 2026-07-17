@@ -742,10 +742,10 @@
             <param name="tokenType">The name of the token type.</param>
             <remarks>This is dependent on defining <see cref="P:Parser.Spec.TokenType"/> in the defined <see cref="T:Parser.Spec"/>.</remarks>
             <returns>The value of the token type.</returns>
-            <exception cref="T:System.ArgumentException"/>
-            <exception cref="T:System.InvalidOperationException"/>
-            <exception cref="T:System.ArgumentNullException"/>
-            <exception cref="T:System.OverflowException"/>
+            <exception cref="T:System.ArgumentException">Tokentype is not valid.</exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.OverflowException"></exception>
         </member>
         <member name="M:Parser.Spec.GetTokenTypeString(System.Object)">
             <summary>Gets the name of the token type.</summary>

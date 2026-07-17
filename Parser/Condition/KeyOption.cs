@@ -58,4 +58,8 @@ public enum KeyOption
   OpLBs,          // << (Left Bitshift)
   OpRBs,          // >> (Right Bitshift)
   OpSqt,          // root (Any Root, just negative exp)
+
+  OpLP,           // ( (Left Parenthesis)
+  OpRP,           // ( (Right Parenthesis)
+  OpEmbedded      // Embedded Expression
 }

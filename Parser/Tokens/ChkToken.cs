@@ -132,7 +132,10 @@ public sealed class ChkToken
         _ => T.Error,
       };
   }
-
+  /// <summary></summary>
+  /// <param name="types"></param>
+  /// <param name="spec"></param>
+  /// <returns></returns>
   internal static Collection<string> AllAllowedTypes (IEnumerable<string> types, Spec spec)
   {
     HashSet<string> all_types_allowed = [.. types];

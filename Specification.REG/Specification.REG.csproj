@@ -7,6 +7,10 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="Specification.REG.csproj.lscache" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />

@@ -10,7 +10,7 @@ public static class SpanExtensions
   /// <param name="buffer">The span buffer to read from.</param>
   extension(Span<byte> buffer)
   {
-    public short ToInt16 ()
+    public short ToInt16 (bool big_endian = false)
     {
       if (buffer.Length > 2)
         throw new ArgumentOutOfRangeException(nameof(buffer));

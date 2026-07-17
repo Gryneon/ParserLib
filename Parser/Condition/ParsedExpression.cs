@@ -9,24 +9,22 @@ public class ParsedExpression : IExpression
   #region Public Properties
   public required string Expression
   {
-    get;
-    init
-    {
-      field = value;
-      Parse();
-    }
+    get { return expression; }
+    init { expression = value; }
   }
   #endregion
   [AllowNull]
   public DataStore Data { get; protected set; }
-  protected ImmutableArray<IValueNode> Sequence { get; private set; }
+  protected ImmutableArray<IValueNode>? Sequence { get; private set; }
   [AllowNull]
   private Collection<IValueNode> _workingSequence;
+  private string expression;
+
   public ParsedExpression () { }
   [SetsRequiredMembers]
-  protected ParsedExpression (string expression) => Expression = expression;
+  protected ParsedExpression (string expr) => expression = expr;
 
-  public static explicit operator ParsedExpression (string expression) => new(expression);
+  public static explicit operator ParsedExpression (string expr) => new(expr);
 
   protected object? GetValue (ConditionValue @ref) => @ref.Type switch
   {
@@ -61,7 +59,7 @@ public class ParsedExpression : IExpression
   {
     _workingSequence = [];
 
-    if (Expression.IsEmpty())
+    if (expression.IsEmpty())
       return;
 
     Dictionary<string, KeyOption> literalReference = new()
@@ -94,11 +92,28 @@ public class ParsedExpression : IExpression
       ["or"] = OpOr,
       ["add"] = OpAdd,
       ["sub"] = OpSub,
+      ["embed"] = OpEmbedded
     };
 
+    string innerGetter = new RxS(@"\((?'inner'[^()]+)\)");
+    Dictionary<int, string> subs = [];
+
+    while (true)
+    {
+      Match m = Regex.Match(expression, innerGetter, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1));
+
+      if (!m.Success)
+        break;
+
+      int rem_from = m.Index;
+      int rem_qty = m.Length;
+      subs.Add(rem_from, m.Groups["inner"].Value);
+      expression = expression.ReplaceRange(rem_from, rem_qty, '\0');
+    }
+
     // https://regex101.com/r/aTwSlR/5
-    string conditionPattern = new RxS(@"(?:(?:\b(?'exists'exists)|(?'countof'countof)|(?'typeof'typeof))\b)?\[(?<varname>.*?)\]|\{(?<literal>.*?)\}|(?'gteq'>=)|(?'lteq'<=)|(?'gt'>)|(?'lt'<)|(?'eq'==)|(?'noteq'!=)|(?:\b(?'like'like)|(?'seqeq'matches)|(?'is'is)\b)|(?'and'&&)|(?'or'\|\|)|(?'int'-?\d+)|(?'dec'-?\d*\.\d+)|(?:\b(?'true'(?i:true))|(?'false'(?i:false))|(?'null'(?i:null))\b)");
-    foreach (Match m in Regex.Matches(Expression, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
+    string conditionPattern = new RxS(@"(?:(?:\b(?'exists'exists)|(?'countof'countof)|(?'typeof'typeof))\b)?\[(?<varname>.*?)\]|\{(?<literal>.*?)\}|(?'gteq'>=)|(?'lteq'<=)|(?'gt'>)|(?'lt'<)|(?'eq'==)|(?'noteq'!=)|(?:\b(?'like'like)|(?'seqeq'matches)|(?'is'is)\b)|(?'and'&&)|(?'or'\|\|)|(?'int'-?\d+)|(?'dec'-?\d*\.\d+)|(?:\b(?'true'(?i:true))|(?'false'(?i:false))|(?'null'(?i:null))|(?'embed'\0+)\b)");
+    foreach (Match m in Regex.Matches(expression, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
     {
       void processLiterals ()
       {
@@ -190,6 +205,9 @@ public class ParsedExpression : IExpression
   /// <remarks>If the evaluation fails, it always returns <see langword="false"/>.</remarks>
   public virtual object? Evaluate (DataStore data)
   {
+    if (Sequence is null)
+      Parse();
+
     int left_index, right_index, op_index, i;
     _workingSequence = [.. Sequence];
     bool allowLogical;
