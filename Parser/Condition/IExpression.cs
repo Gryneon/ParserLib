@@ -25,7 +25,7 @@ public interface IExpression
     true or > 0 or < 0 => true,
     string s when s.IsNotEmpty() => true,
     string => false,
-    IEnumerable ie when ie.IsEmpty() => false,
+    IEnumerable ie when ie.IsEmpty => false,
     IEnumerable => true,
     _ => true
   };

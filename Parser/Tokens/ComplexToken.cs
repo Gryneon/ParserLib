@@ -185,7 +185,7 @@ public sealed class ComplexToken : IToken, IPrintable
     EachPart(kvp =>
     {
       if (kvp.Value is null ||
-      (kvp.Value is TokenCollection tc && tc.IsEmpty()) ||
+      (kvp.Value is TokenCollection tc && tc.IsEmpty) ||
       (kvp.Key is "Value" && multiple_values) ||
       (kvp.Key is "ValueList" && !multiple_values))
       {

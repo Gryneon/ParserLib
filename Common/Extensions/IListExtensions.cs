@@ -12,7 +12,7 @@ public static class IListExtensions
   {
     /// <summary>Checks if an <see cref="IList{T}"/> is <see langword="null"/> or empty.</summary>
     /// <returns><see langword="true"/> if the list is empty or null, <see langword="false"/> otherwise.</returns>
-    public bool IsEmpty () => list is null || list.Count == 0;
+    public bool IsEmpty => list is null || list.Count == 0;
   }
   extension<T> (IList<T> list)
   {
@@ -28,7 +28,7 @@ public static class IListExtensions
     }
     public T Dequeue ()
     {
-      if (list.IsEmpty())
+      if (list.IsEmpty)
         throw new ArgumentOutOfRangeException(nameof(list), "Cannot Dequeue, list is empty.");
 
       T item = list[0];
@@ -60,20 +60,20 @@ public static class IListExtensions
     }
     public void RemoveLast ()
     {
-      if (list.IsEmpty())
+      if (list.IsEmpty)
         return;
 
       list.RemoveAt(list.Count - 1);
     }
 
     // Stack Functions for IList<T>
-    public T? Peek () => list.IsEmpty() ? default : list[^1];
+    public T? Peek () => list.IsEmpty ? default : list[^1];
     /// <summary>Performs a 'pop' action, but discards the popped item.</summary>
     public void Drop () => list?.RemoveLast();
     /// <summary>Performs a 'pop' action like a stack would.</summary>
     public T? Pop ()
     {
-      if (list.IsEmpty())
+      if (list.IsEmpty)
         return default;
 
       T item = list[^1];

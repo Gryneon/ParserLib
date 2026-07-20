@@ -56,7 +56,7 @@ public static class MenuController
   {
     CurrentMenuName = menu_name;
     ActiveMenu = AllMenus.FirstOrDefault(m => m.Name == CurrentMenuName) ?? throw new ArgumentException($"menu_name: \"{menu_name}\" was not found.");
-    FirstItemLine = ActiveMenu.Items.IsEmpty() ? ErrVal : ActiveMenu.OptionLines.Start.Value;
+    FirstItemLine = ActiveMenu.Items.IsEmpty ? ErrVal : ActiveMenu.OptionLines.Start.Value;
     LineCount = ActiveMenuItemCount;
   }
   [MemberNotNull(nameof(NextMenu))]

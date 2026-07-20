@@ -28,6 +28,7 @@ public enum KeyOption
   False,          // false OR FALSE OR FaLsE
   Integer,        // integer
   Decimal,        // decimal
+  Embedded,       // SubExpression
 
   OpStart = 100,  // Operator start marker
 
@@ -58,8 +59,4 @@ public enum KeyOption
   OpLBs,          // << (Left Bitshift)
   OpRBs,          // >> (Right Bitshift)
   OpSqt,          // root (Any Root, just negative exp)
-
-  OpLP,           // ( (Left Parenthesis)
-  OpRP,           // ( (Right Parenthesis)
-  OpEmbedded      // Embedded Expression
 }

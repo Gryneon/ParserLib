@@ -6,64 +6,86 @@ namespace Common.Extensions;
 
 public static class IEnumerableExtensions
 {
-  /// <summary>Allows indexing for ienumerable types.</summary>
+  /// <summary>Generic IEnumerable Extensions</summary>
   /// <typeparam name="T">The object type</typeparam>
-  /// <param name="list">The list.</param>
-  /// <param name="index">The index to retrieve.</param>
-  /// <returns>The object at position <paramref name="index"/>.</returns>
-  public static T At<T> (this IEnumerable<T> list, int index) => list.ToArray()[index];
-  public static Collection<T> ToCollection<T> (this IEnumerable<T> list) => [.. list];
-  public static string TextJoin<T> (this IEnumerable<T> list, string separator = EmptyString)
+  extension<T> (IEnumerable<T> list)
   {
-    string result = string.Empty;
+    /// <summary>Allows indexing for ienumerable types.</summary>
+    /// <param name="list">The list.</param>
+    /// <param name="index">The index to retrieve.</param>
+    /// <returns>The object at position <paramref name="index"/>.</returns>
+    public T At (int index) => list.ToArray()[index];
+    public Collection<T> ToCollection () => [.. list];
+    public string TextJoin (string separator = EmptyString)
+    {
+      string result = string.Empty;
 
-    if (list is null)
+      if (list is null)
+        return result;
+
+      foreach (T? item in list)
+      {
+        string? itemString = item?.ToString();
+        if (string.IsNullOrEmpty(itemString))
+          continue;
+
+        if (result.IsNotEmpty())
+          result += separator;
+        result += itemString;
+      }
       return result;
-
-    foreach (T? item in list)
-    {
-      string? itemString = item?.ToString();
-      if (string.IsNullOrEmpty(itemString))
-        continue;
-
-      if (result.IsNotEmpty())
-        result += separator;
-      result += itemString;
     }
-    return result;
+    public int LastIndex => list.Count() - 1;
+    public bool IsEmpty => list?.Any() != true;
   }
-  public static int LastIndex<T> (this IEnumerable<T> list) => list is null ? -1 : list.Count() - 1;
-  public static int LastIndex<T> (this IReadOnlyCollection<T> list) => list is null ? -1 : list.Count - 1;
-  public static Collection<T> Condense<T> (this IEnumerable<IEnumerable<T>> listlist) =>
-  [.. listlist.Aggregate((list1, list2) => list1.Concat(list2))];
-  // IEnumerable
-  public static int Count (this IEnumerable list)
+  extension(IEnumerable list)
   {
-    IEnumerator? iter = list?.GetEnumerator();
-    int i = 0;
-    while (iter?.MoveNext() == true) { i++; }
-    return i;
+    public int ICount => list.AsCollection<object>().Count;
   }
-  public static string TextJoin (this IEnumerable list, string separator = EmptyString)
-  {
-    if (list is null)
-      return SE;
 
-    string result = SE;
-    foreach (object item in list)
+  extension<T> (IReadOnlyCollection<T>? list)
+  {
+    public int LastIndex => list is null ? -1 : list.Count - 1;
+  }
+
+  extension<T> (IEnumerable<IEnumerable<T>> listlist)
+  {
+    public Collection<T> Condensed =>
+      [.. listlist.Aggregate((list1, list2) => list1.Concat(list2))];
+  }
+
+  extension(IEnumerable list)
+  {
+    // IEnumerable
+
+    public string TextJoin (string separator = EmptyString)
     {
-      string? itemString = item?.ToString();
-      if (string.IsNullOrEmpty(itemString))
-        continue;
-      if (result.IsNotEmpty())
-        result += separator;
-      result += itemString;
-    }
-    return result;
-  }
-  public static Collection<string> ToStringCollection (this IEnumerable list) => [.. list.Cast<string>()];
-  public static bool IsEmpty ([NotNullWhen(true)] this IEnumerable? list) => list is null || list.Count() == 0;
+      if (list is null)
+        return SE;
 
-  // IEnumerable<string>
-  public static RxS AggregateRegex (this IEnumerable<string> list) => list.TextJoin("|");
+      string result = SE;
+      foreach (object item in list)
+      {
+        string? itemString = item?.ToString();
+        if (string.IsNullOrEmpty(itemString))
+          continue;
+        if (result.IsNotEmpty())
+          result += separator;
+        result += itemString;
+      }
+      return result;
+    }
+    public Collection<string> ToStringCollection () => [.. list.Cast<string>()];
+  }
+
+  extension([NotNullWhen(false)] IEnumerable? list)
+  {
+    public bool IsEmpty => list is null || list.AsCollection<object>().Count == 0;
+  }
+
+  extension(IEnumerable<string> list)
+  {
+    // IEnumerable<string>
+    public RxS AggregateRegex () => list.TextJoin("|");
+  }
 }

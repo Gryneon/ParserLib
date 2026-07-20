@@ -39,7 +39,7 @@ public sealed class TokenAssembler
     DebugIn(Area, "Parse");
 
     Validate();
-    if (_rule.GroupSequence.IsEmpty())
+    if (_rule.GroupSequence.IsEmpty)
     {
       string? data = _rule.RuleStringData
         ?? throw new InvalidOperationException("No valid data in rule.");
@@ -55,7 +55,7 @@ public sealed class TokenAssembler
   {
     Validate();
 
-    if (tokens_to_assemble.IsEmpty()) return;
+    if (tokens_to_assemble.IsEmpty) return;
 
     _constructed_items++;
 

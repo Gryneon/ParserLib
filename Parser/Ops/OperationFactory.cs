@@ -87,18 +87,18 @@ public static class OperationFactory
       if (lname is not "If" and not "ElseIf" and not "Else")
         s_thisBlock = null;
 
-      static IOperation getIf ()
+      static IOperation getIf (XElement? element)
       {
-        IfBlockConditional section = GetIfOption();
+        IfBlockConditional section = GetIfOption(element);
         OperationIf block = new() { Options = [section] };
         s_thisBlock = block;
         return block;
       }
-      static IOperation getElseIf ()
+      static IOperation getElseIf (XElement? element)
       {
         if (s_thisBlock is null)
           throw Err.ThrowBadDef("ElseIf block without preceding If block.");
-        IfBlockConditional section = GetIfOption();
+        IfBlockConditional section = GetIfOption(element);
         s_thisBlock.Options.Add(section);
         OperationIf temp = s_thisBlock;
         if (section.Condition is null)
@@ -107,11 +107,11 @@ public static class OperationFactory
         }
         return temp;
       }
-      static IOperation getElse ()
+      static IOperation getElse (XElement? element)
       {
         if (s_thisBlock is null)
           throw Err.ThrowBadDef("Else block without preceding If block.");
-        IfBlockConditional section = GetIfOption();
+        IfBlockConditional section = GetIfOption(element);
         s_thisBlock.Options.Add(section);
         OperationIf temp = s_thisBlock;
         s_thisBlock = null;
@@ -193,9 +193,9 @@ public static class OperationFactory
           ListKey = list_var,
           Operations = child_ops,
         },
-        "If" => getIf(),
-        "ElseIf" => getElseIf(),
-        "Else" => getElse(),
+        "If" => getIf(element),
+        "ElseIf" => getElseIf(element),
+        "Else" => getElse(element),
         "Initialize" => new InitializeOperation()
         {
           InitialKey = initial_var,

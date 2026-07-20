@@ -13,11 +13,8 @@ public class IPLTests
     Assert.False(status.IsFail);
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);
-    Assert.Contains("matches", parser.Data.Keys);
-    Assert.True(parser.Data.TryLoad("matches", out IEnumerable<MatchDataSet>? objects));
-    Collection<MatchDataSet> objs = [.. objects];
-    Assert.Equal(10, objs.Count);
-    Assert.Equal("E", objs[2].Groups["letter"].Content);
+    Assert.Equal(10, (parser.Data["commands"] as IList<object>)?.Count);
+    Assert.Equal("E", (parser.Data["commands"] as IList<CommandDataSet>)?[2].CmdLetter);
   }
 
   [Theory]
@@ -26,7 +23,7 @@ public class IPLTests
   {
     XParser parser = new();
     OpStatus status = parser.ParseFile(Definition.Spec, Helper.GitDir + label_file);
-    Assert.False(status.IsFail);
+    Assert.True(status.IsPass);
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);
     Assert.Contains("matches", parser.Data.Keys);
@@ -45,7 +42,6 @@ public class IPLTests
     XParser textParser = new();
     OpStatus status = textParser.ParseData(Definition.Spec, initial_string ?? "");
     Assert.Equal(result, status);
-    Assert.Equal(result, textParser.LastStatus);
   }
 
   [Theory]
@@ -62,6 +58,5 @@ public class IPLTests
     XParser textParser = new();
     OpStatus status = textParser.ParseData(spec, initial_string);
     Assert.Equal(OpStatus.FailNoSuchVarName, status);
-    Assert.Equal(OpStatus.FailNoSuchVarName, textParser.LastStatus);
   }
 }

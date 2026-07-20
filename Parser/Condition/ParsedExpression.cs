@@ -7,10 +7,27 @@ namespace Parser.Condition;
 public class ParsedExpression : IExpression
 {
   #region Public Properties
-  public required string Expression
+  public string Expression { get; private set; } = SE;
+  public Dictionary<int, string> SubExpressions { get; } = [];
+  public void SaveSubExpression (int pos, string expr)
   {
-    get { return expression; }
-    init { expression = value; }
+    ParsedExpression root = this;
+    while (root.Parent is not null)
+    {
+      root = root.Parent;
+    }
+
+    root.SubExpressions[pos] = expr;
+  }
+  public string LoadSubExpression (int pos)
+  {
+    ParsedExpression root = this;
+    while (root.Parent is not null)
+    {
+      root = root.Parent;
+    }
+
+    return root.SubExpressions[pos];
   }
   #endregion
   [AllowNull]
@@ -18,24 +35,27 @@ public class ParsedExpression : IExpression
   protected ImmutableArray<IValueNode>? Sequence { get; private set; }
   [AllowNull]
   private Collection<IValueNode> _workingSequence;
-  private string expression;
+  private ParsedExpression? Parent { get; }
 
-  public ParsedExpression () { }
-  [SetsRequiredMembers]
-  protected ParsedExpression (string expr) => expression = expr;
+  public ParsedExpression (string expr, ParsedExpression? parent = null)
+  {
+    Expression = expr;
+    Parent = parent;
+  }
 
   public static explicit operator ParsedExpression (string expr) => new(expr);
 
   protected object? GetValue (ConditionValue @ref) => @ref.Type switch
   {
     LoadKey => Data[@ref.Value],
-    CountOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value] is IEnumerable ien ? ien.Count() : 1 : 0,
+    CountOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value] is IEnumerable ien ? ien.ICount : 1 : 0,
     CheckKeyExists => Data.CanLoad(@ref.Value),
     TypeOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value].GetType().Name : "null",
     Literal => @ref.Value,
     False => false,
     True => true,
     Null => null,
+    Embedded => new ParsedExpression(@ref.Value, this).Evaluate(Data),
     >= OpStart => Err.ThrowBadDef($"Condition String Tried to GetValue from an operator {@ref}."),
     _ => Err.ThrowBadDef($"Condition String Tried to GetValue from an unknown type {@ref}.")
   };
@@ -54,13 +74,16 @@ public class ParsedExpression : IExpression
 
     return ret_l;
   }
-
+  [MemberNotNull(nameof(Sequence))]
   protected void Parse ()
   {
     _workingSequence = [];
 
-    if (expression.IsEmpty())
+    if (Expression.IsEmpty())
+    {
+      Sequence = [];
       return;
+    }
 
     Dictionary<string, KeyOption> literalReference = new()
     {
@@ -91,29 +114,27 @@ public class ParsedExpression : IExpression
       ["and"] = OpAnd,
       ["or"] = OpOr,
       ["add"] = OpAdd,
-      ["sub"] = OpSub,
-      ["embed"] = OpEmbedded
+      ["sub"] = OpSub
     };
 
     string innerGetter = new RxS(@"\((?'inner'[^()]+)\)");
-    Dictionary<int, string> subs = [];
 
     while (true)
     {
-      Match m = Regex.Match(expression, innerGetter, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1));
+      Match m = Regex.Match(Expression, innerGetter, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1));
 
       if (!m.Success)
         break;
 
       int rem_from = m.Index;
       int rem_qty = m.Length;
-      subs.Add(rem_from, m.Groups["inner"].Value);
-      expression = expression.ReplaceRange(rem_from, rem_qty, '\0');
+      SaveSubExpression(rem_from, m.Groups["inner"].Value);
+      this.Expression = Expression.ReplaceRange(rem_from, rem_qty, '\0');
     }
 
     // https://regex101.com/r/aTwSlR/5
     string conditionPattern = new RxS(@"(?:(?:\b(?'exists'exists)|(?'countof'countof)|(?'typeof'typeof))\b)?\[(?<varname>.*?)\]|\{(?<literal>.*?)\}|(?'gteq'>=)|(?'lteq'<=)|(?'gt'>)|(?'lt'<)|(?'eq'==)|(?'noteq'!=)|(?:\b(?'like'like)|(?'seqeq'matches)|(?'is'is)\b)|(?'and'&&)|(?'or'\|\|)|(?'int'-?\d+)|(?'dec'-?\d*\.\d+)|(?:\b(?'true'(?i:true))|(?'false'(?i:false))|(?'null'(?i:null))|(?'embed'\0+)\b)");
-    foreach (Match m in Regex.Matches(expression, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
+    foreach (Match m in Regex.Matches(Expression, conditionPattern, ROSL | ROIPW | ROML, TimeSpan.FromSeconds(1)))
     {
       void processLiterals ()
       {
@@ -144,8 +165,13 @@ public class ParsedExpression : IExpression
       processGroups();
       processLiterals();
 
-      Sequence = [.. _workingSequence];
+      if (m.HasValidGroup("embed"))
+      {
+        string expr = LoadSubExpression(m.Index);
+        _workingSequence.Add(new ConditionValue(Embedded, expr));
+      }
     }
+    Sequence = [.. _workingSequence];
   }
   protected static object? Operate (KeyOption op, object? lobj, object? robj)
   {

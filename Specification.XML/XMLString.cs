@@ -40,7 +40,7 @@ public class XMLString ()
   }
   public void CloseLastElement ()
   {
-    if (!Closing.IsEmpty())
+    if (!Closing.IsEmpty)
       Elements.Add(Closing.Pop()!);
   }
 

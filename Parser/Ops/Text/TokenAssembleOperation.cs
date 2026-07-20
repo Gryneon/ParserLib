@@ -25,7 +25,7 @@ public class TokenAssembleOperation : Operation
   public TokenAssembleOperation (string input_key = "tokens", string output_key = "tokens_assembled") : this([], input_key, output_key) { }
   protected override void Execute ()
   {
-    TokenAssembler assembler = _rules.IsEmpty() ? new(Spec) : new([.. _rules], Spec);
+    TokenAssembler assembler = _rules.IsEmpty ? new(Spec) : new([.. _rules], Spec);
     if (Data[InputKey] is TokenCollection tc)
     {
       Data[OutputKey] = assembler.Execute(tc);

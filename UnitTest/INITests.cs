@@ -10,8 +10,7 @@ public class INITests
     INIDocument test = ["Section1"];
     test["Section1"].Set("key", "Section1_Value");
     Assert.Equal("Section1_Value", test["Section1"]["key"]);
-    int count = test["Section1"].Count;
-    Assert.Equal(1, count);
+    _ = Assert.Single(test["Section1"]);
   }
 
   [Theory]
@@ -20,7 +19,7 @@ public class INITests
   {
     string file_text = File.ReadAllText(Helper.GitDir + file);
     XParser parser = new();
-    Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
+    Assert.True(parser.ParseData(Definition.Spec, file_text).IsPass);
     Assert.True(parser.Data.CanLoad("result"));
   }
 
@@ -30,7 +29,7 @@ public class INITests
   {
     string file_text = File.ReadAllText(Helper.GitDir + file);
     XParser parser = new();
-    Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
+    Assert.True(parser.ParseData(Definition.Spec, file_text).IsPass);
     Assert.True(parser.Data.CanLoad<INIDocument>("result"));
   }
 
@@ -40,7 +39,7 @@ public class INITests
   {
     string file_text = File.ReadAllText(Helper.GitDir + file);
     XParser parser = new();
-    Assert.Equal(OpStatus.Pass, parser.ParseData(Definition.Spec, file_text));
+    Assert.True(parser.ParseData(Definition.Spec, file_text).IsPass);
     Assert.True(parser.Data.TryLoad<INIDocument>("result", out INIDocument? doc));
     Assert.Equal(2, doc.Count);
   }

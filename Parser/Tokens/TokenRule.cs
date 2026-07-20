@@ -89,7 +89,7 @@ public class TokenRule
   {
     Collection<TokenRule> tokenRules = [];
 
-    if (rules.IsEmpty() || rules is null)
+    if (rules.IsEmpty || rules is null)
       return [.. tokenRules];
 
     foreach ((string word, dynamic type) in rules)
@@ -104,7 +104,7 @@ public class TokenRule
   {
     Collection<TokenRule> tokenRules = [];
 
-    if (rules.IsEmpty() || rules is null)
+    if (rules.IsEmpty || rules is null)
       return [.. tokenRules];
 
     foreach (object type in rules)

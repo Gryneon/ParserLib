@@ -285,8 +285,14 @@
             <returns>An enum of the given type with the given flags removed.</returns>
         </member>
         <member name="M:Common.Extensions.IEnumerableExtensions.At``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <summary>Allows indexing for ienumerable types.</summary>
+            <inheritdoc cref="M:Common.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.At(System.Int32)"/>
+        </member>
+        <member name="T:Common.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.&lt;M&gt;$23639E4D5B9A2C11A922FC7710A99100">
+            <summary>Generic IEnumerable Extensions</summary>
             <typeparam name="T">The object type</typeparam>
+        </member>
+        <member name="M:Common.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.At(System.Int32)">
+            <summary>Allows indexing for ienumerable types.</summary>
             <param name="list">The list.</param>
             <param name="index">The index to retrieve.</param>
             <returns>The object at position <paramref name="index"/>.</returns>
@@ -294,8 +300,8 @@
         <member name="T:Common.Extensions.IListExtensions">
             <summary><see cref="T:System.Collections.Generic.IList`1"/> extensions.</summary>
         </member>
-        <member name="M:Common.Extensions.IListExtensions.IsEmpty``1(System.Collections.Generic.IList{``0})">
-            <inheritdoc cref="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty"/>
+        <member name="M:Common.Extensions.IListExtensions.get_IsEmpty``1(System.Collections.Generic.IList{``0})">
+            <inheritdoc cref="P:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty"/>
         </member>
         <member name="M:Common.Extensions.IListExtensions.Enqueue``1(System.Collections.Generic.IList{``0},``0)">
             <inheritdoc cref="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.Enqueue(`0)"/>
@@ -314,7 +320,7 @@
             <typeparam name="T">The type of items in the <see cref="T:System.Collections.Generic.IList`1"/>.</typeparam>
             <param name="list">The list that the methods are executing from.</param>
         </member>
-        <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty">
+        <member name="P:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.IsEmpty">
             <summary>Checks if an <see cref="T:System.Collections.Generic.IList`1"/> is <see langword="null"/> or empty.</summary>
             <returns><see langword="true"/> if the list is empty or null, <see langword="false"/> otherwise.</returns>
         </member>

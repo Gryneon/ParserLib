@@ -32,23 +32,14 @@
       <ForEach list_var="bytes" cursor_var="cursor">
         <ReadData output_var="lump_pos" type="text" cursor_var="current_pos" length_var="current_item"/>
       </ForEach>
-      <If condition="[file_id] == {WAD2}">
-        <!-- condition strings https://regex101.com/r/aTwSlR/1 -->
-        <!-- <Initialize initial_var="s" type="Collection" value_type="d"/> -->
-      </If>
-      <ElseIf condition="[file_id] == {PACK}">
-        <!-- PAK File -->
-        <Initialize initial_var="s" type="Set" value_type="d"/>
-      </ElseIf>
-      <Else>
-        <!-- WAD File -->
-      </Else>
-      <Switch condition="[file_id]">
-        <Case value="WAD2"/>
+      <!--<Switch condition="[file_id]">
+        <Case value="WAD2">
+          <Label name="wad2"/>
+        </Case>
         <Default>
-          <!-- WAD File -->
+          <Label name="wad"/>
         </Default>
-      </Switch>
+      </Switch>-->
       <Terminate success="true"/>
     </Instructions>
     <FileInferences initial="and">

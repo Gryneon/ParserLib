@@ -132,10 +132,10 @@ public sealed class ChkToken
         _ => T.Error,
       };
   }
-  /// <summary></summary>
-  /// <param name="types"></param>
-  /// <param name="spec"></param>
-  /// <returns></returns>
+  /// <summary>Gets all the allowed derived types of tf this token.</summary>
+  /// <param name="types">The initially allowed types.</param>
+  /// <param name="spec">The <see cref="Spec"/> to lookup from.</param>
+  /// <returns>A list of all the allowed token types.</returns>
   internal static Collection<string> AllAllowedTypes (IEnumerable<string> types, Spec spec)
   {
     HashSet<string> all_types_allowed = [.. types];
