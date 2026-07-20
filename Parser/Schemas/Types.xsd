@@ -77,6 +77,11 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="AndOrType">
+    <xs:annotation>
+      <xs:documentation>
+        Must be an 'and' or an 'or', case-insensitive.
+      </xs:documentation>
+    </xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="and"/>
       <xs:enumeration value="And"/>
@@ -85,9 +90,40 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="EndianessType">
+    <xs:annotation>
+      <xs:documentation>
+        Must be 'big' or 'little', case-insensitive.
+      </xs:documentation>
+    </xs:annotation>
     <xs:restriction base="xs:token">
-      <xs:enumeration value="Little"/>
-      <xs:enumeration value="Big"/>
+      <xs:enumeration value="Little">
+        <xs:annotation>
+          <xs:documentation>
+            Little-endian byte order. This is the default if not specified.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="little">
+        <xs:annotation>
+          <xs:documentation>
+            Little-endian byte order. This is the default if not specified.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Big">
+        <xs:annotation>
+          <xs:documentation>
+            Big-endian byte order.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="big">
+        <xs:annotation>
+          <xs:documentation>
+            Big-endian byte order.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="EncodingType">
@@ -168,14 +204,14 @@
   <xs:group name="IfGroup">
     <xs:sequence>
       <xs:element name="If" type="ConditionType" minOccurs="1" maxOccurs="1"/>
-      <xs:element name="ElseIf" minOccurs="0" maxOccurs="unbounded" type="ConditionType"/>
-      <xs:element name="Else" minOccurs="0" maxOccurs="1" type="InnerInstructionSet"/>
+      <xs:element name="ElseIf" type="ConditionType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Else" type="InnerInstructionSet" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:group>
   <!-- Complex Types TODO: Finish Documentation -->
   <xs:complexType name="AddItemType">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="Property">
+      <xs:element minOccurs="1" maxOccurs="unbounded" name="Property">
         <xs:complexType>
           <xs:attribute use="required" name="name" type="NonEmptyTokenType"/>
           <xs:attribute use="optional" name="content_var" type="DataKeyType"/>
@@ -261,8 +297,20 @@ True by default.
             <xs:attributeGroup ref="TargetAttrGroup"/>
           </xs:complexType>
         </xs:element>
-        <xs:element name="GotoLabel" type="RequiredNameType"/>
-        <xs:element name="Label" type="RequiredNameType"/>
+        <xs:element name="GotoLabel" type="RequiredNameType">
+          <xs:annotation>
+            <xs:documentation>
+              Jumps to a label with the specified name.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Label" type="RequiredNameType">
+          <xs:annotation>
+            <xs:documentation>
+              A label to jump to with GotoLabel.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
         <xs:element name="Divide">
           <xs:complexType>
             <xs:attribute name="output_var" use="required" type="DataKeyType"/>
@@ -285,7 +333,11 @@ True by default.
         </xs:element>
         <xs:element name="SetCursorPos">
           <xs:complexType>
-            <xs:attribute name="cursor_var" use="required" type="DataKeyType"/>
+            <xs:attribute name="cursor_var" use="required" type="DataKeyType">
+              <xs:annotation>
+                <xs:documentation>The data key of the cursor to set the position of.</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
             <xs:attributeGroup ref="PositionAttrGroup"/>
           </xs:complexType>
         </xs:element>
@@ -309,7 +361,13 @@ True by default.
             </xs:complexContent>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Terminate" type="SuccessType"/>
+        <xs:element name="Terminate" type="SuccessType">
+          <xs:annotation>
+            <xs:documentation>
+              Terminates the operation at this step, returning a success or failure.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
         <xs:element name="Initialize">
           <xs:annotation>
             <xs:documentation>
@@ -343,8 +401,20 @@ True by default.
             <xs:attributeGroup ref="PositionAttrGroup"/>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Tokenize" type="InputOutputType"/>
-        <xs:element name="TokenAssemble" type="InputOutputType"/>
+        <xs:element name="Tokenize" type="InputOutputType">
+          <xs:annotation>
+            <xs:documentation>
+              Tokenizes the string(s) in input_var and stores the resulting tokens in output_var as a TokenCollection.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="TokenAssemble" type="InputOutputType">
+          <xs:annotation>
+            <xs:documentation>
+              Assembles tokens into ComplexTokens from basic tokens based on the GroupTokenRules.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
         <xs:element name="ReadData">
           <xs:complexType>
             <xs:attribute name="content_var" use="optional" type="DataKeyType"/>
@@ -377,8 +447,14 @@ True by default.
             </xs:complexContent>
           </xs:complexType>
         </xs:element>
-        <xs:element name="AddItem" type="AddItemType"/>
-        <xs:group ref="IfGroup"/>
+        <xs:element name="AddItem" type="AddItemType">
+          <xs:annotation>
+            <xs:documentation>
+              Adds an item to a collection or dictionary.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:group ref="IfGroup" />
         <xs:element name="While" type="ConditionType"/>
         <xs:element name="Until" type="ConditionType"/>
         <xs:element name="Break" type="NoAttributesType"/>
@@ -461,9 +537,11 @@ True by default.
     <xs:sequence>
       <xs:element name="Name" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
       <xs:element name="Type" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
-      <xs:element name="Left" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
-      <xs:element name="Center" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
-      <xs:element name="Right" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      <xs:choice minOccurs="0">
+        <xs:element name="Left" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+        <xs:element name="Center" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+        <xs:element name="Right" maxOccurs="1" minOccurs="0" type="ComplexTokenType"/>
+      </xs:choice>
       <xs:choice minOccurs="0">
         <xs:element name="PropertyList" maxOccurs="1" type="ComplexTokenType"/>
         <xs:element name="Property" maxOccurs="unbounded" type="ComplexTokenType"/>
