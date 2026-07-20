@@ -62,14 +62,23 @@ public static class Definition
     Name = "reg",
     FileInferences = [IfN(ExtIs, "reg")],
     Operations = [
-      new ReplaceOperation([
-        (@"\;.*$", ""), //Remove line comments
-        (@"^\s+", ""), //Remove beginning ws
-        (@"\s+$", ""), //Remove ending ws
-        (@"\s*\=\s*", "="), //Remove ws around eq sign
-        (@"\\" + RX.LnEnd, "") //Remove escaped newlines
-      ]) { InputKey = "text", OutputKey = "text" },
-      new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
+      new ReplaceOperation()
+      {
+        Nodes = [
+          (@"\;.*$", ""), //Remove line comments
+          (@"^\s+", ""), //Remove beginning ws
+          (@"\s+$", ""), //Remove ending ws
+          (@"\s*\=\s*", "="), //Remove ws around eq sign
+          (@"\\" + RX.LnEnd, "]") //Remove escaped newlines
+        ],
+        InputKey = "text",
+        OutputKey = "text"
+      },
+      new TokenizeOperation
+      {
+        InputKey = "text",
+        OutputKey = "tokens"
+      },
       new TokenAssembleOperation("tokens", "tokens_assembled")
       ],
     TokenRules = [

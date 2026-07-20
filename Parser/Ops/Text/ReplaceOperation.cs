@@ -20,23 +20,15 @@ namespace Parser.Ops.Text;
 /// </remarks>
 public class ReplaceOperation : Operation
 {
-  private readonly ReplaceNodes _nodes;
+  public ReplaceNodes Nodes { get; init; } = [(RX.LnEnd, Chars.LFs)];
   public required string InputKey { get; init; }
   public required string OutputKey { get; init; }
-  /// <summary>Creates a new <see cref="ReplaceOperation"/> with nodes.</summary>
-  /// <param name="nodes">The replacement and look for pairs.</param>
-  public ReplaceOperation (ReplaceNodes nodes) => _nodes = nodes;
-  public ReplaceOperation (string ln)
-  {
-
-    _nodes = [(RX.LnEnd, ln)];
-  }
 
   protected override void Execute ()
   {
     if (Data[InputKey] is string s)
     {
-      foreach (ReplaceNode node in _nodes)
+      foreach (ReplaceNode node in Nodes)
       {
         s = node.ReplaceRegex(s, Spec.RxOpt);
       }
@@ -45,7 +37,7 @@ public class ReplaceOperation : Operation
     }
     else if (Data[InputKey] is IEnumerable<string> list)
     {
-      foreach (ReplaceNode node in _nodes)
+      foreach (ReplaceNode node in Nodes)
       {
         list = [.. list.Select(line => node.ReplaceRegex(line, Spec.RxOpt))];
       }

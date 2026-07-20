@@ -8,17 +8,9 @@ public sealed class PromptOperation : Operation
   public string? UserKey { get; init; }
   public Predicate<string>? Validation { get; init; }
 
-  /// <summary>Constructor for <see cref="PromptOperation"/>.</summary>
-  /// <param name="message">The message to prompt.</param>
-  /// <param name="user_key">The key to store the input in.</param>
-  /// <param name="validation">An optional validator.</param>
-  public PromptOperation (string message, string? user_key = null, Predicate<string>? validation = null)
-  {
-    Message = message;
-    Validation = validation;
-    UserKey = user_key;
-  }
-  public PromptOperation () { }
+  /// <summary>Executes the prompt operation, consisting of displaying the prompt message and reading user input.
+  /// This can also optionally validate this input. If no validator is provided, the input will be accepted as valid.</summary>
+  /// <exception cref="OperationBadResultException">Thrown when the validation fails.</exception>
   protected override void Execute ()
   {
     Log(MsgClass.Prompt, Message, this);

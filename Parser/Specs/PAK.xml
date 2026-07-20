@@ -5,19 +5,23 @@
     <TextFile>false</TextFile>
     <Instructions>
       <Label name="Start"/>
-      <MakeCursor cursor_var="current_pos" list_var="bytes" position="0"/>
+      <MakeCursor cursor_var="current_pos" content_var="bytes" position="0"/>
       <ReadData output_var="file_id" type="text" length="4" cursor_var="current_pos"/>
       <ReadData output_var="diroffset" type="int" cursor_var="current_pos"/>
       <ReadData output_var="dirsize" type="int" cursor_var="current_pos"/>
       <Divide dividend_var="dirsize" divisor="64" output_var="entrycount"/>
       <SetCursorPos cursor_var="current_pos" position_var="diroffset"/>
-      <Initialize initial_var="directory" type="Collection" value_type="WadLump"/>
+      <Initialize initial_var="directory" type="Collection" value_type="PositionalDataBlock"/>
       <ForCount length_var="entrycount" cursor_var="index">
         <ReadData output_var="lump_name" type="text" length="50" cursor_var="current_pos"/>
         <ReadData output_var="lump_offset" type="int" cursor_var="current_pos"/>
         <ReadData output_var="lump_size" type="int" cursor_var="current_pos"/>
         <ReadData output_var="lump_data" content_var="bytes" type="binary" length_var="lump_size" position_var="lump_offset"/>
-        <AddItem name="directory" type="WadLump">lump_offset lump_size lump_name lump_data</AddItem>
+        <AddItem list_var="directory" type="PositionalDataBlock">
+          <Property name="Index" content_var="lump_offset"/>
+          <Property name="Name" content_var="lump_name"/>
+          <Property name="Data" content_var="lump_data"/>
+        </AddItem>
       </ForCount>
       <Terminate success="true"/>
     </Instructions>

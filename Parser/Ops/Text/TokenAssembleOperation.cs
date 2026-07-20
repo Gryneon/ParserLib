@@ -11,7 +11,7 @@ namespace Parser.Ops.Text;
 /// </remarks>
 public class TokenAssembleOperation : Operation
 {
-  private readonly IEnumerable<TokenRule> _rules;
+  public IEnumerable<TokenRule> Rules { get; set; };
   public required string OutputKey { get; init; }
   public required string InputKey { get; init; }
   [SetsRequiredMembers]

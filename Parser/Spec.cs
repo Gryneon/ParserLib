@@ -29,6 +29,7 @@ public class Spec
   /// <summary>The type of token type to use.</summary>
   public Type TokenType { get; init; } = typeof(string);
   /// <summary>The default string comparison type to use.</summary>
+  /// <remarks>This will automatically set <see cref="RegexOptions.IgnoreCase"/> if this is set to <see cref="StringComparison.OrdinalIgnoreCase"/>.</remarks>
   public StringComparison SC { get; init; } = SCO;
 
   /// <summary>Define the names of equilivent groups of tokens.</summary>
@@ -59,7 +60,7 @@ public class Spec
   /// <param name="tokenType">The value of the token type.</param>
   /// <returns>The name of the token type.</returns>
   /// <exception cref="InvalidCastException"></exception>
-  /// <exception cref="SpecNotDefinedException"/>
+  /// <exception cref="SpecNotDefinedException"><see cref="TokenType"/> was not defined in the <see cref="Spec"/>.</exception>
   public string GetTokenTypeString (dynamic tokenType) => TokenType == typeof(string)
       ? (string) tokenType
       : TokenType is null ? throw new SpecNotDefinedException("TokenType was not defined in the Spec.") : $"{tokenType}";
