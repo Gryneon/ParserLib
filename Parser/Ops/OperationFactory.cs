@@ -22,7 +22,7 @@ public static class OperationFactory
   };
   private static SwitchCaseItem GetDefault (XElement? parent = null) => new()
   {
-    IsDefaultCase = true,
+    Value = null,
     Operations = GetOps(parent)
   };
   private static IEnumerable<SwitchCaseItem> GetSwitchCases (XElement? parent = null)
