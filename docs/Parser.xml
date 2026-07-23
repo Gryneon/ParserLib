@@ -448,11 +448,10 @@
             <summary>Prompts for input, and stores the input.
             Optionally validates the input as well.</summary>
         </member>
-        <member name="M:Parser.Ops.PromptOperation.#ctor(System.String,System.String,System.Predicate{System.String})">
-            <summary>Constructor for <see cref="T:Parser.Ops.PromptOperation"/>.</summary>
-            <param name="message">The message to prompt.</param>
-            <param name="user_key">The key to store the input in.</param>
-            <param name="validation">An optional validator.</param>
+        <member name="M:Parser.Ops.PromptOperation.Execute">
+            <summary>Executes the prompt operation, consisting of displaying the prompt message and reading user input.
+            This can also optionally validate this input. If no validator is provided, the input will be accepted as valid.</summary>
+            <exception cref="T:Parser.Exceptions.OperationBadResultException">Thrown when the validation fails.</exception>
         </member>
         <member name="T:Parser.Ops.Text.CombineOperation">
             <summary><summary>
@@ -573,10 +572,6 @@
             <see cref="F:Parser.OpStatus.FailNoSuchVarName"/>: The data at the key was missing.
             </code>
             </remarks>
-        </member>
-        <member name="M:Parser.Ops.Text.ReplaceOperation.#ctor(Common.ReplaceNodes)">
-            <summary>Creates a new <see cref="T:Parser.Ops.Text.ReplaceOperation"/> with nodes.</summary>
-            <param name="nodes">The replacement and look for pairs.</param>
         </member>
         <member name="T:Parser.Ops.Text.SplitOperation">
             <summary>
@@ -724,6 +719,7 @@
         </member>
         <member name="P:Parser.Spec.SC">
             <summary>The default string comparison type to use.</summary>
+            <remarks>This will automatically set <see cref="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase"/> if this is set to <see cref="F:System.StringComparison.OrdinalIgnoreCase"/>.</remarks>
         </member>
         <member name="P:Parser.Spec.TokenCompatLookup">
             <summary>Define the names of equilivent groups of tokens.</summary>
@@ -758,7 +754,7 @@
             <param name="tokenType">The value of the token type.</param>
             <returns>The name of the token type.</returns>
             <exception cref="T:System.InvalidCastException"></exception>
-            <exception cref="T:Parser.Exceptions.SpecNotDefinedException"/>
+            <exception cref="T:Parser.Exceptions.SpecNotDefinedException"><see cref="P:Parser.Spec.TokenType"/> was not defined in the <see cref="T:Parser.Spec"/>.</exception>
         </member>
         <member name="T:Parser.Tokens.ChkToken">
             <summary>Builds a <see cref="T:Parser.Tokens.ChkToken"/> from a <see langword="string"/>.<br/>

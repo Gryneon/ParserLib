@@ -11,13 +11,13 @@ namespace Parser.Ops.Text;
 /// </remarks>
 public class TokenAssembleOperation : Operation
 {
-  public IEnumerable<TokenRule> Rules { get; set; };
+  public IEnumerable<TokenRule> Rules { get; set; }
   public required string OutputKey { get; init; }
   public required string InputKey { get; init; }
   [SetsRequiredMembers]
   public TokenAssembleOperation (IEnumerable<TokenRule> rules, string input_key = "tokens", string output_key = "tokens_assembled")
   {
-    _rules = [.. rules];
+    Rules = [.. rules];
     InputKey = input_key;
     OutputKey = output_key;
   }
@@ -25,7 +25,7 @@ public class TokenAssembleOperation : Operation
   public TokenAssembleOperation (string input_key = "tokens", string output_key = "tokens_assembled") : this([], input_key, output_key) { }
   protected override void Execute ()
   {
-    TokenAssembler assembler = _rules.IsEmpty ? new(Spec) : new([.. _rules], Spec);
+    TokenAssembler assembler = Rules.IsEmpty ? new(Spec) : new([.. Rules], Spec);
     if (Data[InputKey] is TokenCollection tc)
     {
       Data[OutputKey] = assembler.Execute(tc);

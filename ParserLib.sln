@@ -84,6 +84,7 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
+		Description = Parser Development Environment
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E15E491A-E872-91D8-DF7A-CA59C792F064}.Debug|x64.ActiveCfg = Debug|x64
