@@ -24,12 +24,12 @@ public sealed class ReadDataOperation : Operation
 
   private Memory<byte> ReadBytes (int count)
   {
-    if (PositionKey.IsNotEmpty())
+    if (PositionKey.IsNotEmpty)
     {
       Position = (int) Data[PositionKey];
     }
 
-    if (CursorKey.IsNotEmpty())
+    if (CursorKey.IsNotEmpty)
     {
       CursorData cursor = Data.GetCursorByKey(CursorKey);
       Memory<byte> mem = (Memory<byte>) Data[cursor.ListKey];

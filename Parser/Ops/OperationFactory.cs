@@ -82,8 +82,6 @@ public static class OperationFactory
       string endian = GetS("endian", element);
       string encoding = GetS("encoding", element);
 
-      IEnumerable<IOperation> child_ops = GetOps(element);
-
       //Reset block if any non-conditional block is reached.
       //This allows for multiple if blocks in a row without else if/else sections.
       string lname = element.Name.LocalName;
@@ -190,13 +188,13 @@ public static class OperationFactory
           CursorKey = cursor_var,
           Length = length,
           LengthKey = length_var,
-          Operations = child_ops,
+          Operations = GetOps(element),
         },
         "While" => new WhileOperation
         {
           Condition = condition,
           CursorKey = cursor_var,
-          Operations = child_ops,
+          Operations = GetOps(element),
         },
         "Prompt" => new PromptOperation
         {
@@ -208,7 +206,7 @@ public static class OperationFactory
         {
           CursorKey = cursor_var,
           ListKey = list_var,
-          Operations = child_ops,
+          Operations = GetOps(element),
         },
         "If" => getIf(element),
         "ElseIf" => getElseIf(element),

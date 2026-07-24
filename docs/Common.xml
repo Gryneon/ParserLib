@@ -4,6 +4,26 @@
         <name>Common</name>
     </assembly>
     <members>
+        <member name="T:Common.BasicParsedElement">
+            <summary>A basic attribute/element dictionary.</summary>
+        </member>
+        <member name="P:Common.BasicParsedElement.Name">
+            <summary>The element name.</summary>
+        </member>
+        <member name="P:Common.BasicParsedElement.Attributes">
+            <summary>The attributes of this element.</summary>
+        </member>
+        <member name="P:Common.BasicParsedElement.Elements">
+            <summary>The child elements of this element.</summary>
+        </member>
+        <member name="P:Common.BasicParsedElement.Value">
+            <summary>The value if it contains a value not elements.</summary>
+        </member>
+        <member name="P:Common.BasicParsedElement.Item(System.String)">
+            <summary>Looks up and retrieves the attribute value as a <see langword="string"/>.</summary>
+            <param name="attribute">The attribute to lookup.</param>
+            <returns>The attribute value as a <see langword="string"/>, or an empty string if there is no attribute of that name.</returns>
+        </member>
         <member name="T:Common.Chars">
             <summary>Static class of common character combinations.</summary>
         </member>
@@ -464,14 +484,14 @@
         <member name="M:Common.Extensions.StringExtensions.RemoveNulls(System.String)">
             <inheritdoc cref="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.RemoveNulls"/>
         </member>
-        <member name="M:Common.Extensions.StringExtensions.IsPosInteger(System.String)">
-            <inheritdoc cref="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsPosInteger"/>
+        <member name="M:Common.Extensions.StringExtensions.get_IsPosInteger(System.String)">
+            <inheritdoc cref="P:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsPosInteger"/>
         </member>
-        <member name="M:Common.Extensions.StringExtensions.IsEmpty(System.String)">
-            <inheritdoc cref="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsEmpty"/>
+        <member name="M:Common.Extensions.StringExtensions.get_IsEmpty(System.String)">
+            <inheritdoc cref="P:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsEmpty"/>
         </member>
-        <member name="M:Common.Extensions.StringExtensions.IsNotEmpty(System.String)">
-            <inheritdoc cref="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsNotEmpty"/>
+        <member name="M:Common.Extensions.StringExtensions.get_IsNotEmpty(System.String)">
+            <inheritdoc cref="P:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsNotEmpty"/>
         </member>
         <member name="M:Common.Extensions.StringExtensions.Like(System.String,System.String)">
             <inheritdoc cref="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.Like(System.String)"/>
@@ -493,7 +513,7 @@
             <summary>String Extensions</summary>
             <param name="text">The string to check.</param>
         </member>
-        <member name="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsPosInteger">
+        <member name="P:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsPosInteger">
             <summary>Checks if this string is a positive integer.</summary>
             <returns><see langword="true"/> if the <see langword="string"/> is a positive integer, <see langword="false"/> otherwise.</returns>
         </member>
@@ -501,7 +521,7 @@
             <summary>string extensions</summary>
             <param name="text">The <see langword="string"/> to check.</param>
         </member>
-        <member name="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsEmpty">
+        <member name="P:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsEmpty">
             <summary>Checks if a <see langword="string"/> is <see langword="null"/> or empty.</summary>
             <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
         </member>
@@ -509,7 +529,7 @@
             <summary>string extensions</summary>
             <param name="text">The <see langword="string"/> to check.</param>
         </member>
-        <member name="M:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsNotEmpty">
+        <member name="P:Common.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.IsNotEmpty">
             <summary>Checks if a <see langword="string"/> is not <see langword="null"/> or empty.</summary>
             <returns><see langword="false"/> if the <see langword="string"/> is empty or <see langword="null"/>, <see langword="true"/> otherwise.</returns>
         </member>
@@ -805,19 +825,19 @@
         </member>
         <member name="F:Common.Names.ErrVal">
             <summary>Name for the not found indicator.</summary>
-            <value>Equal to -1.</value>
+            <remarks>Equal to -1.</remarks>
         </member>
         <member name="F:Common.Names.NotFound">
             <summary>Name for the not found indicator.</summary>
-            <value>Equal to -1.</value>
+            <remarks>Equal to -1.</remarks>
         </member>
         <member name="F:Common.Names.DNE">
             <summary>Name for the not found indicator.</summary>
-            <value>Equal to -1.</value>
+            <remarks>Equal to -1.</remarks>
         </member>
         <member name="P:Common.Names.SE">
             <summary>Reference to an empty <see langword="string"/>.</summary>
-            <value>Equal to <see cref="F:System.String.Empty"/>.</value>
+            <remarks>Equal to <see cref="F:System.String.Empty"/>.</remarks>
         </member>
         <member name="F:Common.Names.EmptyString">
             <summary>Reference to an empty <see langword="string"/>.</summary>
@@ -1234,9 +1254,6 @@
             <param name="input">The text to operate on.</param>
             <param name="sc"><see cref="T:System.StringComparison"/> properties.</param>
             <returns>A <see cref="T:System.String"/> with the text replaced as directed.</returns>
-        </member>
-        <member name="M:Common.Section.CompareTo(Common.Section)">
-            <inheritdoc/>
         </member>
         <member name="T:Common.SectionCollection">
             <summary>Now uses Pos struct for speed.</summary>
