@@ -38,7 +38,7 @@ public sealed class JSONArray : IJSONNode, IEnumerable<IJSONNode>
 
     foreach (IJSONNode item in Values)
     {
-      if (result.IsNotEmpty())
+      if (result.IsNotEmpty)
         result += ",";
       result += item.ToString();
     }

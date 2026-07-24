@@ -3,7 +3,7 @@ namespace Parser.Ops;
 public abstract class LoopOperation : Operation, IPlaceholderOperation
 {
 
-  /// <summary>The name of this loop.</summary>
+  /// <summary>The key name to store this loop operation's <see cref="CursorData"/>.</summary>
   public required string CursorKey { get; init; }
   /// <summary>Operations to perform.</summary>
   public IEnumerable<IOperation> Operations { get; init; } = [];
@@ -38,7 +38,7 @@ public abstract class LoopOperation : Operation, IPlaceholderOperation
 
   public void CheckUnpacked ()
   {
-    if (LoopIndex == 0 || CursorKey.IsEmpty())
+    if (LoopIndex == 0 || CursorKey.IsEmpty)
     {
       Err.ThrowUnpacked("Loop Pre-processing not complete.");
     }

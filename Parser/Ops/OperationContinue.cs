@@ -32,4 +32,6 @@ public sealed class OperationContinue : Operation, IEquatable<OperationContinue>
   }
 
   public bool Equals (OperationContinue? other) => Target.Equals(other?.Target) && CursorKey.Equals(other?.CursorKey, SCOIC) && Increment.Equals(other?.Increment);
+  public override bool Equals (object? obj) => Equals(obj as OperationContinue);
+  public override int GetHashCode () => HashCode.Combine(Target, CursorKey, Increment);
 }

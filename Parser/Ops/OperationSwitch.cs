@@ -6,7 +6,7 @@ public class OperationSwitch : Operation, IPlaceholderOperation
 {
   public required string ConditionString { get; init; }
   public Collection<SwitchCaseItem> Cases { get; init; } = [];
-  public SwitchCaseItem? Default => Cases.LastOrDefault(item => item.IsDefaultCase, null!);
+  public SwitchCaseItem? Default { get; init; }
   protected ParsedExpression Expression => (field) ?? (field = (ParsedExpression) ConditionString);
   protected override void Execute ()
   {
@@ -24,7 +24,7 @@ public class OperationSwitch : Operation, IPlaceholderOperation
       }
     }
 
-    Parser.SetNextOperationIndex(Default?.CasePosition ?? throw new OperationBadResultException($"The switch did not satisfy the provided value ({result}) nor did it provide a default case."));
+    Parser.SetNextOperationIndex(Default?.CasePosition ?? throw Err.ThrowBadResult($"The switch did not satisfy the provided value ({result}) nor did it provide a default case."));
     Status = OpStatus.Pass;
   }
 

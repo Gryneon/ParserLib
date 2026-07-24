@@ -374,7 +374,7 @@
             <exception cref="T:Parser.Exceptions.OperationUnpackingException">The operation did not unpack correctly.</exception>
         </member>
         <member name="P:Parser.Ops.LoopOperation.CursorKey">
-            <summary>The name of this loop.</summary>
+            <summary>The key name to store this loop operation's <see cref="T:Parser.CursorData"/>.</summary>
         </member>
         <member name="P:Parser.Ops.LoopOperation.Operations">
             <summary>Operations to perform.</summary>
@@ -429,8 +429,18 @@
             The <see cref="P:Parser.Ops.Operation.Status"/> property should be assigned a value,
             if the value is <see cref="F:Parser.OpStatus.AtStart"/> upon completion, a warning will display.
             </summary>
-            <exception cref="T:Parser.Exceptions.OperationException"/>
-            <exception cref="T:Parser.Exceptions.OperationBadDefinitionException"/>
+            <exception cref="T:Parser.Exceptions.OperationException"></exception>
+            <exception cref="T:Parser.Exceptions.OperationBadDefinitionException">Method was not overridden, or NoExecute was not set.</exception>
+        </member>
+        <member name="P:Parser.Ops.OperationBreak.Null">
+            <summary>Created during parsing as a placeholder until unpacking.</summary>
+        </member>
+        <member name="P:Parser.Ops.OperationBreak.BreakTarget">
+            <summary>The position to break to.</summary>
+            <remarks>This will usually be the position after the original loop statement.</remarks>
+        </member>
+        <member name="P:Parser.Ops.OperationBreak.BreakCursor">
+            <summary>The key storing the cursor for the current loop.</summary>
         </member>
         <member name="T:Parser.Ops.OperationCollection">
             <summary>A collection of operations that are executed in the given order.</summary>

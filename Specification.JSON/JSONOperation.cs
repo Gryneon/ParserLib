@@ -77,7 +77,7 @@ public class JSONOperation : Operation
       {
         assembly[depth].Add(Spec.GetTokenTypeValue(TCurrent.Type) switch
         {
-          _ when TCurrent.Content.IsEmpty() => new JSONUndefValue(),
+          _ when TCurrent.Content.IsEmpty => new JSONUndefValue(),
           JTT.Str => new JSONStringValue(TCurrent.Content),
           JTT.Num => new JSONNumberValue(TCurrent.Content.ToDecimal() ?? 0),
           JTT.Bool => new JSONBoolValue(TCurrent.Content.ToBool() ?? false),

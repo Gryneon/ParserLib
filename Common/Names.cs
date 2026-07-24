@@ -72,14 +72,14 @@ public static class Names
   public static CultureInfo CIIUC => CultureInfo.InstalledUICulture;
 
   /// <summary>Name for the not found indicator.</summary>
-  /// <value>Equal to -1.</value>
+  /// <remarks>Equal to -1.</remarks>
   public const int
     ErrVal = -1,
     NotFound = -1,
     DNE = -1;
 
   /// <summary>Reference to an empty <see langword="string"/>.</summary>
-  /// <value>Equal to <see cref="string.Empty"/>.</value>
+  /// <remarks>Equal to <see cref="string.Empty"/>.</remarks>
   public static string SE => string.Empty;
 
   /// <summary>Reference to an empty <see langword="string"/>.</summary>

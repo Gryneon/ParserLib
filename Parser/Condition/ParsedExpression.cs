@@ -79,7 +79,7 @@ public class ParsedExpression : IExpression
   {
     _workingSequence = [];
 
-    if (Expression.IsEmpty())
+    if (Expression.IsEmpty)
     {
       Sequence = [];
       return;

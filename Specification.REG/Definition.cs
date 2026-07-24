@@ -79,7 +79,11 @@ public static class Definition
         InputKey = "text",
         OutputKey = "tokens"
       },
-      new TokenAssembleOperation("tokens", "tokens_assembled")
+      new TokenAssembleOperation
+      {
+        InputKey = "tokens",
+        OutputKey = "tokens_assembled"
+      }
       ],
     TokenRules = [
       new(RT.TokenExact, RTT.Eq, "=")

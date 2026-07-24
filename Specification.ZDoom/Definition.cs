@@ -79,7 +79,7 @@ public static class Definition
     RxOpt = ROML | ROIPW | ROIC | ROEC | ROSL,
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
-      new TokenAssembleOperation(),
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokens_assembled" },
     ],
     DefaultRuleSet = RT.IgnoreCase,
     TokenRules = [
@@ -136,7 +136,7 @@ public static class Definition
     GroupTokenRules = [],
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
-      new TokenAssembleOperation(),
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokens_assembled" },
     ],
   };
 
@@ -193,7 +193,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
       new DebugPrintKeyOperation { InputKey = "tokens" },
-      new TokenAssembleOperation(),
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokens_assembled" },
       new DebugPrintKeyOperation { InputKey = "tokens_assembled" },
     ],
     TokenRules = [
@@ -229,7 +229,7 @@ public static class Definition
     RxOpt = ROML | ROIC | ROIPW | ROEC | ROSL,
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
-      new TokenAssembleOperation(),
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokens_assembled" },
       new DebugPrintKeyOperation { InputKey = "tokens_assembled" }
     ],
     IsTextFile = true,
@@ -384,7 +384,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
       new DebugPrintKeyOperation { InputKey = "tokens" },
-      new TokenAssembleOperation("tokens", "tokengroups"),
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokengroups" },
       new DebugPrintKeyOperation { InputKey = "tokengroups" },
     ]
   };
@@ -412,7 +412,7 @@ public static class Definition
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
       new DebugPrintKeyOperation { InputKey = "tokens" },
-      new TokenAssembleOperation("tokens", "tokengroups"),
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokengroups" },
       new DebugPrintKeyOperation { InputKey = "tokengroups" },
     ]
   };

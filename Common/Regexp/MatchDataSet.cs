@@ -75,7 +75,7 @@ public sealed class MatchDataSet : GroupDataSet,
   {
     ThrowIfAbsent(groupName);
 
-    if (this[groupName].Content.IsEmpty())
+    if (this[groupName].Content.IsEmpty)
       throw new EmptyGroupException(groupName);
   }
   /// <summary>Returns a string representation of the current <see cref="MatchDataSet"/> object.</summary>

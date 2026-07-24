@@ -101,8 +101,8 @@ public abstract class Operation : IOperation
   /// The <see cref="Status"/> property should be assigned a value,
   /// if the value is <see cref="OpStatus.AtStart"/> upon completion, a warning will display.
   /// </summary>
-  /// <exception cref="OperationException"/>
-  /// <exception cref="OperationBadDefinitionException"/>
+  /// <exception cref="OperationException"></exception>
+  /// <exception cref="OperationBadDefinitionException">Method was not overridden, or NoExecute was not set.</exception>
   protected virtual void Execute () => throw Err.ThrowBadDef("Method not overridden, or NoExecute not set.");
   protected static IOperation JumpTo (int pos) => new JumpOperation(pos);
   public void ApplyProperties (bool cont, bool skip)
@@ -110,4 +110,5 @@ public abstract class Operation : IOperation
     ContinueOnFail = cont || ContinueOnFail;
     SkipOperation = skip || SkipOperation;
   }
+  public override string ToString () => this.TypeName;
 }

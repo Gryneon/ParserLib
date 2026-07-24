@@ -16,8 +16,8 @@ public static class StringExtensions
     /// <summary>Shorthand for case sensitive ordinal comparison.</summary>
     /// <param name="other">The text to compare to.</param>
     /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/></returns>
-    public bool Is (string? other) => (text.IsEmpty() && other.IsEmpty()) || (text?.Equals(other, SCO) ?? false);
-    public bool IsAny (IEnumerable<string> other) => (text.IsEmpty() && other.IsEmpty) || text.Any(other, Equals);
+    public bool Is (string? other) => (text.IsEmpty && other.IsEmpty) || (text?.Equals(other, SCO) ?? false);
+    public bool IsAny (IEnumerable<string> other) => (text.IsEmpty && other.IsEmpty) || text.Any(other, Equals);
     public string Remove (string regex, RegexOptions options = RegexOptions.None) => text is null ? SE : SysRegex.Replace(text, regex, SE, options);
     public string Remove (int changed_pos, int changed_length) => text is null ? SE : text.Replace(changed_pos, changed_length);
     public string RemoveChars (string chars) => new(text?.Where(item => !chars.Contains(item, SCO)).ToArray());
@@ -69,22 +69,22 @@ public static class StringExtensions
 
   extension(string s)
   {
-    public bool IsAlphanumeric () => s.All(item => item.IsAlphanumeric());
-    public bool IsControl () => s.All(item => item.IsControl());
-    public bool IsWhitespace () => s.All(item => item.IsWhitespace());
-    public bool IsNumber () => decimal.TryParse(s, out decimal _);
+    public bool IsAlphanumeric => s.All(item => item.IsAlphanumeric());
+    public bool IsControl => s.All(item => item.IsControl());
+    public bool IsWhitespace => s.All(item => item.IsWhitespace());
+    public bool IsNumber => decimal.TryParse(s, out decimal _);
     public int FirstIndexOfAny (IEnumerable<string> checkFor, int startAt, StringComparison sc, out int found_len)
     {
       found_len = DNE;
 
-      if (s.IsEmpty() || checkFor?.IsEmpty != false)
+      if (s.IsEmpty || checkFor?.IsEmpty != false)
         return DNE;
 
       int index = DNE;
 
       foreach (string item in checkFor)
       {
-        if (item.IsEmpty())
+        if (item.IsEmpty)
           continue;
 
         int cur = s.IndexOf(item, startAt, sc);
@@ -209,8 +209,8 @@ public static class StringExtensions
   {
     /// <summary>Checks if this string is a positive integer.</summary>
     /// <returns><see langword="true"/> if the <see langword="string"/> is a positive integer, <see langword="false"/> otherwise.</returns>
-    public bool IsPosInteger () => int.TryParse(text, out int i) && i >= 0;
-    public bool IsNamedGroup () => !text.IsPosInteger();
+    public bool IsPosInteger => int.TryParse(text, out int i) && i >= 0;
+    public bool IsNamedGroup => !text.IsPosInteger;
 
     public string ReplaceRange (int start, int length, char rep = '\0')
     {
@@ -266,7 +266,7 @@ public static class StringExtensions
   {
     /// <summary>Checks if a <see langword="string"/> is <see langword="null"/> or empty.</summary>
     /// <returns><see langword="true"/> if the <see langword="string"/> is empty or is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
-    public bool IsEmpty () => string.IsNullOrEmpty(text);
+    public bool IsEmpty => string.IsNullOrEmpty(text);
   }
   /// <summary>string extensions</summary>
   /// <param name="text">The <see langword="string"/> to check.</param>
@@ -274,7 +274,7 @@ public static class StringExtensions
   {
     /// <summary>Checks if a <see langword="string"/> is not <see langword="null"/> or empty.</summary>
     /// <returns><see langword="false"/> if the <see langword="string"/> is empty or <see langword="null"/>, <see langword="true"/> otherwise.</returns>
-    public bool IsNotEmpty () => !text.IsEmpty();
+    public bool IsNotEmpty => !text.IsEmpty;
 
     /// <summary>Shorthand for case insensitive ordinal comparison.</summary>
     /// <param name="text">This text.</param>
@@ -282,7 +282,7 @@ public static class StringExtensions
     /// <returns><see langword="true"/> if the values match, otherwise <see langword="false"/>.<br/>
     /// If either <paramref name="other"/> or <paramref name="text"/> are <see langword="null"/>, this method will return <see langword="false"/>.</returns>
     public bool Like ([NotNullWhen(true)] string? other) => text?.Equals(other, SCOIC) ?? false;
-    public bool Like (IEnumerable<string> other) => (text.IsEmpty() && other.IsEmpty) || (text?.Any(other, Like) ?? false);
+    public bool Like (IEnumerable<string> other) => (text.IsEmpty && other.IsEmpty) || (text?.Any(other, Like) ?? false);
     public bool Any (IEnumerable<string>? other, Func<string, string?, bool> func) => other?.Any(item => func(item, text)) ?? false;
   }
   /// <summary>string extensions</summary>
@@ -315,7 +315,7 @@ public static class StringExtensions
   {
     public void ThrowIfNullOrEmpty ()
     {
-      if (text.IsEmpty())
+      if (text.IsEmpty)
         throw new ANEx(nameof(text));
     }
   }

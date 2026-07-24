@@ -13,24 +13,27 @@ public static class OperationFactory
   private static string GetS (string name, XElement? parent = null) => GetA(name, parent) ?? SE;
   private static Collection<IOperation> GetOps (XElement? parent = null)
   {
-    return [.. parent?.Elements().Select(Produce) ?? []];
+    IEnumerable<IOperation?> ops = [.. parent?.Elements().Select(Produce) ?? []];
+    IEnumerable<IOperation> opsnn = ops.Where(i => i is not null)!;
+    return [.. opsnn];
   }
   private static SwitchCaseItem GetCase (XElement? parent = null) => new()
   {
     Value = parent?.Attribute(NS + "value")?.Value,
     Operations = GetOps(parent)
   };
-  private static SwitchCaseItem GetDefault (XElement? parent = null) => new()
+  private static SwitchCaseItem? GetDefault (XElement? parent = null)
   {
-    Value = null,
-    Operations = GetOps(parent)
-  };
+    IEnumerable<SwitchCaseItem> cases = GetElems("Default", parent).Select(GetCase);
+
+    return cases.IsEmpty ? null : cases.Single();
+  }
   private static IEnumerable<SwitchCaseItem> GetSwitchCases (XElement? parent = null)
   {
     IEnumerable<SwitchCaseItem> cases = GetElems("Case", parent).Select(GetCase);
     XElement? def = GetElems("Default", parent).FirstOrDefault();
 
-    return def is not null ? cases.Append(GetDefault(def)) : cases;
+    return cases;
   }
   private static IfBlockConditional GetIfOption (XElement? parent = null) => new()
   {
@@ -41,7 +44,7 @@ public static class OperationFactory
   //private static IEnumerable<XElement> GetElems (XElement? parent = null) => parent?.Elements() ?? [];
   private static IEnumerable<XElement> GetElems (string name, XElement? parent = null) => parent?.Elements(NS + name) ?? [];
   private static OperationIf? s_thisBlock;
-  public static IOperation Produce (XElement? element)
+  public static IOperation? Produce (XElement? element)
   {
     try
     {
@@ -99,6 +102,7 @@ public static class OperationFactory
         if (s_thisBlock is null)
           throw Err.ThrowBadDef("ElseIf block without preceding If block.");
         IfBlockConditional section = GetIfOption(element);
+
         s_thisBlock.Options.Add(section);
         OperationIf temp = s_thisBlock;
         if (section.Condition is null)
@@ -123,7 +127,7 @@ public static class OperationFactory
         "GotoOpIndex" => target is -1 ? new JumpOperation(target_var, true) : new JumpOperation(target),
         "GotoLabel" => new JumpOperation(name),
         "Label" => new OperationLabel(name),
-        "ReadData" when length_var.IsEmpty() => new ReadDataOperation()
+        "ReadData" when length_var.IsEmpty => new ReadDataOperation()
         {
           Mode = type,
           Length = length == -1 ? type switch { "byte" => 1, "short" => 2, "int" => 4, "long" => 8, _ => -1 } : length,
@@ -132,8 +136,10 @@ public static class OperationFactory
           Position = position,
           PositionKey = position_var,
           OutputKey = output_var,
+          Endianness = endian,
+          Encoding = encoding,
         },
-        "ReadData" when length_var.IsNotEmpty() => new ReadDataOperation
+        "ReadData" when length_var.IsNotEmpty => new ReadDataOperation
         {
           Mode = type,
           LengthKey = length_var,
@@ -141,53 +147,64 @@ public static class OperationFactory
           ContentKey = content_var,
           CursorKey = cursor_var,
           Position = position,
-          PositionKey = position_var
+          PositionKey = position_var,
+          Endianness = endian,
+          Encoding = encoding,
         },
-        "MakeCursor" => new MakeCursorOperation()
+        "MakeCursor" => new MakeCursorOperation
         {
           CursorKey = cursor_var,
           ListKey = list_var,
-          Position = position == -1 ? 0 : position,
+          Position = position == -1 ? 0 : position
         },
-        "SetCursorPos" => new SetCursorOperation()
+        "SetCursorPos" => new SetCursorOperation
         {
           CursorKey = cursor_var,
           Position = position,
           PositionKey = position_var
         },
-        "Tokenize" => new TokenizeOperation { InputKey = input_var, OutputKey = output_var },
-        "TokenAssemble" => new TokenAssembleOperation(input_var, output_var),
+        "Tokenize" => new TokenizeOperation
+        {
+          InputKey = input_var,
+          OutputKey = output_var
+        },
+        "TokenAssemble" => new TokenAssembleOperation
+        {
+          InputKey = input_var,
+          OutputKey = output_var
+        },
         "Terminate" => new OperationEnd(success.Like("false")),
-        // Theses are setup during unpacking, so they can be used as placeholders for
+        // These are setup during unpacking, so they can be used as placeholders for
         // break/continue targets in loops and switches. They will be replaced with the
         // correct target index during unpacking.
         "Break" => OperationBreak.Null,
         "Continue" => OperationContinue.Null,
-        "Switch" => new OperationSwitch()
+        "Switch" => new OperationSwitch
         {
           ConditionString = condition,
           Cases = [.. GetSwitchCases(element)],
+          Default = GetDefault(element)
         },
-        "ForCount" => new ForCountOperation()
+        "ForCount" => new ForCountOperation
         {
           CursorKey = cursor_var,
           Length = length,
           LengthKey = length_var,
           Operations = child_ops,
         },
-        "While" => new WhileOperation()
+        "While" => new WhileOperation
         {
           Condition = condition,
           CursorKey = cursor_var,
           Operations = child_ops,
         },
-        "Prompt" => new PromptOperation()
+        "Prompt" => new PromptOperation
         {
           Message = message,
           UserKey = user_var,
           Validation = null, //TODO: Add validation support! regex?
         },
-        "ForEach" => new ForEachOperation()
+        "ForEach" => new ForEachOperation
         {
           CursorKey = cursor_var,
           ListKey = list_var,
@@ -196,14 +213,14 @@ public static class OperationFactory
         "If" => getIf(element),
         "ElseIf" => getElseIf(element),
         "Else" => getElse(element),
-        "Initialize" => new InitializeOperation()
+        "Initialize" => new InitializeOperation
         {
           InitialKey = initial_var,
           Type = type,
           KeyType = key_type,
           ValueType = value_type,
         },
-        "AddItem" => new AddItemOperation()
+        "AddItem" => new AddItemOperation
         {
           ListKey = list_var,
           Type = type,
@@ -212,7 +229,7 @@ public static class OperationFactory
         "Print" => new DebugPrintKeyOperation { InputKey = check_var },
         // TODO: Replace with expression evaluation system that can handle
         // more than just basic math operations. It is built.
-        "Divide" => new DivideOperation()
+        "Divide" => new DivideOperation
         {
           DividendKey = dividend_var,
           DivisorKey = divisor_var,

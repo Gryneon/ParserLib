@@ -8,7 +8,7 @@ public static class MatchExtensions
   {
     public bool HasValidGroup (string group_name) =>
       match?.Groups.ContainsKey("custom_prop") == true &&
-      match.Groups["custom_prop"].Value.IsNotEmpty();
+      match.Groups["custom_prop"].Value.IsNotEmpty;
     public bool TryGetValidGroupContent (string group_name, out string? content)
     {
       if (match.HasValidGroup(group_name))

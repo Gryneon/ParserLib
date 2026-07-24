@@ -186,9 +186,7 @@ public sealed class DataStore
   }
   public void Save<T> ([NotNull] string key, object data, DM mode = DM.Overwrite)
   {
-    bool saved = DoSave<T>(key, data, mode);
-
-    if (!saved)
+    if (!DoSave<T>(key, data, mode))
       throw new OperationException("DATA NOT SAVED");
   }
   public int GetCountOfKey (string key) =>
@@ -196,16 +194,16 @@ public sealed class DataStore
     _dict[key] is IEnumerable<object> list ? list.Count() :
     1;
   public bool TryGetCursorByKey (string key, out CursorData? cd) =>
-    !CanLoad(key) ? throw new OperationNoSuchVarException(key) :
-    !TryLoad<CursorData>(key, out cd) ? throw new OperationBadInputTypeException("", $"{_dict[key].GetType()}") : true;
+    !CanLoad(key) ? throw Err.ThrowNoVar(key) :
+    !TryLoad<CursorData>(key, out cd) ? throw Err.ThrowBadInput("", $"{_dict[key].GetType()}") : true;
   /// <summary>Gets the cursor that was created on the given key.</summary>
   /// <param name="key">The key of the cursor to retrieve.</param>
   /// <exception cref="OperationNoSuchVarException"/>
   /// <exception cref="OperationBadInputTypeException"/>
   public CursorData GetCursorByKey (string key) =>
-    !CanLoad(key) ? throw new OperationNoSuchVarException(key) :
+    !CanLoad(key) ? throw Err.ThrowNoVar(key) :
     _dict[key] is CursorData cursor ? cursor :
-    throw new OperationBadInputTypeException(nameof(CursorData), $"{_dict[key].GetType()}");
+    throw Err.ThrowBadInput(nameof(CursorData), $"{_dict[key].GetType()}");
 
   public void SetCursorIndex (string key, int index) => GetCursorByKey(key).Index = index;
   public void IncCursorIndex (string key, int inc) => GetCursorByKey(key).Index += inc;

@@ -24,7 +24,7 @@ public static class Definition
 
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
-      new TokenAssembleOperation()
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokens_assembled" },
     ],
 
     TokenRules = [

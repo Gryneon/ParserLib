@@ -11,9 +11,10 @@ namespace Parser.Ops.Text;
 /// </remarks>
 public class TokenAssembleOperation : Operation
 {
-  public IEnumerable<TokenRule> Rules { get; set; }
+  public IEnumerable<TokenRule> Rules { get; set; } = [];
   public required string OutputKey { get; init; }
   public required string InputKey { get; init; }
+  public TokenAssembleOperation () { }
   [SetsRequiredMembers]
   public TokenAssembleOperation (IEnumerable<TokenRule> rules, string input_key = "tokens", string output_key = "tokens_assembled")
   {
@@ -21,8 +22,6 @@ public class TokenAssembleOperation : Operation
     InputKey = input_key;
     OutputKey = output_key;
   }
-  [SetsRequiredMembers]
-  public TokenAssembleOperation (string input_key = "tokens", string output_key = "tokens_assembled") : this([], input_key, output_key) { }
   protected override void Execute ()
   {
     TokenAssembler assembler = Rules.IsEmpty ? new(Spec) : new([.. Rules], Spec);

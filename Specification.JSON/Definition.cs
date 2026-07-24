@@ -24,7 +24,7 @@ public static class Definition
         //TODO: Validate?
         new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
         new DebugToStringOperation { InputKey = "tokens" },
-        new TokenAssembleOperation(),
+        new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokens_assembled" },
         new DebugToStringOperation { InputKey = "tokens_assembled" },
       ],
     RxOpt = ROML | ROIPW | ROEC | ROSL,

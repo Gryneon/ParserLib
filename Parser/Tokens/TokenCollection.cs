@@ -28,7 +28,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
 
   public string Type
   {
-    get => field.IsEmpty() ? "None" : field;
+    get => field.IsEmpty ? "None" : field;
     set;
   } = SE;
 
@@ -124,7 +124,7 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
   public string ListString (int indent)
   {
     string indent2 = new(' ', indent);
-    string ret = $"{(Type.IsEmpty() ? "None" : Type)} : {Count} Items";
+    string ret = $"{(Type.IsEmpty ? "None" : Type)} : {Count} Items";
 
     foreach (IToken item in _tokens)
     {

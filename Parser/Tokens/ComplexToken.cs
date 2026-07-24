@@ -35,7 +35,7 @@ public sealed class ComplexToken : IToken, IPrintable
   public string Content => Children.Select(i => i.Content).TextJoin(" ");
   public IReadOnlyCollection<TokenRef> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
-  public bool HasType => Type.IsNotEmpty() && !Type.Like("None");
+  public bool HasType => Type.IsNotEmpty && !Type.Like("None");
   public bool Exempt { get; set; }
   public IToken? Parent { get; set; }
   public IList<IToken> Children { get; set; } = [];

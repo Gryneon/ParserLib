@@ -134,7 +134,7 @@ public static class Definition
       new DebugPrintKeyOperation { InputKey = "tokens" },
       new FilterTokenOperation("tokens", "tokens_filtered", false),
       new DebugPrintKeyOperation { InputKey = "tokens_filtered" },
-      new TokenAssembleOperation("tokens_filtered"),
+      new TokenAssembleOperation { InputKey = "tokens_filtered", OutputKey = "tokens_assembled" },
       new DebugPrintKeyOperation { InputKey = "tokens_assembled" },
     ],
   };

@@ -23,18 +23,27 @@ public static class SpecInstructionParser
   {
     Collection<Spec> specs = [];
 
+    Log(MsgClass.Debug, $"Loading spec file '{path}'", ThisClass);
+
     XDocument doc = XDocument.Load(path);
     XElement root = doc.Root ?? throw Err.ThrowNoSpec("Spec XML is not good.");
     XElement? prefabs = root.Element(NS + "Prefabs");
-    IEnumerable<XElement>? prefab_list = prefabs?.Elements(NS + "Prefab");
-    IEnumerable<XElement>? tokenRules_list = prefab_list?.Elements(NS + "TokenRule");
-    IEnumerable<XElement>? tokenLookups_list = prefab_list?.Elements(NS + "TokenLookup");
-    IEnumerable<XElement>? tokenGroups_list = prefab_list?.Elements(NS + "GroupTokenRule");
-    IEnumerable<XElement>? constructs_list = prefab_list?.Elements(NS + "Construct");
 
-    XElement spec = root.Name.LocalName == "Definition" ? root.Element(NS + "Spec") ?? Err.ThrowNoSpec("No Spec in definition.") : Err.ThrowNoSpec("Root element must be Definition.");
+    if (prefabs is not null)
+    {
+      IEnumerable<XElement> prefab_list = prefabs.Elements(NS + "Prefab");
+      IEnumerable<XElement> prefab_tokenRules_list = prefab_list.Elements(NS + "TokenRule");
+      IEnumerable<XElement> prefab_tokenLookups_list = prefab_list.Elements(NS + "TokenLookup");
+      IEnumerable<XElement> prefab_tokenGroups_list = prefab_list.Elements(NS + "GroupTokenRule");
+      IEnumerable<XElement> prefab_constructs_list = prefab_list.Elements(NS + "Construct");
+    }
 
-    foreach (XElement specxml in root.Elements(NS + "Spec"))
+    IEnumerable<XElement> specxmls =
+      root.Name.LocalName == "Definition"
+        ? root.Elements(NS + "Spec") ?? Err.ThrowNoSpec("No Spec in definition.")
+        : Err.ThrowNoSpec("Root element must be Definition.");
+
+    foreach (XElement specxml in specxmls)
     {
       XElement? xname = specxml.Element(NS + "Name");
 
@@ -47,7 +56,18 @@ public static class SpecInstructionParser
       string textfile = specxml.Element(NS + "TextFile")!.Value;
       bool is_textfile = BooleanParse(textfile, false);
       IEnumerable<XElement>? instructionElements = specxml.Element(NS + "Instructions")?.Elements();
-      IEnumerable<IOperation> ops = instructionElements?.Select(OperationFactory.Produce) ?? [];
+
+      Collection<IOperation> ops = [];
+      foreach (XElement element in instructionElements ?? [])
+      {
+        IOperation? op = OperationFactory.Produce(element);
+
+        if (op is not null)
+          ops.Add(op);
+        else
+          Log(MsgClass.Warning, $"{element.Name} was null, investigate.", ThisClass);
+      }
+
       XElement? fileInf = specxml.Element(NS + "FileInferences");
       ReadOnlyCollection<InferenceNode> inferenceNodes = [];// = ParseFileInferences(fileInf);
 

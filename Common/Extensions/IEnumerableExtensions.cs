@@ -29,7 +29,7 @@ public static class IEnumerableExtensions
         if (string.IsNullOrEmpty(itemString))
           continue;
 
-        if (result.IsNotEmpty())
+        if (result.IsNotEmpty)
           result += separator;
         result += itemString;
       }
@@ -69,7 +69,7 @@ public static class IEnumerableExtensions
         string? itemString = item?.ToString();
         if (string.IsNullOrEmpty(itemString))
           continue;
-        if (result.IsNotEmpty())
+        if (result.IsNotEmpty)
           result += separator;
         result += itemString;
       }

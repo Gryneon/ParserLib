@@ -124,7 +124,7 @@ public static class Debug
   /// <param name="method">The name of this method.</param>
   public static void Log (MsgClass msgClass, string message, string caller, [CallerMemberName] string method = "")
   {
-    if (method.IsEmpty())
+    if (method.IsEmpty)
       DoLogHead(MsgClass.Debug, caller);
     else
       DoLogHead(MsgClass.Debug, caller, method);

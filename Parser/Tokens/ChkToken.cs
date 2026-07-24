@@ -166,6 +166,6 @@ public sealed class ChkToken
   public override string ToString () => $"ChkToken: {AllowedTypes.TextJoin("-")}" + (RegexValidator.Length > 0 ? $"{{{RegexValidator}}}" : "");
   internal bool IsStatisfiedBy (IToken token, Spec spec) =>
     token is not null &&
-    (RegexValidator.IsEmpty() || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) || spec.SC == SCOIC ? ROIC : RON)).Value.Length == token.Content.Length) &&
+    (RegexValidator.IsEmpty || Regex.Match(token.Content, RegexValidator, ROEC | ROML | ROIPW | (TokenRule.HasFlag(RT.IgnoreCase) || spec.SC == SCOIC ? ROIC : RON)).Value.Length == token.Content.Length) &&
     Check_Type(token);
 }

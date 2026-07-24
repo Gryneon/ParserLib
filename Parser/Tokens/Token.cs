@@ -11,7 +11,7 @@ public class Token : IToken, IPrintable
   public int LastPosition => Index + Length - 1;
   public int Length => Content.Length;
   public int Index { get; init; }
-  public string Type { get => field.IsEmpty() ? "None" : field; set; } = SE;
+  public string Type { get => field.IsEmpty ? "None" : field; set; } = SE;
   public IToken? Parent { get; set; }
   public IList<IToken> Children { get; set; } = [];
   public virtual int Count => Children.Count;

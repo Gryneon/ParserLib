@@ -40,7 +40,7 @@ public class GroupDataSet : CaptureData, IReadOnlyCollection<CaptureData>, IEqua
   public bool IsMatchPropertyKey => Name.StartsWith("m_prop_key_", SCOIC);
   public bool IsMatchPropertyValue => Name.StartsWith("m_prop_value_", SCOIC);
   /// <summary>Whether the group is a named group or not.</summary>
-  public bool IsNamedGroup => Name.IsNamedGroup() && Content.Length > 0;
+  public bool IsNamedGroup => Name.IsNamedGroup && Content.Length > 0;
   public override bool IsNull => Content.Length == 0 || Captures.Count == 0;
   public virtual int Count => IsNull ? 0 : Captures.Count > 0 ? Captures.Count : 1;
   public static implicit operator GroupDataSet (Group group) => FromGroup(group);

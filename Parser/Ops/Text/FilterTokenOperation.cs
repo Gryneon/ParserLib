@@ -45,8 +45,8 @@ public class FilterTokenOperation : Operation
     {
       Data[OutputKey] = Type switch
       {
-        FilterTokenType.Empty => [.. tc.Where(tok => tok.Content.IsNotEmpty())],
-        FilterTokenType.Whitespace => [.. tc.Where(tok => !tok.Content.IsWhitespace())],
+        FilterTokenType.Empty => [.. tc.Where(tok => tok.Content.IsNotEmpty)],
+        FilterTokenType.Whitespace => [.. tc.Where(tok => !tok.Content.IsWhitespace)],
         FilterTokenType.AnyMatchInToken when OpData is not null => [.. tc.Where(tok => tok is Token && !Regex.IsMatch(tok.Content, OpData))],
         FilterTokenType.MatchEntireToken when OpData is not null => [.. tc.Where(tok => tok is Token && Regex.Match(tok.Content, OpData).Length != tok.Content.Length)],
         FilterTokenType.TokenType => [.. tc.Where(tok => !tok.Type.Like(OpData))],
