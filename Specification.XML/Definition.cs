@@ -103,8 +103,8 @@ public static class Definition
       .. TokenRule.MakeSingleCharRules("<>/?;&:=!-", TokenExact, new Collection<XTT>() { XTT.Ao, XTT.Ac, XTT.Sl, XTT.Qm, XTT.Sc, XTT.An, XTT.Co, XTT.Eq, XTT.Em, XTT.Hy }),
       new (TokenMatch, XTT.NamespaceAttr, @"\bxmlns\b"),
       new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*\=)"),
-      new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)\s* )\b[a-z]\w*\b(?=\:)"),
-      new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
+      new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)*\s* )\b[a-z]\w*\b(?=\:)"),
+      new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)*\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
       new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)\b(?<!xml)"),           // No non-xml headers
       new (ErrorMatch, "None", @"\<\w+(?<error_pos>\s+)\w+\b\/?\>"),          // No spaces in element names
     ],

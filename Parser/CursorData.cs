@@ -50,4 +50,7 @@ public sealed class CursorData
     Length = DNE;
   }
   #endregion
+
+  public override string ToString () =>
+    $"CursorData: {(ListKey is null ? "" : $"ListKey = {ListKey}")} ( {Index} / {Length} ) = {This}";
 }
