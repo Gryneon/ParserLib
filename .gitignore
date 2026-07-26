@@ -406,4 +406,5 @@ FodyWeavers.xsd
 
 *.zip
 
-**/*/*.csproj.lscache
+/*/*.csproj.lscache
+/Terminal.Menu/Terminal.Menu.csproj.lscache

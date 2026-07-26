@@ -17,4 +17,31 @@ public static class DefaultSpec
       new SplitOperation("text", "result")
     ]
   };
+
+  public static Spec SpecLoader { get; } = new()
+  {
+    FileInferences = [new(IT.Ext | IT.Is, "spec")],
+    Name = "spec_internal",
+    Operations = [
+      new TokenizeOperation
+      {
+        InputKey = "text",
+        OutputKey = "tokens"
+      },
+      // TODO: Complete this operation for spec parsing.
+      new SpecProcessOperation
+      {
+
+      }
+    ],
+    IsTextFile = true,
+    SC = SCOIC,
+    TokenType = typeof(string),
+    DefaultRuleSet = RT.IgnoreCase,
+    RxOpt = ROEC | ROIC | ROML | ROIPW,
+    TokenRules = [
+      new(RT.TokenComment, "None", @"\s*\/\/.*"),
+      new(RT.TokenComment, "None", @"^\s*(?=\S)"),
+    ]
+  };
 }
