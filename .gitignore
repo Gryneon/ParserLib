@@ -393,6 +393,8 @@ FodyWeavers.xsd
 
 # Local History for Visual Studio Code
 .history/
+.git/
+.github/
 
 # Windows Installer files from build outputs
 *.cab
