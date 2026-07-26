@@ -403,9 +403,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
 *.zip
-
-/*/*.csproj.lscache
-/Terminal.Menu/Terminal.Menu.csproj.lscache
-/Specification.INI/Specification.INI.csproj.lscache
+*.lscache
