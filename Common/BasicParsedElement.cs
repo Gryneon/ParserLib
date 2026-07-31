@@ -4,6 +4,116 @@ using System.Xml.Linq;
 
 namespace Common;
 
+/// <summary>The type of object.</summary>
+public enum BasicType
+{
+  /// <summary>The value 'null'.</summary>
+  Null,
+  /// <summary>Quoted text.</summary>
+  String,
+  /// <summary>Non-quoted numeric data.</summary>
+  Number,
+  /// <summary>An array of <see cref="IBasicObject"/> items.</summary>
+  Array,
+  /// <summary>A basic dictionary.</summary>
+  Object,
+  /// <summary>A <see langword="true"/> or a <see langword="false"/> stored as 'true' and 'false'.</summary>
+  Boolean,
+  /// <summary>Invalid text. Unable to parse.</summary>
+  Invalid,
+  /// <summary>This returns when you try to get a value that doesn't exist.</summary>
+  Absent
+}
+/// <summary>Base interface for complex objects.</summary>
+public interface IBasicObject : IEquatable<IBasicObject>, IEquatable<string>, IEquatable<bool>, IEquatable<decimal>
+{
+  string Value { get; }
+  BasicType Type { get; }
+}
+/// <summary>A primitive object.</summary>
+public sealed class BasicParsedPrimitive : IBasicObject
+{
+  public required string Value { get; init; }
+  public required BasicType Type { get; init; }
+  public decimal NumericValue { get; init; }
+  public bool BooleanValue { get; init; }
+  private static BasicParsedPrimitive Null => new() { Type = BasicType.Null, Value = "null" };
+  internal static BasicParsedPrimitive Invalid (string value) => new()
+  {
+    Type = BasicType.Invalid,
+    Value = value
+  };
+  internal static BasicParsedPrimitive Absent => new()
+  {
+    Type = BasicType.Absent,
+    Value = SE
+  };
+  private static BasicParsedPrimitive True => new()
+  {
+    Type = BasicType.Boolean,
+    Value = "true",
+    BooleanValue = true,
+    NumericValue = 1
+  };
+  private static BasicParsedPrimitive False => new()
+  {
+    Type = BasicType.Boolean,
+    Value = "false",
+  };
+  private static BasicParsedPrimitive String (string value) => new()
+  {
+    Type = BasicType.String,
+    Value = value[1..^1]
+  };
+  private static BasicParsedPrimitive Number (string value) => new()
+  {
+    Type = BasicType.Number,
+    Value = value,
+    NumericValue = decimal.Parse(value, CIIC),
+    BooleanValue = decimal.Parse(value, CIIC) >= 1
+  };
+  public bool Equals (IBasicObject? other) =>
+    ((other is null || other.Value.Length == 0) && Type is BasicType.Absent) ||
+    (Value.Equals(other?.Value, SCO) && Type == other.Type);
+  public bool Equals (string? other) => Value.Equals(other, SCO) && Type is BasicType.String;
+  public bool Equals (bool other) => BooleanValue == other && Type is BasicType.Boolean or BasicType.Number;
+  public bool Equals (decimal other) => NumericValue == other && Type is BasicType.Boolean or BasicType.Number;
+
+  public static implicit operator BasicParsedPrimitive (string value)
+  {
+    return value switch
+    {
+      "null" => Null,
+      "true" => True,
+      "false" => False,
+      string when value.Length >= 2 && value.StartsWith('"', SCO) && value.EndsWith('"', SCO) => String(value),
+      string when value.IsNumber => Number(value),
+      string when value.Length > 0 => Invalid(value),
+      _ => Absent
+    };
+  }
+}
+
+/// <summary>A basic json style dictionary.</summary>
+public class BasicParsedObject : IBasicObject
+{
+  public Dictionary<string, IBasicObject> Properties { get; } = [];
+
+  public string Value => throw new NotImplementedException("TODO: Finish this.");
+
+  public BasicType Type { get; } = BasicType.Object;
+
+  public IBasicObject this[string key] =>
+    Properties.TryGetValue(key, out IBasicObject? value)
+    ? value
+    : BasicParsedPrimitive.Absent;
+
+  public bool Equals (IBasicObject? other) => other is not null && Value.Equals(other.Value, SCO) && other.Type == Type;
+  public bool Equals (string? other) => false;
+  public bool Equals (bool other) => false;
+  public bool Equals (decimal other) => false;
+}
+
 /// <summary>A basic attribute/element dictionary.</summary>
 public class BasicParsedElement
 {

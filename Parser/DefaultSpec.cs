@@ -23,6 +23,13 @@ public static class DefaultSpec
     FileInferences = [new(IT.Ext | IT.Is, "spec")],
     Name = "spec_internal",
     Operations = [
+      new ReplaceOperation
+      {
+        InputKey = "text",
+        OutputKey = "text",
+        Nodes = [ ],
+        ContinueOnFail = true
+      },
       new TokenizeOperation
       {
         InputKey = "text",
