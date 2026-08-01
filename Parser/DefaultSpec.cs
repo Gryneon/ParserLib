@@ -58,3 +58,23 @@ public static class DefaultSpec
     ]
   };
 }
+
+/*
+
+https://regex101.com/r/VRHLLe/1
+
+(?'capture'
+(?<!\\)}(?=$)|
+(?<!\\){(?!\s*[\d,}])|
+^\s*\/\/.*|
+Constructs|
+Groups|
+Spec\s*""(?'spec_name'.*?)""|
+Format\s*=\s*(?'spec_format'\w+)\s*;|
+
+= |
+Inferences\s*{(\s*(?'inf_item'\w+\s+\w+\s*\{.*\})\s*)*}|
+Rules\s*{(\s*(?'Item'
+(?'Rule_Line'(?'Line_Type'\w+)\s*""(?'Token_Type'.*?)""\s*(?'regex'.*))(\n\s*\=\>\s*(?'regex_cont'.*))*|))*})
+
+*/
