@@ -2,6 +2,8 @@
 
 using Parser.Ops.Text;
 
+using static Parser.DefinitionStaticFunctions;
+
 namespace Parser;
 
 [DefinitionExport]
@@ -20,7 +22,7 @@ public static class DefaultSpec
 
   public static Spec SpecLoader { get; } = new()
   {
-    FileInferences = [new(IT.Ext | IT.Is, "spec")],
+    FileInferences = [new(ExtIs, "spec")],
     Name = "spec_internal",
     Operations = [
       new ReplaceOperation
@@ -38,7 +40,8 @@ public static class DefaultSpec
       // TODO: Complete this operation for spec parsing.
       new SpecProcessOperation
       {
-
+        InputKey = "tokens",
+        OutputKey = "specs"
       }
     ],
     IsTextFile = true,
@@ -49,6 +52,9 @@ public static class DefaultSpec
     TokenRules = [
       new(RT.TokenComment, "None", @"\s*\/\/.*"),
       new(RT.TokenComment, "None", @"^\s*(?=\S)"),
+      new(RT.TokenExtract, "SpecName", @"Spec\s+""(?'keep'[^\n""])"""),
+      new(RT.TokenMatch, "BracketOpen", @"(?<!\\){(?!\s*[\d,}])"),
+      new(RT.TokenMatch, "BracketClose", @"(?<!\\)}(?=$)"),
     ]
   };
 }

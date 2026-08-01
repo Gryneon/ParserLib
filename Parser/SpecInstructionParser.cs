@@ -21,9 +21,23 @@ public static class SpecInstructionParser
 
   public static IEnumerable<Spec> LoadSpecFile (string path)
   {
+    if (Path.GetExtension(path).Like("xml"))
+    {
+      return LoadSpecXML(path);
+    }
+
+    if (Path.GetExtension(path).Like("spec"))
+    {
+      //return LoadSpecExt(path);
+    }
+    Log(MsgClass.Warning, $"Loading spec file '{path}' failed.", "SpecInstructionParser");
+    return [];
+  }
+  public static IEnumerable<Spec> LoadSpecXML (string path)
+  {
     Collection<Spec> specs = [];
 
-    Log(MsgClass.Debug, $"Loading spec file '{path}'", ThisClass);
+    Log(MsgClass.Debug, $"Loading spec xml file '{path}'", "SpecInstructionParser");
 
     XDocument doc = XDocument.Load(path);
     XElement root = doc.Root ?? throw Err.ThrowNoSpec("Spec XML is not good.");
@@ -65,7 +79,7 @@ public static class SpecInstructionParser
         if (op is not null)
           ops.Add(op);
         else
-          Log(MsgClass.Warning, $"{element.Name} was null, investigate.", ThisClass);
+          Log(MsgClass.Warning, $"{element.Name} was null, investigate.", "SpecInstructionParser");
       }
 
       XElement? fileInf = specxml.Element(NS + "FileInferences");

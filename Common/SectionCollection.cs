@@ -69,15 +69,10 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>
       List<Pos> relevant_sections = [.. _sections.Where(s => s.Start <= i && s.End >= i)];
       if (relevant_sections.Any(s => s.IsWithin(i)))
       {
-        if (start == DNE)
-        {
-          continue;
-        }
-        else
+        if (start != DNE)
         {
           result.Add(start, i - start);
           start = DNE;
-          continue;
         }
       }
       else if (start == DNE)

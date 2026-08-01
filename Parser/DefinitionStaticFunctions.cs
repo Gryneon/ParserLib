@@ -21,7 +21,7 @@ public static class DefinitionStaticFunctions
   public static readonly RxS St = Rx(@"\b");
 
   // IT Flag Combos
-  public static readonly IT
+  public const IT
     ExtIs = Ext | Is,
     HeadSt = FileHeader | Start,
     BodyContains = FileContent | Contains;

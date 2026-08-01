@@ -99,9 +99,36 @@ public class BasicParsedObject : IBasicObject
 {
   public Dictionary<string, IBasicObject> Properties { get; } = [];
 
-  public string Value => throw new NotImplementedException("TODO: Finish this.");
+  public string Value => GetJSONString();
+
+  private string GetJSONString ()
+  {
+    string result = "{";
+    const string end = "}";
+    bool firstProp = true;
+
+    foreach (var property in Properties)
+    {
+      if (!firstProp) result += ",";
+      firstProp = false;
+      result += property.Key;
+      result += ":";
+      result += property.Value;
+    }
+
+    return result + end;
+  }
 
   public BasicType Type { get; } = BasicType.Object;
+
+  public BasicParsedObject () { }
+  public BasicParsedObject (System.Text.Json.Nodes.JsonObject value)
+  {
+    foreach (var property in value)
+    {
+      // TODO: Finish this
+    }
+  }
 
   public IBasicObject this[string key] =>
     Properties.TryGetValue(key, out IBasicObject? value)

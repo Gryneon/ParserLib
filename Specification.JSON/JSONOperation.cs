@@ -75,13 +75,13 @@ public class JSONOperation : Operation
       void innerArrayHelper () => innerArray(false);
       void addValueToAssembly ()
       {
-        assembly[depth].Add(Spec.GetTokenTypeValue(TCurrent.Type) switch
+        assembly[depth].Add(TCurrent.Type switch
         {
           _ when TCurrent.Content.IsEmpty => new JSONUndefValue(),
-          JTT.Str => new JSONStringValue(TCurrent.Content),
-          JTT.Num => new JSONNumberValue(TCurrent.Content.ToDecimal() ?? 0),
-          JTT.Bool => new JSONBoolValue(TCurrent.Content.ToBool() ?? false),
-          JTT.Null => new JSONNullValue(),
+          "Str" => new JSONStringValue(TCurrent.Content),
+          "Num" => new JSONNumberValue(TCurrent.Content.ToDecimal() ?? 0),
+          "Bool" => new JSONBoolValue(TCurrent.Content.ToBool() ?? false),
+          "Null" => new JSONNullValue(),
           _ => new JSONUndefValue(),
         });
         Index++;
@@ -97,7 +97,7 @@ public class JSONOperation : Operation
           if (TCurrent is null)
             break;
           string? tContent = TCurrent.Content;
-          JTT tType = Spec.GetTokenTypeValue(TCurrent.Type);
+          string tType = TCurrent.Type;
           if (tContent is "{" or "[")
           {
             ThrowIf(sequence != 0, $"Sequence was not correct, {sequence} needs to be 0.");
@@ -130,7 +130,7 @@ public class JSONOperation : Operation
             sequence = 0;
             Index++;
           }
-          else if (tType is JTT.Num or JTT.Null or JTT.Str or JTT.Bool)
+          else if (tType is "Num" or "Null" or "Str" or "Bool")
           {
             ThrowIf(sequence != 0, $"Sequence was not correct, {sequence} needs to be 0.");
             Debug.Log(MsgClass.Debug, $"{Index} : primitive '{tType}'", this);
@@ -155,7 +155,7 @@ public class JSONOperation : Operation
             break;
 
           string? tContent = TCurrent.Content;
-          JTT tType = Spec.GetTokenTypeValue(TCurrent.Type);
+          string tType = TCurrent.Type;
           if (tContent is "{" or "[")
           {
             ThrowIf(sequence != 2, $"Sequence was not correct, {sequence} needs to be 2.");
@@ -186,14 +186,14 @@ public class JSONOperation : Operation
             sequence++;
             Index++;
           }
-          else if (tType is JTT.Num or JTT.Null or JTT.Bool)
+          else if (tType is "Num" or "Null" or "Bool")
           {
             ThrowIf(sequence != 2, $"Sequence was not correct, {sequence} needs to be 2.");
             Debug.Log(MsgClass.Debug, $"{Index} : primitive '{tType}'", this);
             sequence++;
             addValueToAssembly();
           }
-          else if (tType is JTT.Str)
+          else if (tType is "Str")
           {
             ThrowIf(sequence is not 0 and not 2, $"Sequence was not correct, {sequence} needs to be 0 or 2.");
             Debug.Log(MsgClass.Debug, $"{Index} : primitive '{tType}'", this);
