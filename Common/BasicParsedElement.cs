@@ -1,5 +1,6 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using System.Text.Json.Nodes;
 using System.Xml.Linq;
 
 namespace Common;
@@ -107,7 +108,7 @@ public class BasicParsedObject : IBasicObject
     const string end = "}";
     bool firstProp = true;
 
-    foreach (var property in Properties)
+    foreach (KeyValuePair<string, IBasicObject> property in Properties)
     {
       if (!firstProp) result += ",";
       firstProp = false;
@@ -124,7 +125,7 @@ public class BasicParsedObject : IBasicObject
   public BasicParsedObject () { }
   public BasicParsedObject (System.Text.Json.Nodes.JsonObject value)
   {
-    foreach (var property in value)
+    foreach (KeyValuePair<string, JsonNode?> property in value)
     {
       // TODO: Finish this
     }
@@ -142,7 +143,8 @@ public class BasicParsedObject : IBasicObject
 }
 
 /// <summary>A basic attribute/element dictionary.</summary>
-public class BasicParsedElement
+/// <remarks>This does not support mixed content.</remarks>
+public class BasicParsedElement : IReadOnlyCollection<BasicParsedElement>
 {
   /// <summary>The element name.</summary>
   public string Name { get; }
@@ -152,6 +154,8 @@ public class BasicParsedElement
   public Collection<BasicParsedElement> Elements { get; } = [];
   /// <summary>The value if it contains a value not elements.</summary>
   public string? Value { get; }
+
+  public int Count => Elements.Count;
 
   public BasicParsedElement (XElement element)
   {
@@ -175,21 +179,29 @@ public class BasicParsedElement
     }
   }
 
+  /// <summary>Gets the element at the index.</summary>
+  /// <param name="index">The index to get the element from.</param>
+  /// <returns>The element at the given index.</returns>
+  /// <exception cref="ArgumentOutOfRangeException">The index is negative or is too large.</exception>
   public BasicParsedElement this[int index]
   {
-    get => Elements[index];
+    get => index >= Elements.Count || index < 0 ? throw new ArgumentOutOfRangeException(nameof(index)) : Elements[index];
   }
 
-  public BasicParsedElement this[int index, string ofType]
+  public BasicParsedElement this[string ofType, int index]
   {
     get => Elements.Where(e => e.Name.Is(ofType)).At(index);
+  }
+  public IEnumerable<BasicParsedElement> this[string ofType]
+  {
+    get => Elements.Where(e => e.Name.Is(ofType));
   }
 
   /// <summary>Looks up and retrieves the attribute value as a <see langword="string"/>.</summary>
   /// <param name="attribute">The attribute to lookup.</param>
   /// <returns>The attribute value as a <see langword="string"/>, or an empty string if there is no attribute of that name.</returns>
-  public string this[string attribute]
-  {
-    get => Attributes.TryGetValue(attribute, out string? value) ? value : SE;
-  }
+  public string GetAttribute (string attribute) => Attributes.TryGetValue(attribute, out string? value) ? value : SE;
+
+  public IEnumerator<BasicParsedElement> GetEnumerator () => Elements.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }

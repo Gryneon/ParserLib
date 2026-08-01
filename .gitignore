@@ -407,3 +407,4 @@ FodyWeavers.xsd
 *.sln.iml
 *.zip
 *.lscache
+/Parser/Parser.csproj.lscache

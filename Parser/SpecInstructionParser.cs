@@ -41,23 +41,23 @@ public static class SpecInstructionParser
 
     XDocument doc = XDocument.Load(path);
     XElement root = doc.Root ?? throw Err.ThrowNoSpec("Spec XML is not good.");
-    XElement? prefabs = root.Element(NS + "Prefabs");
+    BasicParsedElement bRoot = new(root);
+    BasicParsedElement prefabs = bRoot["Prefabs"].At(0);
+
+    if (!bRoot.Name.Is("Definition"))
+    {
+      _ = Err.ThrowNoSpec("Root element must be Definition.");
+    }
 
     if (prefabs is not null)
     {
-      IEnumerable<XElement> prefab_list = prefabs.Elements(NS + "Prefab");
-      IEnumerable<XElement> prefab_tokenRules_list = prefab_list.Elements(NS + "TokenRule");
-      IEnumerable<XElement> prefab_tokenLookups_list = prefab_list.Elements(NS + "TokenLookup");
-      IEnumerable<XElement> prefab_tokenGroups_list = prefab_list.Elements(NS + "GroupTokenRule");
-      IEnumerable<XElement> prefab_constructs_list = prefab_list.Elements(NS + "Construct");
+      IEnumerable<BasicParsedElement> prefab_tokenRules_list = prefabs["TokenRule"];
+      IEnumerable<BasicParsedElement> prefab_tokenLookups_list = prefabs["TokenLookup"];
+      IEnumerable<BasicParsedElement> prefab_tokenGroups_list = prefabs["GroupTokenRule"];
+      IEnumerable<BasicParsedElement> prefab_constructs_list = prefabs["Construct"];
     }
 
-    IEnumerable<XElement> specxmls =
-      root.Name.LocalName == "Definition"
-        ? root.Elements(NS + "Spec") ?? Err.ThrowNoSpec("No Spec in definition.")
-        : Err.ThrowNoSpec("Root element must be Definition.");
-
-    foreach (XElement specxml in specxmls)
+    foreach (XElement specxml in root.Elements(NS + "Spec"))
     {
       XElement? xname = specxml.Element(NS + "Name");
 

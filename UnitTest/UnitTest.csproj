@@ -10,6 +10,10 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <None Remove="UnitTest.csproj.lscache" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="Catharsis.Commons" Version="4.0.1" />
     <PackageReference Include="coverlet.collector" Version="10.0.1">
       <PrivateAssets>all</PrivateAssets>
