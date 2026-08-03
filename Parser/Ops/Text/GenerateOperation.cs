@@ -1,3 +1,5 @@
+using Parser.Condition;
+
 using OS = Parser.OpStatus;
 
 namespace Parser.Ops.Text;
@@ -81,5 +83,40 @@ public class GenerateOperation<TIn, TOut> : Operation where TOut : notnull
     {
       throw Err.ThrowBadInput($"{typeof(TIn)} or {typeof(IEnumerable<TIn>)}", Data[InputKey].TypeName);
     }
+  }
+}
+
+/// <summary>
+/// Assembles an array of strings into objects.
+/// </summary>
+public class ConstructOperation : Operation
+{
+  public Type TargetType { get; init; }
+  public string InputKey { get; init; }
+  public string OutputKey { get; init; }
+  public ParsedExpression? Condition { get; init; }
+
+  protected override void Execute ()
+  {
+    object items = Data[InputKey];
+
+    if (items is not IEnumerable<string> list)
+    {
+      throw Err.ThrowBadInput("IEnumerable<string>", items.TypeName);
+    }
+
+    Collection<object> result = [];
+
+    foreach (string item in list)
+    {
+      ConstructorInfo? cons = TargetType.GetConstructor([typeof(string)]) ?? throw Err.ThrowBadDef($"No constructor for given type {TargetType.Name}");
+      object? target = cons.Invoke(null, [item]);
+      if (target is not null)
+        result.Add(target);
+      else
+        throw Err.ThrowBadResult($"Constructor for {TargetType.Name} failed to produce an object.");
+    }
+
+    Data[OutputKey] = result;
   }
 }

@@ -24,6 +24,7 @@ global using static Common.Names;
 
 global using DM = Common.DictionaryMode;
 global using IT = Parser.Inference.InferenceType;
+global using Regex = System.Text.RegularExpressions.Regex;
 global using RT = Parser.Tokens.TokenRuleType;
 global using SS = System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
 

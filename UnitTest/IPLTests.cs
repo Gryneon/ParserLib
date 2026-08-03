@@ -10,7 +10,7 @@ public class IPLTests
   {
     XParser parser = new();
     OpStatus status = parser.ParseData(Definition.Spec, initial_string);
-    Assert.False(status.IsFail);
+    Assert.False(status.IsFail, "Status was a failure condition.");
     Assert.Contains("initial", parser.Data.Keys);
     Assert.Contains("text", parser.Data.Keys);
     Assert.Equal(10, (parser.Data["commands"] as IList<object>)?.Count);

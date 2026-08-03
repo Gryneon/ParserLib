@@ -713,10 +713,10 @@
             <summary>The name of this Spec.</summary>
         </member>
         <member name="P:Parser.Spec.Operations">
-            <summary>A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Ops.Operation"/> objects that are executed in order to produce the result.</summary>
+            <summary>A <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> of <see cref="T:Parser.Ops.IOperation"/> objects that are executed in order to produce the result.</summary>
         </member>
         <member name="P:Parser.Spec.FileInferences">
-            <summary>A <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Parser.Inference.InferenceNode"/> objects that specify what files use this specification.</summary>
+            <summary>A <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> of <see cref="T:Parser.Inference.InferenceNode"/> objects that specify what files use this specification.</summary>
         </member>
         <member name="P:Parser.Spec.IsTextFile">
             <summary>Determines whether to use a byte parser or a text one.</summary>
