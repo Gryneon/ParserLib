@@ -368,6 +368,17 @@ True by default.
             </xs:documentation>
           </xs:annotation>
         </xs:element>
+        <xs:element name="Split">
+          <xs:annotation>
+            <xs:documentation>
+              Splits a string or list of strings. Flattens out to 1 list.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:attribute name="input_var" use="required" type="DataKeyType"/>
+            <xs:attribute name="output_var" use="required" type="DataKeyType"/>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="Initialize">
           <xs:annotation>
             <xs:documentation>

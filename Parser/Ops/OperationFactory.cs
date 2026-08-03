@@ -70,6 +70,7 @@ public static class OperationFactory
       string check_var = GetS("check_var", element);
       string dividend_var = GetS("dividend_var", element);
       string divisor_var = GetS("divisor_var", element);
+      string extracted_var = GetS("extracted_var", element);
 
       string condition = GetS("condition", element);
       string message = GetS("message", element);
@@ -81,6 +82,7 @@ public static class OperationFactory
       string success = GetS("success", element);
       string endian = GetS("endian", element);
       string encoding = GetS("encoding", element);
+      string pattern = GetS("pattern", element);
 
       //Reset block if any non-conditional block is reached.
       //This allows for multiple if blocks in a row without else if/else sections.
@@ -242,6 +244,13 @@ public static class OperationFactory
           Procedure = type,
           Delims = []
           //TODO: Finish this...
+        },
+        "Extract" => new ExtractOperation
+        {
+          InputKey = input_var,
+          OutputKey = output_var,
+          ExtractedKey = extracted_var,
+          Pattern = pattern,
         },
         _ => Err.ThrowBadDef($"Unknown Command {element.Name.LocalName}.")
       };
