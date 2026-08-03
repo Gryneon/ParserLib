@@ -235,6 +235,14 @@ public static class OperationFactory
           Divisor = divisor == -1 ? 0 : divisor,
           OutputKey = output_var,
         },
+        "Split" => new SplitOperation
+        {
+          InputKey = input_var,
+          OutputKey = output_var,
+          Procedure = type,
+          Delims = []
+          //TODO: Finish this...
+        },
         _ => Err.ThrowBadDef($"Unknown Command {element.Name.LocalName}.")
       };
     }
