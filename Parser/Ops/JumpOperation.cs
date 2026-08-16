@@ -4,7 +4,7 @@ public class JumpOperation : Operation
 {
   protected int TargetIndex { get; set; }
   private string? TargetIndexVar { get; }
-  private string? TargetLabel { get; }
+  public string? TargetLabel { get; init; }
   public JumpOperation (int index)
   {
     TargetIndex = index;

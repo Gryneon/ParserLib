@@ -9,5 +9,4 @@ public class SwitchCaseItem
   public string? Value { get; init; }
   public ParsedExpression? Expression => Value is null ? null : new(Value);
   public Collection<IOperation> Operations { get; init; } = [];
-
 }

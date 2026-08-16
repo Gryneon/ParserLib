@@ -243,8 +243,7 @@ public class ParsedExpression : IExpression
     void restartSequence ()
     {
       i = 0;
-      op = Undefined;
-      op_index = -1;
+      clearOp();
       allowLogical = true;
       clearLeft();
       clearRight();
