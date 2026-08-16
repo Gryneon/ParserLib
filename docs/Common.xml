@@ -4,8 +4,39 @@
         <name>Common</name>
     </assembly>
     <members>
+        <member name="T:Common.BasicType">
+            <summary>The type of object.</summary>
+        </member>
+        <member name="F:Common.BasicType.Null">
+            <summary>The value 'null'.</summary>
+        </member>
+        <member name="F:Common.BasicType.String">
+            <summary>Quoted text.</summary>
+        </member>
+        <member name="F:Common.BasicType.Number">
+            <summary>Non-quoted numeric data.</summary>
+        </member>
+        <member name="F:Common.BasicType.Array">
+            <summary>An array of <see cref="T:Common.BasicParsedObject"/> items.</summary>
+        </member>
+        <member name="F:Common.BasicType.Object">
+            <summary>A basic dictionary.</summary>
+        </member>
+        <member name="F:Common.BasicType.Boolean">
+            <summary>A <see langword="true"/> or a <see langword="false"/> stored as 'true' and 'false'.</summary>
+        </member>
+        <member name="F:Common.BasicType.Invalid">
+            <summary>Invalid text. Unable to parse.</summary>
+        </member>
+        <member name="F:Common.BasicType.Absent">
+            <summary>This returns when you try to get a value that doesn't exist.</summary>
+        </member>
+        <member name="T:Common.BasicParsedObject">
+            <summary>A basic json style dictionary.</summary>
+        </member>
         <member name="T:Common.BasicParsedElement">
             <summary>A basic attribute/element dictionary.</summary>
+            <remarks>This does not support mixed content.</remarks>
         </member>
         <member name="P:Common.BasicParsedElement.Name">
             <summary>The element name.</summary>
@@ -19,7 +50,13 @@
         <member name="P:Common.BasicParsedElement.Value">
             <summary>The value if it contains a value not elements.</summary>
         </member>
-        <member name="P:Common.BasicParsedElement.Item(System.String)">
+        <member name="P:Common.BasicParsedElement.Item(System.Int32)">
+            <summary>Gets the element at the index.</summary>
+            <param name="index">The index to get the element from.</param>
+            <returns>The element at the given index.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">The index is negative or is too large.</exception>
+        </member>
+        <member name="M:Common.BasicParsedElement.GetAttribute(System.String)">
             <summary>Looks up and retrieves the attribute value as a <see langword="string"/>.</summary>
             <param name="attribute">The attribute to lookup.</param>
             <returns>The attribute value as a <see langword="string"/>, or an empty string if there is no attribute of that name.</returns>

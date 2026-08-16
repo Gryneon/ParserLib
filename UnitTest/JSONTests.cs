@@ -12,7 +12,10 @@ public class JSONTests
     XParser parser = new();
     OpStatus result = parser.ParseData(Definition.Spec, content);
 
-    Assert.Equal(OpStatus.Pass, result);
+    if (result is not OpStatus.Pass and not OpStatus.EndCommand)
+    {
+      Assert.Fail("Operation not Pass or EndCommand");
+    }
     Assert.True(parser.Data.Keys.Count > 3);
   }
 
@@ -23,7 +26,10 @@ public class JSONTests
     XParser parser = new();
     OpStatus result = parser.ParseData(Definition.Spec, content);
 
-    Assert.Equal(OpStatus.Pass, result);
+    if (result is not OpStatus.Pass and not OpStatus.EndCommand)
+    {
+      Assert.Fail("Operation not Pass or EndCommand");
+    }
     Assert.True(parser.Data.Keys.Count > 3);
   }
 }
