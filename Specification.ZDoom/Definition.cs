@@ -91,9 +91,9 @@ public static class Definition
       s_dec,
       .. TokenRule.MakeWordMatchRules(true, UT.Namespace, UT.Vertex, UT.Thing, UT.SideDef, UT.LineDef),
       new(RT.TokenMatch, UT.Sector, @"\bsector\b(?=[^=}]*\{)"),
-      new(RT.TokenMatch, UT.Name, @"\b[a-z]\w*\b")],
-    // new(RT.StoreExtra | RT.IgnoredToken | RT.ExemptAllWithin, Ws,   Rx(@"\s+"))],
-    //new(RT.StoreOther, None)],
+      new(RT.TokenMatch, UT.Name, @"\b[a-z]\w*\b"),
+      new(RT.StoreExtra | RT.IgnoredToken, UT.None, @"\s+"),
+      new(RT.StoreOther, UT.Value, SE)],
     GroupTokenRules = [
       new(UT.NamespaceDec, "n:Namespace x:Eq v:String x:Sc"),
       new(UT.Property, "n:Name x:Eq v:Value x:Sc"),

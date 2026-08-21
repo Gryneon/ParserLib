@@ -17,11 +17,11 @@ namespace Parser.Ops.Text;
 /// <br/>
 /// Statuses:
 /// <code>
-/// <see cref="OS.Pass"/>: Operation completed successfully.
-/// <see cref="OS.Skipped"/>: Operation completed successfully, but no work was done.
-/// <see cref="OS.FailOverride"/>: Operation failed, but is allowed to continue.
-/// <see cref="OS.FailBadInputType"/>: Operation was provided the wrong type as input.
-/// <see cref="OS.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+/// <see cref="OS.Pass"/>: Operation completed successfully.<br/>
+/// <see cref="OS.Skipped"/>: Operation completed successfully, but no work was done.<br/>
+/// <see cref="OS.FailOverride"/>: Operation failed, but is allowed to continue.<br/>
+/// <see cref="OS.FailBadInputType"/>: Operation was provided the wrong type as input.<br/>
+/// <see cref="OS.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.<br/>
 /// <see cref="OS.FailNoSuchVarName"/>: The key was not found in the <see cref="DataStore"/>.
 /// </code>
 /// </remarks>
@@ -86,14 +86,12 @@ public class GenerateOperation<TIn, TOut> : Operation where TOut : notnull
   }
 }
 
-/// <summary>
-/// Assembles an array of strings into objects.
-/// </summary>
+/// <summary>Assembles an array of strings into objects.</summary>
 public class ConstructOperation : Operation
 {
-  public Type TargetType { get; init; }
-  public string InputKey { get; init; }
-  public string OutputKey { get; init; }
+  public required string TargetType { get; init; }
+  public required string InputKey { get; init; }
+  public required string OutputKey { get; init; }
   public ParsedExpression? Condition { get; init; }
 
   protected override void Execute ()
@@ -107,14 +105,15 @@ public class ConstructOperation : Operation
 
     Collection<object> result = [];
 
+    Type? typ = Type.GetType(TargetType, false) ?? throw Err.ThrowBadDef($"Target type of {TargetType} does not exist.");
+    ConstructorInfo? cons = typ.GetConstructor([typeof(string)]) ?? throw Err.ThrowBadDef($"No constructor for given type {TargetType}");
     foreach (string item in list)
     {
-      ConstructorInfo? cons = TargetType.GetConstructor([typeof(string)]) ?? throw Err.ThrowBadDef($"No constructor for given type {TargetType.Name}");
       object? target = cons.Invoke(null, [item]);
       if (target is not null)
         result.Add(target);
       else
-        throw Err.ThrowBadResult($"Constructor for {TargetType.Name} failed to produce an object.");
+        throw Err.ThrowBadResult($"Constructor for {TargetType} failed to produce an object.");
     }
 
     Data[OutputKey] = result;

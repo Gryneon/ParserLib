@@ -13,7 +13,7 @@ internal static class Program
 {
   #region Constants
   internal const string LaptopPath = @"C:\Users\johntay4\source\repos\Git";
-  internal const string CheckPath = @"C:\Users\johntayl.adm";
+  internal const string CheckPath = @"C:\Users\johntay4\Work";
   internal const string DesktopPath = @"D:\Git";
   internal const int LogLine = 10;
   #endregion
@@ -112,6 +112,7 @@ internal static class Program
         break;
       case "UDMF":
         InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
+        InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_map00);
         break;
       case "INI":
         InitialTest("ini", Paths.ini_vncdefault);

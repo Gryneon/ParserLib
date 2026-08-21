@@ -442,6 +442,18 @@
         <member name="P:Parser.Ops.OperationBreak.BreakCursor">
             <summary>The key storing the cursor for the current loop.</summary>
         </member>
+        <member name="T:Parser.Ops.OperationCheckLoopCondition">
+            <summary>This is placed at the start of a while loop.</summary>
+            <param name="condition">The condition to check.</param>
+            <param name="cursor_key">The key for the cursor.</param>
+            <param name="break_target">The target index to break to.</param>
+        </member>
+        <member name="M:Parser.Ops.OperationCheckLoopCondition.#ctor(System.String,System.String,System.Int32)">
+            <summary>This is placed at the start of a while loop.</summary>
+            <param name="condition">The condition to check.</param>
+            <param name="cursor_key">The key for the cursor.</param>
+            <param name="break_target">The target index to break to.</param>
+        </member>
         <member name="T:Parser.Ops.OperationCollection">
             <summary>A collection of operations that are executed in the given order.</summary>
         </member>
@@ -545,11 +557,11 @@
             <br/>
             Statuses:
             <code>
-            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.
-            <see cref="F:Parser.OpStatus.Skipped"/>: Operation completed successfully, but no work was done.
-            <see cref="F:Parser.OpStatus.FailOverride"/>: Operation failed, but is allowed to continue.
-            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.
-            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.
+            <see cref="F:Parser.OpStatus.Pass"/>: Operation completed successfully.<br/>
+            <see cref="F:Parser.OpStatus.Skipped"/>: Operation completed successfully, but no work was done.<br/>
+            <see cref="F:Parser.OpStatus.FailOverride"/>: Operation failed, but is allowed to continue.<br/>
+            <see cref="F:Parser.OpStatus.FailBadInputType"/>: Operation was provided the wrong type as input.<br/>
+            <see cref="F:Parser.OpStatus.FailBadInputNull"/>: The data at the key was <see langword="null"/> or missing.<br/>
             <see cref="F:Parser.OpStatus.FailNoSuchVarName"/>: The key was not found in the <see cref="T:Parser.DataStore"/>.
             </code>
             </remarks>
@@ -561,6 +573,9 @@
             </summary>
             <param name="func">The generation function.</param>
             <param name="predicate">The condition that the generation function requires.</param>
+        </member>
+        <member name="T:Parser.Ops.Text.ConstructOperation">
+            <summary>Assembles an array of strings into objects.</summary>
         </member>
         <member name="T:Parser.Ops.Text.LoadOperation">
             <summary>Loads a path as text.</summary>

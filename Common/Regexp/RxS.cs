@@ -148,7 +148,7 @@ public readonly struct RxS : IEquatable<string>, IComparable<string>, IEquatable
   {
     null => false,
     string s => Equals(s),
-    RxS rx => Equals(rx.Content),
+    RxS rx => Equals(rx),
     RxSCollection rxc => Equals(rxc.Combined.Content),
     _ => Equals(obj.ToString() ?? SE)
   };

@@ -2,107 +2,199 @@
 
 using System.Xml.Linq;
 
+using T = Common.BasicType;
+
 namespace Common;
 
 /// <summary>The type of object.</summary>
 public enum BasicType
 {
   /// <summary>The value 'null'.</summary>
+  /// <remarks>JSON <see langword="null"/> value.</remarks>
   Null,
+
   /// <summary>Quoted text.</summary>
+  /// <remarks>JSON values, JSON keys, XML Attribute Values, INI </remarks>
   String,
+
   /// <summary>Non-quoted numeric data.</summary>
   Number,
-  /// <summary>An array of <see cref="BasicParsedObject"/> items.</summary>
+
+  /// <summary>An array of <see cref="BasicParsedEntity"/> items.</summary>
   Array,
+
   /// <summary>A basic dictionary.</summary>
   Object,
+
   /// <summary>A <see langword="true"/> or a <see langword="false"/> stored as 'true' and 'false'.</summary>
   Boolean,
+
   /// <summary>Invalid text. Unable to parse.</summary>
   Invalid,
+
   /// <summary>This returns when you try to get a value that doesn't exist.</summary>
   Absent,
+
   /// <summary>This is the starting and ending whitespace in an element.</summary>
   IgnoredWhitespace,
-  /// <summary>This is content within a mixed element.</summary>
-  LooseContent
-}
 
-public union ElementValue : IU
-{
-  public BasicParsedElement Element { get; set; }
+  /// <summary>This is content within a mixed element.</summary>
+  LooseContent,
+  /// <summary>A complex object that stores a dictionary of values as well as a contained value.</summary>
+  Element
 }
 
 public static class BasicTypeExt
 {
-  extension(BasicType type)
+  extension(T type)
   {
-    public BasicType InitialType => type is BasicType.Absent or BasicType.Null or BasicType.IgnoredWhitespace or BasicType.Invalid ? BasicType.Null : type;
+    public bool IsPrimitive => type is T.Number or T.String or T.Boolean;
+    public bool IsDictionary => type is T.Object or T.Element;
+    public bool IsCollection => type is T.Array or T.Element or T.Object;
   }
 }
 
-public class BasicParsedEntity : IEquatable<BasicParsedEntity>
+public interface IParsedEntity
 {
-  internal string? Origin { get; set; }
-  public virtual object? Value { get; set; }
-  public BasicType Type { get; internal set; } = BasicType.Null;
-  public bool IsError => Type is BasicType.Invalid;
+  string? Origin { get; set; }
+  T Type { get; }
+  object? Value { get; set; }
 
-  [MemberNotNull(nameof(Type), nameof(Origin))]
-  protected void Parse ()
+  bool Equals (IParsedEntity? other);
+  bool Equals (object? obj);
+  int GetHashCode ();
+  string ToString ();
+}
+
+public class BasicParsedEntity : IParsedEntity
+{
+  public string? Origin { get; set; }
+  public object? Value { get; set; }
+  public virtual T Type { get; set; }
+  public bool IsError => Type is T.Invalid;
+  public IParsedEntity? Parent { get; set; }
+
+  public BasicParsedEntity () { }
+  public BasicParsedEntity (string origin)
   {
-    Type = Type.InitialType;
+    Origin = origin;
 
-    if (Origin.IsEmpty)
+    if (Origin.StartsWithAny(["\"", "\'"], SCO))
     {
-      Type = BasicType.Absent;
-      Origin = SE;
+      Type = T.String;
+      Value = Origin[1..^1];
+    }
+    else if (DateTime.TryParse(Origin, CIIC, out DateTime dt))
+    {
+      Type = T.String;
+      Value = dt.ToString("yyyy-MM-dd HH:mm", CIIC);
+    }
+    else if (decimal.TryParse(Origin, out decimal d))
+    {
+      Type = T.Number;
+      Value = d;
+    }
+    else if (bool.TryParse(Origin, out bool b))
+    {
+      Type = T.Number;
+      Value = b;
+    }
+    else if (Origin.Equals("null", SCO))
+    {
+      Type = T.Null;
+      Value = null;
+    }
+    else if (Origin.Length == 0)
+    {
+      Type = T.Absent;
+      Value = SE;
+    }
+    else
+    {
+      Type = T.Invalid;
       Value = default;
-      return;
-    }
-
-    // Does not have a type but has content.
-    if (Value is null && Type is BasicType.Null)
-    {
-      if (Origin.StartsWithAny(["\"", "\'"], SCO))
-      {
-        Type = BasicType.String;
-        Value = Origin[1..^1];
-      }
-      else if (DateTime.TryParse(Origin, CIIC, out DateTime dt))
-      {
-        Type = BasicType.String;
-        Value = dt.ToString("yyyy-MM-dd HH:mm", CIIC);
-      }
-      else if (decimal.TryParse(Origin, out decimal d))
-      {
-        Type = BasicType.Number;
-        Value = d;
-      }
-      else if (bool.TryParse(Origin, out bool b))
-      {
-        Type = BasicType.Number;
-        Value = b;
-      }
-      else
-      {
-        Type = BasicType.Invalid;
-        Value = default;
-      }
-    }
-
-    // Has a type but unparsed.
-    else if (Value is null && Type is not BasicType.Null)
-    {
-      Value = Type switch
-      {
-        BasicType.String => MakeString(Origin),
-        BasicType.Number => MakeDecimal(),
-      };
     }
   }
-  public bool Equals (BasicParsedEntity? other)
+  public BasicParsedEntity (object? value)
+  {
+    switch (value)
+    {
+      case string s when s.StartsWithAny(["'", "\""]):
+        Value = s[1..^1];
+        Type = T.String;
+        Origin = s;
+        break;
+      case decimal d:
+        Value = d;
+        Type = T.Number;
+        Origin = $"{d}";
+        break;
+      case bool b:
+        Value = b;
+        Type = T.Boolean;
+        Origin = $"{b}";
+        break;
+      case IEnumerable<KeyValuePair<string, object>> kvps:
+        Value = ParseObject(kvps);
+        Origin = null;
+        Type = T.Object;
+        break;
+      case IEnumerable<object> list:
+        Value = ParseArray(list);
+        Origin = null;
+        Type = T.Array;
+        break;
+    }
+  }
+  public BasicParsedEntity (T type, string? origin = null)
+  {
+    Origin = origin;
+
+    switch (type)
+    {
+      case T.Null when origin.Is("null") || origin is null:
+        Value = null;
+        Type = type;
+        break;
+      case T.String when origin?.StartsWithAny(["'", "\""]) == true:
+        Value = origin[1..^1];
+        Type = type;
+        break;
+      case T.Boolean when bool.TryParse(origin, out bool val):
+        Value = val;
+        Type = type;
+        break;
+      case T.Number when decimal.TryParse(origin, out decimal dec):
+        Value = dec;
+        Type = type;
+        break;
+      case T.String or T.LooseContent when origin?.Length > 0:
+        Value = origin;
+        Type = T.LooseContent;
+        break;
+      case T.Array or T.Object or T.Element:
+        throw new InvalidOperationException("Invalid type, assembly of primitives comes first.");
+      case T.Invalid:
+        throw new InvalidOperationException("ParseValue reported that the object was Invalid.");
+      case T.Absent:
+        Value = SE;
+        Type = type;
+        break;
+      default:
+        throw new InvalidOperationException("ParseValue reported an unknown type.");
+    }
+  }
+
+  private static BasicParsedEntity ParseItem (object obj) =>
+    obj is BasicParsedEntity bpe ? bpe : new(obj);
+  private static KeyValuePair<string, BasicParsedEntity> ParseItem (KeyValuePair<string, object> kvp) =>
+    new(kvp.Key, ParseItem(kvp.Value));
+  private static Collection<BasicParsedEntity> ParseArray (IEnumerable<object> objects) =>
+    [.. objects.Select(ParseItem)];
+  private static Dictionary<string, BasicParsedEntity> ParseObject (IEnumerable<KeyValuePair<string, object>> kvps) =>
+    kvps.Select(ParseItem).ToDictionary();
+
+  public bool Equals (IParsedEntity? other)
   {
     if (other is null)
       return false;
@@ -124,102 +216,21 @@ public class BasicParsedEntity : IEquatable<BasicParsedEntity>
   public override bool Equals (object? obj) => obj switch
   {
     null => false,
-    BasicParsedEntity<object> bpo => Equals(bpo),
-    string s => Type is BasicType.String && (Value as string)!.Equals(s, SCO),
-    bool b when Value is IConvertible ic => Type == BasicType.Boolean && b == ic.ToBoolean(CIIC),
-    IConvertible d when Value is IConvertible iconv => Type is BasicType.Number && d.ToDecimal(CIIC) == iconv.ToDecimal(CIIC),
+    IParsedEntity bpo => Equals(bpo),
+    string s => Type is T.String && (Value as string)!.Equals(s, SCO),
+    bool b when Value is IConvertible ic => Type == T.Boolean && b == ic.ToBoolean(CIIC),
+    IConvertible d when Value is IConvertible iconv => Type is T.Number && d.ToDecimal(CIIC) == iconv.ToDecimal(CIIC),
     _ => false
   };
   public override int GetHashCode () => Value?.GetHashCode() ?? 0;
-  public override string ToString () => Type + ": " + Value + $"(From: \"{Origin}\")";
+  public override string ToString () => Type + ": " + Value + $"(From: \"{Origin ?? "<null>"}\")";
 }
-
+/*
 /// <summary>A basic json style dictionary.</summary>
-public class BasicParsedObject : BasicParsedEntity<object>
+public class BasicParsedJSONObject : BasicParsedEntity
 {
+  public override T Type => T.Object;
 
-  public void StoreValue (object? value)
-  {
-    Value = value switch
-    {
-      null => null,
-      decimal => value,
-      int => value,
-      string s => Parse().Value,
-      bool => value,
-      KeyValuePair<string, object> kvp => ParseObject([kvp]),
-      IEnumerable<KeyValuePair<string, object>> dic => ParseObject(dic),
-      IEnumerable<object> arr => ParseArray(arr),
-      _ => "<error>"
-    };
-
-    Type = Value switch
-    {
-      "<error>" => BasicType.Invalid,
-      null => BasicType.Null,
-      decimal => BasicType.Number,
-      int => BasicType.Number,
-      string => BasicType.String,
-      bool => BasicType.Boolean,
-      Dictionary<string, BasicParsedObject> => BasicType.Object,
-      Collection<BasicParsedObject> => BasicType.Array,
-      _ => BasicType.Invalid
-    };
-  }
-  private static Collection<BasicParsedObject> ParseArray (IEnumerable<object> objects)
-  {
-    Collection<BasicParsedObject> result = [];
-    foreach (object obj in objects)
-    {
-      if (obj is BasicParsedObject bpo)
-      {
-        result.Add(bpo);
-      }
-      else
-      {
-        BasicParsedObject item = new();
-        item.StoreValue(obj);
-        result.Add(item);
-      }
-    }
-    return result;
-  }
-  private static BasicParsedObject ParseItem (object obj)
-  {
-    if (obj is BasicParsedObject bpo)
-    {
-      return bpo;
-    }
-    else
-    {
-      BasicParsedObject item = new();
-      item.StoreValue(obj);
-      return item;
-    }
-  }
-  private static KeyValuePair<string, BasicParsedObject> ParseItem (KeyValuePair<string, object> obj)
-  {
-    string key = obj.Key;
-    object value = obj.Value;
-    return new(key, ParseItem(value));
-  }
-  private static Dictionary<string, BasicParsedObject> ParseObject (IEnumerable<KeyValuePair<string, object>> objects) =>
-    objects.Select(ParseItem).ToDictionary();
-  public override string ToString ()
-  {
-    return Type switch
-    {
-      BasicType.Null => "null",
-      BasicType.String => $"\"{Value}\"",
-      BasicType.Number => $"{Value}",
-      BasicType.Array => ToString_Array(),
-      BasicType.Object => ToString_Object(),
-      BasicType.Boolean => $"{Value}",
-      BasicType.Invalid => "<error>",
-      BasicType.Absent => "null",
-      _ => "undefined"
-    };
-  }
   private string ToString_Object ()
   {
     if (Value is not IDictionary<string, BasicParsedObject> dic)
@@ -240,13 +251,14 @@ public class BasicParsedObject : BasicParsedEntity<object>
 
     return result + end;
   }
+
   private string ToString_Array ()
   {
     string result = "[";
     const string end = "]";
     bool firstProp = true;
 
-    foreach (BasicParsedObject item in Value.AsCollection<BasicParsedObject>())
+    foreach (BasicParsedEntity item in Value.AsCollection<BasicParsedEntity>())
     {
       if (!firstProp) result += ",";
       firstProp = false;
@@ -255,36 +267,18 @@ public class BasicParsedObject : BasicParsedEntity<object>
 
     return result + end;
   }
-  public BasicParsedObject ()
-  {
-    Type = BasicType.Null;
-  }
-  public BasicParsedObject (string initial)
-  {
-    Origin = initial;
-    Parse();
-    Type = check.Type;
-    Value = check.Value;
-  }
-  public BasicParsedObject (BasicParsedEntity<object> initial)
-  {
-    Origin = initial.Origin;
-    Type = initial.Type;
-    Value = initial.Value;
-  }
 
-  public BasicParsedObject this[string key]
+  public BasicParsedEntity this[string key]
   {
-    get => Value is Dictionary<string, BasicParsedObject> dic && dic.TryGetValue(key, out BasicParsedObject? value) ? value : new(Absent);
+    get => Value is Dictionary<string, BasicParsedEntity> dic && dic.TryGetValue(key, out BasicParsedEntity? value) ? value : new(T.Absent);
     set
     {
-      BasicParsedObject item = new();
-      item.StoreValue(value);
-      if (Value is IDictionary<string, BasicParsedObject> dic)
+      BasicParsedEntity item = new(value);
+      if (Value is IDictionary<string, BasicParsedEntity> dic)
       {
         dic[key] = item;
       }
-      else if (Value is IList<BasicParsedObject> list)
+      else if (Value is IList<BasicParsedEntity> list)
       {
         list[int.Parse(key, CIIC)] = item;
       }
@@ -294,7 +288,7 @@ public class BasicParsedObject : BasicParsedEntity<object>
       }
     }
   }
-
+  /*
   public BasicParsedObject this[int index]
   {
     get
@@ -318,38 +312,41 @@ public class BasicParsedObject : BasicParsedEntity<object>
       }
     }
   }
-
+  
   public override bool Equals (object? obj)
   {
     if (obj is null)
       return false;
 
-    if (obj is BasicParsedEntity<object> bpo)
+    if (obj is BasicParsedEntity bpo)
       return Equals(bpo);
 
     if (obj is string s)
-      return Type is BasicType.String && (Value as string)!.Equals(s, SCO);
+      return Type is T.String && (Value as string)!.Equals(s, SCO);
 
     if (obj is decimal d)
-      return Type is BasicType.Number && (decimal) Value! == d;
+      return Type is T.Number && (decimal) Value! == d;
 
     return false;
   }
 }
-
+*/
 /// <summary>A basic attribute/element dictionary.</summary>
 /// <remarks>This will soon support mixed content.</remarks>
-public class BasicParsedElement : BasicParsedEntity<Collection<BasicParsedElement>>, IReadOnlyCollection<BasicParsedElement>
+public class BasicParsedElement : BasicParsedEntity, IReadOnlyCollection<BasicParsedElement>
 {
   public bool HasAttributes => Attributes.Count != 0;
   public bool HasBody => Elements.Count != 0 || Origin is not null;
+
   /// <summary>The element name.</summary>
   public string Name { get; }
-  public override Collection<BasicParsedElement>? Value => Elements;
+
   /// <summary>The attributes of this element.</summary>
   public Dictionary<string, string> Attributes { get; } = [];
+
   /// <summary>The child elements of this element.</summary>
-  public Collection<BasicParsedElement> Elements { get; } = [];
+  public Collection<BasicParsedElement> Elements => Value as Collection<BasicParsedElement> ?? [];
+
   /// <summary>The value if it contains a value not elements.</summary>
 
   public int Count => Elements.Count;
@@ -389,6 +386,7 @@ public class BasicParsedElement : BasicParsedEntity<Collection<BasicParsedElemen
   {
     get => Elements.Where(e => e.Name.Is(ofType)).At(index);
   }
+
   public IEnumerable<BasicParsedElement> this[string ofType]
   {
     get => Elements.Where(e => e.Name.Is(ofType));
@@ -400,5 +398,22 @@ public class BasicParsedElement : BasicParsedEntity<Collection<BasicParsedElemen
   public string GetAttribute (string attribute) => Attributes.TryGetValue(attribute, out string? value) ? value : SE;
 
   public IEnumerator<BasicParsedElement> GetEnumerator () => Elements.GetEnumerator();
+
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }
+/*
+internal class PieceData
+{
+  public string TokenType { get; set; }
+  public string PropertyName { get; set; }
+  public Type DataType { get; set; }
+}
+
+internal class TokenPiece : IIndexSortable
+{
+  public int Index { get; set; }
+  public string Value { get; }
+  public string TokenType { get; }
+  public PieceData Data { get; }
+}
+*/
