@@ -255,7 +255,7 @@
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.acs_foolib">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\ACS\FooLib.acs.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\ACS\FooLib.acs.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.acs_rpglevel">
@@ -270,42 +270,42 @@
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.acs_sample">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\ACS\sample.acs.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\ACS\sample.acs.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.dec_mkii">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\Decorate\Weapon_MkII.dec.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\Decorate\Weapon_MkII.dec.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.mapinfo_common">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\MapInfo\mapinfo.txt.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\MapInfo\mapinfo.txt.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.sndinfo_test">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\SndInfo\sndinfo.txt.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\SndInfo\sndinfo.txt.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.udmf_map00">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\UDMF\map00.udmf.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\UDMF\map00.udmf.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.udmf_sample">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\UDMF\sample.udmf.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\UDMF\sample.udmf.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.xml_acs">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\ACS\ACS Rules.xml.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\ACS\ACS Rules.xml.
             </summary>
         </member>
         <member name="P:Specification.ZDoom.Properties.Resources.zs_demon">
             <summary>
-              Looks up a localized string similar to ParserLib\Specification.ZDoom\ZScript\demon.zs.
+              Looks up a localized string similar to ParserLib\Specification.ZDoom\Samples\ZScript\demon.zs.
             </summary>
         </member>
     </members>

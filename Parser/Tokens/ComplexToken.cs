@@ -35,10 +35,9 @@ public sealed class ComplexToken : IToken, IPrintable
   public string Content => Children.Select(i => i.Content).TextJoin(" ");
   public IReadOnlyCollection<TokenRef> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
-  public bool HasType => Type.IsNotEmpty && !Type.Like("None");
-  public bool Exempt { get; set; }
+  public bool HasType => Type.IsNotEmpty && !Type.Like("None") && !Type.Like("-");
   public IToken? Parent { get; set; }
-  public IList<IToken> Children { get; set; } = [];
+  public IList<IToken> Children { get; init; } = [];
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
   public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
@@ -155,7 +154,6 @@ public sealed class ComplexToken : IToken, IPrintable
   }
   public void Print (int indent)
   {
-    DebugIn("ComplexToken", "Print");
     string ind_str = new(' ', indent);
     LogPart(MsgClass.Forced, Type);
     EachPart(kvp =>
@@ -169,7 +167,6 @@ public sealed class ComplexToken : IToken, IPrintable
         tok.Print(indent + 2);
       }
     });
-    DebugOut();
   }
   public string ToString (int indent)
   {
@@ -198,15 +195,11 @@ public sealed class ComplexToken : IToken, IPrintable
     return temp;
   }
 
-  public object Clone ()
+  public object Clone () => new ComplexToken()
   {
-    ComplexToken clone = new()
-    {
-      Spec = Spec,
-      TokenPieces = [.. _token_pieces],
-      Children = [.. Children],
-      Type = Type,
-    };
-    return clone;
-  }
+    Spec = Spec,
+    TokenPieces = [.. _token_pieces],
+    Children = [.. Children],
+    Type = Type,
+  };
 }

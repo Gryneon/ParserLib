@@ -55,6 +55,9 @@ public sealed class TokenFactory
   private static void DebugLog (string msg) => Log(MC.Debug, msg, nameof(TokenFactory));
   private static void WarnLog (string msg) => Log(MC.Warning, msg, nameof(TokenFactory));
   private static void ErrorLog (string msg) => Log(MC.Error, msg, nameof(TokenFactory));
+  private static void ActionInvalidLog () => ErrorLog("Error: Invalid rule. Skipping rule.");
+  private static void ActionCompetedLog () => DebugLog("Already ran competition. Skipping rule.");
+  private static void ActionBadLog () => WarnLog("Warning: Bad type defined. Skipping rule.");
   #endregion
   #region Private Static Methods
   private static string GetRuleRegex (TokenRule rule, int? index = null)
@@ -252,9 +255,6 @@ public sealed class TokenFactory
     _competed = true;
     DebugOut();
   }
-  private void ActionInvalidLog () => ErrorLog("Error: Invalid rule. Skipping rule.");
-  private void ActionCompetedLog () => DebugLog("Already ran competition. Skipping rule.");
-  private void ActionBadLog () => WarnLog("Warning: Bad type defined. Skipping rule.");
   #region Public Methods
   [MemberNotNull(nameof(_spec), nameof(_default_rule))]
   public void SetSpec (Spec spec)
@@ -275,10 +275,16 @@ public sealed class TokenFactory
     {
       _currentRule = rule;
 
-      try { RuleAction.Invoke(); } catch (OperationException e) { LogException(e); throw new OperationException("Error found.", e); }
+      try
+      {
+        RuleAction.Invoke();
+      }
+      catch (OperationException e)
+      {
+        LogException(e); throw new OperationException("Error found.", e);
+      }
       _result.SortByIndex();
     }
-    _result.SortByIndex();
     DebugOut();
     return [.. _result];
   }

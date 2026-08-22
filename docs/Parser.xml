@@ -861,8 +861,8 @@
             <param name="tokens">The tokens to add to the list.</param>
         </member>
         <member name="P:Parser.Tokens.TokenCollection.Item(System.Int32)">
-            <summary>Gets or sets the token at a given index.</summary>
-            <param name="index">The index to modify or retrieve.</param>
+            <summary>Gets the token at a given index.</summary>
+            <param name="index">The index to retrieve.</param>
             <returns>A token at the specified index.</returns>
         </member>
         <member name="M:Parser.Tokens.TokenCollection.Remove(System.Int32,System.Int32)">

@@ -197,6 +197,7 @@ internal static class Program
       }
       catch (IOException)
       {
+        Log(MsgClass.Error, "The path at \"" + FinishPath(file) + "\" is not valid.", "Program");
         data = "";
       }
       status = Parser.StepThrough(data);

@@ -2,7 +2,7 @@
 
 namespace Parser.Tokens;
 
-public class Token : IToken, IPrintable
+public sealed class Token : IToken, IPrintable
 {
   public TokenRef? AssignTo { get; set; }
   public required Spec Spec { get; init; }
@@ -13,8 +13,7 @@ public class Token : IToken, IPrintable
   public int Index { get; init; }
   public string Type { get => field.IsEmpty ? "None" : field; set; } = SE;
   public IToken? Parent { get; set; }
-  public IList<IToken> Children { get; set; } = [];
-  public virtual int Count => Children.Count;
+  public IList<IToken> Children { get; } = [];
   public bool HasType => Type is not null;
   int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
   public override string ToString () => $"{Type} : {Content}";
@@ -23,25 +22,12 @@ public class Token : IToken, IPrintable
   {
     LogPart(MsgClass.Forced, $"{Type}");
     LogPart(MsgClass.BlueInfo, " : ");
-    if (Count is 0 or 1)
-    {
-      LogPart(MsgClass.GreenInfo, ((IToken) this).ContentNoNewLine);
-    }
-    else
-    {
-      foreach (IToken t in Children)
-      {
-        NewLine();
-        LogPart(MsgClass.Forced, new(' ', indent));
-        t.Print(indent + IPrintable.TabSize);
-      }
-    }
+    LogPart(MsgClass.GreenInfo, ((IToken) this).ContentNoNewLine);
   }
   public override bool Equals (object? obj) => obj is IToken rt && Equals(rt);
   public override int GetHashCode () => HashCode.Combine(Content, Index, Type);
   public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
-
-  public virtual bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
+  public bool Equals (IToken? other) => GetHashCode() == other?.GetHashCode();
 
   public static bool operator == (Token left, IToken right) => left is null ? right is null : left.Equals(right);
   public static bool operator != (Token left, IToken right) => !(left == right);

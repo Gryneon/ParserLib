@@ -2,7 +2,11 @@
 
 using System.Xml.Linq;
 
-using T = Common.BasicType;
+using Catharsis.Commons;
+
+using static Common.EntityFactory.LocVal;
+
+using BT = Common.BasicType;
 
 namespace Common;
 
@@ -46,72 +50,207 @@ public enum BasicType
 
 public static class BasicTypeExt
 {
-  extension(T type)
+  extension(BT type)
   {
-    public bool IsPrimitive => type is T.Number or T.String or T.Boolean;
-    public bool IsDictionary => type is T.Object or T.Element;
-    public bool IsCollection => type is T.Array or T.Element or T.Object;
+    public bool IsPrimitive => type is BT.Number or BT.String or BT.Boolean;
+    public bool IsDictionary => type is BT.Object or BT.Element;
+    public bool IsCollection => type is BT.Array or BT.Element or BT.Object;
   }
 }
 
 public interface IParsedEntity
 {
-  string? Origin { get; set; }
-  T Type { get; }
-  object? Value { get; set; }
-
+  string? Origin { get; }
+  BT Type { get; }
+  IParsedEntity? Parent { get; }
   bool Equals (IParsedEntity? other);
   bool Equals (object? obj);
   int GetHashCode ();
   string ToString ();
 }
 
-public class BasicParsedEntity : IParsedEntity
+public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>
 {
-  public string? Origin { get; set; }
-  public object? Value { get; set; }
-  public virtual T Type { get; set; }
-  public bool IsError => Type is T.Invalid;
-  public IParsedEntity? Parent { get; set; }
+  public virtual required string? Origin { get; init; }
+  public abstract BT Type { get; }
+  public IParsedEntity? Parent { get; init; }
+  public abstract bool Equals (IParsedEntity? other);
+  public abstract override string ToString ();
+}
 
-  public BasicParsedEntity () { }
+public class StringEntity : ParsedEntity
+{
+  public required string Value { get; init; }
+  public override BT Type => BT.String;
+
+  public override bool Equals (IParsedEntity? other) => other is StringEntity entity && Value.Equals(entity.Value, SCO);
+  public override string ToString () => $"\"{Value}\"";
+}
+public class NumberEntity : ParsedEntity
+{
+  public override BT Type => BT.Number;
+  public override string ToString () => $"{Value}";
+}
+public class NullEntity : ParsedEntity
+{
+  public override BT Type => BT.Null;
+  public override string ToString () => "null";
+}
+public class ElementEntity : ParsedEntity
+{
+  private readonly Collection<IParsedEntity> _attributes = [];
+  private readonly Collection<IParsedEntity> _children = [];
+  public ReadOnlyCollection<IParsedEntity> Attributes
+  {
+    get => [.. _attributes];
+    init => _attributes.AddRange(value);
+  }
+  public ReadOnlyCollection<IParsedEntity> Children
+  {
+    get => [.. _children];
+    init => _children.AddRange(value);
+  }
+  public required string Name { get; init; }
+  public bool IsHeader { get; init; }
+  public override BT Type => BT.Null;
+  public override string ToString ()
+  {
+    string attrs = Attributes.Select(child => child.ToString()).TextJoin(" ");
+    string children = Children.Select(child => child.ToString()).TextJoin(Chars.LFs);
+
+    if (IsHeader)
+      return $"<?xml {attrs}?>";
+
+    string elem = $"<{Name} {attrs}";
+
+    if (Children.Count == 0)
+    {
+      return elem + " />";
+    }
+
+    return elem + ">" + children + $"</{Name}>";
+  }
+  public void AddAttribute (IParsedEntity attribute)
+  {
+    _attributes.Add(attribute);
+  }
+  public void AddChild (IParsedEntity child)
+  {
+    _children.Add(child);
+  }
+}
+
+public static class EntityFactory
+{
+  private static readonly IParsedEntity Current;
+  private static int Cursor;
+  private static readonly string Construct = SE;
+  private static string? Origin;
+  private static readonly LocVal Location;
+  private static char ThisChar => Origin is null ? '\0' : Origin[Cursor];
+
+  internal enum LocVal
+  {
+    AtStart,
+    Outside,
+    InElementOpen,
+    InsideAnElement,
+    InElementClose,
+    AtEnd,
+  }
+
+  public static IParsedEntity ProduceAll (string content, BT type)
+  {
+    if (type == BT.Null)
+      return new NullEntity() { Origin = content };
+    if (type == BT.Element)
+    {
+      string xml_regex = """
+
+      (?'element'<
+      (?'header'\?)?
+
+      (?'close'\s*\/)?
+      \s*
+      ((?'ns'\w+):)?
+      (?'name'\w+)
+
+      (?:
+      \s+     (?'attribute'((?'attrns'\w+):)?(?'attrname'\w+)     \s*       =      \s*    ""(?'attrval'([^\n""\\]|\\[^\n])*)"")
+      )*
+      (?'single'\s*\/)?
+      \s*
+      (\k'header')?
+      >)|(?'ws'\s+)|(?'content'[^<]+?(?=\s*<))
+
+      """;
+      MatchCollection openelems = Regex.Matches(content, xml_regex);
+      while (1 < 2)
+      {
+        if (ThisChar is '<')
+        {
+          switch (Location)
+          {
+            case AtStart or Outside:
+              // Setup root object
+              break;
+            case InElementOpen or InElementClose:
+              throw new InvalidOperationException("");
+            case InsideAnElement:
+              // Setup new element
+              break;
+            case AtEnd:
+              throw new InvalidOperationException("");
+          }
+          Cursor++;
+
+        }
+        if (ThisChar is '<')
+        {
+          IndexOfElementOpen = cursor;
+        }
+      }
+    }
+    new IParsedEntity
+  }
+
   public BasicParsedEntity (string origin)
   {
     Origin = origin;
 
     if (Origin.StartsWithAny(["\"", "\'"], SCO))
     {
-      Type = T.String;
+      Type = BT.String;
       Value = Origin[1..^1];
     }
     else if (DateTime.TryParse(Origin, CIIC, out DateTime dt))
     {
-      Type = T.String;
+      Type = BT.String;
       Value = dt.ToString("yyyy-MM-dd HH:mm", CIIC);
     }
     else if (decimal.TryParse(Origin, out decimal d))
     {
-      Type = T.Number;
+      Type = BT.Number;
       Value = d;
     }
     else if (bool.TryParse(Origin, out bool b))
     {
-      Type = T.Number;
+      Type = BT.Number;
       Value = b;
     }
     else if (Origin.Equals("null", SCO))
     {
-      Type = T.Null;
+      Type = BT.Null;
       Value = null;
     }
     else if (Origin.Length == 0)
     {
-      Type = T.Absent;
+      Type = BT.Absent;
       Value = SE;
     }
     else
     {
-      Type = T.Invalid;
+      Type = BT.Invalid;
       Value = default;
     }
   }
@@ -121,62 +260,62 @@ public class BasicParsedEntity : IParsedEntity
     {
       case string s when s.StartsWithAny(["'", "\""]):
         Value = s[1..^1];
-        Type = T.String;
+        Type = BT.String;
         Origin = s;
         break;
       case decimal d:
         Value = d;
-        Type = T.Number;
+        Type = BT.Number;
         Origin = $"{d}";
         break;
       case bool b:
         Value = b;
-        Type = T.Boolean;
+        Type = BT.Boolean;
         Origin = $"{b}";
         break;
       case IEnumerable<KeyValuePair<string, object>> kvps:
         Value = ParseObject(kvps);
         Origin = null;
-        Type = T.Object;
+        Type = BT.Object;
         break;
       case IEnumerable<object> list:
         Value = ParseArray(list);
         Origin = null;
-        Type = T.Array;
+        Type = BT.Array;
         break;
     }
   }
-  public BasicParsedEntity (T type, string? origin = null)
+  public BasicParsedEntity (BT type, string? origin = null)
   {
     Origin = origin;
 
     switch (type)
     {
-      case T.Null when origin.Is("null") || origin is null:
+      case BT.Null when origin.Is("null") || origin is null:
         Value = null;
         Type = type;
         break;
-      case T.String when origin?.StartsWithAny(["'", "\""]) == true:
+      case BT.String when origin?.StartsWithAny(["'", "\""]) == true:
         Value = origin[1..^1];
         Type = type;
         break;
-      case T.Boolean when bool.TryParse(origin, out bool val):
+      case BT.Boolean when bool.TryParse(origin, out bool val):
         Value = val;
         Type = type;
         break;
-      case T.Number when decimal.TryParse(origin, out decimal dec):
+      case BT.Number when decimal.TryParse(origin, out decimal dec):
         Value = dec;
         Type = type;
         break;
-      case T.String or T.LooseContent when origin?.Length > 0:
+      case BT.String or BT.LooseContent when origin?.Length > 0:
         Value = origin;
-        Type = T.LooseContent;
+        Type = BT.LooseContent;
         break;
-      case T.Array or T.Object or T.Element:
+      case BT.Array or BT.Object or BT.Element:
         throw new InvalidOperationException("Invalid type, assembly of primitives comes first.");
-      case T.Invalid:
+      case BT.Invalid:
         throw new InvalidOperationException("ParseValue reported that the object was Invalid.");
-      case T.Absent:
+      case BT.Absent:
         Value = SE;
         Type = type;
         break;
@@ -217,9 +356,9 @@ public class BasicParsedEntity : IParsedEntity
   {
     null => false,
     IParsedEntity bpo => Equals(bpo),
-    string s => Type is T.String && (Value as string)!.Equals(s, SCO),
-    bool b when Value is IConvertible ic => Type == T.Boolean && b == ic.ToBoolean(CIIC),
-    IConvertible d when Value is IConvertible iconv => Type is T.Number && d.ToDecimal(CIIC) == iconv.ToDecimal(CIIC),
+    string s => Type is BT.String && (Value as string)!.Equals(s, SCO),
+    bool b when Value is IConvertible ic => Type == BT.Boolean && b == ic.ToBoolean(CIIC),
+    IConvertible d when Value is IConvertible iconv => Type is BT.Number && d.ToDecimal(CIIC) == iconv.ToDecimal(CIIC),
     _ => false
   };
   public override int GetHashCode () => Value?.GetHashCode() ?? 0;

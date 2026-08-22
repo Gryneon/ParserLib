@@ -1,6 +1,6 @@
 namespace Parser.Ops.Text;
 
-public class EncapsulateOperation<TParent, TChild> : Operation where TParent : class, ICanAddChildren<TChild>, new()
+public class EncapsulateOperation<TParent, TChild> : Operation where TParent : class, ICollection<TChild>, new()
 {
   public required string InputKey { get; init; }
   public required string OutputKey { get; init; }
