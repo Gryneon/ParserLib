@@ -41,8 +41,9 @@ public static class SpecInstructionParser
 
     XDocument doc = XDocument.Load(path);
     XElement root = doc.Root ?? throw Err.ThrowNoSpec("Spec XML is not good.");
-    BasicParsedElement bRoot = new(root);
-    BasicParsedElement prefabs = bRoot["Prefabs"].At(0);
+    XMLDocumentEntity aRoot = (XMLDocumentEntity) EntityFactory.FromXElement(root);
+    ElementEntity bRoot = (ElementEntity) (aRoot.RootNode ?? throw new InvalidDataException("Root node should not be null."));
+    ElementEntity prefabs = bRoot.Children.OfType<ElementEntity>().Where(i => i.Name == "Prefabs").At(0);
 
     if (!bRoot.Name.Is("Definition"))
     {
@@ -51,10 +52,10 @@ public static class SpecInstructionParser
 
     if (prefabs is not null)
     {
-      IEnumerable<BasicParsedElement> prefab_tokenRules_list = prefabs["TokenRule"];
-      IEnumerable<BasicParsedElement> prefab_tokenLookups_list = prefabs["TokenLookup"];
-      IEnumerable<BasicParsedElement> prefab_tokenGroups_list = prefabs["GroupTokenRule"];
-      IEnumerable<BasicParsedElement> prefab_constructs_list = prefabs["Construct"];
+      IEnumerable<ElementEntity> prefab_tokenRules_list = prefabs.Children.OfType<ElementEntity>().Where(i => i.Name == "TokenRule");
+      IEnumerable<ElementEntity> prefab_tokenLookups_list = prefabs.Children.OfType<ElementEntity>().Where(i => i.Name == "TokenLookup");
+      IEnumerable<ElementEntity> prefab_tokenGroups_list = prefabs.Children.OfType<ElementEntity>().Where(i => i.Name == "GroupTokenRule");
+      IEnumerable<ElementEntity> prefab_constructs_list = prefabs.Children.OfType<ElementEntity>().Where(i => i.Name == "Construct");
     }
 
     foreach (XElement specxml in root.Elements(NS + "Spec"))

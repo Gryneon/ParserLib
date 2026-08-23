@@ -299,6 +299,9 @@
         <member name="P:Parser.OpStatusExtensions.&lt;G&gt;$F6DF33A3E7BC049BA485872BF96B2A4E.IsPass">
             <summary>Checks a status for success.</summary>
         </member>
+        <member name="P:Parser.Ops.AddItemOperation.ParameterKeys">
+            <summary>A dictionary of property names and data keys to pull their value from.</summary>
+        </member>
         <member name="T:Parser.Ops.DebugPrintKeyOperation">
             <summary>Prints a key that implements <see cref="T:Common.IPrintable"/>.</summary>
             <remarks>If the key does not implement <see cref="T:Common.IPrintable"/>, nothing happens, and the operation returns <see cref="F:Parser.OpStatus.Skipped"/>.</remarks>

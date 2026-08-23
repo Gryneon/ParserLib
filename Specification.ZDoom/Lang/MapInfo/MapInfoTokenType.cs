@@ -42,4 +42,5 @@ public enum MapInfoTokenType
   TextScreen,
   Wiper,
   Cutscene,
+  Property,
 }

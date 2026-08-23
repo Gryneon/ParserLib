@@ -19,7 +19,7 @@
             <summary>Non-quoted numeric data.</summary>
         </member>
         <member name="F:Common.BasicType.Array">
-            <summary>An array of <see cref="T:Common.BasicParsedEntity"/> items.</summary>
+            <summary>An array of <see cref="!:BasicParsedEntity"/> items.</summary>
         </member>
         <member name="F:Common.BasicType.Object">
             <summary>A basic dictionary.</summary>
@@ -42,32 +42,18 @@
         <member name="F:Common.BasicType.Element">
             <summary>A complex object that stores a dictionary of values as well as a contained value.</summary>
         </member>
-        <member name="T:Common.BasicParsedElement">
-            <summary>A basic attribute/element dictionary.</summary>
-            <remarks>This will soon support mixed content.</remarks>
+        <member name="M:Common.IParsedEntity.SetParent(Common.IParsedEntity)">
+            <summary>Sets the parent property after the type has been contructed.</summary>
+            <param name="parent">The parent or encompassing object.</param>
         </member>
-        <member name="P:Common.BasicParsedElement.Name">
-            <summary>The element name.</summary>
+        <member name="T:Common.XMLDocumentEntity">
+            <summary>An entity representing an xml document.</summary>
         </member>
-        <member name="P:Common.BasicParsedElement.Attributes">
-            <summary>The attributes of this element.</summary>
+        <member name="P:Common.XMLDocumentEntity.Content">
+            <summary>The entire text contents of the file.</summary>
         </member>
-        <member name="P:Common.BasicParsedElement.Elements">
-            <summary>The child elements of this element.</summary>
-        </member>
-        <member name="P:Common.BasicParsedElement.Count">
-            <summary>The value if it contains a value not elements.</summary>
-        </member>
-        <member name="P:Common.BasicParsedElement.Item(System.Int32)">
-            <summary>Gets the element at the index.</summary>
-            <param name="index">The index to get the element from.</param>
-            <returns>The element at the given index.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException">The index is negative or is too large.</exception>
-        </member>
-        <member name="M:Common.BasicParsedElement.GetAttribute(System.String)">
-            <summary>Looks up and retrieves the attribute value as a <see langword="string"/>.</summary>
-            <param name="attribute">The attribute to lookup.</param>
-            <returns>The attribute value as a <see langword="string"/>, or an empty string if there is no attribute of that name.</returns>
+        <member name="T:Common.NumberEntity">
+            <summary>An entity representing a number or decimal.</summary>
         </member>
         <member name="T:Common.Chars">
             <summary>Static class of common character combinations.</summary>

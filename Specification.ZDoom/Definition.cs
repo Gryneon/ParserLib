@@ -153,7 +153,9 @@ public static class Definition
       IfN(FName | Is, "zmapinfo")],
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },
-      new DebugToStringOperation { InputKey = "tokens" }
+      new DebugPrintKeyOperation { InputKey = "tokens" },
+      new TokenAssembleOperation { InputKey = "tokens", OutputKey = "tokens_assembled" },
+      new DebugPrintKeyOperation { InputKey = "tokens_assembled" },
     ],
     RxOpt = ROIC | ROEC | ROML,
     IsTextFile = true,
@@ -163,19 +165,24 @@ public static class Definition
       s_cString,
       s_cLineComment,
       s_cBlkComment,
+      .. TokenRule.MakeSingleCharRules("{}()=;,", RT.TokenExact, MT.Op),
       .. TokenRule.MakeWordMatchRules(true,
         MT.Doomednums, MT.AddDefaultMap, MT.GameInfo,
         MT.Skill, MT.Map, MT.DamageType, MT.Episode,
         MT.Cluster, MT.Include, MT.Intermission,
         MT.Cast, MT.Fader, MT.GotoTitle, MT.Image,
         MT.Scroller, MT.TextScreen, MT.Wiper, MT.Cutscene),
-      new (RT.TokenMatch, MT.PropertyName, "Background2?|Draw(Conditional)?|Music|Sound|Time|Cast(Class|Name)|AttackSound|FadeType|InitialDelay|Scroll(Direction|Time)|WipeType"),
+      new (RT.TokenMatch, MT.PropertyName, @"\b(Background2?|Draw(Conditional)?|Music|Sound|Time|Cast(Class|Name)|AttackSound|FadeType|InitialDelay|Scroll(Direction|Time)|WipeType)\b | \b(\d+|\w+)\b(?=\s*=)"),
       s_int,
-      s_dec
+      s_dec,
+      new (RT.TokenMatch, MT.Name, @"\b\w+\b"),
+    ],
+    GroupTokenRules = [
+      new (MT.Property, "n:PropertyName x:Op{=} v:Value xo:Op{,} vo:Value xo:Op{,} vo:value")
     ],
     SC = SCOIC,
     TokenCompatLookup = {
-      [MT.Value] = [MT.Int, MT.Dec, MT.String, MT.Char, MT.Bool],
+      [MT.Value] = [MT.Int, MT.Dec, MT.String, MT.Char, MT.Bool, MT.Name],
       [MT.String] = [MT.LangRef],
       [MT.Dec] = [MT.Int]
     },
