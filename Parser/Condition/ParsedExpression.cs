@@ -224,6 +224,16 @@ public class ParsedExpression : IExpression
     return null;
   }
 
+  protected enum OoOp
+  {
+    Paren,
+    Exp,
+    Mult,
+    Add,
+    And,
+    Or,
+  }
+
   /// <summary>
   /// Evaluate the expression.
   /// </summary>

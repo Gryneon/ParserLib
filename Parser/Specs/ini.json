@@ -16,8 +16,7 @@
       "inf"
     ]
   ],
-  "Tokens" :
-  {
+  "Tokens": {
     // Options Include:
     //   DotAsNewLine
     //   RightToLeft
@@ -33,11 +32,9 @@
     // use "-" for "None" or omit type.
     // regex extends from after whitespace following type until the first line break
     // UNLESS the next line starts with a "=>" sequence
-    // You Must use Regex Comments with (?#Comment)
     // Syntax:
     //   
-    "Rules" :
-    [
+    "Rules": [
       {
         "rule": "TokenComment",
         "type": "-",
@@ -89,7 +86,7 @@
     // They actively update the hierarchy, so they must define a condition to execute on.
     // EVERYTHING TOP-LEVEL must be constructed or discarded
     // Anything not top-level and not constructed is automatically discarded
-    "Constructs": [
+    "Constructs": {
       // Condition parses like the evaluate operation.
       //  Ex. [Variables_Go_In_Braces] = "Value"
       //  Ex. [IsBasic] = true
@@ -114,9 +111,8 @@
       //  Collection - List
       //  HashSet - Unique Item List
       //  Dictionary - Unique Keys and Values
-      Construct
-      "Property"
-      {
+
+      "Property": {
         Condition =
         [ TokenType ]
         = "Property"
@@ -129,8 +125,7 @@
         "Value" =
         Value;
       }
-      Construct
-      "Section"
+      Construct "Section"
       {
         Condition =
         [ TokenType ]
@@ -144,6 +139,6 @@
         "Properties" =
         PropertyList;
       }
-    ]
+    }
   }
 }

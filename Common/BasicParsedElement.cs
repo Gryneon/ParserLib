@@ -82,7 +82,7 @@ public class BasicParsedEntity : IEquatable<BasicParsedEntity>
       }
       else if (bool.TryParse(Origin, out bool b))
       {
-        Type = BasicType.Number;
+        Type = BasicType.Boolean;
         Value = b;
       }
       else
@@ -97,8 +97,12 @@ public class BasicParsedEntity : IEquatable<BasicParsedEntity>
     {
       Value = Type switch
       {
-        BasicType.String => MakeString(Origin),
-        BasicType.Number => MakeDecimal(),
+        BasicType.String => Origin.StartsWithAny(["\"", "\'"], SCO) ? Origin[1..^1] : Origin,
+        BasicType.Number => decimal.TryParse(Origin, out decimal d) ? d : default,
+        BasicType.Boolean => bool.TryParse(Origin, out bool b) ? b : default,
+        BasicType.Absent => SE,
+        BasicType.LooseContent => Origin,
+        _ => default,
       };
     }
   }
@@ -124,7 +128,7 @@ public class BasicParsedEntity : IEquatable<BasicParsedEntity>
   public override bool Equals (object? obj) => obj switch
   {
     null => false,
-    BasicParsedEntity<object> bpo => Equals(bpo),
+    BasicParsedEntity bpo => Equals(bpo),
     string s => Type is BasicType.String && (Value as string)!.Equals(s, SCO),
     bool b when Value is IConvertible ic => Type == BasicType.Boolean && b == ic.ToBoolean(CIIC),
     IConvertible d when Value is IConvertible iconv => Type is BasicType.Number && d.ToDecimal(CIIC) == iconv.ToDecimal(CIIC),
@@ -135,7 +139,7 @@ public class BasicParsedEntity : IEquatable<BasicParsedEntity>
 }
 
 /// <summary>A basic json style dictionary.</summary>
-public class BasicParsedObject : BasicParsedEntity<object>
+public class BasicParsedObject : BasicParsedEntity
 {
 
   public void StoreValue (object? value)
@@ -324,7 +328,7 @@ public class BasicParsedObject : BasicParsedEntity<object>
     if (obj is null)
       return false;
 
-    if (obj is BasicParsedEntity<object> bpo)
+    if (obj is BasicParsedEntity bpo)
       return Equals(bpo);
 
     if (obj is string s)
@@ -335,11 +339,16 @@ public class BasicParsedObject : BasicParsedEntity<object>
 
     return false;
   }
+
+  public override int GetHashCode ()
+  {
+    throw new NotImplementedException();
+  }
 }
 
 /// <summary>A basic attribute/element dictionary.</summary>
 /// <remarks>This will soon support mixed content.</remarks>
-public class BasicParsedElement : BasicParsedEntity<Collection<BasicParsedElement>>, IReadOnlyCollection<BasicParsedElement>
+public class BasicParsedElement : BasicParsedEntity, IReadOnlyCollection<BasicParsedElement>
 {
   public bool HasAttributes => Attributes.Count != 0;
   public bool HasBody => Elements.Count != 0 || Origin is not null;

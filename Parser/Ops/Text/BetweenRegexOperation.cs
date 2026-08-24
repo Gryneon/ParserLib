@@ -4,8 +4,8 @@ namespace Parser.Ops.Text;
 
 public class BetweenRegexOperation : Operation
 {
-  protected RxS Assembled => new(@$"(?:{Prefix})(?<keep>[\s\S]*?)(?:{Suffix})");
-  protected Regex OpRegex => new(Assembled);
+  protected RxS Assembled => new(@$"({Prefix})(?<keep>[\s\S]*?)({Suffix})");
+  protected Regex OpRegex => new(Assembled, ROEC | Spec.RxOpt);
   [SS("Regex")]
   public required string Prefix { get; init; }
   [SS("Regex")]
