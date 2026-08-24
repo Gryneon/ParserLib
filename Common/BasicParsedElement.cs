@@ -1,413 +1,555 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
+using System.Data;
 using System.Xml.Linq;
+
+using BT = Common.BasicType;
 
 namespace Common;
 
 /// <summary>The type of object.</summary>
 public enum BasicType
 {
+  /// <summary>Invalid text. Unable to parse.</summary>
+  Invalid = -1,
+  /// <summary>This returns when you try to get a value that doesn't exist.</summary>
+  Absent = 0,
+  /// <summary>This gets removed by the second stage parser.</summary>
+  Placeholder = 2,
+  Document = 3,
+  #region JSON
   /// <summary>The value 'null'.</summary>
+  /// <remarks>JSON <see langword="null"/> value.</remarks>
   Null,
   /// <summary>Quoted text.</summary>
+  /// <remarks>JSON values, JSON keys, XML Attribute Values, INI </remarks>
   String,
   /// <summary>Non-quoted numeric data.</summary>
   Number,
-  /// <summary>An array of <see cref="BasicParsedObject"/> items.</summary>
+  /// <summary>An array of <see cref="IParsedEntity"/> items.</summary>
   Array,
   /// <summary>A basic dictionary.</summary>
   Object,
   /// <summary>A <see langword="true"/> or a <see langword="false"/> stored as 'true' and 'false'.</summary>
   Boolean,
-  /// <summary>Invalid text. Unable to parse.</summary>
-  Invalid,
-  /// <summary>This returns when you try to get a value that doesn't exist.</summary>
-  Absent,
+  #endregion
+  #region XML
   /// <summary>This is the starting and ending whitespace in an element.</summary>
   IgnoredWhitespace,
   /// <summary>This is content within a mixed element.</summary>
-  LooseContent
-}
-
-public union ElementValue : IU
-{
-  public BasicParsedElement Element { get; set; }
+  LooseContent,
+  /// <summary>A complex object that stores attributes, elements, and content.</summary>
+  Element,
+  Attribute,
+  #endregion
 }
 
 public static class BasicTypeExt
 {
-  extension(BasicType type)
+  extension(BT type)
   {
-    public BasicType InitialType => type is BasicType.Absent or BasicType.Null or BasicType.IgnoredWhitespace or BasicType.Invalid ? BasicType.Null : type;
+    public bool IsPrimitive => type is BT.Number or BT.String or BT.Boolean;
+    public bool IsDictionary => type is BT.Object or BT.Element;
+    public bool IsCollection => type is BT.Array or BT.Element or BT.Object;
   }
 }
 
-public class BasicParsedEntity : IEquatable<BasicParsedEntity>
+public interface IParsedEntity
 {
-  internal string? Origin { get; set; }
-  public virtual object? Value { get; set; }
-  public BasicType Type { get; internal set; } = BasicType.Null;
-  public bool IsError => Type is BasicType.Invalid;
+  string? Origin { get; }
+  BT Type { get; }
+  IParsedEntity? Parent { get; }
+  bool Equals(IParsedEntity? other);
+  bool Equals(object? obj);
+  int GetHashCode();
+  string ToString();
+  /// <summary>Sets the parent property after the type has been contructed.</summary>
+  /// <param name="parent">The parent or encompassing object.</param>
+  void SetParent(IParsedEntity parent);
+}
 
-  [MemberNotNull(nameof(Type), nameof(Origin))]
-  protected void Parse ()
+public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>
+{
+  private IParsedEntity? _parent;
+
+  public virtual required string? Origin { get; init; }
+  public abstract BT Type { get; }
+  public IParsedEntity? Parent { get => _parent; init => _parent = value; }
+  public abstract bool Equals(IParsedEntity? other);
+  public abstract override string ToString();
+  public void SetParent(IParsedEntity? parent) => _parent = parent;
+}
+
+public class StringEntity : ParsedEntity
+{
+  public required string Value { get; init; }
+  public override BT Type => BT.String;
+
+  public override bool Equals(IParsedEntity? other) =>
+    other is StringEntity entity && Value.Equals(entity.Value, SCO);
+  public override string ToString() => $"\"{Value}\"";
+}
+/// <summary>An entity representing an xml document.</summary>
+public class XMLDocumentEntity : ParsedEntity
+{
+  /// <summary>The entire text contents of the file.</summary>
+  public required string Content { get; init; }
+  public IParsedEntity? Header { get; protected set; }
+  public IParsedEntity? RootNode { get; protected set; }
+  public override BT Type => BT.Document;
+
+  public override bool Equals(IParsedEntity? other) =>
+    other is XMLDocumentEntity de && Content.Equals(de.Content, SCO);
+  public override string ToString() => Content;
+  public void SetHeader(IParsedEntity? header) => Header = header;
+  public IParsedEntity? SetRoot(IParsedEntity? root) => RootNode = root;
+}
+/// <summary>An entity representing a number or decimal.</summary>
+public class NumberEntity : ParsedEntity
+{
+  public required decimal Value { get; init; }
+  public override BT Type => BT.Number;
+
+  public override bool Equals(IParsedEntity? other) => other is NumberEntity ne && ne.Value == Value;
+  public override string ToString() => $"{Value}";
+}
+public class NullEntity : ParsedEntity
+{
+  public override BT Type => BT.Null;
+
+  public override bool Equals(IParsedEntity? other) => other is NullEntity;
+  public override string ToString() => "null";
+}
+public class AttributeEntity : ParsedEntity
+{
+  public override BT Type => BT.Attribute;
+  public string? Namespace { get; init; }
+  public required string Key { get; init; }
+  public required string Value { get; init; }
+
+  public override bool Equals(IParsedEntity? other) =>
+    other is AttributeEntity ae &&
+    Key.Equals(ae.Key, SCO) &&
+    Value.Equals(ae.Value, SCO) &&
+    (Namespace.IsEmpty && ae.Namespace.IsEmpty || (Namespace?.Equals(ae.Namespace, SCO) == true));
+  public override string ToString() => $"{Key}=\"{Value}\"";
+}
+public class ElementEntity : ParsedEntity
+{
+  private readonly Collection<IParsedEntity> _attributes = [];
+  private readonly Collection<IParsedEntity> _children = [];
+  public ReadOnlyCollection<IParsedEntity> Attributes
   {
-    Type = Type.InitialType;
+    get => [.. _attributes];
+    init => _attributes.AddRange(value);
+  }
+  public ReadOnlyCollection<IParsedEntity> Children
+  {
+    get => [.. _children];
+    init => _children.AddRange(value);
+  }
+  public string? Namespace { get; init; }
+  public required string Name { get; init; }
+  public bool IsHeader { get; init; }
+  public override BT Type => BT.Null;
 
-    if (Origin.IsEmpty)
+  public override string ToString()
+  {
+    string attrs = Attributes.Select(child => child.ToString()).TextJoin(" ");
+    string children = Children.Select(child => child.ToString()).TextJoin(Chars.LFs);
+
+    if (IsHeader)
+      return $"<?xml {attrs}?>";
+
+    string elem = $"<{Name} {attrs}";
+
+    if (Children.Count == 0)
     {
-      Type = BasicType.Absent;
-      Origin = SE;
-      Value = default;
-      return;
+      return elem + " />";
     }
 
-    // Does not have a type but has content.
-    if (Value is null && Type is BasicType.Null)
+    return elem + ">" + children + $"</{Name}>";
+  }
+  public void AddAttribute(IParsedEntity attribute) => _attributes.Add(attribute);
+  public void AddAttributes(IEnumerable<IParsedEntity> attributes) => _attributes.AddRange(attributes);
+  public void AddChild(IParsedEntity child) => _children.Add(child);
+  public void AddChildren(IEnumerable<IParsedEntity> children) => _children.AddRange(children);
+  public override bool Equals(IParsedEntity? other) =>
+    other is ElementEntity ee &&
+    Attributes.SequenceEqual(ee.Attributes) &&
+    Children.SequenceEqual(ee.Children) &&
+    Name.Equals(ee.Name, SCO);
+  public void AssignParent()
+  {
+    foreach (IParsedEntity entity in Children)
     {
-      if (Origin.StartsWithAny(["\"", "\'"], SCO))
-      {
-        Type = BasicType.String;
-        Value = Origin[1..^1];
-      }
-      else if (DateTime.TryParse(Origin, CIIC, out DateTime dt))
-      {
-        Type = BasicType.String;
-        Value = dt.ToString("yyyy-MM-dd HH:mm", CIIC);
-      }
-      else if (decimal.TryParse(Origin, out decimal d))
-      {
-        Type = BasicType.Number;
-        Value = d;
-      }
-      else if (bool.TryParse(Origin, out bool b))
-      {
-        Type = BasicType.Boolean;
-        Value = b;
-      }
-      else
-      {
-        Type = BasicType.Invalid;
-        Value = default;
-      }
+      entity.SetParent(this);
     }
 
-    // Has a type but unparsed.
-    else if (Value is null && Type is not BasicType.Null)
+    foreach (IParsedEntity entity in Attributes)
     {
-      Value = Type switch
-      {
-        BasicType.String => Origin.StartsWithAny(["\"", "\'"], SCO) ? Origin[1..^1] : Origin,
-        BasicType.Number => decimal.TryParse(Origin, out decimal d) ? d : default,
-        BasicType.Boolean => bool.TryParse(Origin, out bool b) ? b : default,
-        BasicType.Absent => SE,
-        BasicType.LooseContent => Origin,
-        _ => default,
-      };
+      entity.SetParent(this);
     }
   }
-  public bool Equals (BasicParsedEntity? other)
+}
+public class ElementClosePlaceholder : ParsedEntity
+{
+  public required string Name { get; init; }
+  public string? Namespace { get; init; }
+  public override BT Type => BT.Placeholder;
+
+  public override bool Equals(IParsedEntity? other) =>
+    other is ElementClosePlaceholder ecp &&
+    Name.Is(ecp.Name) &&
+    (Namespace is null && ecp.Namespace is null || Namespace.Is(ecp.Namespace));
+  public override string ToString() => $"</{Name}>";
+}
+public class ElementOpenPlaceholder : ParsedEntity
+{
+  private readonly Collection<IParsedEntity> _attributes = [];
+
+  public required string Name { get; init; }
+  public ReadOnlyCollection<IParsedEntity> Attributes
   {
-    if (other is null)
-      return false;
-    else if (Value is null && other.Value is not null)
-      return false;
-    else if (Value is not null && other.Value is null)
-      return false;
-    else if (Value is null && other.Value is null)
-      return Type == other.Type;
-    else if (Value is IEnumerable<object> idic && other.Value is IEnumerable<object> odic)
-      return idic.Order().SequenceEqual(odic.Order());
-    else if (Value is not null && other.Value is not null && Value is IConvertible ic && other.Value is IConvertible oc)
-      return Type == other.Type && ic.ToDecimal(CIIC) == oc.ToDecimal(CIIC);
-    else if (Value is not null && other.Value is not null && Value is string istr && other.Value is string ostr)
-      return Type == other.Type && istr.Equals(ostr, SCO);
+    get => [.. _attributes];
+    init => _attributes.AddRange(value);
+  }
+  public string? Namespace { get; init; }
+  public override BT Type => BT.Placeholder;
+
+  public override bool Equals(IParsedEntity? other) =>
+    other is ElementOpenPlaceholder eop &&
+    Name.Is(eop.Name) &&
+    (Namespace is null && eop.Namespace is null || Namespace.Is(eop.Namespace));
+  public override string ToString() => $"</{Name}>";
+
+}
+public class ContentEntity : ParsedEntity
+{
+  public required string Content { get; init; }
+  public override BT Type => BT.LooseContent;
+
+  public override bool Equals(IParsedEntity? other) =>
+    other is ContentEntity ce && Content.Is(ce.Content);
+  public override string ToString() => Content;
+}
+public class WhitespaceEntity : ParsedEntity
+{
+  public required string Content { get; init; }
+  public override BT Type => BT.IgnoredWhitespace;
+
+  public override bool Equals(IParsedEntity? other) =>
+    other is ContentEntity ce && Content.Is(ce.Content);
+  public override string ToString() => Content;
+}
+public class EntityFactory
+{
+  private static XMLDocumentEntity? Document;
+  private static ElementEntity? Current;
+  private static readonly string? Origin;
+
+  /// <summary>JSON Tokenizing Regex</summary>
+  [SS("regex")]
+  private const string JSONRegex =
+    """
+    (?#primitives)
+    (?'key' " (?'keyname'\w+) " (?=\s*[:=])) |
+    (?'strvalue'  (?<=[:=]\s*) " (?'value'([^\\"]|\\.)*) " ) |
+    (?'numvalue'  (?<=[:=]\s*)   (?'value'[0-9.eExXbB]+ )  ) |
+    (?'boolvalue' (?<=[:=]\s*)   (?'value'true|false)      ) |
+    (?'nullvalue' (?<=[:=]\s*)   (?'value'null)            ) |
+    (?#operators)
+    (?'Ao' \[) |
+    (?'Ac' \]) |
+    (?'Bo' \{) |
+    (?'Bc' \}) |
+    (?'Cm' \,) |
+    (?'Eq' [=:]) |
+    (?#commments)
+    (?'comment'   \/\/.* ) |
+    (?'comment'   \/\*([^*]|\*[^/])*\*\/ )
+    """;
+
+  [SS("regex")]
+  private const string XMLRegex =
+    """
+    (?# Element Piece)
+    (?'element'
+      <
+      (?# '?' for header definition)
+      (?'header'\?)?
+      \s*
+      (?'close'\/)?
+      \s*
+      (?# optional namespace)
+      ((?'ns'\w+):)?
+      (?'name'\w+)
+
+      (?# attributes)
+      (
+        \s+
+        (?'attribute'
+          (
+            (?'attrns'\w+)
+            :
+          )?
+          (?'attrname'\w+)
+          \s*
+          =
+          \s*
+          ""(?'attrval'([^\n""\\]|\\[^\n])*)""
+        )
+      )*
+
+      (?'single'\s*\/)?
+      \s*
+      (?# '?' for ending the header definition)
+      (\k'header')?
+      >
+    ) |
+
+    (?# Leading or Trailing Whitespace)
+    (?'ws'(?<=\>)\s+(?=[^<\s])) |
+
+    (?# Leading or Trailing Whitespace)
+    (?'content'(?<=\>\s*)[^<]+?(?=\s*<)) |
+    (?# XML Comment)
+    (?'comment'<!-- ([^-]| -[^-]) -->)
+    """;
+
+  private static Collection<IParsedEntity> ParseAttributes(Match match)
+  {
+    Collection<string> origins = [.. match.Groups["attributes"].Captures.Select(c => c.Value)];
+    Collection<string> keys = [.. match.Groups["attrname"].Captures.Select(c => c.Value)];
+    Collection<string> values = [.. match.Groups["attrval"].Captures.Select(c => c.Value)];
+    int count = origins.Count;
+    if (keys.Count == count && values.Count == count)
+    {
+      Collection<IParsedEntity> attributes = [];
+      for (int i = 0; i < count; i++)
+      {
+        attributes.Add(new AttributeEntity() { Key = keys[i], Value = values[i], Origin = origins[i] });
+      }
+      return attributes;
+    }
     else
-      return false;
+    {
+      throw new InvalidOperationException($"Keys ({keys.Count}) and Values ({values.Count}) do not match Origin Count ({count}).");
+    }
   }
-  public override bool Equals (object? obj) => obj switch
+  private static Collection<IParsedEntity> ParseAttributes(XElement element)
   {
-    null => false,
-    BasicParsedEntity bpo => Equals(bpo),
-    string s => Type is BasicType.String && (Value as string)!.Equals(s, SCO),
-    bool b when Value is IConvertible ic => Type == BasicType.Boolean && b == ic.ToBoolean(CIIC),
-    IConvertible d when Value is IConvertible iconv => Type is BasicType.Number && d.ToDecimal(CIIC) == iconv.ToDecimal(CIIC),
-    _ => false
-  };
-  public override int GetHashCode () => Value?.GetHashCode() ?? 0;
-  public override string ToString () => Type + ": " + Value + $"(From: \"{Origin}\")";
-}
-
-/// <summary>A basic json style dictionary.</summary>
-public class BasicParsedObject : BasicParsedEntity
-{
-
-  public void StoreValue (object? value)
-  {
-    Value = value switch
+    Collection<IParsedEntity> result = [];
+    foreach (XAttribute attr in element.Attributes())
     {
-      null => null,
-      decimal => value,
-      int => value,
-      string s => Parse().Value,
-      bool => value,
-      KeyValuePair<string, object> kvp => ParseObject([kvp]),
-      IEnumerable<KeyValuePair<string, object>> dic => ParseObject(dic),
-      IEnumerable<object> arr => ParseArray(arr),
-      _ => "<error>"
-    };
-
-    Type = Value switch
-    {
-      "<error>" => BasicType.Invalid,
-      null => BasicType.Null,
-      decimal => BasicType.Number,
-      int => BasicType.Number,
-      string => BasicType.String,
-      bool => BasicType.Boolean,
-      Dictionary<string, BasicParsedObject> => BasicType.Object,
-      Collection<BasicParsedObject> => BasicType.Array,
-      _ => BasicType.Invalid
-    };
-  }
-  private static Collection<BasicParsedObject> ParseArray (IEnumerable<object> objects)
-  {
-    Collection<BasicParsedObject> result = [];
-    foreach (object obj in objects)
-    {
-      if (obj is BasicParsedObject bpo)
+      result.Add(new AttributeEntity()
       {
-        result.Add(bpo);
-      }
-      else
-      {
-        BasicParsedObject item = new();
-        item.StoreValue(obj);
-        result.Add(item);
-      }
+        Key = attr.Name.LocalName,
+        Value = attr.Value,
+        Origin = attr.ToString(),
+        Parent = Current,
+        Namespace = attr.Name.NamespaceName.IsEmpty ? null : attr.Name.NamespaceName
+      });
     }
     return result;
   }
-  private static BasicParsedObject ParseItem (object obj)
+  private static ElementEntity GetHeader(Match match) => new()
   {
-    if (obj is BasicParsedObject bpo)
+    IsHeader = true,
+    Name = "xml",
+    Origin = match.Value,
+    Attributes = [.. ParseAttributes(match)],
+  };
+  private static ContentEntity GetContent(Match match) => new()
+  {
+    Content = match.Value,
+    Origin = match.Value
+  };
+  private static WhitespaceEntity GetWhitespace(Match match) => new()
+  {
+    Content = match.Value,
+    Origin = match.Value
+  };
+  private static ElementClosePlaceholder GetClose(Match match) => new()
+  {
+    Name = match.Groups["name"].Value,
+    Namespace = match.HasValidGroup("ns") ? match.Groups["ns"].Value : null,
+    Origin = match.Value,
+  };
+  private static ElementOpenPlaceholder GetOpen(Match match) => new()
+  {
+    Name = match.Groups["name"].Value,
+    Namespace = match.HasValidGroup("ns") ? match.Groups["ns"].Value : null,
+    Origin = match.Value,
+    Attributes = [.. ParseAttributes(match)]
+  };
+  private static ElementEntity GetElement(Match match) => new()
+  {
+    Name = match.Groups["name"].Value,
+    Namespace = match.HasValidGroup("ns") ? match.Groups["ns"].Value : null,
+    Origin = match.Value,
+    Attributes = [.. ParseAttributes(match)]
+  };
+  private static IParsedEntity ElementSelector(Match match)
+  {
+    if (match.HasValidGroup("header"))
     {
-      return bpo;
+      return GetHeader(match);
     }
-    else
+    if (match.HasValidGroup("close"))
     {
-      BasicParsedObject item = new();
-      item.StoreValue(obj);
-      return item;
+      return GetClose(match);
     }
-  }
-  private static KeyValuePair<string, BasicParsedObject> ParseItem (KeyValuePair<string, object> obj)
-  {
-    string key = obj.Key;
-    object value = obj.Value;
-    return new(key, ParseItem(value));
-  }
-  private static Dictionary<string, BasicParsedObject> ParseObject (IEnumerable<KeyValuePair<string, object>> objects) =>
-    objects.Select(ParseItem).ToDictionary();
-  public override string ToString ()
-  {
-    return Type switch
+    if (match.HasValidGroup("single"))
     {
-      BasicType.Null => "null",
-      BasicType.String => $"\"{Value}\"",
-      BasicType.Number => $"{Value}",
-      BasicType.Array => ToString_Array(),
-      BasicType.Object => ToString_Object(),
-      BasicType.Boolean => $"{Value}",
-      BasicType.Invalid => "<error>",
-      BasicType.Absent => "null",
-      _ => "undefined"
+      return GetElement(match);
+    }
+    return GetOpen(match);
+  }
+  public static IParsedEntity CheckMatch(Match match)
+  {
+    if (!match.Success) throw new InvalidOperationException("Match was not a success.");
+
+    if (match.HasValidGroup("element"))
+      return ElementSelector(match);
+
+    if (match.HasValidGroup("content"))
+      return GetContent(match);
+
+    if (match.HasValidGroup("ws"))
+      return GetWhitespace(match);
+
+    throw new InvalidOperationException("The groups needed to process this item are missing.");
+  }
+
+  public static IParsedEntity FromXElement(XElement root)
+  {
+    Document = new XMLDocumentEntity()
+    {
+      Origin = root.Value,
+      Content = root.Value,
     };
-  }
-  private string ToString_Object ()
-  {
-    if (Value is not IDictionary<string, BasicParsedObject> dic)
-      return "<error>";
 
-    string result = "{";
-    const string end = "}";
-    bool firstProp = true;
-
-    foreach (KeyValuePair<string, BasicParsedObject> property in dic)
+    Current = new()
     {
-      if (!firstProp) result += ",";
-      firstProp = false;
-      result += property.Key;
-      result += ":";
-      result += property.Value;
-    }
+      Name = root.Name.LocalName,
+      Origin = root.Value,
+      Parent = (IParsedEntity?)Current ?? Document,
+      Attributes = [.. ParseAttributes(root)],
+      Namespace = root.Name.NamespaceName.IsEmpty ? null : root.Name.NamespaceName,
+    };
+    Document.SetRoot(Current);
+    Current.AddChildren([.. root.Elements().Select(FromXElement)]);
 
-    return result + end;
+    return Document;
   }
-  private string ToString_Array ()
-  {
-    string result = "[";
-    const string end = "]";
-    bool firstProp = true;
 
-    foreach (BasicParsedObject item in Value.AsCollection<BasicParsedObject>())
+  public static IParsedEntity ProduceAll(string content, BT type)
+  {
+    IParsedEntity last;
+
+    if (type == BT.Null)
+      return new NullEntity() { Origin = content };
+
+    if (type == BT.Element)
     {
-      if (!firstProp) result += ",";
-      firstProp = false;
-      result += item.ToString();
-    }
 
-    return result + end;
-  }
-  public BasicParsedObject ()
-  {
-    Type = BasicType.Null;
-  }
-  public BasicParsedObject (string initial)
-  {
-    Origin = initial;
-    Parse();
-    Type = check.Type;
-    Value = check.Value;
-  }
-  public BasicParsedObject (BasicParsedEntity<object> initial)
-  {
-    Origin = initial.Origin;
-    Type = initial.Type;
-    Value = initial.Value;
-  }
-
-  public BasicParsedObject this[string key]
-  {
-    get => Value is Dictionary<string, BasicParsedObject> dic && dic.TryGetValue(key, out BasicParsedObject? value) ? value : new(Absent);
-    set
-    {
-      BasicParsedObject item = new();
-      item.StoreValue(value);
-      if (Value is IDictionary<string, BasicParsedObject> dic)
+      Collection<IParsedEntity> entities = [];
+      foreach (Match match in Regex.Matches(content, XMLRegex, ROEC | ROIPW | ROML))
       {
-        dic[key] = item;
+        last = CheckMatch(match);
+        entities.Add(last);
       }
-      else if (Value is IList<BasicParsedObject> list)
+
+      Collection<ElementEntity> inside = [];
+
+      Document = new XMLDocumentEntity()
       {
-        list[int.Parse(key, CIIC)] = item;
-      }
-      else
+        Origin = content,
+        Content = content,
+      };
+      while (entities.Count > 0)
       {
-        Debug.Log(MsgClass.Error, $"Cannot write to key '{key}' as the value is not a dictionary.", this);
+        IParsedEntity item = entities.Dequeue();
+
+        if (item is ElementEntity ee && ee.IsHeader)
+        {
+          Document.SetHeader(item);
+          continue;
+        }
+        if (item is ElementOpenPlaceholder eop && Current is null)
+        {
+          Current = new()
+          {
+            Name = eop.Name,
+            Origin = eop.Origin,
+            Namespace = eop.Namespace,
+            Parent = Document,
+            Attributes = eop.Attributes,
+          };
+          Document.SetRoot(Current);
+          inside.Add(Current);
+          continue;
+        }
+        if (item is WhitespaceEntity && Current is null)
+        {
+          continue;
+        }
+        if (item is ContentEntity && Current is null)
+        {
+          throw new InvalidDataException("Cannot have loose content outside the root element.");
+        }
+        if (item is ElementOpenPlaceholder inner_eop && Current is not null)
+        {
+          ElementEntity inner = new()
+          {
+            Name = inner_eop.Name,
+            Origin = inner_eop.Origin,
+            Namespace = inner_eop.Namespace,
+            Parent = Current,
+            Attributes = inner_eop.Attributes,
+          };
+          Current.AddChild(inner);
+          Current = inner;
+          inside.Add(Current);
+          continue;
+        }
+        if (item is ElementClosePlaceholder inner_ecp && Current is not null)
+        {
+          if (!Current.Name.Is(inner_ecp.Name))
+            throw new InvalidDataException($"Mismatched elements, or you missed a closing tag somewhere. ({Current.Name}) != ({inner_ecp.Name})");
+
+          inside.Drop();
+          Current = inside.Peek();
+          continue;
+        }
+        if (item is ContentEntity inner_ce && Current is not null)
+        {
+          inner_ce.SetParent(Current);
+          Current.AddChild(inner_ce);
+          continue;
+        }
+        if (item is ElementEntity inner_ee && Current is not null)
+        {
+          inner_ee.SetParent(Current);
+          Current.AddChild(inner_ee);
+          continue;
+        }
+        if (item is NumberEntity or StringEntity or NullEntity or AttributeEntity)
+        {
+          throw new InvalidDataException($"Cannot have an entity of this type ({item.TypeName}) in an XML factory.");
+        }
+
+        throw new InvalidOperationException($"Item was not handled. ({item.Type}, {item.Origin}) ");
+
       }
+      return Document;
     }
-  }
-
-  public BasicParsedObject this[int index]
-  {
-    get
+    if (type == BT.Object)
     {
-      if (Value is IList<BasicParsedObject> arr && arr.Count < index && index >= 0)
-        return arr[index];
-      else
-        return new(Absent);
-    }
-    set
-    {
-      if (Value is IList<BasicParsedObject> col && col.Count < index && index >= 0)
-      {
-        BasicParsedObject item = new();
-        item.StoreValue(value);
-        col[index] = item;
-      }
-      else
-      {
-        Debug.Log(MsgClass.Error, $"Cannot insert to index {index}.", this);
-      }
-    }
-  }
-
-  public override bool Equals (object? obj)
-  {
-    if (obj is null)
-      return false;
-
-    if (obj is BasicParsedEntity bpo)
-      return Equals(bpo);
-
-    if (obj is string s)
-      return Type is BasicType.String && (Value as string)!.Equals(s, SCO);
-
-    if (obj is decimal d)
-      return Type is BasicType.Number && (decimal) Value! == d;
-
-    return false;
-  }
-
-  public override int GetHashCode ()
-  {
-    throw new NotImplementedException();
-  }
-}
-
-/// <summary>A basic attribute/element dictionary.</summary>
-/// <remarks>This will soon support mixed content.</remarks>
-public class BasicParsedElement : BasicParsedEntity, IReadOnlyCollection<BasicParsedElement>
-{
-  public bool HasAttributes => Attributes.Count != 0;
-  public bool HasBody => Elements.Count != 0 || Origin is not null;
-  /// <summary>The element name.</summary>
-  public string Name { get; }
-  public override Collection<BasicParsedElement>? Value => Elements;
-  /// <summary>The attributes of this element.</summary>
-  public Dictionary<string, string> Attributes { get; } = [];
-  /// <summary>The child elements of this element.</summary>
-  public Collection<BasicParsedElement> Elements { get; } = [];
-  /// <summary>The value if it contains a value not elements.</summary>
-
-  public int Count => Elements.Count;
-
-  public BasicParsedElement (XElement element)
-  {
-    Name = element.Name.LocalName;
-
-    foreach (XAttribute a in element.Attributes())
-    {
-      Attributes.Add(a.Name.LocalName, a.Value);
+      //TODO: JSON Processing
     }
 
-    if (element.HasElements)
-    {
-      foreach (XElement e in element.Elements())
-      {
-        Elements.Add(new(e));
-      }
-    }
-    else if (element.Value.IsNotEmpty)
-    {
-      Value = element.Value;
-    }
+    throw new InvalidOperationException($"Invalid BasicType ({type}) sent to EntityFactory.");
   }
-
-  /// <summary>Gets the element at the index.</summary>
-  /// <param name="index">The index to get the element from.</param>
-  /// <returns>The element at the given index.</returns>
-  /// <exception cref="ArgumentOutOfRangeException">The index is negative or is too large.</exception>
-  public BasicParsedElement this[int index]
-  {
-    get => index >= Elements.Count || index < 0 ? throw new ArgumentOutOfRangeException(nameof(index)) : Elements[index];
-  }
-
-  public BasicParsedElement this[string ofType, int index]
-  {
-    get => Elements.Where(e => e.Name.Is(ofType)).At(index);
-  }
-  public IEnumerable<BasicParsedElement> this[string ofType]
-  {
-    get => Elements.Where(e => e.Name.Is(ofType));
-  }
-
-  /// <summary>Looks up and retrieves the attribute value as a <see langword="string"/>.</summary>
-  /// <param name="attribute">The attribute to lookup.</param>
-  /// <returns>The attribute value as a <see langword="string"/>, or an empty string if there is no attribute of that name.</returns>
-  public string GetAttribute (string attribute) => Attributes.TryGetValue(attribute, out string? value) ? value : SE;
-
-  public IEnumerator<BasicParsedElement> GetEnumerator () => Elements.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 }

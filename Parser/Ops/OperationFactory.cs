@@ -13,7 +13,10 @@ public static class OperationFactory
   private static string GetS (string name, XElement? parent = null) => GetA(name, parent) ?? SE;
   private static Collection<IOperation> GetOps (XElement? parent = null)
   {
+    IfDepth++;
+    IfDictionary[IfDepth] = null;
     IEnumerable<IOperation?> ops = [.. parent?.Elements().Select(Produce) ?? []];
+    IfDepth--;
     IEnumerable<IOperation> opsnn = ops.Where(i => i is not null)!;
     return [.. opsnn];
   }
@@ -43,7 +46,8 @@ public static class OperationFactory
   private static Dictionary<string, string> GetValueList (XElement? parent = null) => [.. parent?.Elements().Select(i => new KeyValuePair<string, string>(i.Attribute("name")?.Value ?? SE, i.Attribute("content_var")?.Value ?? SE)) ?? []];
   //private static IEnumerable<XElement> GetElems (XElement? parent = null) => parent?.Elements() ?? [];
   private static IEnumerable<XElement> GetElems (string name, XElement? parent = null) => parent?.Elements(NS + name) ?? [];
-  private static OperationIf? s_thisBlock;
+  private static readonly Dictionary<int, OperationIf?> IfDictionary = new() { [0] = null };
+  private static int IfDepth;
   public static IOperation? Produce (XElement? element)
   {
     try
@@ -87,47 +91,41 @@ public static class OperationFactory
       //Reset block if any non-conditional block is reached.
       //This allows for multiple if blocks in a row without else if/else sections.
       string lname = element.Name.LocalName;
-      if (lname is not "If" and not "ElseIf" and not "Else")
-        s_thisBlock = null;
 
-      static IOperation getIf (XElement? element)
+      if (lname is "If")
       {
         IfBlockConditional section = GetIfOption(element);
         OperationIf block = new() { Options = [section] };
-        s_thisBlock = block;
+        IfDictionary[IfDepth] = block;
         return block;
       }
-      static IOperation getElseIf (XElement? element)
-      {
-        if (s_thisBlock is null)
-          throw Err.ThrowBadDef("ElseIf block without preceding If block.");
-        IfBlockConditional section = GetIfOption(element);
 
-        s_thisBlock.Options.Add(section);
-        OperationIf temp = s_thisBlock;
-        if (section.Condition is null)
-        {
-          s_thisBlock = null;
-        }
-        return temp;
-      }
-      static IOperation getElse (XElement? element)
+      if (lname is "ElseIf")
       {
-        if (s_thisBlock is null)
-          throw Err.ThrowBadDef("Else block without preceding If block.");
+        OperationIf? @if = IfDictionary[IfDepth] ?? throw Err.ThrowBadDef("ElseIf block without preceding If block.");
         IfBlockConditional section = GetIfOption(element);
-        s_thisBlock.Options.Add(section);
-        OperationIf temp = s_thisBlock;
-        s_thisBlock = null;
-        return temp;
+        @if.Options.Add(section);
+        return null;
       }
+
+      if (lname is "Else")
+      {
+        OperationIf? @if = IfDictionary[IfDepth] ?? throw Err.ThrowBadDef("ElseIf block without preceding If block.");
+        IfBlockConditional section = GetIfOption(element);
+        @if.Options.Add(section);
+        _ = IfDictionary.Remove(IfDepth);
+        return null;
+      }
+
+      IfDictionary[IfDepth] = null;
 
       return lname switch
       {
         "GotoOpIndex" => target is -1 ? new JumpOperation(target_var, true) : new JumpOperation(target),
         "GotoLabel" => new JumpOperation(name),
-        "Label" => new OperationLabel(name),
-        "ReadData" when length_var.IsEmpty => new ReadDataOperation()
+        "Label" when IfDepth == 0 => new OperationLabel(name),
+        "Label" when IfDepth != 0 => throw Err.ThrowBadDef($"Labels cannot be placed within if statements. (Depth = {IfDepth})"),
+        "ReadData" when length_var.IsEmpty => new ReadDataOperation
         {
           Mode = type,
           Length = length == -1 ? type switch { "byte" => 1, "short" => 2, "int" => 4, "long" => 8, _ => -1 } : length,
@@ -210,9 +208,6 @@ public static class OperationFactory
           ListKey = list_var,
           Operations = GetOps(element),
         },
-        "If" => getIf(element),
-        "ElseIf" => getElseIf(element),
-        "Else" => getElse(element),
         "Initialize" => new InitializeOperation
         {
           InitialKey = initial_var,

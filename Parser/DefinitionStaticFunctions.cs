@@ -9,6 +9,7 @@ public static class DefinitionStaticFunctions
   public static RxS NmOr (string name, Collection<string> options) => RxS.GrpNm(name, Or(options));
   public static RxS Nm (string name, [SS("Regex")] string rx) => RxS.GrpNm(name, rx);
   public static RxS Gp ([SS("Regex")] string rx) => RxS.Grp(rx);
+  public static RxS Gp ([SS("Regex")] params Collection<string> rxs) => RxS.Grp(RxS.OOr(rxs));
   public static RxS Rx ([SS("Regex")] string rx) => RxS.Rx(rx);
   public static RxS Rx ([SS("Regex")] params Collection<string> values) => Or(values);
   public static RxS Or ([SS("Regex")] IEnumerable<string> list) => RxS.OOr(list);

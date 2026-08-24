@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using Parser.Exceptions;
 
 using ResWAD = Specification.WAD.Properties.Resources;
@@ -13,7 +15,7 @@ internal static class Program
 {
   #region Constants
   internal const string LaptopPath = @"C:\Users\johntay4\source\repos\Git";
-  internal const string CheckPath = @"C:\Users\johntayl.adm";
+  internal const string CheckPath = @"C:\Users\johntay4\Work";
   internal const string DesktopPath = @"D:\Git";
   internal const int LogLine = 10;
   #endregion
@@ -85,6 +87,15 @@ internal static class Program
     Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)", nameof(Program));
     switch (GetInput())
     {
+      case "NEWXML":
+        string newxml_data = File.ReadAllText(FinishPath(Paths.xml_operation));
+        XMLDocumentEntity parsed = (XMLDocumentEntity) EntityFactory.ProduceAll(newxml_data, BasicType.Element);
+        XElement x_elem = XElement.Load(FinishPath(Paths.xml_operation));
+        XMLDocumentEntity parsedxelem = (XMLDocumentEntity) EntityFactory.FromXElement(x_elem);
+        Log(MsgClass.Debug, parsed.RootNode?.ToString() ?? SE, "Program");
+        Log(MsgClass.Debug, parsedxelem.RootNode?.ToString() ?? SE, "Program");
+        _ = GetInput();
+        break;
       case "WAD":
         InitialTest("wad", ResWAD.wad_rpg03);
         InitialTest("wad", ResWAD.wad_pl2);
@@ -112,6 +123,7 @@ internal static class Program
         break;
       case "UDMF":
         InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_sample);
+        InitialTest(SpecZDoom.UDMF, ResZDoom.udmf_map00);
         break;
       case "INI":
         InitialTest("ini", Paths.ini_vncdefault);
@@ -196,9 +208,11 @@ internal static class Program
       }
       catch (IOException)
       {
+        Log(MsgClass.Error, "The path at \"" + FinishPath(file) + "\" is not valid.", "Program");
         data = "";
       }
       status = Parser.StepThrough(data);
+
     }
     else
     {

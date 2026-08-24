@@ -10,11 +10,11 @@ public class JSONOperation : Operation
   public required string OutputKey { get; init; }
   protected int Index { get; set; }
   protected IToken? TCurrent => Index >= Tokens.Count ? null : Tokens[Index];
-  protected TokenCollection Tokens { get; } = [];
-  protected void Init (TokenCollection tokens) => Tokens.AddRange([.. tokens]);
+  protected Collection<IToken> Tokens { get; } = [];
+  protected void Init (IEnumerable<IToken> tokens) => Tokens.AddRange([.. tokens]);
   protected override void Execute ()
   {
-    if (Data[InputKey] is not TokenCollection tokens)
+    if (Data[InputKey] is not IEnumerable<IToken> tokens)
     {
       throw Err.ThrowBadInput(nameof(TokenCollection), Data[InputKey].TypeName);
     }

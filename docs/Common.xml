@@ -7,17 +7,28 @@
         <member name="T:Common.BasicType">
             <summary>The type of object.</summary>
         </member>
+        <member name="F:Common.BasicType.Invalid">
+            <summary>Invalid text. Unable to parse.</summary>
+        </member>
+        <member name="F:Common.BasicType.Absent">
+            <summary>This returns when you try to get a value that doesn't exist.</summary>
+        </member>
+        <member name="F:Common.BasicType.Placeholder">
+            <summary>This gets removed by the second stage parser.</summary>
+        </member>
         <member name="F:Common.BasicType.Null">
             <summary>The value 'null'.</summary>
+            <remarks>JSON <see langword="null"/> value.</remarks>
         </member>
         <member name="F:Common.BasicType.String">
             <summary>Quoted text.</summary>
+            <remarks>JSON values, JSON keys, XML Attribute Values, INI </remarks>
         </member>
         <member name="F:Common.BasicType.Number">
             <summary>Non-quoted numeric data.</summary>
         </member>
         <member name="F:Common.BasicType.Array">
-            <summary>An array of <see cref="T:Common.BasicParsedObject"/> items.</summary>
+            <summary>An array of <see cref="T:Common.IParsedEntity"/> items.</summary>
         </member>
         <member name="F:Common.BasicType.Object">
             <summary>A basic dictionary.</summary>
@@ -25,41 +36,30 @@
         <member name="F:Common.BasicType.Boolean">
             <summary>A <see langword="true"/> or a <see langword="false"/> stored as 'true' and 'false'.</summary>
         </member>
-        <member name="F:Common.BasicType.Invalid">
-            <summary>Invalid text. Unable to parse.</summary>
+        <member name="F:Common.BasicType.IgnoredWhitespace">
+            <summary>This is the starting and ending whitespace in an element.</summary>
         </member>
-        <member name="F:Common.BasicType.Absent">
-            <summary>This returns when you try to get a value that doesn't exist.</summary>
+        <member name="F:Common.BasicType.LooseContent">
+            <summary>This is content within a mixed element.</summary>
         </member>
-        <member name="T:Common.BasicParsedObject">
-            <summary>A basic json style dictionary.</summary>
+        <member name="F:Common.BasicType.Element">
+            <summary>A complex object that stores attributes, elements, and content.</summary>
         </member>
-        <member name="T:Common.BasicParsedElement">
-            <summary>A basic attribute/element dictionary.</summary>
-            <remarks>This does not support mixed content.</remarks>
+        <member name="M:Common.IParsedEntity.SetParent(Common.IParsedEntity)">
+            <summary>Sets the parent property after the type has been contructed.</summary>
+            <param name="parent">The parent or encompassing object.</param>
         </member>
-        <member name="P:Common.BasicParsedElement.Name">
-            <summary>The element name.</summary>
+        <member name="T:Common.XMLDocumentEntity">
+            <summary>An entity representing an xml document.</summary>
         </member>
-        <member name="P:Common.BasicParsedElement.Attributes">
-            <summary>The attributes of this element.</summary>
+        <member name="P:Common.XMLDocumentEntity.Content">
+            <summary>The entire text contents of the file.</summary>
         </member>
-        <member name="P:Common.BasicParsedElement.Elements">
-            <summary>The child elements of this element.</summary>
+        <member name="T:Common.NumberEntity">
+            <summary>An entity representing a number or decimal.</summary>
         </member>
-        <member name="P:Common.BasicParsedElement.Value">
-            <summary>The value if it contains a value not elements.</summary>
-        </member>
-        <member name="P:Common.BasicParsedElement.Item(System.Int32)">
-            <summary>Gets the element at the index.</summary>
-            <param name="index">The index to get the element from.</param>
-            <returns>The element at the given index.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException">The index is negative or is too large.</exception>
-        </member>
-        <member name="M:Common.BasicParsedElement.GetAttribute(System.String)">
-            <summary>Looks up and retrieves the attribute value as a <see langword="string"/>.</summary>
-            <param name="attribute">The attribute to lookup.</param>
-            <returns>The attribute value as a <see langword="string"/>, or an empty string if there is no attribute of that name.</returns>
+        <member name="F:Common.EntityFactory.JSONRegex">
+            <summary>JSON Tokenizing Regex</summary>
         </member>
         <member name="T:Common.Chars">
             <summary>Static class of common character combinations.</summary>
@@ -607,8 +607,18 @@
             <returns>The converted object.</returns>
             <exception cref="T:System.NotSupportedException">Conversion failed.</exception>
         </member>
+        <member name="T:Common.ICanAccessChildren`2">
+            <summary>Provides a simple keyed lookup framework.</summary>
+            <typeparam name="TIndex">The index or key type.</typeparam>
+            <typeparam name="TChild">The child's type.</typeparam>
+        </member>
         <member name="P:Common.ICanAccessChildren`2.Count">
             <summary>The number of children in this object.</summary>
+        </member>
+        <member name="P:Common.ICanAccessChildren`2.Item(`0)">
+            <summary>Accesses the child stored at <paramref name="index"/>.</summary>
+            <param name="index">The index or key to lookup.</param>
+            <returns>The <typeparamref name="TChild"/> at <paramref name="index"/>.</returns>
         </member>
         <member name="T:Common.ICanAddChildren`1">
             <summary>An interface that indicates that an object contains children.</summary>

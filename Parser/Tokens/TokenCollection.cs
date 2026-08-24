@@ -1,58 +1,44 @@
 namespace Parser.Tokens;
 
-/// <summary>A collection of tokens, use this to keep token operations consistent.</summary>
-public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
+public static class TokenType
 {
-  /// <summary>The internal token list.</summary>
-  private List<IToken> _tokens = [];
+  public static bool IsEmpty (string type) => type is null or "-" or "" || type.Like("None");
+}
 
-  private readonly Type _restrictedTo = typeof(IToken);
+/// <summary>A collection of tokens, use this to keep token operations consistent.</summary>
+public sealed class TokenCollection () : IReadOnlyList<IToken>, IToken, IPrintable
+{
+  #region Private Fields
+  /// <summary>The internal token list.</summary>
+  private readonly List<IToken> _tokens = [];
+  #endregion
+
   public TokenRef? AssignTo { get; set; }
 
   /// <summary>Creates the collection from a collection of tokens.</summary>
   /// <param name="tokens">The tokens to add to the list.</param>
   public TokenCollection (IEnumerable<IToken> tokens) : this() => _tokens = tokens.Any() ? [.. tokens] : [];
   public Spec Spec => _tokens[0].Spec;
-  /// <summary>Gets or sets the token at a given index.</summary>
-  /// <param name="index">The index to modify or retrieve.</param>
+  /// <summary>Gets the token at a given index.</summary>
+  /// <param name="index">The index to retrieve.</param>
   /// <returns>A token at the specified index.</returns>
-  public IToken this[int index]
-  {
-    get => _tokens[index];
-    set => _tokens[index] = value;
-  }
+  public IToken this[int index] => _tokens[index];
   int IComparable.CompareTo (object? other) => CompareTo(other is IIndexSortable isort ? isort : null);
 
   public int Count => _tokens.Count;
-  bool ICollection<IToken>.IsReadOnly => false;
 
-  public string Type
-  {
-    get => field.IsEmpty ? "None" : field;
-    set;
-  } = SE;
+  public string Type { get; set; } = SE;
 
-  public bool HasType => !Type.Like("None");
+  public bool HasType => !TokenType.IsEmpty(Type);
   public IToken? Parent { get; set; }
-  public IList<IToken> Children
-  {
-    get => _tokens;
-    set => _tokens = [.. value];
-  }
-
+  IList<IToken> IToken.Children => _tokens;
   public int Index => _tokens.Count > 0 ? _tokens[0].Index : -1;
-
-  string IToken.ContentNoNewLine => Children.Select(child => child.ToString()).TextJoin("");
-
+  string IToken.ContentNoNewLine => _tokens.Select(child => child.ToString()).TextJoin("");
   public void Add (IToken item)
   {
     item.ThrowIfNull();
-    if (item.GetType().IsAssignableTo(_restrictedTo))
-      _tokens.Add(item);
-    else
-      throw new InvalidOperationException("Cannot add token to list.");
+    _tokens.Add(item);
   }
-
   public void Print (int indent)
   {
     DebugIn("TokenCollection", nameof(Print));
@@ -76,28 +62,13 @@ public sealed class TokenCollection () : IList<IToken>, IToken, IPrintable
     }
     DebugOut();
   }
-
   public void Clear () => _tokens.Clear();
-
-  bool ICollection<IToken>.Contains (IToken item) => _tokens.Contains(item);
-
-  void ICollection<IToken>.CopyTo (IToken[] array, int arrayIndex) => _tokens.CopyTo(array, arrayIndex);
-
   public IEnumerator<IToken> GetEnumerator () => _tokens.GetEnumerator();
-
-  public int IndexOf (IToken item) => _tokens.IndexOf(item);
-
   public void Insert (int index, IToken item)
   {
     item.ThrowIfNull();
-    if (item.GetType().IsAssignableTo(_restrictedTo))
-      _tokens.Insert(index, item);
-    else
-      throw new InvalidOperationException("Cannot add token to list.");
+    _tokens.Insert(index, item);
   }
-
-  public bool Remove (IToken item) => _tokens.Remove(item);
-  public void RemoveAt (int index) => _tokens.RemoveAt(index);
 
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
 

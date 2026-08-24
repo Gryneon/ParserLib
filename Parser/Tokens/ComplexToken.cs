@@ -35,16 +35,16 @@ public sealed class ComplexToken : IToken, IPrintable
   public string Content => Children.Select(i => i.Content).TextJoin(" ");
   public IReadOnlyCollection<TokenRef> PiecesPresent => [.. _token_pieces.Keys.Where(kvp => kvp.IsUsed(_token_pieces))];
   public string Type { get; set; } = SE;
-  public bool HasType => Type.IsNotEmpty && !Type.Like("None");
-  public bool Exempt { get; set; }
+  public bool HasType => Type.IsNotEmpty && !Type.Like("None") && !Type.Like("-");
   public IToken? Parent { get; set; }
-  public IList<IToken> Children { get; set; } = [];
+  public IList<IToken> Children { get; init; } = [];
   public int Index => Children.Count > 0 ? Children[0].Index : -1;
   public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
   public bool Equals (IToken? other) => other is ComplexToken && Children.SequenceEqual(other.Children);
   public IToken? GetPiece (TokenRef piece_type) => _token_pieces.TryGetValue(GetListID(piece_type), out IToken? value) ? value : null;
   public string? GetPieceContent (TokenRef piece_type) => _token_pieces.TryGetValue(GetListID(piece_type), out IToken? value) ? value.Content : null;
   public bool HasPieceType (TokenRef piece_type) => piece_type.IsUsed(_token_pieces);
+  public bool HasPieceTypes (TokenRef[] piece_types) => piece_types.All(p => p.IsUsed(_token_pieces));
   private static TokenRef GetListID (TokenRef itemID) => itemID switch
   {
     TokenRef.Value => TokenRef.ValueList,
@@ -93,7 +93,7 @@ public sealed class ComplexToken : IToken, IPrintable
       SetPieceType(piece_type, new_list);
     }
   }
-  public void AddPieceTypes (TokenRef piece_type, TokenCollection tokens)
+  public void AddPiecesToType (TokenRef piece_type, TokenCollection tokens)
   {
     if (tokens is null || tokens.Count == 0)
       return;
@@ -103,7 +103,7 @@ public sealed class ComplexToken : IToken, IPrintable
       AddPieceType(piece_type, token);
     }
   }
-  public void SetPieceType (TokenRef piece_type, IToken token) => _token_pieces[piece_type] = token;
+  private void SetPieceType (TokenRef piece_type, IToken token) => _token_pieces[piece_type] = token;
   public override bool Equals (object? obj) => obj is IToken ct && Equals(ct);
   public override int GetHashCode () => _token_pieces.GetHashCode();
   public static bool operator == (ComplexToken left, ComplexToken right) => left is null ? right is null : left.Equals(right);
@@ -155,7 +155,6 @@ public sealed class ComplexToken : IToken, IPrintable
   }
   public void Print (int indent)
   {
-    DebugIn("ComplexToken", "Print");
     string ind_str = new(' ', indent);
     LogPart(MsgClass.Forced, Type);
     EachPart(kvp =>
@@ -169,7 +168,6 @@ public sealed class ComplexToken : IToken, IPrintable
         tok.Print(indent + 2);
       }
     });
-    DebugOut();
   }
   public string ToString (int indent)
   {
@@ -198,15 +196,11 @@ public sealed class ComplexToken : IToken, IPrintable
     return temp;
   }
 
-  public object Clone ()
+  public object Clone () => new ComplexToken()
   {
-    ComplexToken clone = new()
-    {
-      Spec = Spec,
-      TokenPieces = [.. _token_pieces],
-      Children = [.. Children],
-      Type = Type,
-    };
-    return clone;
-  }
+    Spec = Spec,
+    TokenPieces = [.. _token_pieces],
+    Children = [.. Children],
+    Type = Type,
+  };
 }
