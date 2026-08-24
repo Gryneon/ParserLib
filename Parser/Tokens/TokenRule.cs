@@ -10,6 +10,13 @@ public class TokenRule
 
   #region Constructors
   [SetsRequiredMembers]
+  public TokenRule (RT type, [SS("regex")] string ruleStringData)
+  {
+    TypeToAssign = "None";
+    RuleStringData = ruleStringData;
+    Type = type;
+  }
+  [SetsRequiredMembers]
   public TokenRule (RT type, string typeToAssign, [SS("regex")] string ruleStringData)
   {
     Type = type;

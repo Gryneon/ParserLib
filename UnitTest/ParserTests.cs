@@ -19,12 +19,13 @@ public class ParserTests
   [InlineData(@"ParserLib\Specification.XML\Samples\operation.xml")]
   public void EntityTest (string file)
   {
+    EntityFactory factory = new();
     string path = Helper.GitDir + file;
     Assert.True(File.Exists(path));
     string content = File.ReadAllText(Helper.GitDir + file);
     Assert.True(content.Length > 10);
     XElement xml_data = XElement.Parse(content);
-    IParsedEntity parsedEntity = EntityFactory.FromXElement(xml_data);
+    IParsedEntity parsedEntity = factory.FromXElement(xml_data);
     XMLDocumentEntity xMLDocumentEntity = Assert.IsType<XMLDocumentEntity>(parsedEntity);
     Assert.NotNull(xMLDocumentEntity.RootNode);
     Assert.Equal(BasicType.Element, xMLDocumentEntity.RootNode.Type);

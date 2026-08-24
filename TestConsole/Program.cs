@@ -88,10 +88,11 @@ internal static class Program
     switch (GetInput())
     {
       case "NEWXML":
+        EntityFactory factory = new();
         string newxml_data = File.ReadAllText(FinishPath(Paths.xml_operation));
-        XMLDocumentEntity parsed = (XMLDocumentEntity) EntityFactory.ProduceAll(newxml_data, BasicType.Element);
+        XMLDocumentEntity parsed = (XMLDocumentEntity) factory.FromString(newxml_data, BasicType.Element);
         XElement x_elem = XElement.Load(FinishPath(Paths.xml_operation));
-        XMLDocumentEntity parsedxelem = (XMLDocumentEntity) EntityFactory.FromXElement(x_elem);
+        XMLDocumentEntity parsedxelem = (XMLDocumentEntity) factory.FromXElement(x_elem);
         Log(MsgClass.Debug, parsed.RootNode?.ToString() ?? SE, "Program");
         Log(MsgClass.Debug, parsedxelem.RootNode?.ToString() ?? SE, "Program");
         _ = GetInput();

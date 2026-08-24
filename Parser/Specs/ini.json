@@ -6,7 +6,7 @@
 {
   // Bracket Boxes may have special parsing rules
   // Simple definitions must end with a semicolon.
-  "Format" : "Text",
+  "Format": "Text",
   "Inferences": [
     "ExtIs",
     [
@@ -33,15 +33,24 @@
     // regex extends from after whitespace following type until the first line break
     // UNLESS the next line starts with a "=>" sequence
     // Syntax:
-    //   
+    //
     "Rules": [
       {
         "rule": "TokenComment",
         "type": "-",
         "expr": ";.*"
       },
-      "Competitive  Value   (?<= =\\s*)  (?'keep'[^\\\\=\\n;]|\\.)*? \\s* (?=$|;)  (?# Trim )",
-      "Competitive  Key     (?<= ^\\s*)   ([^\"[\\]\\s\\\\=\\n;]|\\\\.)+",
+      {
+        "rule": "Competitive",
+        "type": "Value",
+        "expr": "(?<= =\\s*)  (?'keep'[^\\\\=\\n;]|\\.)*? \\s* (?=$|;)  (?# Trim )*"
+      },
+      {
+        "rule": "Competitive",
+        "type": "Key",
+        "expr": "(?<= ^\\s*)   ([^\"[\\]\\s\\\\=\\n;]|\\\\.)+"
+      },
+
       "Competitive  QKey    (?<= ^\\s*) \"(([^\"[\\]\\s\\\\=\\n;]|\\\\.)+)\"",
       "=>                   (?# Continuation to the next line)",
       "TokenExact   Eq     =",
@@ -50,32 +59,32 @@
     "Groups": [
       // Group Constructs
       {
-        "type": "Property",
-        "items": [
+        "Type": "Property",
+        "Items": [
           {
-            "piece": "n",
-            "type": "Key"
+            "Piece": "n",
+            "Type": "Key"
           },
           {
-            "piece": "x",
-            "type": "Eq"
+            "Piece": "x",
+            "Type": "Eq"
           },
           {
-            "piece": "v",
-            "type": "Value"
+            "Piece": "v",
+            "Type": "Value"
           }
         ]
       },
       {
-        "type": "SectionWProps",
-        "items": [
+        "Type": "SectionWProps",
+        "Items": [
           {
-            "piece": "n",
-            "type": "Section"
+            "Piece": "n",
+            "Type": "Section"
           },
           {
-            "piece": "pa",
-            "type": "Property"
+            "Piece": "pa",
+            "Type": "Property"
           }
         ]
       }
@@ -112,32 +121,49 @@
       //  HashSet - Unique Item List
       //  Dictionary - Unique Keys and Values
 
+      //Name of the construct definition (to reference later)
       "Property": {
-        Condition =
-        [ TokenType ]
-        = "Property"
-        && IsComplex
-        ; Type
-        = KeyValuePair<string,
-        string>; CriticalProperty
-        "Key" =
-        Name; Property
-        "Value" =
-        Value;
-      }
-      Construct "Section"
-      {
-        Condition =
-        [ TokenType ]
-        = "Section"
-        && IsComplex
-        ; Type
-        = INISection;
-        CriticalProperty "Name"
-        = Name;
-        Property Collection
-        "Properties" =
-        PropertyList;
+        //Conditions that must be met for this construct to be used
+        "Conditions": [
+          {
+            //Must be token type "Property"
+            "TokenType": "Property",
+            //Must be a complex token "ComplexToken"
+            "IsComplex": true
+          }
+        ],
+        //Type of object to create
+        "Type": "PropertyObj",
+        //Critical Properties must be present and not null or empty
+        "CriticalProperties": {
+          //"PropertyName" : "ComplexTokenPieceName"
+          "Key": "Name"
+        },
+        //Properties to assign to the object
+        "Properties": {
+          //"PropertyName" : "ComplexTokenPieceName"
+          "Value": "Value"
+        }
+      },
+      "Section": {
+        "Conditions": [
+          {
+            "TokenType": "SectionWProps",
+            "IsComplex": true
+          }
+        ],
+        "Type": "INISection",
+        "CriticalProperties": {
+          "Name": "Name"
+        },
+
+        "Properties": {
+          //"PropertyName" : { Details }
+          "Properties": {
+            "Piece": "PropertyList",
+            "Type": "Collection"
+          }
+        }
       }
     }
   }

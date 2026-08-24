@@ -59,13 +59,13 @@ public interface IParsedEntity
   string? Origin { get; }
   BT Type { get; }
   IParsedEntity? Parent { get; }
-  bool Equals(IParsedEntity? other);
-  bool Equals(object? obj);
-  int GetHashCode();
-  string ToString();
+  bool Equals (IParsedEntity? other);
+  bool Equals (object? obj);
+  int GetHashCode ();
+  string ToString ();
   /// <summary>Sets the parent property after the type has been contructed.</summary>
   /// <param name="parent">The parent or encompassing object.</param>
-  void SetParent(IParsedEntity parent);
+  void SetParent (IParsedEntity parent);
 }
 
 public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>
@@ -75,9 +75,9 @@ public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>
   public virtual required string? Origin { get; init; }
   public abstract BT Type { get; }
   public IParsedEntity? Parent { get => _parent; init => _parent = value; }
-  public abstract bool Equals(IParsedEntity? other);
-  public abstract override string ToString();
-  public void SetParent(IParsedEntity? parent) => _parent = parent;
+  public abstract bool Equals (IParsedEntity? other);
+  public abstract override string ToString ();
+  public void SetParent (IParsedEntity? parent) => _parent = parent;
 }
 
 public class StringEntity : ParsedEntity
@@ -85,9 +85,9 @@ public class StringEntity : ParsedEntity
   public required string Value { get; init; }
   public override BT Type => BT.String;
 
-  public override bool Equals(IParsedEntity? other) =>
+  public override bool Equals (IParsedEntity? other) =>
     other is StringEntity entity && Value.Equals(entity.Value, SCO);
-  public override string ToString() => $"\"{Value}\"";
+  public override string ToString () => $"\"{Value}\"";
 }
 /// <summary>An entity representing an xml document.</summary>
 public class XMLDocumentEntity : ParsedEntity
@@ -98,11 +98,11 @@ public class XMLDocumentEntity : ParsedEntity
   public IParsedEntity? RootNode { get; protected set; }
   public override BT Type => BT.Document;
 
-  public override bool Equals(IParsedEntity? other) =>
+  public override bool Equals (IParsedEntity? other) =>
     other is XMLDocumentEntity de && Content.Equals(de.Content, SCO);
-  public override string ToString() => Content;
-  public void SetHeader(IParsedEntity? header) => Header = header;
-  public IParsedEntity? SetRoot(IParsedEntity? root) => RootNode = root;
+  public override string ToString () => Content;
+  public void SetHeader (IParsedEntity? header) => Header = header;
+  public void SetRoot (IParsedEntity? root) => RootNode = root;
 }
 /// <summary>An entity representing a number or decimal.</summary>
 public class NumberEntity : ParsedEntity
@@ -110,15 +110,15 @@ public class NumberEntity : ParsedEntity
   public required decimal Value { get; init; }
   public override BT Type => BT.Number;
 
-  public override bool Equals(IParsedEntity? other) => other is NumberEntity ne && ne.Value == Value;
-  public override string ToString() => $"{Value}";
+  public override bool Equals (IParsedEntity? other) => other is NumberEntity ne && ne.Value == Value;
+  public override string ToString () => $"{Value}";
 }
 public class NullEntity : ParsedEntity
 {
   public override BT Type => BT.Null;
 
-  public override bool Equals(IParsedEntity? other) => other is NullEntity;
-  public override string ToString() => "null";
+  public override bool Equals (IParsedEntity? other) => other is NullEntity;
+  public override string ToString () => "null";
 }
 public class AttributeEntity : ParsedEntity
 {
@@ -127,12 +127,12 @@ public class AttributeEntity : ParsedEntity
   public required string Key { get; init; }
   public required string Value { get; init; }
 
-  public override bool Equals(IParsedEntity? other) =>
+  public override bool Equals (IParsedEntity? other) =>
     other is AttributeEntity ae &&
     Key.Equals(ae.Key, SCO) &&
     Value.Equals(ae.Value, SCO) &&
-    (Namespace.IsEmpty && ae.Namespace.IsEmpty || (Namespace?.Equals(ae.Namespace, SCO) == true));
-  public override string ToString() => $"{Key}=\"{Value}\"";
+    ((Namespace.IsEmpty && ae.Namespace.IsEmpty) || (Namespace?.Equals(ae.Namespace, SCO) == true));
+  public override string ToString () => $"{Key}=\"{Value}\"";
 }
 public class ElementEntity : ParsedEntity
 {
@@ -153,7 +153,7 @@ public class ElementEntity : ParsedEntity
   public bool IsHeader { get; init; }
   public override BT Type => BT.Null;
 
-  public override string ToString()
+  public override string ToString ()
   {
     string attrs = Attributes.Select(child => child.ToString()).TextJoin(" ");
     string children = Children.Select(child => child.ToString()).TextJoin(Chars.LFs);
@@ -163,23 +163,20 @@ public class ElementEntity : ParsedEntity
 
     string elem = $"<{Name} {attrs}";
 
-    if (Children.Count == 0)
-    {
-      return elem + " />";
-    }
-
-    return elem + ">" + children + $"</{Name}>";
+    return Children.Count == 0
+    ? elem + " />"
+    : elem + ">" + children + $"</{Name}>";
   }
-  public void AddAttribute(IParsedEntity attribute) => _attributes.Add(attribute);
-  public void AddAttributes(IEnumerable<IParsedEntity> attributes) => _attributes.AddRange(attributes);
-  public void AddChild(IParsedEntity child) => _children.Add(child);
-  public void AddChildren(IEnumerable<IParsedEntity> children) => _children.AddRange(children);
-  public override bool Equals(IParsedEntity? other) =>
+  public void AddAttribute (IParsedEntity attribute) => _attributes.Add(attribute);
+  public void AddAttributes (IEnumerable<IParsedEntity> attributes) => _attributes.AddRange(attributes);
+  public void AddChild (IParsedEntity child) => _children.Add(child);
+  public void AddChildren (IEnumerable<IParsedEntity> children) => _children.AddRange(children);
+  public override bool Equals (IParsedEntity? other) =>
     other is ElementEntity ee &&
     Attributes.SequenceEqual(ee.Attributes) &&
     Children.SequenceEqual(ee.Children) &&
     Name.Equals(ee.Name, SCO);
-  public void AssignParent()
+  public void AssignParent ()
   {
     foreach (IParsedEntity entity in Children)
     {
@@ -198,11 +195,11 @@ public class ElementClosePlaceholder : ParsedEntity
   public string? Namespace { get; init; }
   public override BT Type => BT.Placeholder;
 
-  public override bool Equals(IParsedEntity? other) =>
+  public override bool Equals (IParsedEntity? other) =>
     other is ElementClosePlaceholder ecp &&
     Name.Is(ecp.Name) &&
-    (Namespace is null && ecp.Namespace is null || Namespace.Is(ecp.Namespace));
-  public override string ToString() => $"</{Name}>";
+    ((Namespace is null && ecp.Namespace is null) || Namespace.Is(ecp.Namespace));
+  public override string ToString () => $"</{Name}>";
 }
 public class ElementOpenPlaceholder : ParsedEntity
 {
@@ -217,11 +214,11 @@ public class ElementOpenPlaceholder : ParsedEntity
   public string? Namespace { get; init; }
   public override BT Type => BT.Placeholder;
 
-  public override bool Equals(IParsedEntity? other) =>
+  public override bool Equals (IParsedEntity? other) =>
     other is ElementOpenPlaceholder eop &&
     Name.Is(eop.Name) &&
-    (Namespace is null && eop.Namespace is null || Namespace.Is(eop.Namespace));
-  public override string ToString() => $"</{Name}>";
+    ((Namespace is null && eop.Namespace is null) || Namespace.Is(eop.Namespace));
+  public override string ToString () => $"</{Name}>";
 
 }
 public class ContentEntity : ParsedEntity
@@ -229,28 +226,27 @@ public class ContentEntity : ParsedEntity
   public required string Content { get; init; }
   public override BT Type => BT.LooseContent;
 
-  public override bool Equals(IParsedEntity? other) =>
+  public override bool Equals (IParsedEntity? other) =>
     other is ContentEntity ce && Content.Is(ce.Content);
-  public override string ToString() => Content;
+  public override string ToString () => Content;
 }
 public class WhitespaceEntity : ParsedEntity
 {
   public required string Content { get; init; }
   public override BT Type => BT.IgnoredWhitespace;
 
-  public override bool Equals(IParsedEntity? other) =>
+  public override bool Equals (IParsedEntity? other) =>
     other is ContentEntity ce && Content.Is(ce.Content);
-  public override string ToString() => Content;
+  public override string ToString () => Content;
 }
-public class EntityFactory
+public class EntityFactory (string origin = EmptyString)
 {
-  private static XMLDocumentEntity? Document;
-  private static ElementEntity? Current;
-  private static readonly string? Origin;
+  protected ElementEntity? Current { get; set; }
+  public string? Origin { get; set; } = origin;
 
   /// <summary>JSON Tokenizing Regex</summary>
   [SS("regex")]
-  private const string JSONRegex =
+  protected const string JSONRegex =
     """
     (?#primitives)
     (?'key' " (?'keyname'\w+) " (?=\s*[:=])) |
@@ -271,7 +267,7 @@ public class EntityFactory
     """;
 
   [SS("regex")]
-  private const string XMLRegex =
+  protected const string XMLRegex =
     """
     (?# Element Piece)
     (?'element'
@@ -309,15 +305,15 @@ public class EntityFactory
     ) |
 
     (?# Leading or Trailing Whitespace)
-    (?'ws'(?<=\>)\s+(?=[^<\s])) |
-
+    (?'ws'(?<=\>)\s+) |
+    (?'ws'(?<=[^\s>])\s+) |
     (?# Leading or Trailing Whitespace)
     (?'content'(?<=\>\s*)[^<]+?(?=\s*<)) |
     (?# XML Comment)
     (?'comment'<!-- ([^-]| -[^-]) -->)
     """;
 
-  private static Collection<IParsedEntity> ParseAttributes(Match match)
+  private static Collection<IParsedEntity> ParseAttributes (Match match)
   {
     Collection<string> origins = [.. match.Groups["attributes"].Captures.Select(c => c.Value)];
     Collection<string> keys = [.. match.Groups["attrname"].Captures.Select(c => c.Value)];
@@ -337,7 +333,7 @@ public class EntityFactory
       throw new InvalidOperationException($"Keys ({keys.Count}) and Values ({values.Count}) do not match Origin Count ({count}).");
     }
   }
-  private static Collection<IParsedEntity> ParseAttributes(XElement element)
+  private static Collection<IParsedEntity> ParseAttributes (XElement element, ElementEntity parent)
   {
     Collection<IParsedEntity> result = [];
     foreach (XAttribute attr in element.Attributes())
@@ -347,66 +343,63 @@ public class EntityFactory
         Key = attr.Name.LocalName,
         Value = attr.Value,
         Origin = attr.ToString(),
-        Parent = Current,
+        Parent = parent,
         Namespace = attr.Name.NamespaceName.IsEmpty ? null : attr.Name.NamespaceName
       });
     }
     return result;
   }
-  private static ElementEntity GetHeader(Match match) => new()
+  private static ElementEntity GetHeader (Match match) => new()
   {
     IsHeader = true,
     Name = "xml",
     Origin = match.Value,
     Attributes = [.. ParseAttributes(match)],
   };
-  private static ContentEntity GetContent(Match match) => new()
+  private static ContentEntity GetContent (Match match) => new()
   {
     Content = match.Value,
     Origin = match.Value
   };
-  private static WhitespaceEntity GetWhitespace(Match match) => new()
+  private static WhitespaceEntity GetWhitespace (Match match) => new()
   {
     Content = match.Value,
     Origin = match.Value
   };
-  private static ElementClosePlaceholder GetClose(Match match) => new()
+  private static ElementClosePlaceholder GetClose (Match match) => new()
   {
     Name = match.Groups["name"].Value,
     Namespace = match.HasValidGroup("ns") ? match.Groups["ns"].Value : null,
     Origin = match.Value,
   };
-  private static ElementOpenPlaceholder GetOpen(Match match) => new()
+  private static ElementOpenPlaceholder GetOpen (Match match) => new()
   {
     Name = match.Groups["name"].Value,
     Namespace = match.HasValidGroup("ns") ? match.Groups["ns"].Value : null,
     Origin = match.Value,
     Attributes = [.. ParseAttributes(match)]
   };
-  private static ElementEntity GetElement(Match match) => new()
+  private static ElementEntity GetElement (Match match) => new()
   {
     Name = match.Groups["name"].Value,
     Namespace = match.HasValidGroup("ns") ? match.Groups["ns"].Value : null,
     Origin = match.Value,
     Attributes = [.. ParseAttributes(match)]
   };
-  private static IParsedEntity ElementSelector(Match match)
+  private static IParsedEntity ElementSelector (Match match)
   {
     if (match.HasValidGroup("header"))
-    {
       return GetHeader(match);
-    }
+
     if (match.HasValidGroup("close"))
-    {
       return GetClose(match);
-    }
+
     if (match.HasValidGroup("single"))
-    {
       return GetElement(match);
-    }
+
     return GetOpen(match);
   }
-  public static IParsedEntity CheckMatch(Match match)
+  public static IParsedEntity CheckMatch (Match match)
   {
     if (!match.Success) throw new InvalidOperationException("Match was not a success.");
 
@@ -422,9 +415,9 @@ public class EntityFactory
     throw new InvalidOperationException("The groups needed to process this item are missing.");
   }
 
-  public static IParsedEntity FromXElement(XElement root)
+  public IParsedEntity FromXElement (XElement root)
   {
-    Document = new XMLDocumentEntity()
+    XMLDocumentEntity document = new()
     {
       Origin = root.Value,
       Content = root.Value,
@@ -434,122 +427,106 @@ public class EntityFactory
     {
       Name = root.Name.LocalName,
       Origin = root.Value,
-      Parent = (IParsedEntity?)Current ?? Document,
-      Attributes = [.. ParseAttributes(root)],
+      Parent = (IParsedEntity?) Current ?? document,
       Namespace = root.Name.NamespaceName.IsEmpty ? null : root.Name.NamespaceName,
     };
-    Document.SetRoot(Current);
+    document.SetRoot(Current);
+    Current.AddAttributes(ParseAttributes(root, Current));
     Current.AddChildren([.. root.Elements().Select(FromXElement)]);
 
-    return Document;
+    return document;
   }
-
-  public static IParsedEntity ProduceAll(string content, BT type)
+  public IParsedEntity FromString (BT type) =>
+    Origin.IsEmpty
+    ? throw new InvalidOperationException("Origin is empty, cannot parse.")
+    : FromString(Origin, type);
+  public IParsedEntity FromString (string content, BT type)
   {
-    IParsedEntity last;
-
-    if (type == BT.Null)
-      return new NullEntity() { Origin = content };
-
-    if (type == BT.Element)
+    switch (type)
     {
+      case BT.Null:
+        return new NullEntity() { Origin = content };
+      #region BT.Element
+      case BT.Element:
+        XMLDocumentEntity? document;
+        Collection<ElementEntity> inside = [];
+        ElementEntity? parent = null;
+        MatchCollection matches = Regex.Matches(content, XMLRegex, ROEC | ROIPW | ROML);
 
-      Collection<IParsedEntity> entities = [];
-      foreach (Match match in Regex.Matches(content, XMLRegex, ROEC | ROIPW | ROML))
-      {
-        last = CheckMatch(match);
-        entities.Add(last);
-      }
-
-      Collection<ElementEntity> inside = [];
-
-      Document = new XMLDocumentEntity()
-      {
-        Origin = content,
-        Content = content,
-      };
-      while (entities.Count > 0)
-      {
-        IParsedEntity item = entities.Dequeue();
-
-        if (item is ElementEntity ee && ee.IsHeader)
+        document = new XMLDocumentEntity()
         {
-          Document.SetHeader(item);
-          continue;
-        }
-        if (item is ElementOpenPlaceholder eop && Current is null)
+          Origin = content,
+          Content = content,
+        };
+
+        foreach (Match match in matches)
         {
-          Current = new()
+          IParsedEntity item = CheckMatch(match);
+
+          switch (item)
           {
-            Name = eop.Name,
-            Origin = eop.Origin,
-            Namespace = eop.Namespace,
-            Parent = Document,
-            Attributes = eop.Attributes,
-          };
-          Document.SetRoot(Current);
-          inside.Add(Current);
-          continue;
-        }
-        if (item is WhitespaceEntity && Current is null)
-        {
-          continue;
-        }
-        if (item is ContentEntity && Current is null)
-        {
-          throw new InvalidDataException("Cannot have loose content outside the root element.");
-        }
-        if (item is ElementOpenPlaceholder inner_eop && Current is not null)
-        {
-          ElementEntity inner = new()
-          {
-            Name = inner_eop.Name,
-            Origin = inner_eop.Origin,
-            Namespace = inner_eop.Namespace,
-            Parent = Current,
-            Attributes = inner_eop.Attributes,
-          };
-          Current.AddChild(inner);
-          Current = inner;
-          inside.Add(Current);
-          continue;
-        }
-        if (item is ElementClosePlaceholder inner_ecp && Current is not null)
-        {
-          if (!Current.Name.Is(inner_ecp.Name))
-            throw new InvalidDataException($"Mismatched elements, or you missed a closing tag somewhere. ({Current.Name}) != ({inner_ecp.Name})");
+            case ElementEntity ee when ee.IsHeader:
+              document.SetHeader(item);
+              continue;
+            case ElementOpenPlaceholder eop when parent is null:
+              parent = new()
+              {
+                Name = eop.Name,
+                Origin = eop.Origin,
+                Namespace = eop.Namespace,
+                Parent = document,
+                Attributes = eop.Attributes,
+              };
+              document.SetRoot(parent);
+              inside.Add(parent);
+              continue;
+            case WhitespaceEntity when parent is null:
+              continue;
+            case ContentEntity when parent is null:
+              throw new InvalidDataException("Cannot have loose content outside the root element.");
+            case ElementOpenPlaceholder inner_eop when parent is not null:
+              ElementEntity inner = new()
+              {
+                Name = inner_eop.Name,
+                Origin = inner_eop.Origin,
+                Namespace = inner_eop.Namespace,
+                Parent = Current,
+                Attributes = inner_eop.Attributes,
+              };
+              parent.AddChild(inner);
+              inside.Add(inner);
+              parent = inner;
+              continue;
+            case ElementClosePlaceholder inner_ecp when parent is not null:
+              if (!parent.Name.Is(inner_ecp.Name))
+                throw new InvalidDataException($"Mismatched elements, or you missed a closing tag somewhere. ({parent.Name}) != ({inner_ecp.Name})");
+              inside.Drop();
+              parent = inside.Peek();
+              continue;
+            case ContentEntity inner_ce when parent is not null:
+              inner_ce.SetParent(parent);
+              parent.AddChild(inner_ce);
+              continue;
+            case ElementEntity inner_ee when parent is not null:
+              inner_ee.SetParent(parent);
+              parent.AddChild(inner_ee);
+              continue;
+            case NumberEntity or StringEntity or NullEntity or AttributeEntity:
+              throw new InvalidDataException($"Cannot have an entity of this type ({item.TypeName}) in an XML factory.");
+            default:
+              throw new InvalidOperationException($"Item was not handled. ({item.Type}, {item.Origin}) ");
+          }
 
-          inside.Drop();
-          Current = inside.Peek();
-          continue;
         }
-        if (item is ContentEntity inner_ce && Current is not null)
-        {
-          inner_ce.SetParent(Current);
-          Current.AddChild(inner_ce);
-          continue;
-        }
-        if (item is ElementEntity inner_ee && Current is not null)
-        {
-          inner_ee.SetParent(Current);
-          Current.AddChild(inner_ee);
-          continue;
-        }
-        if (item is NumberEntity or StringEntity or NullEntity or AttributeEntity)
-        {
-          throw new InvalidDataException($"Cannot have an entity of this type ({item.TypeName}) in an XML factory.");
-        }
+        return document;
+      #endregion BT.Element
+      case BT.Object:
+        //Todo: Implement JSON parsing
+        break;
+      default:
+        throw new InvalidOperationException($"Invalid BasicType ({type}) sent to EntityFactory.");
 
-        throw new InvalidOperationException($"Item was not handled. ({item.Type}, {item.Origin}) ");
-
-      }
-      return Document;
     }
-    if (type == BT.Object)
-    {
-      //TODO: JSON Processing
-    }
-
     throw new InvalidOperationException($"Invalid BasicType ({type}) sent to EntityFactory.");
   }
 }

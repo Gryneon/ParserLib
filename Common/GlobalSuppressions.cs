@@ -9,3 +9,4 @@
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Common.Extensions.CharExtensions._z")]
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Common.Extensions.CharExtensions._A")]
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~F:Common.Extensions.CharExtensions._Z")]
+[assembly: SuppressMessage("Roslynator", "RCS1085:Use auto-implemented property", Justification = "<Pending>", Scope = "member", Target = "~P:Common.ParsedEntity.Parent")]
