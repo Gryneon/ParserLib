@@ -1,7 +1,6 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 
 using System.Data;
-using System.Reflection.Metadata;
 using System.Xml.Linq;
 
 using BT = Common.BasicType;
@@ -11,42 +10,38 @@ namespace Common;
 /// <summary>The type of object.</summary>
 public enum BasicType
 {
+  /// <summary>Invalid text. Unable to parse.</summary>
+  Invalid = -1,
+  /// <summary>This returns when you try to get a value that doesn't exist.</summary>
+  Absent = 0,
+  /// <summary>This gets removed by the second stage parser.</summary>
+  Placeholder = 2,
+  Document = 3,
+  #region JSON
   /// <summary>The value 'null'.</summary>
   /// <remarks>JSON <see langword="null"/> value.</remarks>
   Null,
-
   /// <summary>Quoted text.</summary>
   /// <remarks>JSON values, JSON keys, XML Attribute Values, INI </remarks>
   String,
-
   /// <summary>Non-quoted numeric data.</summary>
   Number,
-
-  /// <summary>An array of <see cref="BasicParsedEntity"/> items.</summary>
+  /// <summary>An array of <see cref="IParsedEntity"/> items.</summary>
   Array,
-
   /// <summary>A basic dictionary.</summary>
   Object,
-
   /// <summary>A <see langword="true"/> or a <see langword="false"/> stored as 'true' and 'false'.</summary>
   Boolean,
-
-  /// <summary>Invalid text. Unable to parse.</summary>
-  Invalid,
-
-  /// <summary>This returns when you try to get a value that doesn't exist.</summary>
-  Absent,
-
+  #endregion
+  #region XML
   /// <summary>This is the starting and ending whitespace in an element.</summary>
   IgnoredWhitespace,
-
   /// <summary>This is content within a mixed element.</summary>
   LooseContent,
-  /// <summary>A complex object that stores a dictionary of values as well as a contained value.</summary>
+  /// <summary>A complex object that stores attributes, elements, and content.</summary>
   Element,
   Attribute,
-  Placeholder,
-  Document
+  #endregion
 }
 
 public static class BasicTypeExt
@@ -247,16 +242,37 @@ public class WhitespaceEntity : ParsedEntity
     other is ContentEntity ce && Content.Is(ce.Content);
   public override string ToString () => Content;
 }
-public static class EntityFactory
+public class EntityFactory
 {
   private static XMLDocumentEntity? Document;
   private static ElementEntity? Current;
   private static readonly string? Origin;
 
+  /// <summary>JSON Tokenizing Regex</summary>
+  [SS("regex")]
+  private const string JSONRegex =
+    """
+    (?#primitives)
+    (?'key' " (?'keyname'\w+) " (?=\s*[:=])) |
+    (?'strvalue'  (?<=[:=]\s*) " (?'value'([^\\"]|\\.)*) " ) |
+    (?'numvalue'  (?<=[:=]\s*)   (?'value'[0-9.eExXbB]+ )  ) |
+    (?'boolvalue' (?<=[:=]\s*)   (?'value'true|false)      ) |
+    (?'nullvalue' (?<=[:=]\s*)   (?'value'null)            ) |
+    (?#operators)
+    (?'Ao' \[) |
+    (?'Ac' \]) |
+    (?'Bo' \{) |
+    (?'Bc' \}) |
+    (?'Cm' \,) |
+    (?'Eq' [=:]) |
+    (?#commments)
+    (?'comment'   \/\/.* ) |
+    (?'comment'   \/\*([^*]|\*[^/])*\*\/ )
+    """;
+
   [SS("regex")]
   private const string XMLRegex =
     """
-
     (?# Element Piece)
     (?'element'
       <
@@ -293,11 +309,12 @@ public static class EntityFactory
     ) |
 
     (?# Leading or Trailing Whitespace)
-    (?'ws'\s+) |
+    (?'ws'(?<=\>)\s+(?=[^<\s])) |
 
     (?# Leading or Trailing Whitespace)
-    (?'content'[^<]+?(?=\s*<))
-
+    (?'content'(?<=\>\s*)[^<]+?(?=\s*<)) |
+    (?# XML Comment)
+    (?'comment'<!-- ([^-]| -[^-]) -->)
     """;
 
   private static Collection<IParsedEntity> ParseAttributes (Match match)
@@ -417,10 +434,11 @@ public static class EntityFactory
     {
       Name = root.Name.LocalName,
       Origin = root.Value,
-      Parent = (Current == null) ? Document : Current,
+      Parent = (IParsedEntity?) Current ?? Document,
       Attributes = [.. ParseAttributes(root)],
       Namespace = root.Name.NamespaceName.IsEmpty ? null : root.Name.NamespaceName,
     };
+    Document.SetRoot(Current);
     Current.AddChildren([.. root.Elements().Select(FromXElement)]);
 
     return Document;

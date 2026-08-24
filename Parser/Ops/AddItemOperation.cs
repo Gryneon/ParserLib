@@ -18,9 +18,9 @@ public class AddItemOperation : Operation
 
     Dictionary<string, object> values = [.. ParameterKeys.Select(kvp => new KeyValuePair<string, object>(kvp.Key, Data[kvp.Value]))];
 
-    object created = t.GetConstructor([typeof(Dictionary<string, object>)]).Invoke(values.Values.ToArray());
+    object? created = t.GetConstructor([typeof(Dictionary<string, object>)])?.Invoke([.. values.Values]);
 
-    if (Data[ListKey] is IList<object> il)
+    if (Data[ListKey] is IList<object> il && created is not null)
       il.Add(created);
     else
       throw Err.ThrowBadResult("ListKey was not an IList");

@@ -7,6 +7,15 @@
         <member name="T:Common.BasicType">
             <summary>The type of object.</summary>
         </member>
+        <member name="F:Common.BasicType.Invalid">
+            <summary>Invalid text. Unable to parse.</summary>
+        </member>
+        <member name="F:Common.BasicType.Absent">
+            <summary>This returns when you try to get a value that doesn't exist.</summary>
+        </member>
+        <member name="F:Common.BasicType.Placeholder">
+            <summary>This gets removed by the second stage parser.</summary>
+        </member>
         <member name="F:Common.BasicType.Null">
             <summary>The value 'null'.</summary>
             <remarks>JSON <see langword="null"/> value.</remarks>
@@ -19,19 +28,13 @@
             <summary>Non-quoted numeric data.</summary>
         </member>
         <member name="F:Common.BasicType.Array">
-            <summary>An array of <see cref="!:BasicParsedEntity"/> items.</summary>
+            <summary>An array of <see cref="T:Common.IParsedEntity"/> items.</summary>
         </member>
         <member name="F:Common.BasicType.Object">
             <summary>A basic dictionary.</summary>
         </member>
         <member name="F:Common.BasicType.Boolean">
             <summary>A <see langword="true"/> or a <see langword="false"/> stored as 'true' and 'false'.</summary>
-        </member>
-        <member name="F:Common.BasicType.Invalid">
-            <summary>Invalid text. Unable to parse.</summary>
-        </member>
-        <member name="F:Common.BasicType.Absent">
-            <summary>This returns when you try to get a value that doesn't exist.</summary>
         </member>
         <member name="F:Common.BasicType.IgnoredWhitespace">
             <summary>This is the starting and ending whitespace in an element.</summary>
@@ -40,7 +43,7 @@
             <summary>This is content within a mixed element.</summary>
         </member>
         <member name="F:Common.BasicType.Element">
-            <summary>A complex object that stores a dictionary of values as well as a contained value.</summary>
+            <summary>A complex object that stores attributes, elements, and content.</summary>
         </member>
         <member name="M:Common.IParsedEntity.SetParent(Common.IParsedEntity)">
             <summary>Sets the parent property after the type has been contructed.</summary>
@@ -54,6 +57,9 @@
         </member>
         <member name="T:Common.NumberEntity">
             <summary>An entity representing a number or decimal.</summary>
+        </member>
+        <member name="F:Common.EntityFactory.JSONRegex">
+            <summary>JSON Tokenizing Regex</summary>
         </member>
         <member name="T:Common.Chars">
             <summary>Static class of common character combinations.</summary>

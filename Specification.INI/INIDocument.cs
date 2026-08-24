@@ -1,3 +1,5 @@
+using Parser.Tokens;
+
 namespace Specification.INI;
 
 /// <summary>A document, which is a collection of INISections.</summary>
@@ -29,6 +31,19 @@ public sealed class INIDocument : ITextSerializer, ICloneable, IEnumerable<INISe
       {
         ns.Add(new(p));
       }
+    }
+  }
+  public INIDocument (IEnumerable<IToken> tokens)
+  {
+    foreach (IToken t in tokens)
+    {
+      if (t.Type.Like("Section"))
+      {
+        Sections.Add(new INISection(t));
+        continue;
+      }
+
+      Debug.Log(MsgClass.Error, $"Incorrect Token Type {t.Type} must be Section.", this);
     }
   }
 

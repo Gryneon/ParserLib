@@ -98,22 +98,23 @@ public static class Definition
     TokenRules = [
       new(Competitive, XTT.DString, @"""[^""><]*"""),
       new(Competitive, XTT.SString, "'[^'><]*'"),
-      new(Competitive, XTT.Comment, @"\<\!\s*\-\-([^\-]|(?<!\-)\-(?!\-))*\-\-\s*\>"),
-      new (TokenMatch, XTT.Content, @"(?<=\>)[^\<]+(?=\<)"),
+      new(Competitive, "Comment", @"\<\!\s*\-\-([^\-]|(?<!\-)\-(?!\-))*\-\-\s*\>"),
+      new (TokenMatch, "Content", @"(?<=\>)[^\<]+(?=\<)"),
+      new (TokenComment, "None", @"(?<=\>)\s+(?=\<)"),
       .. TokenRule.MakeSingleCharRules("<>/?;&:=!-", TokenExact, new Collection<XTT>() { XTT.Ao, XTT.Ac, XTT.Sl, XTT.Qm, XTT.Sc, XTT.An, XTT.Co, XTT.Eq, XTT.Em, XTT.Hy }),
       new (TokenMatch, XTT.NamespaceAttr, @"\bxmlns\b"),
-      new (TokenMatch, XTT.AttrKey, @"\b[a-z]\w*\b(?=\s*\=)"),
-      new (TokenMatch, XTT.Namespace, @"(?<=(\/|\<)*\s* )\b[a-z]\w*\b(?=\:)"),
-      new (TokenMatch, XTT.ElementName, @"(?<=(\/|\< |\:|\?)*\s* )\b[a-z]\w*\b(?=\s*[^\=])"),
+      new (TokenMatch, XTT.AttrKey, @"\b\w+\b(?=\s*\=)"),
+      new (TokenMatch, XTT.Namespace, @"(?<= <\/?\s* )\b\w+\b(?=\:)"),
+      new (TokenMatch, XTT.ElementName, @"(?<= <\??\/?\s*(\w+\:)? )\b\w+\b(?=\s*[^\=<])"),
       new (ErrorMatch, "None", @"\<\?(?<error_pos>\w+)\b(?<!xml)"),           // No non-xml headers
       new (ErrorMatch, "None", @"\<\w+(?<error_pos>\s+)\w+\b\/?\>"),          // No spaces in element names
     ],
     GroupTokenRules = [
       new (XTT.Attribute, "n:AttrKey x:Eq v:String"),
       new (XTT.Header, "x:Ao x:Qm n:ElementName{xml} pa:Attribute x:Qm x:Ac"),
+      new (XTT.AttributeWithNamespace, "t:Namespace x:Co d:Attribute"),
       new (XTT.DocumentNamespace, "t:NamespaceAttr x:Co d:Attribute"),
       new (XTT.DocumentNamespace, "t:NamespaceAttr x:Eq v:String"),
-      new (XTT.AttributeWithNamespace, "t:Namespace x:Co n:AttrKey x:Eq v:String"),
       new (XTT.ElementEndWithNamespace, "x:Ao x:Sl t:Namespace x:Co n:ElementName x:Ac"),
       new (XTT.ElementEnd, "x:Ao x:Sl n:ElementName x:Ac"),
       new (XTT.ElementSingleWithNamespace, "x:Ao t:Namespace x:Co n:ElementName pa:Attribute x:Sl x:Ac"),
@@ -125,9 +126,9 @@ public static class Definition
 
     ],
     TokenCompatLookup = {
-      [XTT.String] = [XTT.DString, XTT.SString],
-      [XTT.Attribute] = [XTT.DocumentNamespace, XTT.AttributeWithNamespace],
-      [XTT.ValidContent] = [XTT.Content, XTT.ElementSingleWithNamespace, XTT.ElementSingle, XTT.ElementPair]
+      ["String"] = [XTT.DString, XTT.SString],
+      ["Attribute"] = [XTT.DocumentNamespace, XTT.AttributeWithNamespace],
+      ["ValidContent"] = ["Content", XTT.ElementSingleWithNamespace, XTT.ElementSingle, XTT.ElementPair]
     },
     Operations = [
       new TokenizeOperation { InputKey = "text", OutputKey = "tokens" },

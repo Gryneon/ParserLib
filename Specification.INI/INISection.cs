@@ -13,7 +13,37 @@ public sealed class INISection : IEnumerable<IProperty<string>>, ITextSerializer
   /// <param name="name">The name of the INISection.</param>
   [SetsRequiredMembers]
   public INISection (string name) => Name = name;
+  public INISection (IToken token)
+  {
+    if (token is not ComplexToken ct)
+    {
+      throw Err.ThrowBadResult($"Token was not formed ({token.Content}).");
+    }
 
+    string? name = ct.Name?.Content;
+    TokenCollection? props = ct.Properties;
+
+    if (name is null)
+    {
+      throw Err.ThrowBadResult($"Token was missing name piece \"{ct.Content}\".");
+    }
+
+    Name = name;
+
+    if (props is null || props.Count == 0)
+    {
+      Debug.Log(MsgClass.Warning, $"Section {name} had no properties.", this);
+      return;
+    }
+
+    foreach (IToken prop in props)
+    {
+      if (prop.Type.Like("Property"))
+      {
+        Set(new(prop));
+      }
+    }
+  }
   /// <summary>Creates a INISection from a string.</summary>
   /// <param name="name">The name of the section.</param>
   public static implicit operator INISection (string name) => new() { Name = name };

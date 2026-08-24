@@ -44,6 +44,7 @@ public sealed class ComplexToken : IToken, IPrintable
   public IToken? GetPiece (TokenRef piece_type) => _token_pieces.TryGetValue(GetListID(piece_type), out IToken? value) ? value : null;
   public string? GetPieceContent (TokenRef piece_type) => _token_pieces.TryGetValue(GetListID(piece_type), out IToken? value) ? value.Content : null;
   public bool HasPieceType (TokenRef piece_type) => piece_type.IsUsed(_token_pieces);
+  public bool HasPieceTypes (TokenRef[] piece_types) => piece_types.All(p => p.IsUsed(_token_pieces));
   private static TokenRef GetListID (TokenRef itemID) => itemID switch
   {
     TokenRef.Value => TokenRef.ValueList,
@@ -92,7 +93,7 @@ public sealed class ComplexToken : IToken, IPrintable
       SetPieceType(piece_type, new_list);
     }
   }
-  public void AddPieceTypes (TokenRef piece_type, TokenCollection tokens)
+  public void AddPiecesToType (TokenRef piece_type, TokenCollection tokens)
   {
     if (tokens is null || tokens.Count == 0)
       return;
@@ -102,7 +103,7 @@ public sealed class ComplexToken : IToken, IPrintable
       AddPieceType(piece_type, token);
     }
   }
-  public void SetPieceType (TokenRef piece_type, IToken token) => _token_pieces[piece_type] = token;
+  private void SetPieceType (TokenRef piece_type, IToken token) => _token_pieces[piece_type] = token;
   public override bool Equals (object? obj) => obj is IToken ct && Equals(ct);
   public override int GetHashCode () => _token_pieces.GetHashCode();
   public static bool operator == (ComplexToken left, ComplexToken right) => left is null ? right is null : left.Equals(right);

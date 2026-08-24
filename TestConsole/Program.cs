@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using Parser.Exceptions;
 
 using ResWAD = Specification.WAD.Properties.Resources;
@@ -85,6 +87,15 @@ internal static class Program
     Log(MsgClass.Prompt, "Select a test. (wad/xml/mapinfo/acs/ini)", nameof(Program));
     switch (GetInput())
     {
+      case "NEWXML":
+        string newxml_data = File.ReadAllText(FinishPath(Paths.xml_operation));
+        XMLDocumentEntity parsed = (XMLDocumentEntity) EntityFactory.ProduceAll(newxml_data, BasicType.Element);
+        XElement x_elem = XElement.Load(FinishPath(Paths.xml_operation));
+        XMLDocumentEntity parsedxelem = (XMLDocumentEntity) EntityFactory.FromXElement(x_elem);
+        Log(MsgClass.Debug, parsed.RootNode?.ToString() ?? SE, "Program");
+        Log(MsgClass.Debug, parsedxelem.RootNode?.ToString() ?? SE, "Program");
+        _ = GetInput();
+        break;
       case "WAD":
         InitialTest("wad", ResWAD.wad_rpg03);
         InitialTest("wad", ResWAD.wad_pl2);
@@ -201,6 +212,7 @@ internal static class Program
         data = "";
       }
       status = Parser.StepThrough(data);
+
     }
     else
     {

@@ -1,3 +1,5 @@
+using Parser.Tokens;
+
 namespace Specification.INI;
 
 /// <summary>A key and value pair in an INI file.</summary>
@@ -9,7 +11,7 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
   /// <param name="key">The key of the new property.</param>
   /// <param name="value">The value of the new property.</param>
   [SetsRequiredMembers]
-  public PropertyObj (string key, string value) : this()
+  public PropertyObj (string key, string value)
   {
     Key = key;
     Value = value;
@@ -17,7 +19,7 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
   /// <summary>Creates a property from an IProperty interface</summary>
   /// <param name="iprop">The other property.</param>
   [SetsRequiredMembers]
-  public PropertyObj (IProperty<object> iprop) : this()
+  public PropertyObj (IProperty<object> iprop)
   {
     iprop.ThrowIfNull();
     Key = iprop.Key;
@@ -26,11 +28,24 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
   /// <summary>Creates a property from an IProperty interface</summary>
   /// <param name="iprop">The other property.</param>
   [SetsRequiredMembers]
-  public PropertyObj (IProperty<string> iprop) : this()
+  public PropertyObj (IProperty<string> iprop)
   {
     iprop.ThrowIfNull();
     Key = iprop.Key;
     Value = iprop.Value ?? SE;
+  }
+  [SetsRequiredMembers]
+  public PropertyObj (IToken token)
+  {
+    if (token is ComplexToken ct)
+    {
+      Key = ct.GetPieceContent(TokenRef.Name) ?? throw Err.ThrowBadResult($"No Key in \"{token}\"");
+      Value = ct.GetPieceContent(TokenRef.Value) ?? SE;
+    }
+    else
+    {
+      throw Err.ThrowBadResult($"Token was not a ComplexToken \"{token}\"");
+    }
   }
   public static PropertyObj From (IProperty<object> iprop)
   {
@@ -42,6 +57,7 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
     iprop.ThrowIfNull();
     return new(iprop);
   }
+
   /// <inheritdoc/>
   /// <remarks>
   /// <list type="table">
@@ -61,6 +77,7 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
       Value = input.HasGroup("value") ? input["value"].Content : SE,
     };
   }
+
   public override bool Equals (IProperty<string>? other) =>
     Key.Like(other?.Key) && (Value?.Is(other.Value) ?? false);
   /// <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
