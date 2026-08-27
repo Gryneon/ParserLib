@@ -36,6 +36,13 @@ public class OperationSwitch : Operation, IPlaceholderOperation
       operations.AddRange(@case.Operations);
       operations.Add(JumpTo(index + 1));
     }
+    if (Default is not null)
+    {
+      Default.CasePosition = operations.Count;
+      operations.AddRange(Default.Operations);
+      operations.Add(JumpTo(index + 1));
+    }
+
     return operations.Count;
   }
   public void CheckUnpacked ()
@@ -44,6 +51,10 @@ public class OperationSwitch : Operation, IPlaceholderOperation
     {
       if (@case.CasePosition == 0)
         Err.ThrowUnpacked("Case not unpacked, unpacking failure.");
+    }
+    if (Default?.CasePosition == 0)
+    {
+      Err.ThrowUnpacked("Default case not unpacked, unpacking failure.");
     }
   }
 }

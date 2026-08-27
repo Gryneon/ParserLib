@@ -213,7 +213,7 @@ public static class Definition
       /* State Commands */
       .. TokenRule.MakeWordMatchRules(true, "stop", "fail", "wait", "loop", "goto"),
       /* State Options */
-      .. TokenRule.MakeWordMatchRules(true, "bright", "fail", "wait", "loop", "goto"),
+      .. TokenRule.MakeWordMatchRules(true, "bright"),
       /* Symbols */
       .. s_op_pba,
       .. TokenRule.MakeSingleCharRules("=+-*/", RT.TokenExact, new string[] {

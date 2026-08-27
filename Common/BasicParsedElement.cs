@@ -42,6 +42,12 @@ public enum BasicType
   Element,
   Attribute,
   #endregion
+  #region INI / REG
+  /// <summary>A named section.</summary>
+  Section,
+  /// <summary>A Key\Value pair.</summary>
+  Property,
+  #endregion
 }
 
 public static class BasicTypeExt
@@ -59,6 +65,8 @@ public interface IParsedEntity
   string? Origin { get; }
   BT Type { get; }
   IParsedEntity? Parent { get; }
+  static bool Equals (IParsedEntity? obj_a, IParsedEntity? obj_b) =>
+    (obj_a is null && obj_b is null) || (obj_a is not null && obj_b is not null && obj_a.Equals(obj_b));
   bool Equals (IParsedEntity? other);
   bool Equals (object? obj);
   int GetHashCode ();
@@ -68,11 +76,16 @@ public interface IParsedEntity
   void SetParent (IParsedEntity parent);
 }
 
+public interface IPrimitiveEntity : IParsedEntity
+{
+  string Content { get; }
+}
+
 public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>
 {
   private IParsedEntity? _parent;
 
-  public virtual required string? Origin { get; init; }
+  public virtual string? Origin { get; init; }
   public abstract BT Type { get; }
   public IParsedEntity? Parent { get => _parent; init => _parent = value; }
   public abstract bool Equals (IParsedEntity? other);
@@ -80,8 +93,9 @@ public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>
   public void SetParent (IParsedEntity? parent) => _parent = parent;
 }
 
-public class StringEntity : ParsedEntity
+public class StringEntity : ParsedEntity, IPrimitiveEntity
 {
+  public string Content => $"\"{Value}\"";
   public required string Value { get; init; }
   public override BT Type => BT.String;
 
@@ -104,21 +118,53 @@ public class XMLDocumentEntity : ParsedEntity
   public void SetHeader (IParsedEntity? header) => Header = header;
   public void SetRoot (IParsedEntity? root) => RootNode = root;
 }
+/// <summary>An entity representing a json document.</summary>
+public class JSONDocumentEntity : ParsedEntity
+{
+  /// <summary>The entire text contents of the file.</summary>
+  public required string Content { get; init; }
+  public IParsedEntity? RootObject { get; protected set; }
+  public override BT Type => BT.Document;
+
+  public override bool Equals (IParsedEntity? other) =>
+    other is JSONDocumentEntity je && Content.Equals(je.Content, SCO);
+  public override string ToString () => Content;
+  public void SetRoot (IParsedEntity root)
+  {
+    RootObject = root;
+    root.SetParent(this);
+  }
+}
 /// <summary>An entity representing a number or decimal.</summary>
-public class NumberEntity : ParsedEntity
+public class NumberEntity : ParsedEntity, IPrimitiveEntity
 {
   public required decimal Value { get; init; }
   public override BT Type => BT.Number;
 
+  public string Content => $"{Value}";
+
   public override bool Equals (IParsedEntity? other) => other is NumberEntity ne && ne.Value == Value;
   public override string ToString () => $"{Value}";
 }
-public class NullEntity : ParsedEntity
+/// <summary>An entity representing a null value.</summary>
+public class NullEntity : ParsedEntity, IPrimitiveEntity
 {
+  private const string NullString = "null";
+
   public override BT Type => BT.Null;
 
+  public string Content => NullString;
   public override bool Equals (IParsedEntity? other) => other is NullEntity;
-  public override string ToString () => "null";
+  public override string ToString () => NullString;
+}
+
+public class BooleanEntity : ParsedEntity, IPrimitiveEntity
+{
+  public required bool Value { get; init; }
+  public override BT Type => BT.Boolean;
+  public string Content => Value ? "true" : "false";
+  public override bool Equals (IParsedEntity? other) => other is BooleanEntity be && be.Value == Value;
+  public override string ToString () => Content;
 }
 public class AttributeEntity : ParsedEntity
 {
@@ -134,6 +180,18 @@ public class AttributeEntity : ParsedEntity
     ((Namespace.IsEmpty && ae.Namespace.IsEmpty) || (Namespace?.Equals(ae.Namespace, SCO) == true));
   public override string ToString () => $"{Key}=\"{Value}\"";
 }
+public class PropertyEntity : ParsedEntity
+{
+  public override BT Type => BT.Property;
+  public required string Key { get; init; }
+  public required IParsedEntity Value { get; init; }
+
+  public override bool Equals (IParsedEntity? other) =>
+    other is PropertyEntity pe &&
+    Key.Equals(pe.Key, SCO) &&
+    Value.Equals(pe.Value);
+  public override string ToString () => $"\"{Key}\":{Value}";
+}
 public class ElementEntity : ParsedEntity
 {
   private readonly Collection<IParsedEntity> _attributes = [];
@@ -141,12 +199,12 @@ public class ElementEntity : ParsedEntity
   public ReadOnlyCollection<IParsedEntity> Attributes
   {
     get => [.. _attributes];
-    init => _attributes.AddRange(value);
+    init => AddAttributes(value);
   }
   public ReadOnlyCollection<IParsedEntity> Children
   {
     get => [.. _children];
-    init => _children.AddRange(value);
+    init => AddChildren(value);
   }
   public string? Namespace { get; init; }
   public required string Name { get; init; }
@@ -167,27 +225,26 @@ public class ElementEntity : ParsedEntity
     ? elem + " />"
     : elem + ">" + children + $"</{Name}>";
   }
-  public void AddAttribute (IParsedEntity attribute) => _attributes.Add(attribute);
-  public void AddAttributes (IEnumerable<IParsedEntity> attributes) => _attributes.AddRange(attributes);
-  public void AddChild (IParsedEntity child) => _children.Add(child);
-  public void AddChildren (IEnumerable<IParsedEntity> children) => _children.AddRange(children);
+  public void AddAttribute (IParsedEntity attribute)
+  {
+    attribute.SetParent(this);
+    _attributes.Add(attribute);
+  }
+
+  public void AddAttributes (IEnumerable<IParsedEntity> attributes) => attributes.Foreach(AddAttribute);
+  public void AddChild (IParsedEntity child)
+  {
+    child.SetParent(this);
+    _children.Add(child);
+  }
+
+  public void AddChildren (IEnumerable<IParsedEntity> children) => children.Foreach(AddChild);
+
   public override bool Equals (IParsedEntity? other) =>
     other is ElementEntity ee &&
     Attributes.SequenceEqual(ee.Attributes) &&
     Children.SequenceEqual(ee.Children) &&
     Name.Equals(ee.Name, SCO);
-  public void AssignParent ()
-  {
-    foreach (IParsedEntity entity in Children)
-    {
-      entity.SetParent(this);
-    }
-
-    foreach (IParsedEntity entity in Attributes)
-    {
-      entity.SetParent(this);
-    }
-  }
 }
 public class ElementClosePlaceholder : ParsedEntity
 {
@@ -230,6 +287,80 @@ public class ContentEntity : ParsedEntity
     other is ContentEntity ce && Content.Is(ce.Content);
   public override string ToString () => Content;
 }
+public class ObjectEntity : ParsedEntity
+{
+  private readonly Collection<IParsedEntity> _properties = [];
+  public Collection<IParsedEntity> Properties
+  {
+    get => [.. _properties];
+    init => AddProperties(value);
+  }
+  public override BT Type => BT.Object;
+
+  public void AddProperty (IParsedEntity property)
+  {
+    property.SetParent(this);
+    _properties.Add(property);
+  }
+
+  public void AddProperties (IEnumerable<IParsedEntity> properties) => properties.Foreach(AddProperty);
+  public override bool Equals (IParsedEntity? other) =>
+    other is ObjectEntity oe && Properties.SequenceEqual(oe.Properties);
+  public override string ToString () => Properties.TextJoin(",");
+}
+public class ArrayEntity : ParsedEntity
+{
+  public void AddValue (IParsedEntity child)
+  {
+    child.SetParent(this);
+    _values.Add(child);
+  }
+
+  public void AddValues (IEnumerable<IParsedEntity> children) => children.Foreach(AddValue);
+  private readonly Collection<IParsedEntity> _values = [];
+  public Collection<IParsedEntity> Values
+  {
+    get => [.. _values];
+    init => AddValues(value);
+  }
+  public override BT Type => BT.Array;
+
+  public override bool Equals (IParsedEntity? other) =>
+    other is ArrayEntity ce && Values.SequenceEqual(ce.Values);
+  public override string ToString () => Values.TextJoin(",");
+}
+public class SymbolEntity : ParsedEntity
+{
+  public required string Content { get; init; }
+  public override BT Type => BT.Placeholder;
+
+  public static implicit operator string (SymbolEntity ce) => ce.Content;
+  public static implicit operator SymbolEntity (string s) => new()
+  {
+    Content = s,
+    Origin = s
+  };
+  public static bool operator == (SymbolEntity left, string right)
+  {
+    return left.Content.Is(right);
+  }
+  public static bool operator != (SymbolEntity left, string right)
+  {
+    return !(left == right);
+  }
+
+  public override bool Equals (IParsedEntity? other) =>
+    other is SymbolEntity ce && Content.Is(ce.Content);
+  public override string ToString () => Content;
+
+  public override int GetHashCode () => Content.GetHashCode(SCO);
+  public override bool Equals (object? obj) => obj switch
+  {
+    string s => this == s,
+    IParsedEntity ipe => Equals(ipe),
+    _ => false
+  };
+}
 public class WhitespaceEntity : ParsedEntity
 {
   public required string Content { get; init; }
@@ -239,12 +370,15 @@ public class WhitespaceEntity : ParsedEntity
     other is ContentEntity ce && Content.Is(ce.Content);
   public override string ToString () => Content;
 }
-public class EntityFactory (string origin = EmptyString)
+public partial class EntityFactory (string origin = EmptyString)
 {
   protected ElementEntity? Current { get; set; }
   public string? Origin { get; set; } = origin;
 
   /// <summary>JSON Tokenizing Regex</summary>
+  [GeneratedRegex(JSONRegex, ROIPW | ROML | ROEC, 3000)]
+  [AllowNull]
+  protected static partial Regex JSON_PreCompiled { get; }
   [SS("regex")]
   protected const string JSONRegex =
     """
@@ -265,7 +399,9 @@ public class EntityFactory (string origin = EmptyString)
     (?'comment'   \/\/.* ) |
     (?'comment'   \/\*([^*]|\*[^/])*\*\/ )
     """;
-
+  [GeneratedRegex(XMLRegex, ROIPW | ROML | ROEC, 3000)]
+  [AllowNull]
+  protected static partial Regex XML_PreCompiled { get; }
   [SS("regex")]
   protected const string XMLRegex =
     """
@@ -386,6 +522,11 @@ public class EntityFactory (string origin = EmptyString)
     Origin = match.Value,
     Attributes = [.. ParseAttributes(match)]
   };
+  private static SymbolEntity GetSymbol (Match match) => new()
+  {
+    Content = match.Value,
+    Origin = match.Value
+  };
   private static IParsedEntity ElementSelector (Match match)
   {
     if (match.HasValidGroup("header"))
@@ -440,18 +581,70 @@ public class EntityFactory (string origin = EmptyString)
     Origin.IsEmpty
     ? throw new InvalidOperationException("Origin is empty, cannot parse.")
     : FromString(Origin, type);
-  public IParsedEntity FromString (string content, BT type)
+  public static IParsedEntity FromString (string content, BT type)
   {
+    IParsedEntity? document;
+    IParsedEntity? parent = null;
+    Collection<IParsedEntity> inside = [];
+    Collection<string?> keys = [];
+    MatchCollection matches;
+
+    int get_depth () => inside.Count - 1;
+
+    IParsedEntity obj_create (IParsedEntity? inside_entity, IParsedEntity child_obj)
+    {
+      if (inside_entity is null)
+        (document as JSONDocumentEntity)?.SetRoot(child_obj);
+      else if (inside_entity is ObjectEntity oe)
+        oe.AddProperty(child_obj);
+      else if (inside_entity is ArrayEntity ae)
+        ae.AddValue(child_obj);
+      else
+        throw new InvalidOperationException($"Cannot create an object inside a {inside_entity.Type}.");
+
+      inside.Add(child_obj);
+      keys.Add(null);
+      return child_obj;
+    }
+    IParsedEntity? obj_exit ()
+    {
+      return keys[get_depth()] is not null
+        ? throw new InvalidOperationException($"Key {keys[get_depth()]} ws not popped.")
+        : inside.Pop();
+    }
+    void obj_set_key (string key)
+    {
+      if (keys[get_depth()] is null)
+      {
+        keys[get_depth()] = key;
+      }
+      else
+      {
+        throw new InvalidOperationException($"Key is already set for this object. ({keys[get_depth()]})");
+      }
+    }
+    string obj_pop_key ()
+    {
+      if (keys[get_depth()] is null)
+      {
+        throw new InvalidOperationException($"Key is not set for this object at depth {get_depth()}.");
+      }
+      else
+      {
+        string result = keys[get_depth()]!;
+        keys[get_depth()] = null;
+        return result;
+      }
+    }
+    bool obj_chk_key () => keys[get_depth()] is not null;
+
     switch (type)
     {
       case BT.Null:
         return new NullEntity() { Origin = content };
       #region BT.Element
       case BT.Element:
-        XMLDocumentEntity? document;
-        Collection<ElementEntity> inside = [];
-        ElementEntity? parent = null;
-        MatchCollection matches = Regex.Matches(content, XMLRegex, ROEC | ROIPW | ROML);
+        matches = XML_PreCompiled.Matches(content);
 
         document = new XMLDocumentEntity()
         {
@@ -466,10 +659,10 @@ public class EntityFactory (string origin = EmptyString)
           switch (item)
           {
             case ElementEntity ee when ee.IsHeader:
-              document.SetHeader(item);
+              ((XMLDocumentEntity) document).SetHeader(item);
               continue;
             case ElementOpenPlaceholder eop when parent is null:
-              parent = new()
+              parent = new ElementEntity()
               {
                 Name = eop.Name,
                 Origin = eop.Origin,
@@ -477,7 +670,7 @@ public class EntityFactory (string origin = EmptyString)
                 Parent = document,
                 Attributes = eop.Attributes,
               };
-              document.SetRoot(parent);
+              ((XMLDocumentEntity) document).SetRoot(parent);
               inside.Add(parent);
               continue;
             case WhitespaceEntity when parent is null:
@@ -490,26 +683,26 @@ public class EntityFactory (string origin = EmptyString)
                 Name = inner_eop.Name,
                 Origin = inner_eop.Origin,
                 Namespace = inner_eop.Namespace,
-                Parent = Current,
+                Parent = parent,
                 Attributes = inner_eop.Attributes,
               };
-              parent.AddChild(inner);
+              ((ElementEntity) parent).AddChild(inner);
               inside.Add(inner);
               parent = inner;
               continue;
-            case ElementClosePlaceholder inner_ecp when parent is not null:
-              if (!parent.Name.Is(inner_ecp.Name))
-                throw new InvalidDataException($"Mismatched elements, or you missed a closing tag somewhere. ({parent.Name}) != ({inner_ecp.Name})");
+            case ElementClosePlaceholder inner_ecp when parent is ElementEntity ee:
+              if (!ee.Name.Is(inner_ecp.Name))
+                throw new InvalidDataException($"Mismatched elements, or you missed a closing tag somewhere. ({ee.Name}) != ({inner_ecp.Name})");
               inside.Drop();
               parent = inside.Peek();
               continue;
             case ContentEntity inner_ce when parent is not null:
               inner_ce.SetParent(parent);
-              parent.AddChild(inner_ce);
+              (parent as ElementEntity)?.AddChild(inner_ce);
               continue;
             case ElementEntity inner_ee when parent is not null:
               inner_ee.SetParent(parent);
-              parent.AddChild(inner_ee);
+              (parent as ElementEntity)?.AddChild(inner_ee);
               continue;
             case NumberEntity or StringEntity or NullEntity or AttributeEntity:
               throw new InvalidDataException($"Cannot have an entity of this type ({item.TypeName}) in an XML factory.");
@@ -521,7 +714,54 @@ public class EntityFactory (string origin = EmptyString)
         return document;
       #endregion BT.Element
       case BT.Object:
-        //Todo: Implement JSON parsing
+        matches = JSON_PreCompiled.Matches(content);
+
+        document = new JSONDocumentEntity()
+        {
+          Origin = content,
+          Content = content,
+        };
+
+        foreach (Match match in matches)
+        {
+          IParsedEntity item = CheckMatch(match);
+
+          switch (item)
+          {
+            case SymbolEntity se when se == "{":
+              parent = obj_create(parent, new ObjectEntity());
+              continue;
+            case SymbolEntity se when se == "}":
+              parent = obj_exit();
+              continue;
+            case SymbolEntity se when se == "[":
+              parent = obj_create(parent, new ArrayEntity());
+              continue;
+            case SymbolEntity se when se == "]":
+              parent = obj_exit();
+              continue;
+            case SymbolEntity se when se.Content is "," or ":":
+              continue;
+            // Element Entities are not allowed in JSON
+            case ElementEntity or ContentEntity or AttributeEntity:
+              throw new InvalidDataException($"Cannot have an entity of this type ({item.TypeName}) in a JSON factory.");
+            // The keyname is empty, and we have a string entity, so this is the key for the next property.
+            case StringEntity se when parent is ObjectEntity oe && !obj_chk_key():
+              obj_set_key(se.Value);
+              continue;
+            // The keyname is not empty, and we have a primitive entity, so this is the value for the current property.
+            case IPrimitiveEntity ipe when parent is ObjectEntity oe && obj_chk_key():
+              string keyname = obj_pop_key();
+              PropertyEntity prop = new()
+              {
+                Key = keyname,
+                Origin = $"\"{keyname}\":{ipe.Origin}",
+                Value = ipe,
+              };
+              oe.AddProperty(prop);
+              continue;
+          }
+        }
         break;
       default:
         throw new InvalidOperationException($"Invalid BasicType ({type}) sent to EntityFactory.");

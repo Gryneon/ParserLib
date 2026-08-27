@@ -90,7 +90,7 @@ internal static class Program
       case "NEWXML":
         EntityFactory factory = new();
         string newxml_data = File.ReadAllText(FinishPath(Paths.xml_operation));
-        XMLDocumentEntity parsed = (XMLDocumentEntity) factory.FromString(newxml_data, BasicType.Element);
+        XMLDocumentEntity parsed = (XMLDocumentEntity) EntityFactory.FromString(newxml_data, BasicType.Element);
         XElement x_elem = XElement.Load(FinishPath(Paths.xml_operation));
         XMLDocumentEntity parsedxelem = (XMLDocumentEntity) factory.FromXElement(x_elem);
         Log(MsgClass.Debug, parsed.RootNode?.ToString() ?? SE, "Program");

@@ -37,6 +37,13 @@ public static class IEnumerableExtensions
     }
     public int LastIndex => list.Count() - 1;
     public bool IsEmpty => list?.Any() != true;
+    public void Foreach (Action<T> action)
+    {
+      if (list is null || action is null)
+        return;
+      foreach (T item in list)
+        action(item);
+    }
   }
   extension(IEnumerable list)
   {
