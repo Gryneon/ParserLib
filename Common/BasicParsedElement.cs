@@ -134,24 +134,16 @@ public class AttributeEntity : ParsedEntity
     ((Namespace.IsEmpty && ae.Namespace.IsEmpty) || (Namespace?.Equals(ae.Namespace, SCO) == true));
   public override string ToString () => $"{Key}=\"{Value}\"";
 }
-public class ElementEntity : ParsedEntity
+public class ElementEntity : ElementOpenPlaceholder
 {
-  private readonly Collection<IParsedEntity> _attributes = [];
   private readonly Collection<IParsedEntity> _children = [];
-  public ReadOnlyCollection<IParsedEntity> Attributes
-  {
-    get => [.. _attributes];
-    init => _attributes.AddRange(value);
-  }
   public ReadOnlyCollection<IParsedEntity> Children
   {
     get => [.. _children];
-    init => _children.AddRange(value);
+    init => AddChildren(value);
   }
-  public string? Namespace { get; init; }
-  public required string Name { get; init; }
   public bool IsHeader { get; init; }
-  public override BT Type => BT.Null;
+  public override BT Type => BT.Element;
 
   public override string ToString ()
   {
@@ -167,27 +159,17 @@ public class ElementEntity : ParsedEntity
     ? elem + " />"
     : elem + ">" + children + $"</{Name}>";
   }
-  public void AddAttribute (IParsedEntity attribute) => _attributes.Add(attribute);
-  public void AddAttributes (IEnumerable<IParsedEntity> attributes) => _attributes.AddRange(attributes);
-  public void AddChild (IParsedEntity child) => _children.Add(child);
-  public void AddChildren (IEnumerable<IParsedEntity> children) => _children.AddRange(children);
+  public void AddChild (IParsedEntity child)
+  {
+    child.SetParent(this);
+    _children.Add(child);
+  }
+  public void AddChildren (IEnumerable<IParsedEntity> children) => children.Foreach(AddChild);
   public override bool Equals (IParsedEntity? other) =>
     other is ElementEntity ee &&
     Attributes.SequenceEqual(ee.Attributes) &&
     Children.SequenceEqual(ee.Children) &&
     Name.Equals(ee.Name, SCO);
-  public void AssignParent ()
-  {
-    foreach (IParsedEntity entity in Children)
-    {
-      entity.SetParent(this);
-    }
-
-    foreach (IParsedEntity entity in Attributes)
-    {
-      entity.SetParent(this);
-    }
-  }
 }
 public class ElementClosePlaceholder : ParsedEntity
 {
@@ -209,14 +191,20 @@ public class ElementOpenPlaceholder : ParsedEntity
   public ReadOnlyCollection<IParsedEntity> Attributes
   {
     get => [.. _attributes];
-    init => _attributes.AddRange(value);
+    init => AddAttributes(value);
   }
   public string? Namespace { get; init; }
   public override BT Type => BT.Placeholder;
-
+  public void AddAttribute (IParsedEntity attribute)
+  {
+    attribute.SetParent(this);
+    _attributes.Add(attribute);
+  }
+  public void AddAttributes (IEnumerable<IParsedEntity> attributes) => attributes.Foreach(AddAttribute);
   public override bool Equals (IParsedEntity? other) =>
     other is ElementOpenPlaceholder eop &&
     Name.Is(eop.Name) &&
+    Attributes.SequenceEqual(eop.Attributes) &&
     ((Namespace is null && eop.Namespace is null) || Namespace.Is(eop.Namespace));
   public override string ToString () => $"</{Name}>";
 
@@ -516,7 +504,6 @@ public class EntityFactory (string origin = EmptyString)
             default:
               throw new InvalidOperationException($"Item was not handled. ({item.Type}, {item.Origin}) ");
           }
-
         }
         return document;
       #endregion BT.Element
