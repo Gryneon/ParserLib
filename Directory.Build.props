@@ -1,8 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
   <PropertyGroup>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <Authors>John Taylor</Authors>
     <DefaultLanguage>en-US</DefaultLanguage>
     <DocumentationFile>..\docs\$(MSBuildProjectName).xml</DocumentationFile>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ErrorReport>send</ErrorReport>
@@ -18,8 +20,7 @@
     <RepositoryType>git</RepositoryType>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <Title>$(MSBuildProjectName)</Title>
     <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 </Project>

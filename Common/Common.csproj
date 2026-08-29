@@ -5,7 +5,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
-    <Title>$(MSBuildProjectName)</Title>
     <NoWarn>1701;1702;CS1572;RCS1263</NoWarn>
     <ShouldCreateLogs>True</ShouldCreateLogs>
     <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>

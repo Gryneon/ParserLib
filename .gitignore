@@ -403,8 +403,8 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# JetBrains Rider
 *.sln.iml
 *.zip
-*.lscache
-/Parser/Parser.csproj.lscache
+
+*.csproj.lscache
+~%*.xlsm

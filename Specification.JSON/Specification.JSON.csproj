@@ -7,10 +7,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFramework>net11.0</TargetFramework>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <None Remove="Specification.JSON.csproj.lscache" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Roslynator.Analyzers" Version="4.15.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive"/>
