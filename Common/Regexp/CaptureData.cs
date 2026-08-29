@@ -5,24 +5,24 @@ using Common.RegExp;
 namespace Common.RegExp;
 
 /// <summary>Data for one capture.</summary>
-public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<CaptureData>
+public class CaptureData : IMatchItem, IEquatable<CaptureData>
 {
   /// <inheritdoc/>
-  public int Pos { get; init; } = -1;
+  public int Index { get; init; } = DNE;
   /// <inheritdoc/>
-  public virtual int Len { get; init; }
+  public int Len { get; init; }
   /// <inheritdoc/>
-  public virtual int NextPos => Pos + Len;
+  public int AfterIndex => Index + Len;
   /// <inheritdoc/>
-  public int EndPos => NextPos - 1;
+  public int FinalIndex => AfterIndex - 1;
   /// <inheritdoc/>
   public string Content { get; init; }
   /// <inheritdoc/>
   public virtual string Name { get; }
   /// <summary>The Capture index in the group.</summary>
-  public virtual int Index { get; init; }
+  public virtual int CaptureIndex { get; init; }
   /// <inheritdoc/>
-  public virtual bool IsNull => Pos < 0 || Len <= 0 || Content.Length == 0;
+  public virtual bool IsNull => Index < 0 || Len <= 0 || Content.Length == 0;
 
   internal CaptureData ()
   {
@@ -37,17 +37,17 @@ public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<Capt
   {
     if (c is null)
     {
-      Pos = -1;
+      Index = -1;
       Len = 0;
       Content = SE;
     }
     else
     {
-      Pos = c.Index;
+      Index = c.Index;
       Len = c.Length;
       Content = c.Value;
     }
-    Index = index;
+    CaptureIndex = index;
     Name = groupName;
   }
   /// <summary>Manual constructor.</summary>
@@ -60,18 +60,19 @@ public class CaptureData : IMatchItem, IEquatable<CaptureData>, IComparable<Capt
   {
     Name = name;
     Content = content;
-    Pos = pos;
+    Index = pos;
     Len = len;
-    Index = index;
+    CaptureIndex = index;
   }
 
   public override string ToString () => Content.ContainsAny([Chars.CRLF, Chars.LFs, Chars.CRs])
-      ? $"\"{Content.Replace([Chars.CRLF, Chars.CRs, Chars.LFs], "<NL>")}\" @ {Pos} ({Len})"
-      : $"\"{Content}\" @ {Pos} ({Len})";
-  public bool Equals (CaptureData? other) => other is not null && Pos == other.Pos && Name == other.Name && Index == other.Index && Content.Is(other.Content);
+      ? $"\"{Content.Replace([Chars.CRLF, Chars.CRs, Chars.LFs], "<NL>")}\" @ {Index} ({Len})"
+      : $"\"{Content}\" @ {Index} ({Len})";
+  public bool Equals (CaptureData? other) => other is not null && Index == other.Index && Name == other.Name && CaptureIndex == other.CaptureIndex && Content.Is(other.Content);
   public override bool Equals (object? obj) => Equals(obj as CaptureData);
-  public override int GetHashCode () => HashCode.Combine(Pos, Index, Name, Content);
-  public int CompareTo (CaptureData? other) => Pos.CompareTo(other?.Pos);
+  public override int GetHashCode () => HashCode.Combine(Index, CaptureIndex, Name, Content);
+  public int CompareTo (IIndexSortable? other) => Index.CompareTo(other?.Index);
+  public int CompareTo (object? obj) => CompareTo(obj as IIndexSortable);
 
   public static bool operator == (CaptureData left, CaptureData right) => left is null ? right is null : left.Equals(right);
   public static bool operator != (CaptureData left, CaptureData right) => !(left == right);

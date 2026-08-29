@@ -31,10 +31,7 @@ internal static class Program
   #region Basic Methods
   [MemberNotNull(nameof(UserInput))]
   internal static string GetInput () => UserInput = Console.ReadLine()?.ToUpperInvariant() ?? SE;
-  internal static string FinishPath (string path)
-  {
-    return Directory.Exists(CheckPath) ? $@"{LaptopPath}\{path}" : $@"{DesktopPath}\{path}";
-  }
+  internal static string FinishPath (string path) => Directory.Exists(CheckPath) ? $@"{LaptopPath}\{path}" : $@"{DesktopPath}\{path}";
   #endregion
   #region Menu Definition
   internal static Action<IList<object>> DoTest => item => _ = item[0] is string s && item[1] is Spec sp ? TestTextParser(s, sp) : throw new InvalidOperationException("Invalid data passed to TestTextParser");

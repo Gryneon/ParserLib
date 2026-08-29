@@ -20,3 +20,30 @@ public static class SortedSetExtensions
     public void Add (string chars) => set.UnionWith(chars);
   }
 }
+
+public static class BitArrayExtensions
+{
+  extension(BitArray array)
+  {
+    public void SetRange (int start, int length)
+    {
+      for (int i = start; i < start + length; i++)
+        array.Set(i, true);
+    }
+    public void SetRange (Pos pos)
+    {
+      for (int i = pos.Start; i < pos.Start + pos.Length; i++)
+        array.Set(i, true);
+    }
+    public void UnSetRange (int start, int length)
+    {
+      for (int i = start; i < start + length; i++)
+        array.Set(i, false);
+    }
+    public void UnSetRange (Pos pos)
+    {
+      for (int i = pos.Start; i < pos.Start + pos.Length; i++)
+        array.Set(i, false);
+    }
+  }
+}

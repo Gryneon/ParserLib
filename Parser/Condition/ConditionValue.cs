@@ -1,14 +1,9 @@
 namespace Parser.Condition;
 
-public readonly struct ConditionValue : IValueNode, IEquatable<IValueNode>, IEquatable<ConditionValue>
+public readonly struct ConditionValue (KeyOption type, string? data) : IValueNode, IEquatable<IValueNode>, IEquatable<ConditionValue>
 {
-  public ConditionValue (KeyOption type, string? data)
-  {
-    Data = data;
-    Type = type;
-  }
-  public string? Data { get; }
-  public KeyOption Type { get; }
+  public string? Data { get; } = data;
+  public KeyOption Type { get; } = type;
   public readonly bool IsOperator => Type > KeyOption.OpStart;
   public readonly int? IntValue => int.TryParse(Data, out int val) ? val : null;
   public readonly decimal? DecValue => decimal.TryParse(Data, out decimal val) ? val : null;

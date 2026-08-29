@@ -2,6 +2,9 @@ using System;
 using System.Xml.Linq;
 
 using Common;
+using Common.Extensions;
+
+using static Common.Names;
 
 namespace UnitTest;
 
@@ -38,4 +41,19 @@ public class ParserTests
   //  parse += "";
   //  //ChkToken<string> test = new(parse) { TokenRule = TokenRuleType.None };
   //}
+}
+
+public class CommonTests
+{
+  [Theory]
+  [InlineData("\u0000\u0010\u0020")]
+  public void CharDisplayTest (string data)
+  {
+    string result = SE;
+    foreach (char c in data)
+    {
+      result += c.Display;
+    }
+    Assert.Equal("␀␐␠", result);
+  }
 }

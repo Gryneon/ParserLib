@@ -47,16 +47,8 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
       throw Err.ThrowBadResult($"Token was not a ComplexToken \"{token}\"");
     }
   }
-  public static PropertyObj From (IProperty<object> iprop)
-  {
-    iprop.ThrowIfNull();
-    return new(iprop);
-  }
-  public static PropertyObj From (IProperty<string> iprop)
-  {
-    iprop.ThrowIfNull();
-    return new(iprop);
-  }
+  public static PropertyObj From (IProperty<object> iprop) => new(iprop);
+  public static PropertyObj From (IProperty<string> iprop) => new(iprop);
 
   /// <inheritdoc/>
   /// <remarks>

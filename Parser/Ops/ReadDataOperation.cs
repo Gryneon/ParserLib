@@ -73,7 +73,7 @@ public sealed class ReadDataOperation : Operation
       0 when IsBinary => Memory<byte>.Empty,
       1 when IsValue => ReadBytes(Length).Span[0],
       2 when IsValue => ReadBytes(Length).Span.ToInt16(),
-      4 when IsValue => ReadBytes(Length).ToInt32(),
+      4 when IsValue => ReadBytes(Length).ToInt32,
       8 when IsValue => ReadBytes(Length).Span.ToInt64(),
       > 0 when IsText => ReadChars(Length),
       > 0 when IsBinary => ReadBytes(Length),

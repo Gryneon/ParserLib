@@ -62,5 +62,5 @@ public class GroupDataSet : CaptureData, IReadOnlyCollection<CaptureData>, IEqua
   public override bool Equals (object? obj) => Equals(obj as GroupDataSet);
 
   /// <inheritdoc/>
-  public override int GetHashCode () => HashCode.Combine(Name, Content, Pos, Len);
+  public override int GetHashCode () => HashCode.Combine(Name, Content, Index, Len);
 }

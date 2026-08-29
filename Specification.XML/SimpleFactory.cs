@@ -38,10 +38,7 @@ public abstract class SimpleFactory<TOut> () : IObjectFactory<TOut> where TOut :
   public Spec Spec => Parser.Spec ?? Parser.LocalDefaultSpec;
 
   [SetsRequiredMembers]
-  protected SimpleFactory (XParser parser) : this()
-  {
-    Parser = parser;
-  }
+  protected SimpleFactory (XParser parser) : this() => Parser = parser;
 
   public abstract TOut Produce (IToken input);
   public virtual IEnumerable<TOut> ProduceAll (TokenCollection tokens) => tokens.Select(Produce);

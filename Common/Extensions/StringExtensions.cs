@@ -70,7 +70,7 @@ public static class StringExtensions
   extension(string s)
   {
     public bool IsAlphanumeric => s.All(item => item.IsAlphanumeric());
-    public bool IsControl => s.All(item => item.IsControl());
+    public bool IsControl => s.All(item => item.IsCtrl);
     public bool IsWhitespace => s.All(item => item.IsWhitespace());
     public bool IsNumber => decimal.TryParse(s, out decimal _);
     public int FirstIndexOfAny (IEnumerable<string> checkFor, int startAt, StringComparison sc, out int found_len)

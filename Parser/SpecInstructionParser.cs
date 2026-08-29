@@ -10,14 +10,11 @@ public static class SpecInstructionParser
 {
   private static readonly XNamespace NS = "Parser/Spec";
 
-  private static bool BooleanParse (string? text, bool value_on_fail)
-  {
-    return text is null
+  private static bool BooleanParse (string? text, bool value_on_fail) => text is null
       ? value_on_fail
       : !text.Like(["false", "0", "no"]) && (text.Like(["true", "1", "yes"])
       ? true
       : throw Err.ThrowNoSpec($"Bad Boolean Value Encountered: {text}"));
-  }
 
   public static IEnumerable<Spec> LoadSpecFile (string path)
   {

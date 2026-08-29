@@ -92,7 +92,11 @@ public static class IEnumerableExtensions
 
   extension(IEnumerable<string> list)
   {
-    // IEnumerable<string>
     public RxS AggregateRegex () => list.TextJoin("|");
+  }
+
+  extension(IEnumerable<ReplaceNode> nodes)
+  {
+    public string ReplaceByNodes (string input, StringComparison sc) => nodes.Aggregate(input, (text, node) => text = node.ReplaceText(text, sc));
   }
 }

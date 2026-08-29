@@ -15,7 +15,7 @@ public static class IntExtensions
     public void ThrowIfNegative (string message)
     {
       if (value < 0)
-        throw new InvalidValueException(nameof(value), message);
+        throw new InvalidValueException(nameof(value));
     }
     /// <summary>Checks if a specific flag is set in the integer value.</summary>
     /// <param name="flag">The flag to look for.</param>

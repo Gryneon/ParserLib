@@ -5,8 +5,8 @@ namespace UnitTest;
 public class UDMFTests
 {
   [Theory]
-  [InlineData(@"ParserLib\Parser\Samples\map00.udmf")]
-  [InlineData(@"ParserLib\Parser\Samples\sample.udmf")]
+  [InlineData(@"ParserLib\Specification.ZDoom\Samples\UDMF\map00.udmf")]
+  [InlineData(@"ParserLib\Specification.ZDoom\Samples\UDMF\sample.udmf")]
   public void UDMF_TokenFactoryTest (string file)
   {
     //Load Data

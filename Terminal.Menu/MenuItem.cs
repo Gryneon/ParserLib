@@ -5,7 +5,7 @@ public class MenuItem (int index, string caption, IEnumerable<MenuAction> action
 {
   public required string Caption { get; init; } = caption;
   public required int Index { get; init; } = index;
-  public int Line => MenuController.ActiveMenu?.OptionLines.Start.Value + Index ?? ErrVal;
+  public int Line => (MenuController.ActiveMenu?.OptionLines.Start.Value + Index) ?? ErrVal;
   public bool IsDirty { get; set; } = true;
   public Collection<MenuAction> ItemActions { get; init; } = [.. actions];
   public void Draw (int current_index)

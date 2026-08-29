@@ -61,6 +61,8 @@ public static class Names
   public const RegexOptions ROR2L = RegexOptions.RightToLeft;
   /// <summary>Explicit capture, only stores named groups.</summary>
   public const RegexOptions ROEC = RegexOptions.ExplicitCapture;
+  /// <summary>Culture Invariant, does not care about cultural differences in language.</summary>
+  public const RegexOptions ROCI = RegexOptions.CultureInvariant;
 
   /// <summary>The current thread's default culture.</summary>
   public static CultureInfo CICC => CultureInfo.CurrentCulture;

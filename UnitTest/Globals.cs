@@ -4,8 +4,6 @@ global using System.IO;
 global using System.Reflection;
 global using System.Resources;
 
-global using Common.RegExp;
-
 global using Parser;
 global using Parser.Tokens;
 
