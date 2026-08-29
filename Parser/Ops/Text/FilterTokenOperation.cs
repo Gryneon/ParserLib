@@ -50,6 +50,7 @@ public class FilterTokenOperation : Operation
         FilterTokenType.AnyMatchInToken when OpData is not null => [.. tc.Where(tok => tok is Token && !Regex.IsMatch(tok.Content, OpData))],
         FilterTokenType.MatchEntireToken when OpData is not null => [.. tc.Where(tok => tok is Token && Regex.Match(tok.Content, OpData).Length != tok.Content.Length)],
         FilterTokenType.TokenType => [.. tc.Where(tok => !tok.Type.Like(OpData))],
+        FilterTokenType.None => [.. tc],
         _ => (TokenCollection) Err.ThrowBadDef("Invalid Filter Parameters.")
       };
       Status = OpStatus.Pass;

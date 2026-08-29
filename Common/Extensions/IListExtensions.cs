@@ -38,9 +38,12 @@ public static class IListExtensions
     #endregion Queue Functions for IList<T>
     /// <summary>Adds a range of items to an <see cref="IList{T}"/>.</summary>
     /// <param name="additions">The items to add to the <see cref="IList{T}"/>.</param>
+    /// <exception cref="ANEx">The calling list was null.</exception>
     public void AddRange (IEnumerable<T> additions)
     {
-      if (additions is null || list is null)
+      ANEx.ThrowIfNull(list);
+
+      if (additions is null)
         return;
 
       foreach (T item in additions)

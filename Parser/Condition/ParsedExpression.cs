@@ -4,10 +4,10 @@ using static Parser.Condition.KeyOption;
 
 namespace Parser.Condition;
 
-public class ParsedExpression : IExpression
+public class ParsedExpression (string expr, ParsedExpression? parent = null) : IExpression
 {
   #region Public Properties
-  public string Expression { get; private set; } = SE;
+  public string Expression { get; private set; } = expr;
   public Dictionary<int, string> SubExpressions { get; } = [];
   public void SaveSubExpression (int pos, string expr)
   {
@@ -35,13 +35,7 @@ public class ParsedExpression : IExpression
   protected ImmutableArray<IValueNode>? Sequence { get; private set; }
   [AllowNull]
   private Collection<IValueNode> _workingSequence;
-  private ParsedExpression? Parent { get; }
-
-  public ParsedExpression (string expr, ParsedExpression? parent = null)
-  {
-    Expression = expr;
-    Parent = parent;
-  }
+  private ParsedExpression? Parent { get; } = parent;
 
   public static explicit operator ParsedExpression (string expr) => new(expr);
 
@@ -203,7 +197,7 @@ public class ParsedExpression : IExpression
     {
       return op switch
       {
-        OpIs when robj is Type or null => lobj?.GetType().IsAssignableTo(robj as Type) ?? robj is null,
+        OpIs when robj is Type or null => lobj?.GetType().IsAssignableTo(robj as Type) ?? (robj is null),
         OpIs when lobj is string str => str.Is($"{robj}"),
         OpLike => $"{lobj}".Like($"{robj}"),
         OpSeqEq when lobj is IEnumerable<object> li && robj is IEnumerable<object> ri => li.SequenceEqual(ri),

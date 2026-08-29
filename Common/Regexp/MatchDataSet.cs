@@ -6,8 +6,6 @@ public sealed class MatchDataSet : GroupDataSet,
   IEquatable<MatchDataSet>,
   IEquatable<string>
 {
-  /// <inheritdoc/>
-  public override int Index { get; init; } = -1;
   /// <summary>
   /// The group name, unused in this class.</summary>
   public override string Name => SE;

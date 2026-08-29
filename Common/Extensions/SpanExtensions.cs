@@ -18,7 +18,7 @@ public static class SpanExtensions
       int result = 0;
 
       for (int i = 0; i < buffer.Length; i++)
-        result += buffer[i] << i * 8;
+        result += buffer[i] << (i * 8);
 
       return (short) result;
     }
@@ -30,7 +30,7 @@ public static class SpanExtensions
       int result = 0;
 
       for (int i = 0; i < buffer.Length; i++)
-        result += buffer[i] << i * 8;
+        result += buffer[i] << (i * 8);
 
       return result;
     }
@@ -42,7 +42,7 @@ public static class SpanExtensions
       long result = 0;
 
       for (int i = 0; i < buffer.Length; i++)
-        result += buffer[i] << i * 8;
+        result += buffer[i] << (i * 8);
 
       return result;
     }
@@ -64,17 +64,8 @@ public static class SpanExtensions
 
   extension(Memory<byte> buffer)
   {
-    public int ToInt32 ()
-    {
-      return buffer.Span.ToInt32();
-    }
-    public short ToInt16 ()
-    {
-      return buffer.Span.ToInt16();
-    }
-    public long ToInt64 ()
-    {
-      return buffer.Span.ToInt64();
-    }
+    public int ToInt32 => buffer.Span.ToInt32();
+    public short ToInt16 => buffer.Span.ToInt16();
+    public long ToInt64 => buffer.Span.ToInt64();
   }
 }

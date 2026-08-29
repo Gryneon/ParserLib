@@ -434,11 +434,11 @@
         <member name="T:Common.Extensions.CharExtensions">
             <summary>Extension methods for the <see cref="T:System.Char"/> type.</summary>
         </member>
-        <member name="M:Common.Extensions.CharExtensions.IsLower(System.Char)">
-            <inheritdoc cref="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsLower"/>
+        <member name="M:Common.Extensions.CharExtensions.get_IsLC(System.Char)">
+            <inheritdoc cref="P:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsLC"/>
         </member>
-        <member name="M:Common.Extensions.CharExtensions.Is16bit(System.Char)">
-            <inheritdoc cref="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.Is16bit"/>
+        <member name="M:Common.Extensions.CharExtensions.get_Is16bit(System.Char)">
+            <inheritdoc cref="P:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.Is16bit"/>
         </member>
         <member name="M:Common.Extensions.CharExtensions.IsWhitespace(System.Char)">
             <inheritdoc cref="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsWhitespace"/>
@@ -450,11 +450,11 @@
             <summary>Char Extensions</summary>
             <param name="c">The character to check.</param>
         </member>
-        <member name="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsLower">
+        <member name="P:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsLC">
             <summary>Checks if this character is lowercase a thru z.</summary>
             <returns>true is the character is between ascii 'a' and 'z', false otherwise.</returns>
         </member>
-        <member name="M:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.Is16bit">
+        <member name="P:Common.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.Is16bit">
             <summary>Checks if this character must be represented in 16 bits (256-65535).</summary>
             <returns><see langword="true"/> if it is within the specified range, otherwise <see langword="false"/>.</returns>
         </member>
@@ -558,6 +558,7 @@
         <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
             <summary>Adds a range of items to an <see cref="T:System.Collections.Generic.IList`1"/>.</summary>
             <param name="additions">The items to add to the <see cref="T:System.Collections.Generic.IList`1"/>.</param>
+            <exception cref="T:System.ArgumentNullException">The calling list was null.</exception>
         </member>
         <member name="M:Common.Extensions.IListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.Drop">
             <summary>Performs a 'pop' action, but discards the popped item.</summary>
@@ -614,6 +615,14 @@
             <typeparam name="T">The type of integer value to return.</typeparam>
             <param name="bit">The flag to toggle.</param>
             <returns></returns>
+        </member>
+        <member name="M:Common.Extensions.MatchExtensions.GetGroup(System.Text.RegularExpressions.Match,System.String)">
+            <inheritdoc cref="M:Common.Extensions.MatchExtensions.&lt;G&gt;$D6B04C75D74BF86D0F6D307C4FF829EA.GetGroup(System.String)"/>
+        </member>
+        <member name="M:Common.Extensions.MatchExtensions.&lt;G&gt;$D6B04C75D74BF86D0F6D307C4FF829EA.GetGroup(System.String)">
+            <summary>Gets the last capture of the specified group.</summary>
+            <param name="group_name">The regex group to retrieve.</param>
+            <returns>The value of the last capture of the specified group, or <see langword="null"/> if the group does not exist or is empty.</returns>
         </member>
         <member name="M:Common.Extensions.ObjectExtensions.AsCollection(System.Object)">
             <inheritdoc cref="M:Common.Extensions.ObjectExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.AsCollection"/>
@@ -776,34 +785,6 @@
             <param name="destinationType">The type to convert to.</param>
             <returns>The converted object.</returns>
             <exception cref="T:System.NotSupportedException">Conversion failed.</exception>
-        </member>
-        <member name="T:Common.ICanAccessChildren`2">
-            <summary>Provides a simple keyed lookup framework.</summary>
-            <typeparam name="TIndex">The index or key type.</typeparam>
-            <typeparam name="TChild">The child's type.</typeparam>
-        </member>
-        <member name="P:Common.ICanAccessChildren`2.Count">
-            <summary>The number of children in this object.</summary>
-        </member>
-        <member name="P:Common.ICanAccessChildren`2.Item(`0)">
-            <summary>Accesses the child stored at <paramref name="index"/>.</summary>
-            <param name="index">The index or key to lookup.</param>
-            <returns>The <typeparamref name="TChild"/> at <paramref name="index"/>.</returns>
-        </member>
-        <member name="T:Common.ICanAddChildren`1">
-            <summary>An interface that indicates that an object contains children.</summary>
-            <typeparam name="TChild">The type of child that this object contains.</typeparam>
-        </member>
-        <member name="P:Common.ICanAddChildren`1.Count">
-            <summary>The number of children in this object.</summary>
-        </member>
-        <member name="M:Common.ICanAddChildren`1.Add(`0)">
-            <summary>Adds a child.</summary>
-            <param name="child">The child to add.</param>
-        </member>
-        <member name="M:Common.ICanAddChildren`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
-            <summary>Adds multiple children.</summary>
-            <param name="children">The children to add.</param>
         </member>
         <member name="T:Common.IIndexSortable">
             <summary>Reresents an object sortable by its index.</summary>
@@ -1028,6 +1009,9 @@
         <member name="F:Common.Names.ROEC">
             <summary>Explicit capture, only stores named groups.</summary>
         </member>
+        <member name="F:Common.Names.ROCI">
+            <summary>Culture Invariant, does not care about cultural differences in language.</summary>
+        </member>
         <member name="P:Common.Names.CICC">
             <summary>The current thread's default culture.</summary>
         </member>
@@ -1080,16 +1064,16 @@
         <member name="T:Common.RegExp.CaptureData">
             <summary>Data for one capture.</summary>
         </member>
-        <member name="P:Common.RegExp.CaptureData.Pos">
+        <member name="P:Common.RegExp.CaptureData.Index">
             <inheritdoc/>
         </member>
         <member name="P:Common.RegExp.CaptureData.Len">
             <inheritdoc/>
         </member>
-        <member name="P:Common.RegExp.CaptureData.NextPos">
+        <member name="P:Common.RegExp.CaptureData.AfterIndex">
             <inheritdoc/>
         </member>
-        <member name="P:Common.RegExp.CaptureData.EndPos">
+        <member name="P:Common.RegExp.CaptureData.FinalIndex">
             <inheritdoc/>
         </member>
         <member name="P:Common.RegExp.CaptureData.Content">
@@ -1098,7 +1082,7 @@
         <member name="P:Common.RegExp.CaptureData.Name">
             <inheritdoc/>
         </member>
-        <member name="P:Common.RegExp.CaptureData.Index">
+        <member name="P:Common.RegExp.CaptureData.CaptureIndex">
             <summary>The Capture index in the group.</summary>
         </member>
         <member name="P:Common.RegExp.CaptureData.IsNull">
@@ -1179,16 +1163,13 @@
         <member name="T:Common.RegExp.IMatchItem">
             <summary>An item that matches a regex pattern.</summary>
         </member>
-        <member name="P:Common.RegExp.IMatchItem.Pos">
-            <summary>The position of the match.</summary>
-        </member>
         <member name="P:Common.RegExp.IMatchItem.Len">
             <summary>The length of the match.</summary>
         </member>
-        <member name="P:Common.RegExp.IMatchItem.NextPos">
+        <member name="P:Common.RegExp.IMatchItem.AfterIndex">
             <summary>The next position after the match.</summary>
         </member>
-        <member name="P:Common.RegExp.IMatchItem.EndPos">
+        <member name="P:Common.RegExp.IMatchItem.FinalIndex">
             <summary>The position of the last character in the match.</summary>
         </member>
         <member name="P:Common.RegExp.IMatchItem.Content">
@@ -1210,9 +1191,6 @@
         <member name="T:Common.RegExp.MatchDataSet">
             <summary>
             A collection of groups and their captures from a regex match. This object includes additional functions and properties to make working with regex matches easier.</summary>
-        </member>
-        <member name="P:Common.RegExp.MatchDataSet.Index">
-            <inheritdoc/>
         </member>
         <member name="P:Common.RegExp.MatchDataSet.Name">
             <summary>

@@ -8,15 +8,15 @@ public static class IEnumerableExtensions
 {
   /// <summary>Generic IEnumerable Extensions</summary>
   /// <typeparam name="T">The object type</typeparam>
-  extension<T> (IEnumerable<T> list)
+  extension<T>(IEnumerable<T> list)
   {
     /// <summary>Allows indexing for ienumerable types.</summary>
     /// <param name="list">The list.</param>
     /// <param name="index">The index to retrieve.</param>
     /// <returns>The object at position <paramref name="index"/>.</returns>
-    public T At (int index) => list.ToArray()[index];
-    public Collection<T> ToCollection () => [.. list];
-    public string TextJoin (string separator = EmptyString)
+    public T At(int index) => list.ToArray()[index];
+    public Collection<T> ToCollection() => [.. list];
+    public string TextJoin(string separator = EmptyString)
     {
       string result = string.Empty;
 
@@ -37,12 +37,12 @@ public static class IEnumerableExtensions
     }
     public int LastIndex => list.Count() - 1;
     public bool IsEmpty => list?.Any() != true;
-    public void Foreach (Action<T> action)
+    public void Foreach(Action<T> action)
     {
-      if (list is null || action is null)
-        return;
-      foreach (T item in list)
+      foreach (T? item in list)
+      {
         action(item);
+      }
     }
   }
   extension(IEnumerable list)
@@ -50,12 +50,12 @@ public static class IEnumerableExtensions
     public int ICount => list.AsCollection<object>().Count;
   }
 
-  extension<T> (IReadOnlyCollection<T>? list)
+  extension<T>(IReadOnlyCollection<T>? list)
   {
     public int LastIndex => list is null ? -1 : list.Count - 1;
   }
 
-  extension<T> (IEnumerable<IEnumerable<T>> listlist)
+  extension<T>(IEnumerable<IEnumerable<T>> listlist)
   {
     public Collection<T> Condensed =>
       [.. listlist.Aggregate((list1, list2) => list1.Concat(list2))];
@@ -65,7 +65,7 @@ public static class IEnumerableExtensions
   {
     // IEnumerable
 
-    public string TextJoin (string separator = EmptyString)
+    public string TextJoin(string separator = EmptyString)
     {
       if (list is null)
         return SE;
@@ -82,7 +82,7 @@ public static class IEnumerableExtensions
       }
       return result;
     }
-    public Collection<string> ToStringCollection () => [.. list.Cast<string>()];
+    public Collection<string> ToStringCollection() => [.. list.Cast<string>()];
   }
 
   extension([NotNullWhen(false)] IEnumerable? list)
@@ -92,7 +92,11 @@ public static class IEnumerableExtensions
 
   extension(IEnumerable<string> list)
   {
-    // IEnumerable<string>
-    public RxS AggregateRegex () => list.TextJoin("|");
+    public RxS AggregateRegex() => list.TextJoin("|");
+  }
+
+  extension(IEnumerable<ReplaceNode> nodes)
+  {
+    public string ReplaceByNodes(string input, StringComparison sc) => nodes.Aggregate(input, (text, node) => text = node.ReplaceText(text, sc));
   }
 }

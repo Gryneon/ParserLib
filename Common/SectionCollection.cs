@@ -43,8 +43,14 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>
   public bool Overlaps (Pos section) => _sections.Any(ea => ea.Start <= section.End && ea.End >= section.Start);
   public void Add (Pos section)
   {
-    section.ThrowIfNull();
-    Add(section.Start, section.Length);
+    _sections.Add(section);
+
+    for (int i = section.Start; i < section.Length; i++)
+    {
+      BitArray.Set(i, true);
+    }
+
+    Compress();
   }
   public void Add (int start, int length)
   {
@@ -99,9 +105,5 @@ public sealed class SectionCollection (string full_text) : ICollection<Pos>
     return rem;
   }
   IEnumerator IEnumerable.GetEnumerator () => GetEnumerator();
-  public void AddRange (IEnumerable<Pos> children)
-  {
-    foreach (Pos item in children ?? [])
-      Add(item);
-  }
+  public void AddRange (IEnumerable<Pos> children) => children.Foreach(Add);
 }

@@ -30,7 +30,7 @@ public sealed class DataStore
   [DisallowNull]
   public object? this[string? key, bool throw_on_fail]
   {
-    get => key is null ? null! : throw_on_fail ? LoadOrFail(key) : LoadIfAble(key);
+    get => key is null ? null : throw_on_fail ? LoadOrFail(key) : LoadIfAble(key);
     set
     {
       if (throw_on_fail && key is null)

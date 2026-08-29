@@ -15,13 +15,6 @@ public readonly struct AssignedValue : IValueNode, IEquatable<IValueNode>, IEqua
   public bool Equals (IValueNode? other) => Type == other?.Type && Value == other?.Value;
   bool IEquatable<AssignedValue>.Equals (AssignedValue other) => Equals(other);
 
-  public static bool operator == (AssignedValue left, AssignedValue right)
-  {
-    return left.Equals(right);
-  }
-
-  public static bool operator != (AssignedValue left, AssignedValue right)
-  {
-    return !(left == right);
-  }
+  public static bool operator == (AssignedValue left, AssignedValue right) => left.Equals(right);
+  public static bool operator != (AssignedValue left, AssignedValue right) => !(left == right);
 }

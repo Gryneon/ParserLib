@@ -20,7 +20,7 @@ public class INITests
     string file_text = File.ReadAllText(Helper.GitDir + file);
     XParser parser = new();
     Assert.True(parser.ParseData(Definition.Spec, file_text).IsPass);
-    Assert.True(parser.Data.CanLoad("result"));
+    Assert.NotNull(parser.Result);
   }
 
   [Theory]
@@ -30,7 +30,7 @@ public class INITests
     string file_text = File.ReadAllText(Helper.GitDir + file);
     XParser parser = new();
     Assert.True(parser.ParseData(Definition.Spec, file_text).IsPass);
-    Assert.True(parser.Data.CanLoad<INIDocument>("result"));
+    _ = Assert.IsType<INIDocument>(parser.Result);
   }
 
   [Theory]
@@ -40,7 +40,7 @@ public class INITests
     string file_text = File.ReadAllText(Helper.GitDir + file);
     XParser parser = new();
     Assert.True(parser.ParseData(Definition.Spec, file_text).IsPass);
-    Assert.True(parser.Data.TryLoad<INIDocument>("result", out INIDocument? doc));
+    INIDocument doc = Assert.IsType<INIDocument>(parser.Result);
     Assert.Equal(2, doc.Count);
   }
 }

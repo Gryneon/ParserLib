@@ -6,20 +6,14 @@ public class TokenizeOperation : Operation
   protected TokenRuleCollection Rules { get; }
   public required string InputKey { get; init; }
   public required string OutputKey { get; init; }
-  public TokenizeOperation (IEnumerable<TokenRule> rules)
-  {
-    Rules = [.. rules];
-  }
-  public TokenizeOperation ()
-  {
-    Rules = [];
-  }
+  public TokenizeOperation (IEnumerable<TokenRule> rules) => Rules = [.. rules];
+  public TokenizeOperation () => Rules = [];
 
   protected override void Execute ()
   {
     if (Data[InputKey] is string input)
     {
-      TokenFactory factory = new(Spec, !Rules.Any() ? null : Rules);
+      TokenFactory factory = new(Spec, Rules.Count == 0 ? null : Rules);
       Data[OutputKey] = factory.Produce(input);
       Status = OpStatus.Pass;
     }

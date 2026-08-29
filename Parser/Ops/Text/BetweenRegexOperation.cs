@@ -12,10 +12,8 @@ public class BetweenRegexOperation : Operation
   public required string Suffix { get; init; }
   public required string InputKey { get; init; }
   public required string OutputKey { get; init; }
-  private Collection<string> DoTask (string input)
-  {
-    return [.. from item in OpRegex.Matches(input) select item.Groups["keep"].Value];
-  }
+  private Collection<string> DoTask (string input) =>
+    [.. from item in OpRegex.Matches(input) select item.Groups["keep"].Value];
   protected override void Execute ()
   {
     Data[OutputKey] =

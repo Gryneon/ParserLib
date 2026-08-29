@@ -1,16 +1,14 @@
 namespace Common.RegExp;
 
 /// <summary>An item that matches a regex pattern.</summary>
-public interface IMatchItem
+public interface IMatchItem : IIndexSortable
 {
-  /// <summary>The position of the match.</summary>
-  int Pos { get; }
   /// <summary>The length of the match.</summary>
   int Len { get; }
   /// <summary>The next position after the match.</summary>
-  int NextPos { get; }
+  int AfterIndex { get; }
   /// <summary>The position of the last character in the match.</summary>
-  int EndPos { get; }
+  int FinalIndex { get; }
   /// <summary>The content of the match item, which is the matched string.</summary>
   string Content { get; }
   /// <summary>The name of the match item, which is typically used for named capturing groups in regex.</summary>
