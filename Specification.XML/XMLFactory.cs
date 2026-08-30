@@ -19,8 +19,6 @@ public sealed class XMLFactory
   }
   public IXMLObject Produce ()
   {
-    DebugIn(nameof(XMLFactory), nameof(Produce));
-
     List<IXMLObject> result = [];
 
     foreach (IToken token in _parents)
@@ -39,7 +37,6 @@ public sealed class XMLFactory
 
     }
 
-    DebugOut();
     return result[0];
   }
 }
