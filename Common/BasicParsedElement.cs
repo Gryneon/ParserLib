@@ -21,7 +21,10 @@ public struct GlobalParsingOptions
 }
 public struct EntityParsingOptions<TEntity> where TEntity : IParsedEntity
 {
-  /// <summary>Can be any predefined type, or it can be the special value <see cref="BT."/></summary>
+  /// <summary>
+  /// Can be any predefined type, or it can be the special value <see cref="BT.Custom"/>.
+  /// This determines the class of entity that is produced.
+  /// </summary>
   public BT Type;
   //public string TokenType;
   /// <summary>The group that must be present and have a length > 0 for this entity to be produced.</summary>
@@ -40,11 +43,15 @@ public struct EntityParsingOptions<TEntity> where TEntity : IParsedEntity
   /// This does not have to be the depth changing token.
   /// </summary>
   public bool SetAsNextLevelParent;
+  /// <summary>Whether or not the token stores data into its parent.</summary>
   public bool StoresData;
   /// <summary>The constant value if this entity always has the same value.</summary>
   public string? ConstantValue;
+  /// <summary>Whether or not this token causes an structural change to parsing.</summary>
   public bool DefinesStructure;
+  /// <summary>Only allow this entity at top-level, not as a child.</summary>
   public bool OnlyAtTopLevel;
+  /// <summary>Creates this entity outside of the parsing loop as the initial container for all other tokens.</summary>
   public bool CreateEmptyAtStart;
   /// <summary>The type of piece this entity stores as.</summary>
   public string? StoreAsPieceType;
