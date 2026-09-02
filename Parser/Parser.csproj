@@ -5,6 +5,7 @@
     <AnalysisLevel>preview-all</AnalysisLevel>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>AD0001</NoWarn>
     <TargetFramework>net11.0</TargetFramework>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

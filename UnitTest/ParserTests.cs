@@ -56,4 +56,12 @@ public class CommonTests
     }
     Assert.Equal("␀␐␠", result);
   }
+
+  [Theory]
+  [InlineData(new byte[] { 0, 16, 5, 0 }, 0x00100500, true)]
+  [InlineData(new byte[] { 0, 16, 5, 0 }, 0x00051000, false)]
+  public void SpanToInt (byte[] v, int value, bool big_endian)
+  {
+    Assert.Equal(value, v.ToInt32(big_endian));
+  }
 }

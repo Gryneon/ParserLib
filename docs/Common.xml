@@ -4,6 +4,68 @@
         <name>Common</name>
     </assembly>
     <members>
+        <member name="P:Common.GlobalParsingOptions.GeneratesSingleObject">
+            <summary>The kind of object the end result of the operations should be.</summary>
+            <remarks> This is for validation purposes.<br/>
+            If <see langword="true"/>,The parser will make a single <see cref="T:Common.IParsedEntity"/> object from the data.<br/>
+            If <see langword="false"/>, the parser will make a <see cref="T:System.Collections.ObjectModel.Collection`1"/> of <see cref="T:Common.IParsedEntity"/> objects.</remarks>
+        </member>
+        <member name="P:Common.GlobalParsingOptions.TotalPasses">
+            <summary>The number of iteritive loops the parser must go through.</summary>
+        </member>
+        <member name="P:Common.GlobalParsingOptions.IgnoreCase">
+            <summary>Whether to ignore case on non-regex matches.</summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.Type">
+            <summary>
+            Can be any predefined type, or it can be the special value <see cref="F:Common.BasicType.Custom"/>.
+            This determines the class of entity that is produced.
+            </summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.TokenTypeToIndicate">
+            <summary>The group that must be present and have a length > 0 for this entity to be produced.</summary>
+            <remarks>Only used when processing a list of tokens.</remarks>
+        </member>
+        <member name="P:Common.EntityParsingOptions.GroupToIndicate">
+            <summary>The group that must be present and have a length > 0 for this entity to be produced.</summary>
+            <remarks>Only used when processing a list of matches.</remarks>
+        </member>
+        <member name="P:Common.EntityParsingOptions.DepthChange">
+            <summary>The change in depth this token indicates.</summary>
+            <remarks>
+            Normally 0, 1, or -1.<br/>
+            <c> 1</c>: Increase depth (descend). For example, an opening bracket '{'.<br/>
+            <c> 0</c>: No change in depth. A comma ',' or a keyword in a statement. This is the default value.<br/>
+            <c>-1</c>: Decrease depth (ascend). For example, a closing bracket '}'.
+            </remarks>
+        </member>
+        <member name="P:Common.EntityParsingOptions.SetAsNextLevelParent">
+            <summary>
+            Adds this token to the parent stack, meaning it will recieve all tokens that are passed as data once the depth descends.<br/>
+            This does not have to be the depth changing token.
+            </summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.StoresData">
+            <summary>Whether or not the token stores data into its parent.</summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.ConstantValue">
+            <summary>The constant value if this entity always has the same value.</summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.DefinesStructure">
+            <summary>Whether or not this token causes an structural change to parsing.</summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.OnlyAtTopLevel">
+            <summary>Only allow this entity at top-level, not as a child.</summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.CreateEmptyAtStart">
+            <summary>Creates this entity outside of the parsing loop as the initial container for all other tokens.</summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.StoreAsPieceType">
+            <summary>The type of piece this entity stores as.</summary>
+        </member>
+        <member name="P:Common.EntityParsingOptions.IsConstant">
+            <summary>Gets a value indicating whether this entity has a constant value.</summary>
+        </member>
         <member name="T:Common.BasicType">
             <summary>The type of object.</summary>
         </member>
@@ -15,6 +77,9 @@
         </member>
         <member name="F:Common.BasicType.Placeholder">
             <summary>This gets removed by the second stage parser.</summary>
+        </member>
+        <member name="F:Common.BasicType.Document">
+            <summary>The top level item from a data file, or when <see cref="P:Common.GlobalParsingOptions.GeneratesSingleObject"/> is <see langword="true"/>.</summary>
         </member>
         <member name="F:Common.BasicType.Null">
             <summary>The value 'null'.</summary>
@@ -51,9 +116,19 @@
         <member name="F:Common.BasicType.Property">
             <summary>A Key\Value pair.</summary>
         </member>
+        <member name="F:Common.BasicType.Custom">
+            <summary>The type of a custom type, for a different style structure than what has been defined already.</summary>
+        </member>
+        <member name="P:Common.IParsedEntity.Origin">
+            <summary>Gets the origin of the parsed entity.</summary>
+            <remarks>This is null for entities that are not derived from a single source.</remarks>
+        </member>
         <member name="M:Common.IParsedEntity.SetParent(Common.IParsedEntity)">
             <summary>Sets the parent property after the type has been contructed.</summary>
             <param name="parent">The parent or encompassing object.</param>
+        </member>
+        <member name="P:Common.IPrimitiveEntity.Content">
+            <summary>Gets the content of the primitive entity, as it should be serialized.</summary>
         </member>
         <member name="T:Common.XMLDocumentEntity">
             <summary>An entity representing an xml document.</summary>
@@ -76,12 +151,12 @@
         <member name="P:Common.EntityFactory.JSON_PreCompiled">
             <remarks>
             Pattern:<br/>
-            <code>(?#primitives)\u000A(?'key' " (?'keyname'\w+) " (?=\s*[:=])) |\u000A(?'strvalue'  (?&lt;=[:=]\s*) " (?'value'([^\\"]|\\.)*) " ) |\u000A(?'numvalue'  (?&lt;=[:=]\s*)   (?'value'[0-9.eExXbB]+ )  ) |\u000A(?'boolvalue' (?&lt;=[:=]\s*)   (?'value'true|false)      ) |\u000A(?'nullvalue' (?&lt;=[:=]\s*)   (?'value'null)            ) |\u000A(?#operators)\u000A(?'Ao' \[) |\u000A(?'Ac' \]) |\u000A(?'Bo' \{) |\u000A(?'Bc' \}) |\u000A(?'Cm' \,) |\u000A(?'Eq' [=:]) |\u000A(?#commments)\u000A(?'comment'   \/\/.* ) |\u000A(?'comment'   \/\*([^*]|\*[^/])*\*\/ )</code><br/>
+            <code>(?#primitives)\u000A(?'key'     " (?'keyname'\w+) " (?=\s*[:=])) |\u000A(?'strvalue'  (?&lt;=[:=]\s*) " (?'value'([^\\"]|\\.)*) " ) |\u000A(?'numvalue'  (?&lt;=[:=]\s*)   (?'value'[0-9.eExXbB]+ )  ) |\u000A(?'boolvalue' (?&lt;=[:=]\s*)   (?'value'true|false)      ) |\u000A(?'nullvalue' (?&lt;=[:=]\s*)   (?'value'null)            ) |\u000A(?#operators)\u000A(?'Op'        [[\]{},=:]) |\u000A(?#commments)\u000A(?'comment'   \/\/.* ) |\u000A(?'comment'   \/\*([^*]|\*[^/])*\*\/ )\u000A(?# Other Whitespace)\u000A(?'ws'        \s+)</code><br/>
             Options:<br/>
             <code>RegexOptions.Multiline | RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace</code><br/>
             Explanation:<br/>
             <code>
-            ○ Match with 13 alternative expressions, atomically.<br/>
+            ○ Match with 8 alternative expressions, atomically.<br/>
                 ○ "key" capture group.<br/>
                     ○ Match '"'.<br/>
                     ○ "keyname" capture group.<br/>
@@ -123,37 +198,30 @@
                         ○ Match a character in the set [:=] right-to-left.<br/>
                     ○ "value" capture group.<br/>
                         ○ Match the string "null".<br/>
-                ○ "Ao" capture group.<br/>
-                    ○ Match '['.<br/>
-                ○ "Ac" capture group.<br/>
-                    ○ Match ']'.<br/>
-                ○ "Bo" capture group.<br/>
-                    ○ Match '{'.<br/>
-                ○ "Bc" capture group.<br/>
-                    ○ Match '}'.<br/>
-                ○ "Cm" capture group.<br/>
-                    ○ Match ','.<br/>
-                ○ "Eq" capture group.<br/>
-                    ○ Match a character in the set [:=].<br/>
+                ○ "Op" capture group.<br/>
+                    ○ Match a character in the set [,:=[]{}].<br/>
                 ○ "comment" capture group.<br/>
                     ○ Match the string "//".<br/>
                     ○ Match a character other than '\n' atomically any number of times.<br/>
-                ○ "comment" capture group.<br/>
-                    ○ Match the string "/*".<br/>
-                    ○ Loop greedily any number of times.<br/>
-                        ○ Match with 2 alternative expressions.<br/>
-                            ○ Match any character other than '*'.<br/>
-                            ○ Match a sequence of expressions.<br/>
-                                ○ Match '*'.<br/>
-                                ○ Match any character other than '/'.<br/>
-                    ○ Match the string "*/".<br/>
+                ○ Match a sequence of expressions.<br/>
+                    ○ "comment" capture group.<br/>
+                        ○ Match the string "/*".<br/>
+                        ○ Loop greedily any number of times.<br/>
+                            ○ Match with 2 alternative expressions.<br/>
+                                ○ Match any character other than '*'.<br/>
+                                ○ Match a sequence of expressions.<br/>
+                                    ○ Match '*'.<br/>
+                                    ○ Match any character other than '/'.<br/>
+                        ○ Match the string "*/".<br/>
+                    ○ "ws" capture group.<br/>
+                        ○ Match a whitespace character atomically at least once.<br/>
             </code>
             </remarks>
         </member>
         <member name="P:Common.EntityFactory.XML_PreCompiled">
             <remarks>
             Pattern:<br/>
-            <code>(?# Element Piece)\u000A(?'element'\u000A  &lt;\u000A  (?# '?' for header definition)\u000A  (?'header'\?)?\u000A  \s*\u000A  (?'close'\/)?\u000A  \s*\u000A  (?# optional namespace)\u000A  ((?'ns'\w+):)?\u000A  (?'name'\w+)\u000A\u000A  (?# attributes)\u000A  (\u000A    \s+\u000A    (?'attribute'\u000A      (\u000A        (?'attrns'\w+)\u000A        :\u000A      )?\u000A      (?'attrname'\w+)\u000A      \s*\u000A      =\u000A      \s*\u000A      ""(?'attrval'([^\n""\\]|\\[^\n])*)""\u000A    )\u000A  )*\u000A\u000A  (?'single'\s*\/)?\u000A  \s*\u000A  (?# '?' for ending the header definition)\u000A  (\k'header')?\u000A  &gt;\u000A) |\u000A\u000A(?# Leading or Trailing Whitespace)\u000A(?'ws'(?&lt;=\&gt;)\s+) |\u000A(?'ws'(?&lt;=[^\s&gt;])\s+) |\u000A(?# Leading or Trailing Whitespace)\u000A(?'content'(?&lt;=\&gt;\s*)[^&lt;]+?(?=\s*&lt;)) |\u000A(?# XML Comment)\u000A(?'comment'&lt;!-- ([^-]| -[^-]) --&gt;)</code><br/>
+            <code>(?# Element Piece)\u000A(?'element'\u000A  &lt;\u000A  (?# '?' for header definition)\u000A  (?'header'\?)?\u000A  \s*\u000A  (?'close'\/)?\u000A  \s*\u000A  (?# optional namespace)\u000A  ((?'ns'\w+):)?\u000A  (?'name'\w+)\u000A\u000A  (?# attributes)\u000A  (\u000A    \s+\u000A    (?'attribute'\u000A      ((?'attrns'\w+)\s*:\s*)?\u000A      (?'attrname'\w+)\u000A      \s*\u000A      =\u000A      \s*\u000A      ""(?'attrval'([^\n""\\]|\\[^\n])*)""\u000A    )\u000A  )*\u000A\u000A  (?'single'\s*\/)?\u000A  \s*\u000A  (?# '?' for ending the header definition)\u000A  (\k'header')?\u000A  &gt;\u000A) |\u000A\u000A(?# Leading or Trailing Whitespace)\u000A(?'ws'(?&lt;=\&gt;)\s+) |\u000A(?'ws'(?&lt;=[^\s&gt;])\s+) |\u000A(?# Leading or Trailing Whitespace)\u000A(?'content'(?&lt;=\&gt;\s*)[^&lt;]+?(?=\s*&lt;)) |\u000A(?# XML Comment)\u000A(?'comment'&lt;!-- ([^-]| -[^-])* --&gt;)</code><br/>
             Options:<br/>
             <code>RegexOptions.Multiline | RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace</code><br/>
             Explanation:<br/>
@@ -181,7 +249,9 @@
                             ○ Optional (greedy).<br/>
                                 ○ "attrns" capture group.<br/>
                                     ○ Match a word character atomically at least once.<br/>
+                                ○ Match a whitespace character atomically any number of times.<br/>
                                 ○ Match ':'.<br/>
+                                ○ Match a whitespace character atomically any number of times.<br/>
                             ○ "attrname" capture group.<br/>
                                 ○ Match a word character atomically at least once.<br/>
                             ○ Match a whitespace character atomically any number of times.<br/>
@@ -222,11 +292,12 @@
                         ○ Match '&lt;'.<br/>
                 ○ "comment" capture group.<br/>
                     ○ Match the string "&lt;!--".<br/>
-                    ○ Match with 2 alternative expressions.<br/>
-                        ○ Match any character other than '-'.<br/>
-                        ○ Match a sequence of expressions.<br/>
-                            ○ Match '-'.<br/>
+                    ○ Loop greedily any number of times.<br/>
+                        ○ Match with 2 alternative expressions.<br/>
                             ○ Match any character other than '-'.<br/>
+                            ○ Match a sequence of expressions.<br/>
+                                ○ Match '-'.<br/>
+                                ○ Match any character other than '-'.<br/>
                     ○ Match the string "--&gt;".<br/>
             </code>
             </remarks>

@@ -7,28 +7,76 @@ using BT = Common.BasicType;
 
 namespace Common;
 
-public struct GlobalParsingOptions
+public struct GlobalParsingOptions : IEquatable<GlobalParsingOptions>
 {
   /// <summary>The kind of object the end result of the operations should be.</summary>
   /// <remarks> This is for validation purposes.<br/>
   /// If <see langword="true"/>,The parser will make a single <see cref="IParsedEntity"/> object from the data.<br/>
   /// If <see langword="false"/>, the parser will make a <see cref="Collection{T}"/> of <see cref="IParsedEntity"/> objects.</remarks>
-  public bool GeneratesSingleObject;
+  public bool GeneratesSingleObject { get; set; }
   /// <summary>The number of iteritive loops the parser must go through.</summary>
-  public int TotalPasses;
+  public int TotalPasses { get; set; }
   /// <summary>Whether to ignore case on non-regex matches.</summary>
-  public bool IgnoreCase;
+  public bool IgnoreCase { get; set; }
+  public readonly bool Equals (GlobalParsingOptions other) =>
+    GeneratesSingleObject == other.GeneratesSingleObject &&
+    TotalPasses == other.TotalPasses &&
+    IgnoreCase == other.IgnoreCase;
+  public override readonly bool Equals (object? obj) =>
+    obj is GlobalParsingOptions other && Equals(other);
+  public override readonly int GetHashCode () =>
+    HashCode.Combine(GeneratesSingleObject, TotalPasses, IgnoreCase);
+  public static bool operator == (GlobalParsingOptions left, GlobalParsingOptions right) => left.Equals(right);
+  public static bool operator != (GlobalParsingOptions left, GlobalParsingOptions right) => !(left == right);
 }
-public struct EntityParsingOptions<TEntity> where TEntity : IParsedEntity
+
+public class XMLParsingOptions
+{
+  public GlobalParsingOptions Global { get; set; }
+  public IImmutableList<TokenParsingOptions> TokenOptions { get; set; } = [];
+  public ILookup<string, EntityParsingOptions> EntityOptionsByTokenType =>
+    EntityOptionsByType.Values.ToLookup(static e => e.TokenTypeToIndicate);
+
+  public Dictionary<Type, EntityParsingOptions> EntityOptionsByType { get; } = new()
+  {
+    [typeof(StringEntity)] = new()
+    {
+      GroupToIndicate = "strvalue",
+      StoresData = true
+    },
+    [typeof(BooleanEntity)] = new()
+    {
+      GroupToIndicate = "boolvalue",
+      StoresData = true,
+    },
+    [typeof(PropertyEntity)] = new()
+    {
+
+      StoresData = true,
+    }
+  };
+
+}
+
+public struct TokenParsingOptions
+{
+  public BT MakeType { get; set; }
+}
+
+public struct EntityParsingOptions
 {
   /// <summary>
   /// Can be any predefined type, or it can be the special value <see cref="BT.Custom"/>.
   /// This determines the class of entity that is produced.
   /// </summary>
-  public BT Type;
-  //public string TokenType;
+  public BT Type { get; set; }
   /// <summary>The group that must be present and have a length > 0 for this entity to be produced.</summary>
-  public string GroupToIndicate;
+  /// <remarks>Only used when processing a list of tokens.</remarks>
+  public string TokenTypeToIndicate { get; set; }
+  /// <summary>The group that must be present and have a length > 0 for this entity to be produced.</summary>
+  /// <remarks>Only used when processing a list of matches.</remarks>
+  public string GroupToIndicate { get; set; }
+  public string ExactValueToIndicate { get; set; }
   /// <summary>The change in depth this token indicates.</summary>
   /// <remarks>
   /// Normally 0, 1, or -1.<br/>
@@ -36,28 +84,28 @@ public struct EntityParsingOptions<TEntity> where TEntity : IParsedEntity
   /// <c> 0</c>: No change in depth. A comma ',' or a keyword in a statement. This is the default value.<br/>
   /// <c>-1</c>: Decrease depth (ascend). For example, a closing bracket '}'.
   /// </remarks>
-  public string ExactValueToIndicate;
-  public int DepthChange;
+  public int DepthChange { get; set; }
   /// <summary>
   /// Adds this token to the parent stack, meaning it will recieve all tokens that are passed as data once the depth descends.<br/>
   /// This does not have to be the depth changing token.
   /// </summary>
-  public bool SetAsNextLevelParent;
+  public bool SetAsNextLevelParent { get; set; }
   /// <summary>Whether or not the token stores data into its parent.</summary>
-  public bool StoresData;
+  public bool StoresData { get; set; }
   /// <summary>The constant value if this entity always has the same value.</summary>
-  public string? ConstantValue;
+  public string? ConstantValue { get; set; }
   /// <summary>Whether or not this token causes an structural change to parsing.</summary>
-  public bool DefinesStructure;
+  public bool DefinesStructure { get; set; }
   /// <summary>Only allow this entity at top-level, not as a child.</summary>
-  public bool OnlyAtTopLevel;
+  public bool OnlyAtTopLevel { get; set; }
   /// <summary>Creates this entity outside of the parsing loop as the initial container for all other tokens.</summary>
-  public bool CreateEmptyAtStart;
+  public bool CreateEmptyAtStart { get; set; }
   /// <summary>The type of piece this entity stores as.</summary>
-  public string? StoreAsPieceType;
-  public IImmutableList<string> CollectionPieceTypes;
+  public string? StoreAsPieceType { get; set; }
+  public IImmutableList<string> CollectionPieceTypes { get; set; }
 
   #region Calculated Properties
+  /// <summary>Gets a value indicating whether this entity has a constant value.</summary>
   [MemberNotNullWhen(true, nameof(ConstantValue))]
   public readonly bool IsConstant => ConstantValue is not null;
   #endregion
@@ -116,12 +164,14 @@ public static class BasicTypeExt
   {
     public bool IsPrimitive => type is BT.Number or BT.String or BT.Boolean;
     public bool IsDictionary => type is BT.Object or BT.Element;
-    public bool IsCollection => type is BT.Array or BT.Element or BT.Object;
+    public bool IsCollection => type is BT.Array or BT.Element or BT.Object or BT.Document;
   }
 }
 
 public interface IParsedEntity
 {
+  /// <summary>Gets the origin of the parsed entity.</summary>
+  /// <remarks>This is null for entities that are not derived from a single source.</remarks>
   string? Origin { get; }
   BT Type { get; }
   IParsedEntity? Parent { get; }
@@ -134,10 +184,14 @@ public interface IParsedEntity
   /// <summary>Sets the parent property after the type has been contructed.</summary>
   /// <param name="parent">The parent or encompassing object.</param>
   void SetParent (IParsedEntity parent);
+
+  void CreateFrom (Match match);
+  void CreateFrom (string origin);
 }
 
 public interface IPrimitiveEntity : IParsedEntity
 {
+  /// <summary>Gets the content of the primitive entity, as it should be serialized.</summary>
   string Content { get; }
 }
 
@@ -151,6 +205,8 @@ public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>
   public abstract bool Equals (IParsedEntity? other);
   public abstract override string ToString ();
   public void SetParent (IParsedEntity? parent) => _parent = parent;
+  public void CreateFrom (Match match) => throw new NotImplementedException();
+  public void CreateFrom (string origin) => throw new NotImplementedException();
 }
 
 public class StringEntity : ParsedEntity, IPrimitiveEntity
@@ -497,7 +553,7 @@ public partial class EntityFactory (string origin = EmptyString)
     Collection<string> origins = [.. match.Groups["attributes"].Captures.Select(c => c.Value)];
     Collection<string> namespaces = [..
       from o in origins
-      let colon = o.IndexOf(':')
+      let colon = o.IndexOf(':', SCO)
       select colon != DNE ? o[..colon] : SE];
     Collection<string> keys = [.. match.Groups["attrname"].Captures.Select(c => c.Value)];
     Collection<IParsedEntity> values = [.. match.Groups["attrval"].Captures.Select(c => new StringEntity() { Value = c.Value, Origin = c.Value })];

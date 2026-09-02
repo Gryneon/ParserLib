@@ -4,8 +4,7 @@
     <Name>xml</Name>
     <TextFile>true</TextFile>
     <CaseInsensitive>false</CaseInsensitive>
-    <TokenRules>
-    </TokenRules>
+    <TokenRules></TokenRules>
     <GroupTokenRules>
       <Rule>
         <Type>None</Type>
@@ -100,20 +99,21 @@
       </Rule>
     </GroupTokenRules>
     <Instructions>
-      <Label name="Start"/>
-      <Tokenize input_var="text" output_var="tokens"/>
-      <Print check_var="tokens"/>
-      <TokenAssemble input_var="tokens" output_var="token_groups"/>
-      <Print check_var="token_groups"/>
-      <Terminate success="true"/>
+      <Label name="Start"></Label>
+      <Tokenize input_var="text" output_var="tokens"></Tokenize>
+      <Print check_var="tokens"></Print>
+      <TokenAssemble input_var="tokens" output_var="token_groups"></TokenAssemble>
+      <Print check_var="token_groups"></Print>
+      <Terminate success="true"></Terminate>
     </Instructions>
     <TokenConstructs allow_unlisted="false">
-      <Construct tokentype="ElementPair" class="XElement">
+      <Construct tokentype="ElementPair" class="ElementEntity">
         <PropertyList tokentype="Property" class="PropertyObj">
-          <Name tokentype="Key" class="string"/>
-          <Value tokentype="Value" class="string"/>
+          <Name tokentype="Key" class="string"></Name>
+          <Value tokentype="Value" class="string"></Value>
         </PropertyList>
       </Construct>
+      <Construct></Construct>
     </TokenConstructs>
     <FileInferences initial="or">
       <Extension>ini</Extension>
