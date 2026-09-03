@@ -32,30 +32,94 @@ public struct GlobalParsingOptions : IEquatable<GlobalParsingOptions>
 
 public class XMLParsingOptions
 {
-  public GlobalParsingOptions Global { get; set; }
+  public GlobalParsingOptions Global { get; } = new GlobalParsingOptions()
+  {
+    GeneratesSingleObject = true,
+    IgnoreCase = false,
+    TotalPasses = 2
+  };
+  public IImmutableList<TokenParsingOptions> TokenOptions { get; set; } = [];
+
+}
+
+public class JSONParsingOptions
+{
+  public GlobalParsingOptions Global { get; } = new GlobalParsingOptions()
+  {
+    GeneratesSingleObject = true,
+    IgnoreCase = false,
+    TotalPasses = 2
+  };
   public IImmutableList<TokenParsingOptions> TokenOptions { get; set; } = [];
   public ILookup<string, EntityParsingOptions> EntityOptionsByTokenType =>
-    EntityOptionsByType.Values.ToLookup(static e => e.TokenTypeToIndicate);
+    EntityOptions.Values.ToLookup(static e => e.TokenTypeToIndicate);
 
-  public Dictionary<Type, EntityParsingOptions> EntityOptionsByType { get; } = new()
-  {
-    [typeof(StringEntity)] = new()
-    {
+  public Collection<EntityParsingOptions> EntityOptions { get; } = [
+    new() {
+      GroupToIndicate = "key",
+      StoresData = true,
+      Type = BT.String,
+      StoreAsPieceType = "name",
+      SetAsNextLevelParent = true,
+      SetPropKey = true
+    }, new() {
       GroupToIndicate = "strvalue",
-      StoresData = true
-    },
-    [typeof(BooleanEntity)] = new()
-    {
+      StoresData = true,
+      Type = BT.String,
+      StoreAsPieceType = "value"
+    }, new() {
       GroupToIndicate = "boolvalue",
       StoresData = true,
-    },
-    [typeof(PropertyEntity)] = new()
-    {
-
+      Type = BT.Boolean,
+      StoreAsPieceType = "value"
+    }, new() {
+      GroupToIndicate = "property",
       StoresData = true,
-    }
-  };
-
+      Type = BT.Property,
+      StoreAsPieceType = "property"
+    }, new () {
+      GroupToIndicate = "numvalue",
+      StoresData = true,
+      Type = BT.Number,
+      StoreAsPieceType = "value
+    }, new() {
+      GroupToIndicate = "nullvalue",
+      StoresData = true,
+      Type = BT.Null,
+      StoreAsPieceType = "value"
+    }, new() {
+      GroupToIndicate = "comment",
+      StoresData = false,
+      Type = BT.Comment,
+    }, new() {
+      GroupToIndicate = "ws",
+      StoresData = false,
+      Type = BT.IgnoredWhitespace,
+    }, new() {
+      GroupToIndicate = "Op",
+      ExactValueToIndicate = "{",
+      DepthChange = 1,
+      Type = BT.Operator,
+      ConstantValue = "{",
+    }, new() {
+      GroupToIndicate = "Op",
+      ExactValueToIndicate = "}",
+      DepthChange = -1,
+      Type = BT.Operator,
+      ConstantValue = "}",
+    }, new() {
+      GroupToIndicate = "Op",
+      ExactValueToIndicate = "[",
+      DepthChange = 1,
+      Type = BT.Operator,
+      ConstantValue = "[",
+    }, new() {
+      GroupToIndicate = "Op",
+      ExactValueToIndicate = "]",
+      DepthChange = -1,
+      Type = BT.Operator,
+      ConstantValue = "]",
+    }];
 }
 
 public struct TokenParsingOptions
@@ -72,11 +136,11 @@ public struct EntityParsingOptions
   public BT Type { get; set; }
   /// <summary>The group that must be present and have a length > 0 for this entity to be produced.</summary>
   /// <remarks>Only used when processing a list of tokens.</remarks>
-  public string TokenTypeToIndicate { get; set; }
+  public string? TokenTypeToIndicate { get; set; }
   /// <summary>The group that must be present and have a length > 0 for this entity to be produced.</summary>
   /// <remarks>Only used when processing a list of matches.</remarks>
-  public string GroupToIndicate { get; set; }
-  public string ExactValueToIndicate { get; set; }
+  public string? GroupToIndicate { get; set; }
+  public string? ExactValueToIndicate { get; set; }
   /// <summary>The change in depth this token indicates.</summary>
   /// <remarks>
   /// Normally 0, 1, or -1.<br/>
@@ -85,6 +149,7 @@ public struct EntityParsingOptions
   /// <c>-1</c>: Decrease depth (ascend). For example, a closing bracket '}'.
   /// </remarks>
   public int DepthChange { get; set; }
+  public bool SetPropKey { get; set; }
   /// <summary>
   /// Adds this token to the parent stack, meaning it will recieve all tokens that are passed as data once the depth descends.<br/>
   /// This does not have to be the depth changing token.

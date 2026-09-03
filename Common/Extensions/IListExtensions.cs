@@ -8,7 +8,7 @@ public static class IListExtensions
   /// <summary>List extensions with <typeparamref name="T"/> as the item type.</summary>
   /// <typeparam name="T">The type of items in the <see cref="IList{T}"/>.</typeparam>
   /// <param name="list">The list that the methods are executing from.</param>
-  extension<T> ([NotNullWhen(true)] IList<T>? list)
+  extension<T> ([NotNullWhen(true)] ICollection<T>? list)
   {
     /// <summary>Checks if an <see cref="IList{T}"/> is <see langword="null"/> or empty.</summary>
     /// <returns><see langword="true"/> if the list is empty or null, <see langword="false"/> otherwise.</returns>
