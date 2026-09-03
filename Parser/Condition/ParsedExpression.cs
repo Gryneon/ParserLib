@@ -189,6 +189,7 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
         OpGteq => left_num >= right_num,
         OpEq => left_num == right_num,
         OpNotEq => left_num != right_num,
+        OpAdd => left_num + right_num,
         _ => null
       };
     }
@@ -211,6 +212,7 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
       {
         OpOr when lobj is bool l && robj is bool r => l || r,
         OpAnd when lobj is bool l && robj is bool r => l && r,
+        OpXOr when lobj is bool l && robj is bool r => l ^ r,
         _ => null
       };
     }
@@ -224,6 +226,7 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
     Exp,
     Mult,
     Add,
+    Keyword,
     And,
     Or,
   }

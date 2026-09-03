@@ -9,7 +9,7 @@ public sealed class CursorData
     get => field = ListKey is null ? field : Parser?.Data.GetCountOfKey(ListKey) ?? 0;
     set;
   }
-  public object? This => ListKey is null ? null :
+  public object? Current => ListKey is null ? null :
     (Parser?.Data.TryLoadArray(ListKey, out IEnumerable<object>? list) ?? false) ? new List<object>(list)[Index] : null;
   /// <summary>The index of the cursor.</summary>
   public int Index { get; set; }
@@ -52,5 +52,5 @@ public sealed class CursorData
   #endregion
 
   public override string ToString () =>
-    $"CursorData: {(ListKey is null ? "" : $"ListKey = {ListKey}")} ( {Index} / {Length} ) = {This}";
+    $"CursorData: {(ListKey is null ? "" : $"ListKey = {ListKey}")} ( {Index} / {Length} ) = {Current}";
 }

@@ -2,6 +2,7 @@
 
 namespace Common;
 
+/// <summary>A section of string content.</summary>
 public class Section : IEquatable<Section>, IComparable<Section>, IEquatable<Pos>, IComparable<Pos>
 {
   public int Start { get; init; }

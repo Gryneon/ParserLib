@@ -59,4 +59,5 @@ public enum KeyOption
   OpLBs,          // << (Left Bitshift)
   OpRBs,          // >> (Right Bitshift)
   OpSqt,          // root (Any Root, just negative exp)
+  OpXOr,
 }

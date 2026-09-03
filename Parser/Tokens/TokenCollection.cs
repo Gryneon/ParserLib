@@ -2,7 +2,7 @@ namespace Parser.Tokens;
 
 public static class TokenType
 {
-  public static bool IsEmpty (string type) => type is null or "-" or "" || type.Like("None");
+  public static bool IsEmpty (string type) => type is null or "-" or EmptyString || type.Like("None");
 }
 
 /// <summary>A collection of tokens, use this to keep token operations consistent.</summary>

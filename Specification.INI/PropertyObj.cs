@@ -75,9 +75,4 @@ public class PropertyObj : PropertyBase<string>, ITextSerializer
   /// <summary>Gets the <see langword="string"/> representation of the object for serialization.</summary>
   /// <returns>The <see langword="string"/> representation of the object.</returns>
   public string Serialize () => $"  {Key}={Value}";
-  public static implicit operator KeyValuePair<string, string> (PropertyObj from)
-  {
-    from.ThrowIfNull();
-    return new(from.Key, from?.Value ?? SE);
-  }
 }

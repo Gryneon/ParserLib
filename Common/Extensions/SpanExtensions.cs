@@ -7,10 +7,22 @@ namespace Common.Extensions;
 
 public static class SpanExtensions
 {
-  private static void Adjust (ref int value, bool big_endian) => value = big_endian ? value - 1 : value + 1;
-  private static int Init (int size, bool big_endian) => big_endian ? size - 1 : 0;
+  //private static Span<byte> Bytes<T> (bool big_endian, T input) where T : struct, IConvertible, INumber<T>
+  //{
+  //  int size = sizeof(T);
 
-  private static unsafe T Calc<T> (bool big_endian, ReadOnlySpan<byte> bytes) where T : struct, IMinMaxValue<T>, INumber<T>, IIncrementOperators<T>
+  //  byte[] bytes = (byte[]) Array.CreateInstance(typeof(byte), size);
+
+  //  dynamic input2 = input;
+
+  //  for (int p = 0; p < size; p++)
+  //  {
+  //    bytes[p] = input2 % (256  (p + 1));
+  //  }
+
+  //  return bytes.ToArray().AsSpan();
+  //}
+  private static T Calc<T> (bool big_endian, ReadOnlySpan<byte> bytes) where T : struct, IMinMaxValue<T>, INumber<T>, IIncrementOperators<T>
   {
     int size = sizeof(T);
 

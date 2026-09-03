@@ -20,7 +20,7 @@ namespace Parser.Ops.Text;
 /// </remarks>
 public class ReplaceOperation : Operation
 {
-  public ReplaceNodes Nodes { get; init; } = [(RX.LnEnd, Chars.LFs)];
+  public Collection<ReplaceNode> Nodes { get; init; } = [(RX.LnEnd, Chars.LFs)];
   public required string InputKey { get; init; }
   public required string OutputKey { get; init; }
 
