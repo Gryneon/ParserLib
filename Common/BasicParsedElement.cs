@@ -81,7 +81,7 @@ public class JSONParsingOptions
       GroupToIndicate = "numvalue",
       StoresData = true,
       Type = BT.Number,
-      StoreAsPieceType = "value
+      StoreAsPieceType = "value"
     }, new() {
       GroupToIndicate = "nullvalue",
       StoresData = true,
