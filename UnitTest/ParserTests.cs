@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Linq;
 
-using Common;
+using Common.Entity;
 using Common.Extensions;
 
 using static Common.Names;

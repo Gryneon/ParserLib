@@ -2,6 +2,8 @@
 
 using System.Xml.Linq;
 
+using Common.Entity;
+
 using Parser.Inference;
 
 namespace Parser;

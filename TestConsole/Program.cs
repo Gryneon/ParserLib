@@ -1,5 +1,7 @@
 using System.Xml.Linq;
 
+using Common.Entity;
+
 using Parser.Exceptions;
 
 using ResWAD = Specification.WAD.Properties.Resources;

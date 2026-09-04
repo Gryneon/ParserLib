@@ -1,9 +1,9 @@
 #pragma warning disable CA1710 // Identifiers should have correct suffix
 #pragma warning disable format // Formatting
 
-using BT = Common.BasicType;
+using BT = Common.Entity.BasicType;
 
-namespace Common;
+namespace Common.Entity;
 public class ParsingSet
 {
   public GlobalParsingOptions Global { get; init; } = new GlobalParsingOptions()
@@ -58,7 +58,7 @@ public static class DefaultParsingSets
   };
 
 }
-public class ParserContext
+public sealed class ParserContext
 {
   public string? OriginText { get; set; }
   public IParsedEntity? Document { get; set; }
@@ -246,6 +246,20 @@ public struct EntityParsingOptions
   #region Validation Properties
   /// <summary>Only allow this entity at top-level, not as a child.</summary>
   public bool OnlyAtTopLevel { get; set; }
+
+  public override bool Equals (object obj)
+  {
+    throw new NotImplementedException();
+  }
+
+  public override int GetHashCode () => HashCode.Combine(Type, IndicatedItem, DepthChange, SetPropKey, SetAsNextLevelParent, CreateEmptyAtStart, ConstantValue, StoreAsPieceTypes, HashCode.Combine(StoresData, DefinesStructure, OnlyAtTopLevel));
+
+  public static bool operator == (EntityParsingOptions left, EntityParsingOptions right)
+  {
+    return left.Equals(right);
+  }
+
+  public static bool operator != (EntityParsingOptions left, EntityParsingOptions right) => !(left == right);
   #endregion
 }
 

@@ -4,17 +4,25 @@
 using System.Data;
 using System.Xml.Linq;
 
-using BT = Common.BasicType;
+using BT = Common.Entity.BasicType;
 
-namespace Common;
+namespace Common.Entity;
 public abstract class ParsedEntity : IParsedEntity, IEquatable<IParsedEntity>, IEntity
 {
+  /// <summary>Gets or sets the parent entity.</summary>
+  /// <remarks>This is <see langword="null"/> if the current entity is a root entity.</remarks>
   public IParsedEntity? Parent { get; set; }
   public virtual string? Origin { get; init; }
+  /// <summary>This should be overridden by any inherited class.</summary>
+  /// <remarks>This determines the class of the entity.</remarks>
   public abstract BT Type { get; }
+  /// <summary>Gets the property collections.</summary>
   public virtual IDictionary<string, IList<IParsedEntity>> PropertyCollections { get; } = new Dictionary<string, IList<IParsedEntity>>();
+  /// <summary>Gets the child entities.</summary>
   public virtual IList<IParsedEntity> Children { get; } = [];
+  /// <summary>Gets the property values.</summary>
   public virtual IDictionary<string, IParsedEntity> PropertyValues { get; } = new Dictionary<string, IParsedEntity>();
+  /// <summary>Gets the data values.</summary>
   public virtual IDictionary<string, object?> DataValues { get; } = new Dictionary<string, object?>();
 
   public abstract bool Equals (IParsedEntity? other);
@@ -30,7 +38,10 @@ public class ErrorEntity : ParsedEntity
 }
 public class StringEntity : ParsedEntity, IPrimitiveEntity
 {
+  /// <summary>Gets the serialized representation of the string value.</summary>
+  /// <remarks>This contains quotes.</remarks>
   public string Content => $"\"{Value}\"";
+  /// <summary>Gets or sets the string value.</summary>
   public required string Value
   {
     get => (string) DataValues["Value"]!;
@@ -45,13 +56,11 @@ public class StringEntity : ParsedEntity, IPrimitiveEntity
   };
   public override bool Equals (IParsedEntity? other) =>
     other is StringEntity entity && Value.Equals(entity.Value, SCO);
-  public override string? ToString () => $"\"{Value}\"";
+  public override string? ToString () => Content;
 }
 /// <summary>An entity representing an xml document.</summary>
-public class XMLDocumentEntity : ParsedEntity
+public class XMLDocumentEntity : JSONDocumentEntity
 {
-  /// <summary>The entire text contents of the file.</summary>
-  public required string Content { get; init; }
   public IParsedEntity? Header { get; protected set; }
   public IParsedEntity? RootNode { get; protected set; }
   public override BT Type => BT.Document;
@@ -60,7 +69,6 @@ public class XMLDocumentEntity : ParsedEntity
     other is XMLDocumentEntity de && Content.Equals(de.Content, SCO);
   public override string ToString () => Content;
   public void SetHeader (IParsedEntity? header) => Header = header;
-  public void SetRoot (IParsedEntity? root) => RootNode = root;
 }
 /// <summary>An entity representing a json document.</summary>
 public class JSONDocumentEntity : ParsedEntity
