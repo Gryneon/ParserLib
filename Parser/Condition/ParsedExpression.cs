@@ -42,10 +42,11 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
   protected object? GetValue (ConditionValue @ref) => @ref.Type switch
   {
     LoadKey => Data[@ref.Value],
-    CountOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value] is IEnumerable ien ? ien.ICount : 1 : 0,
+    CountOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value] is IEnumerable<object> ien ? ien.ICount : 1 : 0,
     CheckKeyExists => Data.CanLoad(@ref.Value),
     TypeOfKey => Data.CanLoad(@ref.Value) ? Data[@ref.Value].GetType().Name : "null",
     Literal => @ref.Value,
+    KeyOption.Decimal => decimal.TryParse(@ref.Value, out decimal d) ? d : Err.ThrowBadDef($"Condition String Tried to GetValue from a decimal literal {@ref}."),
     False => false,
     True => true,
     Null => null,
@@ -182,7 +183,7 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
         OpDiv => left_num / right_num,
         OpMul => left_num * right_num,
         OpMod => left_num % right_num,
-        OpExp => left_num ^ right_num,
+        OpExp => Math.Pow(left_num, right_num),
         OpLt => left_num < right_num,
         OpGt => left_num > right_num,
         OpLteq => left_num <= right_num,
@@ -190,6 +191,12 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
         OpEq => left_num == right_num,
         OpNotEq => left_num != right_num,
         OpAdd => left_num + right_num,
+        OpIs => left_num == right_num,
+        OpAnd => left_num > 0 && right_num > 0,
+        OpOr => left_num > 0 || right_num > 0,
+        OpSub => left_num - right_num,
+        OpRoot => Math.Pow(left_num, -right_num),
+        OpXOr => left_num ^ right_num,
         _ => null
       };
     }
@@ -220,17 +227,6 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
     return null;
   }
 
-  protected enum OoOp
-  {
-    Paren,
-    Exp,
-    Mult,
-    Add,
-    Keyword,
-    And,
-    Or,
-  }
-
   /// <summary>
   /// Evaluate the expression.
   /// </summary>
@@ -241,9 +237,9 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
     if (Sequence is null)
       Parse();
 
+    OoOp current_level = OoOp.None, oplvl = OoOp.None;
     int left_index, right_index, op_index, i;
     _workingSequence = [.. Sequence];
-    bool allowLogical;
     object? left, right;
     KeyOption op;
 
@@ -251,7 +247,7 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
     {
       i = 0;
       clearOp();
-      allowLogical = true;
+      current_level++;
       clearLeft();
       clearRight();
     }
@@ -269,6 +265,12 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
     {
       op_index = -1;
       op = Undefined;
+    }
+    void shiftVal ()
+    {
+      left = right;
+      left_index = right_index;
+      clearRight();
     }
 
     restartSequence();
@@ -290,7 +292,7 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
           continue;
         }
 
-        if (cv.Type.UsesLogicalInput && !allowLogical)
+        if (cv.Type.UsesLogicalInput && current_level < OoOp.And)
         {
           clearLeft();
           i++;
@@ -300,6 +302,7 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
         else if (cv.IsOperator)
         {
           op = cv.Type;
+          oplvl = op.OrderOfOperationsIndex;
           op_index = i++;
           continue;
         }
@@ -324,9 +327,24 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
           right = av.Value;
           right_index = i;
         }
+
+        if (left is not null && right is not null && op is Undefined)
+        {
+          clearRight();
+          clearLeft();
+          left = av.Value;
+          left_index = i++;
+        }
+
+        if (left is not null && right is not null)
+        {
+          shiftVal();
+          right = av.Value;
+          right_index = i;
+        }
       }
 
-      if (left is not null && op is not Undefined && right is not null)
+      if (left is not null && op is not Undefined && right is not null && oplvl <= current_level)
       {
         _workingSequence.RemoveAt(right_index);
         _workingSequence.RemoveAt(op_index);
@@ -336,6 +354,12 @@ public class ParsedExpression (string expr, ParsedExpression? parent = null) : I
         clearRight();
         clearLeft();
         clearOp();
+      }
+      else if (left is not null && op is not Undefined && right is not null)
+      {
+        shiftVal();
+        clearOp();
+        i++;
       }
     }
 

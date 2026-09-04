@@ -20,7 +20,7 @@ public class OperationSwitch : Operation, IPlaceholderOperation
       {
         Parser.SetNextOperationIndex(@case.CasePosition);
         Status = OpStatus.Pass;
-        break;
+        return;
       }
     }
 

@@ -149,10 +149,7 @@ public sealed class ComplexToken : IToken, IPrintable
     }
   }
 
-  public override string ToString ()
-  {
-    return ToString(0);
-  }
+  public override string ToString () => ToString(0);
   public void Print (int indent)
   {
     string ind_str = new(' ', indent);

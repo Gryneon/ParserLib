@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 
+using Parser.Condition;
 using Parser.Ops.Text;
 
 namespace Parser.Ops;
@@ -11,6 +12,7 @@ public static class OperationFactory
   private static string? GetA (string name, XElement? parent = null) => parent?.Attribute(name)?.Value;
   private static int GetI (string name, XElement? parent = null) => GetA(name, parent) is not string s ? -1 : int.Parse(s, CIIC);
   private static string GetS (string name, XElement? parent = null) => GetA(name, parent) ?? SE;
+  private static bool GetB (string name, XElement? parent = null) => bool.TryParse(GetA(name, parent), out bool result) && result;
   private static Collection<IOperation> GetOps (XElement? parent = null)
   {
     IfDepth++;
@@ -88,6 +90,9 @@ public static class OperationFactory
       string encoding = GetS("encoding", element);
       string pattern = GetS("pattern", element);
 
+      bool strict = GetB("strict", element);
+      bool binary = GetB("binary", element);
+
       //Reset block if any non-conditional block is reached.
       //This allows for multiple if blocks in a row without else if/else sections.
       string lname = element.Name.LocalName;
@@ -121,10 +126,16 @@ public static class OperationFactory
 
       return lname switch
       {
-        "GotoOpIndex" => target is -1 ? new JumpOperation(target_var, true) : new JumpOperation(target),
-        "GotoLabel" => new JumpOperation(name),
-        "Label" when IfDepth == 0 => new OperationLabel(name),
-        "Label" when IfDepth != 0 => throw Err.ThrowBadDef($"Labels cannot be placed within if statements. (Depth = {IfDepth})"),
+        "GotoOpIndex" when target is not DNE and 0 => new JumpOperation { TargetIndex = target },
+        "GotoOpIndex" when target_var.IsNotEmpty => new JumpOperation { TargetIndexVar = target_var },
+        "GotoLabel" => new JumpOperation
+        {
+          TargetLabel = name
+        },
+        "Label" => new OperationLabel
+        {
+          Name = name
+        },
         "ReadData" when length_var.IsEmpty => new ReadDataOperation
         {
           Mode = type,
@@ -246,6 +257,13 @@ public static class OperationFactory
           OutputKey = output_var,
           ExtractedKey = extracted_var,
           Pattern = pattern,
+        },
+        "Load" => new LoadOperation
+        {
+          InputKey = input_var,
+          OutputKey = output_var,
+          IgnoreMissing = !strict,
+          LoadBinary = binary,
         },
         _ => Err.ThrowBadDef($"Unknown Command {element.Name.LocalName}.")
       };
