@@ -17,3 +17,4 @@
 [assembly: SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "<Pending>", Scope = "member", Target = "~M:Common.EntityFactory.CheckJSONMatch(System.Text.RegularExpressions.Match)~Common.IParsedEntity")]
 [assembly: SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "<Pending>", Scope = "member", Target = "~M:Common.EntityFactory.CheckXMLMatch(System.Text.RegularExpressions.Match)~Common.IParsedEntity")]
 [assembly: SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "<Pending>", Scope = "member", Target = "~M:Common.EntityFactory.ValueSelector(System.Text.RegularExpressions.Match)~Common.IParsedEntity")]
+[assembly: SuppressMessage("Style", "IDE0072:Add missing cases", Justification = "<Pending>", Scope = "member", Target = "~M:Common.EntityFactory.FromString(System.String,Common.BasicType)~Common.IParsedEntity")]

@@ -1,4 +1,4 @@
-namespace Parser.Ops;
+namespace Parser.Condition;
 
 public class IfBlockConditional
 {

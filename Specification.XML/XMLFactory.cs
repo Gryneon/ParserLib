@@ -1,27 +1,15 @@
 using Parser;
 using Parser.Tokens;
 
-using static Common.Debug;
-
 namespace Specification.XML;
 
-public sealed class XMLFactory
+public sealed class XMLFactory (TokenCollection parents)
 {
-  private readonly TokenCollection _parents;
-  private readonly TokenCollection _tokens;
-
-  //private sealed record class XMLTokenPair (IToken Token, IXMLObject XMLObject);
-
-  public XMLFactory (TokenCollection parents, TokenCollection tokens)
-  {
-    _parents = parents;
-    _tokens = tokens;
-  }
   public IXMLObject Produce ()
   {
     List<IXMLObject> result = [];
 
-    foreach (IToken token in _parents)
+    foreach (IToken token in parents)
     {
       IXMLObject? xml = token.Type switch
       {

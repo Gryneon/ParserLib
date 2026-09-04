@@ -2,43 +2,29 @@ namespace Parser.Ops;
 
 public class JumpOperation : Operation
 {
-  protected int TargetIndex { get; set; }
-  private string? TargetIndexVar { get; }
+  public int TargetIndex { get; init; } = DNE;
+  public string? TargetIndexVar { get; init; }
   public string? TargetLabel { get; init; }
-  public JumpOperation (int index)
-  {
-    TargetIndex = index;
 
-    if (TargetIndex < 0)
-      _ = Err.ThrowBadDef("Cannot jump to a negative index.");
-  }
-  public JumpOperation (string label_or_var, bool use_var = false)
-  {
-    TargetIndex = -1;
-    if (use_var)
-    {
-      TargetIndexVar = label_or_var;
-    }
-    else
-    {
-      TargetLabel = label_or_var;
-    }
-  }
-
-  protected JumpOperation () { }
   protected override void Execute ()
   {
-    int index;
+    int index = DNE;
 
-    if (TargetIndex >= Parser.OpCount)
+    if (TargetLabel is not null)
     {
-      index = (int) Err.ThrowBadDef($"TargetIndex ({TargetIndex}) above maximum ({Parser.OpCount}).");
+      index = Parser.Labels[TargetLabel];
+    }
+    else if (TargetIndex is not DNE)
+    {
+      index = TargetIndex;
+    }
+    else if (TargetIndexVar is not null)
+    {
+      index = (int) Data[TargetIndexVar];
     }
     else
     {
-      index = TargetIndex == -1 && TargetLabel is null && TargetIndexVar is not null
-          ? Data.TryLoad(TargetIndexVar, out int i) ? i : throw new OperationBadDefinitionException("Bad index at " + TargetIndexVar)
-          : TargetIndex == -1 && TargetLabel is not null ? Parser.Labels[TargetLabel] : 0;
+      Err.ThrowBadDef("Required property not set.");
     }
 
     Parser.SetNextOperationIndex(index);

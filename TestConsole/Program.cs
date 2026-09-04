@@ -85,11 +85,10 @@ internal static class Program
     switch (GetInput())
     {
       case "NEWXML":
-        EntityFactory factory = new();
         string newxml_data = File.ReadAllText(FinishPath(Paths.xml_operation));
         XMLDocumentEntity parsed = (XMLDocumentEntity) EntityFactory.FromString(newxml_data, BasicType.Element);
         XElement x_elem = XElement.Load(FinishPath(Paths.xml_operation));
-        XMLDocumentEntity parsedxelem = (XMLDocumentEntity) factory.FromXElement(x_elem);
+        XMLDocumentEntity parsedxelem = (XMLDocumentEntity) EntityFactory.FromXElement(x_elem, null);
         Log(MsgClass.Debug, parsed.RootNode?.ToString() ?? SE, "Program");
         Log(MsgClass.Debug, parsedxelem.RootNode?.ToString() ?? SE, "Program");
         _ = GetInput();
